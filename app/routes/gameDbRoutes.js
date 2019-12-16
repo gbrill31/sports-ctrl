@@ -1,8 +1,7 @@
 const gameRouter = require("express").Router();
 const sqlDB = require('../config/database');
-// const request         = require('request');
 
-function getTeam(team){
+function getTeam(team) {
     return new Promise((resolve, reject) => {
         sqlDB.getTeam(team).then((team) => {
             resolve(team);
@@ -12,7 +11,7 @@ function getTeam(team){
     });
 }
 
-gameRouter.get('/exists' ,function (req, res) {
+gameRouter.get('/exists', function (req, res) {
     sqlDB.hasGame(true).then((isGameExist) => {
         res.json(isGameExist);
     }, (err) => {
@@ -20,7 +19,7 @@ gameRouter.get('/exists' ,function (req, res) {
     });
 });
 
-gameRouter.get('/team' ,function (req, res) {
+gameRouter.get('/team', function (req, res) {
     getTeam(JSON.parse(req.query.team)).then((team) => {
         res.json(team);
     }, (err) => {
@@ -28,7 +27,7 @@ gameRouter.get('/team' ,function (req, res) {
     });
 });
 
-gameRouter.post('/createnew' ,function (req, res) {
+gameRouter.post('/createnew', function (req, res) {
     sqlDB.newGame(true).then((players) => {
         res.json(players).status(200);
     }, (err) => {
@@ -36,7 +35,7 @@ gameRouter.post('/createnew' ,function (req, res) {
     });
 });
 
-gameRouter.post('/updateteam' ,function (req, res) {
+gameRouter.post('/updateteam', function (req, res) {
     let team = req.body.team;
     sqlDB.updateTeam(team).then((players) => {
         res.json(players).status(200);

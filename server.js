@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const favicon = require('serve-favicon');
+// const favicon = require('serve-favicon');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
-const sqlDB = require('./app/config/database');
+// const sqlDB = require('./app/config/database');
 const logger = require('morgan');
 
 const app = express();
@@ -28,17 +28,9 @@ app.use(cookieParser());
 
 app.use(logger('dev'));
 
-sqlDB.connect();
-
-// An api endpoint that returns a short list of items
-app.get('/api/getList', (req, res) => {
-    var list = ["item1", "item2", "item3"];
-    res.json(list);
-});
-
-
 //================ ROUTES ========================//
 
+app.use("/connect", require('./app/routes/dbRoutes'));
 app.use("/game", require('./app/routes/gameDbRoutes'));
 //The vue router should be last
 app.use("/", require("./app/routes/routes"));
