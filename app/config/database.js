@@ -136,7 +136,8 @@ function createGamesTable() {
                     table.increments();
                     table.string('home');
                     table.string('away');
-                    table.timestamps();
+                    table.string('venue');
+                    table.timestamps(false, true);
                 }).then(() => {
                     resolve();
                 }, err => reject(err));
@@ -173,79 +174,34 @@ function connect() {
     });
 }
 
-function gameTableExists() {
-    return tableExists('game_live');
+function getTeam(team) {
+    return new Promise((resolve, reject) => {
+
+    });
 }
 
-function createGameTable(isClear = false) {
+function createGame(home, away, venue) {
+    return psqlDB.insert({ home, away, venue }).into('games');
+}
+
+function getAllGames() {
     return new Promise((resolve, reject) => {
-        gameTableExists().then((isTableExists) => {
-            if (!isTableExists) {
-                request('CREATE TABLE game_live(' +
-                    '[id] [int],' +
-                    '[team] [varchar](150),' +
-                    '[team_loc] [char](1),' +
-                    '[number] [int],' +
-                    '[name] [varchar](100),' +
-                    '[points] [int],' +
-                    '[fouls] [int],' +
-                    '[rebounds] [int],' +
-                    '[assists] [int],' +
-                    '[blocks] [int]' +
-                    ')')
-                    .then(() => {
-                        insertEmptyGameRows().then((res) => {
-                            resolve(res);
-                        }, (err) => {
-                            reject(err);
-                        });
-                    }, (err) => {
-                        reject(err);
-                        throw err;
-                    });
-            } else if (isClear) {
-                request('DELETE FROM game_live WHERE name <> \'empty\'').then(() => {
-                    console.log('game table cleared');
-                    insertEmptyGameRows().then((res) => {
-                        resolve(res);
-                    }, (err) => {
-                        reject(err);
-                    });
-                }, (err) => {
-                    reject(err);
-                    console.log(err.message);
-                });
+        psqlDB.schema.hasTable('games').then((exists) => {
+            if (exists) {
+                psqlDB.select().table('games').then((games) => {
+                    resolve(games)
+                }, err => reject(err));
+            } else {
+                resolve();
             }
         });
     });
 }
 
-function updateTeam(data) {
-    return updateTable('game_live', data);
-}
-
-function getTeam(team) {
-    return new Promise((resolve, reject) => {
-        request("SELECT * from game_live WHERE team=\'" + team.name + "\' OR team_loc=\'" + team.location + "\'")
-            .then((res) => {
-                resolve(_.map(res.rows, (row) => {
-                    let item = {};
-                    _.each(row, (r) => {
-                        item[r.metadata.colName] = r.value;
-                    });
-                    return item;
-                }));
-            }, (err) => {
-                reject(err);
-            });
-    });
-}
-
 module.exports = {
-    connect: connect,
-    checkConnection: checkConnection,
-    newGame: createGameTable,
-    hasGame: gameTableExists,
-    getTeam: getTeam,
-    updateTeam: updateTeam
+    connect,
+    checkConnection,
+    createGame,
+    getAllGames,
+    getTeam
 };

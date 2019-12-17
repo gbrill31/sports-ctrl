@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function HeaderNav({
-  isDbConnected, isConnecting, handleConnect
+  isDbConnected, isConnecting, handleConnect, openNewGame
 }) {
   const classes = useStyles();
 
@@ -71,9 +71,7 @@ function HeaderNav({
             variant="contained"
             color="primary"
             className="align-right"
-            onClick={() => {
-              console.log('new game');
-            }}
+            onClick={openNewGame}
           >
             New Game
             <div className="button-icon-spacing">
