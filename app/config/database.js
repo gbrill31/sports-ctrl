@@ -7,21 +7,15 @@ const connectionConfig = {
     attempts: 3
 };
 
-let sqlDB, connectionAttempts = 0, requests = [];
+let psqlDB, connectionAttempts = 0, requests = [];
 
 const config = {
-    server: "192.168.14.25",
-    authentication: {
-        type: 'default',
-        options: {
-            userName: "sa",
-            password: "!password"
-        }
-    },
-    options: {
-        database: 'stats',
-        encrypt: false,
-        rowCollectionOnRequestCompletion: true
+    client: 'pg',
+    connection: {
+        host: 'localhost',
+        user: '',
+        password: '',
+        database: 'sports-control'
     }
 };
 
@@ -122,34 +116,42 @@ function request(sqlRequest) {
                 resolve({ rowCount: rowCount, rows: rows });
                 requests.shift();
                 if (requests.length) {
-                    sqlDB.execSql(requests[0]);
+                    psqlDB.execSql(requests[0]);
                 }
             }
         });
         requests.push(request);
         if (requests.length >= 0 && requests.length <= 1) {
-            sqlDB.execSql(request);
+            psqlDB.execSql(request);
         }
 
     });
 }
 
+function createGamesTable() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('games').then((exists) => {
+            if (!exists) {
+                psqlDB.schema.createTable('games', table => {
+                    table.increments();
+                    table.string('home');
+                    table.string('away');
+                    table.timestamps();
+                }).then(() => {
+                    resolve();
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
 //Exported functions
 
-function connect() {
+function checkConnection() {
     return new Promise((resolve, reject) => {
-        sqlDB = knex({
-            client: 'mssql',
-            connection: {
-                host: '192.168.0.24',
-                user: 'sa',
-                password: '!password',
-                database: 'sports'
-            },
-            asyncStackTraces: true
-        });
-
-        checkConnection().then((message) => {
+        psqlDB.raw('SELECT 1').then((message) => {
             resolve(message);
         }).catch((err) => {
             reject(err);
@@ -157,10 +159,14 @@ function connect() {
     });
 }
 
-function checkConnection() {
+function connect() {
     return new Promise((resolve, reject) => {
-        sqlDB.raw('SELECT 1').then((message) => {
-            resolve(message);
+        psqlDB = knex(config);
+
+        checkConnection().then((message) => {
+            createGamesTable().then(() => {
+                resolve(message);
+            }, err => reject(err));
         }).catch((err) => {
             reject(err);
         })

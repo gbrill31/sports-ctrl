@@ -1,0 +1,10 @@
+.root{
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .align-right{
+    position: absolute;
+    right: 15px;
+  }
+}
