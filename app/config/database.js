@@ -194,7 +194,7 @@ function getAllGames() {
             } else {
                 resolve();
             }
-        });
+        }, err => reject(err));
     });
 }
 

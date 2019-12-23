@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import HeaderNav from '../HeaderNav/HeaderNav';
 import NewGameDialog from '../NewGameDialog/NewGameDialog';
-import './Home.scss';
+import ErrorBoundary from '../ErrorBoundary/ErroBoundary';
+import GamesList from '../GamesList/GamesList';
 
+import './Home.scss';
 
 
 function Home() {
@@ -12,14 +14,15 @@ function Home() {
   const [isNewGame, setIsNewGame] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [games, setGames] = useState(null);
-  const [game, setGame] = useState(null);
+  // const [game, setGame] = useState(null);
+
 
   const checkDbConnection = () => {
     setIsConnecting(true);
     fetch('/connect/validate')
       .then((res) => {
         if (!res.ok) {
-          throw new Error('connection timeout')
+          throw new Error('connection timeout');
         }
         return res.json();
       })
@@ -37,7 +40,7 @@ function Home() {
     fetch('/connect')
       .then((res) => {
         if (!res.ok) {
-          throw new Error('connection timeout')
+          throw new Error('connection timeout');
         }
         return res.json();
       })
@@ -80,12 +83,18 @@ function Home() {
 
   const getAllGames = () => {
     fetch('/game/all')
-      .then(res => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('connection timeout');
+        }
+        return res.json();
+      })
       .then(games => {
-        console.log(games);
         setGames(games);
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err)
+      });
   }
 
 
@@ -116,18 +125,9 @@ function Home() {
         handleConnect={handleConnect}
         openNewGame={openNewGame}
       />
-      <div className="games-wrapper">
-        {
-          games && games.map(game => (
-            <div key={game.id} className="game-wrapper">
-              <span className="team home">Home: {game.home}</span>
-              <span>VS</span>
-              <span className="team away">Away: {game.away}</span>
-              <span className="game-venue">{game.venue}</span>
-            </div>
-          ))
-        }
-      </div>
+      <ErrorBoundary>
+        <GamesList games={games} />
+      </ErrorBoundary>
       <NewGameDialog
         isOpen={isNewGame}
         handleClose={handleClose}
