@@ -12,12 +12,8 @@ gameRouter.get('/all', (req, res) => {
 gameRouter.post('/create', function (req, res) {
     const { home, away, venue } = req.body;
     psqlDB.createGame(home, away, venue)
-        .then(() => {
-            psqlDB.getAllGames().then((games) => {
-                res.json(games).status(200);
-            }, (err) => {
-                res.status(err.code || 500);
-            });
+        .then((data) => {
+            res.json(data[0]).status(200);
         }, (err) => {
             res.status(err.code || 500);
         });

@@ -15,8 +15,15 @@ function NewGameDialog({
 
   return (
     <div>
-      <Dialog open={isOpen} onClose={handleClose} aria-labelledby="create-new-game" maxWidth="md" fullWidth>
-        <DialogTitle id="create-new-game">Create a new game</DialogTitle>
+      <Dialog
+        open={isOpen}
+        onClose={handleClose}
+        aria-labelledby="create-new-game"
+        maxWidth="md"
+        disableBackdropClick
+        fullWidth
+      >
+        <DialogTitle id="create-new-game">Start a new game</DialogTitle>
         <DialogContent>
           <DialogContentText>
             Please enter your Home & Away team names
@@ -70,12 +77,13 @@ function NewGameDialog({
             <Button
               variant="contained"
               disabled={isSaving}
-              onClick={() => {
-                handleConfirm({ home: homeName, away: awayName, venue });
+              onClick={async () => {
+                await handleConfirm({ home: homeName, away: awayName, venue });
+                handleClose();
               }}
               color="primary"
             >
-              Create
+              Start Game
             </Button>
             {isSaving && <CircularProgress size={24} className="saving-loader" />}
           </div>

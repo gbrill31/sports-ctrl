@@ -5,6 +5,7 @@ import { CircularProgress, Button } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
 import { faCheck, faDatabase, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 import './HeaderNav.scss';
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function HeaderNav({
-  isDbConnected, isConnecting, handleConnect, openNewGame
+  isDbConnected, isConnecting, handleConnect
 }) {
   const classes = useStyles();
 
@@ -71,9 +72,10 @@ function HeaderNav({
             variant="contained"
             color="primary"
             className="align-right"
-            onClick={openNewGame}
+            component={Link}
+            to="/game"
           >
-            New Game
+            Start A New Game
             <div className="button-icon-spacing">
               <FontAwesomeIcon icon={faPlus} size="lg" />
             </div>

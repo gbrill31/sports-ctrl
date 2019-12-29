@@ -156,7 +156,7 @@ function checkConnection() {
             resolve(message);
         }).catch((err) => {
             reject(err);
-        })
+        });
     });
 }
 
@@ -181,7 +181,7 @@ function getTeam(team) {
 }
 
 function createGame(home, away, venue) {
-    return psqlDB.insert({ home, away, venue }).into('games');
+    return psqlDB.insert({ home, away, venue }, ['id', 'home', 'away', 'venue']).into('games');
 }
 
 function getAllGames() {
