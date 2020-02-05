@@ -2,7 +2,7 @@ import {
   ON_NEW_GAME_PENDING,
   ON_NEW_GAME_SUCCESS,
   ON_NEW_GAME_FAILED
-} from './constants';
+} from '../constants/GameControlConstants';
 
 export const createNewGame = (teams) => (dispatch) => {
   dispatch({ type: ON_NEW_GAME_PENDING })

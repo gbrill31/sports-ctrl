@@ -10,7 +10,7 @@ import {
   connectToDB,
   checkDbConnection,
   setRouteName
-} from './actions';
+} from '../../actions/AppActions';
 
 
 const mapStateToProps = state => {

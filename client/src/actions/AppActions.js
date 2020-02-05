@@ -3,7 +3,7 @@ import {
   ON_CONNECT_DB_SUCCESS,
   ON_CONNECT_DB_FAILED,
   ON_ROUTE_CHANGE
-} from './constants';
+} from '../constants/AppConstants';
 
 export const setRouteName = route => (dispatch) => {
   dispatch({

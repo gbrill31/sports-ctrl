@@ -4,7 +4,7 @@ import NewGameDialog from '../../components/NewGameDialog/NewGameDialog';
 
 import {
   createNewGame
-} from './actions';
+} from '../../actions/GameControlActions';
 
 const mapStateToProps = state => ({
   game: state.gameControl.game,

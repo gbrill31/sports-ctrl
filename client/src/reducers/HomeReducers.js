@@ -2,7 +2,7 @@ import {
   ON_GAMES_REQUEST_PENDING,
   ON_GAMES_REQUEST_SUCCESS,
   ON_GAMES_REQUEST_FAILED
-} from './constants';
+} from '../constants/HomeConstants';
 
 const INTIAL_STATE = {
   games: [],

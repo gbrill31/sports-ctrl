@@ -8,9 +8,10 @@ import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
 
-import { dbConnection, routes } from './containers/App/reducers';
-import { gamesPlayed } from './containers/Home/reducers';
-import { gameControl } from './containers/GameControl/reducers';
+import { routes } from './reducers/routeReducer';
+import { dbConnection } from './reducers/dbReducer';
+import { gamesPlayed } from './reducers/HomeReducers';
+import { gameControl } from './reducers/GameControlReducers';
 
 const rootReducer = combineReducers({ dbConnection, gamesPlayed, gameControl, routes });
 const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
