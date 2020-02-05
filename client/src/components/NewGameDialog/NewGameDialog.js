@@ -13,6 +13,11 @@ function NewGameDialog({
   const [awayName, setAwayName] = useState('');
   const [venue, setVenue] = useState('');
 
+  const dialogConfirm = async () => {
+    await handleConfirm({ home: homeName, away: awayName, venue });
+    handleClose();
+  }
+
   return (
     <div>
       <Dialog
@@ -77,10 +82,7 @@ function NewGameDialog({
             <Button
               variant="contained"
               disabled={isSaving}
-              onClick={async () => {
-                await handleConfirm({ home: homeName, away: awayName, venue });
-                handleClose();
-              }}
+              onClick={dialogConfirm}
               color="primary"
             >
               Start Game

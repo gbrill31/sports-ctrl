@@ -1,20 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import thunkMiddleware from 'redux-thunk';
 import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
 
-import { routes } from './reducers/routeReducer';
-import { dbConnection } from './reducers/dbReducer';
-import { gamesPlayed } from './reducers/HomeReducers';
-import { gameControl } from './reducers/GameControlReducers';
+import buildStore from './store';
 
-const rootReducer = combineReducers({ dbConnection, gamesPlayed, gameControl, routes });
-const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
+const store = buildStore();
 
 ReactDOM.render(
   <BrowserRouter>

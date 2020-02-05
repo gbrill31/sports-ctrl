@@ -8,40 +8,38 @@ import './App.scss';
 
 import {
   connectToDB,
-  checkDbConnection,
   setRouteName
-} from '../../actions/AppActions';
+} from '../../actions';
 
 
 const mapStateToProps = state => {
   return {
-    isConnecting: state.dbConnection.isPending,
-    isDBConnected: state.dbConnection.isConnected,
-    connectionError: state.dbConnection.error,
+    isConnecting: state.db.isPending,
+    isDBConnected: state.db.isConnected,
+    connectionError: state.db.error,
     currentRoute: state.routes.currentRoute
   }
 };
 
 const mapDispatchToProps = dispatch => ({
   connectDB: () => dispatch(connectToDB()),
-  checkIsDbConnected: () => dispatch(checkDbConnection()),
-  setCurrentRoute: (route) => dispatch(setRouteName(route))
+  setCurrentRoute: route => dispatch(setRouteName(route))
 });
 
 function App({
-  connectDB, checkIsDbConnected, isDBConnected, isConnecting, history,
+  connectDB, isDBConnected, isConnecting, history,
   setCurrentRoute, connectionError
 }) {
 
   useEffect(() => {
-    checkIsDbConnected();
+    connectDB();
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);
     });
     return () => {
       unlisten();
     }
-  }, [checkIsDbConnected, history, setCurrentRoute]);
+  }, [connectDB, history, setCurrentRoute]);
 
   return (
     <div className="App">

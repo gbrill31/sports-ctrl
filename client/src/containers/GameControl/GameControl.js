@@ -4,20 +4,20 @@ import NewGameDialog from '../../components/NewGameDialog/NewGameDialog';
 
 import {
   createNewGame
-} from '../../actions/GameControlActions';
+} from '../../actions';
 
 const mapStateToProps = state => ({
-  game: state.gameControl.game,
-  isSaving: state.gameControl.isPending,
-  error: state.gameControl.error
+  game: state.games.game,
+  isSaving: state.games.gameCreatePending,
+  error: state.games.gameError
 });
 
 const mapDispatchToProps = dispatch => ({
-  startGame: (teams) => dispatch(createNewGame(teams))
+  createGame: (teams) => dispatch(createNewGame(teams))
 });
 
 
-function GameControl({ game, isSaving, startGame }) {
+function GameControl({ game, isSaving, createGame }) {
   const [isNewGame, setIsNewGame] = useState(false);
 
   const openNewGame = () => {
@@ -44,7 +44,7 @@ function GameControl({ game, isSaving, startGame }) {
       <NewGameDialog
         isOpen={isNewGame}
         handleClose={handleClose}
-        handleConfirm={startGame}
+        handleConfirm={createGame}
         isSaving={isSaving}
       />
     </div>

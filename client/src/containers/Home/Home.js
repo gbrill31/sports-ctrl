@@ -1,17 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import NewGameDialog from '../../components/NewGameDialog/NewGameDialog';
 import GamesList from '../../components/GamesList/GamesList';
 
 import './Home.scss';
 
 import {
   getAllGames
-} from '../../actions/HomeActions';
+} from '../../actions';
 
 const mapStateToProps = state => ({
-  games: state.gamesPlayed.games
+  games: state.games.gamesPlayed,
+  gamesLoading: state.games.getGamesPending
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -19,36 +19,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 
-function Home({ games, getPlayedGames, isDbConnected }) {
-  const [isNewGame, setIsNewGame] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-
-  const createNewGame = (teams) => {
-    setIsSaving(true);
-    const body = JSON.stringify(teams);
-    fetch('/game/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body
-    })
-      .then(res => res.json())
-      .then(data => {
-        setIsSaving(false);
-        setIsNewGame(false);
-      })
-      .catch(err => console.log(err));
-  }
-
-
-  // const openNewGame = () => {
-  //   setIsNewGame(true);
-  // };
-
-  const handleClose = () => {
-    setIsNewGame(false);
-  };
+function Home({ games, getPlayedGames, isDbConnected, gamesLoading }) {
 
   useEffect(() => {
     if (isDbConnected) {
@@ -67,13 +38,7 @@ function Home({ games, getPlayedGames, isDbConnected }) {
   return (
     <div>
       <Title>Games</Title>
-      <GamesList games={games} />
-      <NewGameDialog
-        isOpen={isNewGame}
-        handleClose={handleClose}
-        handleConfirm={createNewGame}
-        isSaving={isSaving}
-      />
+      <GamesList games={games} isLoading={gamesLoading} />
     </div>
   );
 };

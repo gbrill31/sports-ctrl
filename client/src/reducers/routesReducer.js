@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   }
 }
 
-export const routes = (state = INITIAL_STATE.routes, action = {}) => {
+const routesReucer = (state = INITIAL_STATE.routes, action = {}) => {
   switch (action.type) {
     case ROUTE.CHANGE:
       return { ...state, currentRoute: action.payload }
@@ -16,3 +16,5 @@ export const routes = (state = INITIAL_STATE.routes, action = {}) => {
       return state;
   }
 };
+
+export default routesReucer;

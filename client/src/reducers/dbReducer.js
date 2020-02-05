@@ -8,15 +8,29 @@ const INITIAL_STATE = {
   }
 }
 
-export const dbConnection = (state = INITIAL_STATE.dbConnection, action = {}) => {
+const dbReducer = (state = INITIAL_STATE.dbConnection, action = {}) => {
   switch (action.type) {
-    case DB.CONNECTION_PENDING:
-      return { ...state, isPending: true }
+    case DB.CONNECTING:
+      return {
+        ...state,
+        isPending: true
+      }
     case DB.CONNECTION_SUCCESS:
-      return { ...state, isConnected: true, isPending: false }
+      return {
+        ...state,
+        isConnected: true,
+        isPending: false
+      }
     case DB.CONNECTION_FAILED:
-      return { ...state, error: action.payload, isConnected: false, isPending: false }
+      return {
+        ...state,
+        error: action.payload,
+        isConnected: false,
+        isPending: false
+      }
     default:
       return state;
   }
 };
+
+export default dbReducer;
