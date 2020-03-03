@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import GamesList from '../../components/GamesList/GamesList';
 
@@ -9,23 +9,21 @@ import {
   getAllGames
 } from '../../actions';
 
-const mapStateToProps = state => ({
-  games: state.games.gamesPlayed,
-  gamesLoading: state.games.getGamesPending
-});
 
-const mapDispatchToProps = dispatch => ({
-  getPlayedGames: () => dispatch(getAllGames())
-});
+function Home() {
+  const dispatch = useDispatch();
 
+  const isDBConnected = useSelector(state => state.db.isConnected);
+  const games = useSelector(state => state.games.played);
+  const gamesLoading = useSelector(state => state.games.getGamesPending);
 
-function Home({ games, getPlayedGames, isDbConnected, gamesLoading }) {
+  const getPlayedGames = useCallback(() => dispatch(getAllGames()), [dispatch]);
 
   useEffect(() => {
-    if (isDbConnected) {
+    if (isDBConnected) {
       getPlayedGames();
     }
-  }, [isDbConnected, getPlayedGames]);
+  }, [isDBConnected, getPlayedGames]);
 
   const Title = styled.h3`
   font-size: 1.5em;
@@ -43,4 +41,4 @@ function Home({ games, getPlayedGames, isDbConnected, gamesLoading }) {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default Home;

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import { CircularProgress, Button } from '@material-ui/core';
@@ -8,6 +9,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Link } from 'react-router-dom';
 
 import './HeaderNav.scss';
+
+import {
+  connectToDB
+} from '../../actions';
 
 
 const useStyles = makeStyles(theme => ({
@@ -38,13 +43,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function HeaderNav({
-  isDbConnected, isConnecting, handleConnect
-}) {
+function HeaderNav() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const isConnecting = useSelector(state => state.db.isPending);
+  const isDBConnected = useSelector(state => state.db.isConnected);
+
+  const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
 
   const buttonClassname = clsx({
-    [classes.buttonSuccess]: isDbConnected,
+    [classes.buttonSuccess]: isDBConnected,
   });
 
   return (
@@ -55,11 +64,11 @@ function HeaderNav({
           color="primary"
           className={buttonClassname}
           disabled={isConnecting}
-          onClick={handleConnect}
+          onClick={connectDB}
         >
-          {isDbConnected ? 'DB Connected' : 'Connect to Database'}
+          {isDBConnected ? 'DB Connected' : 'Connect to Database'}
           {<div className="button-icon-spacing">{
-            isDbConnected ? <FontAwesomeIcon icon={faCheck} size="lg" /> : <FontAwesomeIcon icon={faDatabase} size="lg" />
+            isDBConnected ? <FontAwesomeIcon icon={faCheck} size="lg" /> : <FontAwesomeIcon icon={faDatabase} size="lg" />
           }
           </div>
           }
@@ -67,7 +76,7 @@ function HeaderNav({
         {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
       {
-        isDbConnected ? (
+        isDBConnected ? (
           <Button
             variant="contained"
             color="primary"

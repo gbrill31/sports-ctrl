@@ -6,7 +6,7 @@ const INTIAL_STATE = {
   game: null,
   gameCreatePending: false,
   gameError: null,
-  gamesPlayed: [],
+  played: [],
   getGamesPending: false,
   gamesError: null
 }
@@ -39,7 +39,7 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
     case GAMES.GET_ALL_SUCCESS:
       return {
         ...state,
-        gamesPlayed: action.payload,
+        played: action.payload,
         getGamesPending: false
       }
     case GAMES.GET_ALL_FAILED:
