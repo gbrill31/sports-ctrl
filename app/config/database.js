@@ -194,7 +194,15 @@ function getAllGames() {
 }
 
 function createVenue(name, country, city, seats) {
-    return psqlDB.insert({ name, country, city, seats }, ['id', 'name', 'country', 'city', 'seats']).into('venues');
+    return psqlDB
+        .insert({ name, country, city, seats }, ['id', 'name', 'country', 'city', 'seats'])
+        .into('venues');
+}
+
+function deleteVenue(id) {
+    return psqlDB('venues')
+        .where('id', id)
+        .del();
 }
 
 function getAllVenues() {
@@ -218,5 +226,6 @@ module.exports = {
     getAllGames,
     getTeam,
     getAllVenues,
-    createVenue
+    createVenue,
+    deleteVenue
 };

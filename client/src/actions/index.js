@@ -19,7 +19,10 @@ import {
   venuesError,
   createNewVenue,
   setNewVenue,
-  newVenueError
+  newVenueError,
+  deleteVenue,
+  clearDeletedVenue,
+  deleteVenueError
 } from './venuesActions';
 
 import {
@@ -42,5 +45,8 @@ export {
   venuesError,
   createNewVenue,
   setNewVenue,
-  newVenueError
+  newVenueError,
+  deleteVenue,
+  clearDeletedVenue,
+  deleteVenueError
 }

@@ -1,13 +1,14 @@
 import React from 'react';
 import {
-  Button, DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog
+  Button, DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
+  CircularProgress
 } from '@material-ui/core';
 
 
 import './PromptDialog.scss';
 
 const PromptDialog = ({
-  isOpen, handleClose, handleConfirm, title, content, confirmText
+  isOpen, handleClose, handleConfirm, title, content, confirmText, isPending
 }) => (
     <Dialog
       open={isOpen}
@@ -27,9 +28,10 @@ const PromptDialog = ({
         <Button onClick={handleClose} color="secondary">
           Cancel
       </Button>
-        <Button onClick={handleConfirm} color="secondary">
+        <Button onClick={handleConfirm} color="primary">
           {confirmText || 'OK'}
         </Button>
+        {isPending && <CircularProgress size={24} />}
       </DialogActions>
     </Dialog>
   );

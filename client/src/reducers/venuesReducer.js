@@ -7,7 +7,9 @@ const INTIAL_STATE = {
   getVenuesPending: false,
   getVenuesError: null,
   venueSavePending: false,
-  venueSaveError: null
+  venueSaveError: null,
+  venueDeletePending: false,
+  venueDeleteError: null
 }
 
 const venuesReducer = (state = INTIAL_STATE, action = {}) => {
@@ -46,6 +48,23 @@ const venuesReducer = (state = INTIAL_STATE, action = {}) => {
         ...state,
         venueSavePending: false,
         venueSaveError: action.payload
+      }
+    case VENUES.DELETE_PENDING:
+      return {
+        ...state,
+        venueDeletePending: true
+      }
+    case VENUES.DELETE_SUCCESS:
+      return {
+        ...state,
+        venueDeletePending: false,
+        items: state.items.filter((item) => item.id !== action.payload)
+      }
+    case VENUES.DELETE_FAILED:
+      return {
+        ...state,
+        venueDeletePending: false,
+        venueDeleteError: action.payload
       }
     default:
       return state;

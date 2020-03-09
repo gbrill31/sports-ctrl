@@ -19,6 +19,16 @@ venuesRouter.post('/create', function (req, res) {
         });
 });
 
+venuesRouter.post('/delete', function (req, res) {
+    const { id } = req.body;
+    psqlDB.deleteVenue(id)
+        .then(() => {
+            res.json(id).status(200);
+        }, (err) => {
+            res.status(err.code || 500);
+        });
+});
+
 function getTeam(team) {
     return new Promise((resolve, reject) => {
         psqlDB.getTeam(team).then((team) => {

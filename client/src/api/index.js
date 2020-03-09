@@ -57,10 +57,27 @@ const createNewVenue = async (venue) => {
   return newVenue;
 }
 
+const deleteVenue = async (id) => {
+  const body = JSON.stringify({ id });
+  const res = await fetch('/venues/delete', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body
+  });
+  const deletedVenue = await res.json();
+  if (res.status >= 400) {
+    throw new Error('New venue creation failed');
+  }
+  return deletedVenue;
+}
+
 export {
   connectDB,
   getAllGames,
   createNewGame,
   getAllVenues,
-  createNewVenue
+  createNewVenue,
+  deleteVenue
 }

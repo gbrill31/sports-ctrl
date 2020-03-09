@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useCallback } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlexContainer } from '../../styledComponents';
 import { Button, TextField, CircularProgress } from '@material-ui/core';
@@ -58,7 +58,7 @@ export default function NewVenueForm() {
       && venueCity.ref.current.checkValidity();
   }
 
-  const saveNewVenue = useCallback(() => {
+  const saveNewVenue = () => {
     validateAllInputs();
     if (isSaveValid()) {
       createVenue({
@@ -69,7 +69,7 @@ export default function NewVenueForm() {
       });
       resetForm();
     }
-  }, [venueName.isValid, venueCountry.isValid, venueCity.isValid]);
+  };
 
   const onVenueSeatsChange = (e) => setVenueSeats(e.target.value);
 

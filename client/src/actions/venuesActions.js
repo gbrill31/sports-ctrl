@@ -21,6 +21,21 @@ export const createNewVenue = venue => ({
   venue
 });
 
+export const deleteVenue = id => ({
+  type: VENUES.DELETE_PENDING,
+  id
+});
+
+export const clearDeletedVenue = id => ({
+  type: VENUES.DELETE_SUCCESS,
+  payload: id
+});
+
+export const deleteVenueError = error => ({
+  type: VENUES.DELETE_FAILED,
+  payload: error
+});
+
 export const setNewVenue = venue => ({
   type: VENUES.SAVE_SUCCESS,
   payload: venue

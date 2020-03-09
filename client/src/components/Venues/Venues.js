@@ -1,12 +1,14 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card, CardContent, CardActions, Typography, Button } from '@material-ui/core';
+import {
+  Card, CardContent, CardActions, Typography, Button, CircularProgress
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Title, FlexContainer } from '../../styledComponents';
 import PromptDialog from '../PromptDialog/PromptDialog';
 import NewVenueForm from '../NewVenueForm/NewVenueForm';
 
-import { getAllVenues } from '../../actions';
+import { getAllVenues, deleteVenue } from '../../actions';
 
 const useStyles = makeStyles({
   root: {
@@ -26,7 +28,10 @@ const useStyles = makeStyles({
   },
 });
 
-const DeletePrompt = ({ selectedVenue, isDeleteVenue, setIsDeleteVenue }) => {
+const DeletePrompt = ({ selectedVenue, isDeleteVenue, setIsDeleteVenue, isDeleting }) => {
+  const dispatch = useDispatch();
+  const deleteSelectedVenue = useCallback(() => dispatch(deleteVenue(selectedVenue.id)), [dispatch]);
+
   return (
     <PromptDialog
       isOpen={isDeleteVenue}
@@ -34,7 +39,8 @@ const DeletePrompt = ({ selectedVenue, isDeleteVenue, setIsDeleteVenue }) => {
       content={`Are you sure you want to delete ${selectedVenue.name}`}
       confirmText="Delete"
       handleClose={() => setIsDeleteVenue(false)}
-
+      handleConfirm={deleteSelectedVenue}
+      isPending={isDeleting}
     />
   )
 }
@@ -47,6 +53,7 @@ export default function Venues() {
   const [selectedVenue, setSelectedVenue] = useState(null);
 
   const venues = useSelector(state => state.venues.items);
+  const isDeleting = useSelector(state => state.venues.venueDeletePending);
 
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
 
@@ -57,7 +64,13 @@ export default function Venues() {
 
   useEffect(() => {
     getVenues();
-  }, [getVenues])
+  }, [getVenues]);
+
+  useEffect(() => {
+    if (!isDeleting) {
+      setIsDeleteVenue(false);
+    }
+  }, [isDeleting]);
 
   return (
     <div>
@@ -99,6 +112,7 @@ export default function Venues() {
               selectedVenue={selectedVenue}
               isDeleteVenue={isDeleteVenue}
               setIsDeleteVenue={setIsDeleteVenue}
+              isDeleting={isDeleting}
             />
           )
         }

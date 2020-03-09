@@ -1,8 +1,10 @@
-import { takeEvery, call, put, fork, take } from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 
 import { VENUES } from '../constants';
-import { setVenues, venuesError, setNewVenue, newVenueError } from '../actions';
-import { getAllVenues, createNewVenue } from '../api';
+import {
+  setVenues, venuesError, setNewVenue, newVenueError, clearDeletedVenue, deleteVenueError
+} from '../actions';
+import { getAllVenues, createNewVenue, deleteVenue } from '../api';
 
 function* handleVenuesRequest() {
   try {
@@ -22,8 +24,17 @@ function* handleNewVenue({ venue }) {
   }
 }
 
+function* handleDeleteVenue({ id }) {
+  try {
+    const deletedVenueId = yield call(deleteVenue, id);
+    yield put(clearDeletedVenue(deletedVenueId));
+  } catch (error) {
+    yield put(deleteVenueError(error));
+  }
+}
+
 export default function* watchVenues() {
   yield takeEvery(VENUES.GET_VENUES_PENDING, handleVenuesRequest);
-  const venue = yield take(VENUES.SAVE_PENDING);
-  yield fork(handleNewVenue, venue);
+  yield takeEvery(VENUES.DELETE_PENDING, handleDeleteVenue);
+  yield takeEvery(VENUES.SAVE_PENDING, handleNewVenue);
 }
