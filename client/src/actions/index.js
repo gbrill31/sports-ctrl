@@ -14,6 +14,15 @@ import {
 } from './gamesControlActions'
 
 import {
+  getAllVenues,
+  setVenues,
+  venuesError,
+  createNewVenue,
+  setNewVenue,
+  newVenueError
+} from './venuesActions';
+
+import {
   setRouteName
 } from './routeActions';
 
@@ -27,5 +36,11 @@ export {
   setRouteName,
   createNewGame,
   setNewGame,
-  newGameError
+  newGameError,
+  getAllVenues,
+  setVenues,
+  venuesError,
+  createNewVenue,
+  setNewVenue,
+  newVenueError
 }

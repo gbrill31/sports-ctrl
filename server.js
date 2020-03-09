@@ -32,6 +32,7 @@ app.use(logger('dev'));
 
 app.use("/connect", require('./app/routes/dbRoutes'));
 app.use("/games", require('./app/routes/gameDbRoutes'));
+app.use("/venues", require('./app/routes/venuesRoutes'));
 //The vue router should be last
 app.use("/", require("./app/routes/routes"));
 

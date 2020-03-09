@@ -1,43 +1,83 @@
-import React, { useState, Fragment } from 'react';
-import { ControlsContainer } from '../../styledComponents';
-import { Button, TextField } from '@material-ui/core';
+import React, { useState, Fragment, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { FlexContainer } from '../../styledComponents';
+import { Button, TextField, CircularProgress } from '@material-ui/core';
+import useFormInput from '../../hooks/useFormInput';
 import styled from 'styled-components';
+
+import {
+  createNewVenue,
+} from '../../actions';
 
 const StyledTextField = styled(TextField)`
   margin-right: 20px;
 `;
 
 export default function NewVenueForm() {
-  const [venueName, setVenueName] = useState('');
-  const [venueCity, setVenueCity] = useState('');
+  const dispatch = useDispatch();
+
+  const venueName = useFormInput('');
+  const venueCountry = useFormInput('');
+  const venueCity = useFormInput('');
   const [venueSeats, setVenueSeats] = useState(0);
+
+  const isSaving = useSelector(state => state.venues.venueSavePending);
 
   const [isNewVenue, setIsNewVenue] = useState(false);
 
 
   const setNewVenue = () => setIsNewVenue(true);
-  const cancelNewVenue = () => {
-    setIsNewVenue(false);
-    setVenueName('');
-    setVenueCity('');
+
+  const resetForm = () => {
+    venueName.setValue('');
+    venueCountry.setValue('');
+    venueCity.setValue('');
+    venueName.resetIsValid();
+    venueCountry.resetIsValid();
+    venueCity.resetIsValid();
     setVenueSeats(0);
   }
 
-  const saveNewVenue = () => {
-    const venue = {
-      name: venueName,
-      city: venueCity,
-      seats: Number(venueSeats)
-    };
-    console.log(venue);
+  const cancelNewVenue = () => {
+    setIsNewVenue(false);
+    resetForm();
   }
-  const onVenueNameChange = (e) => setVenueName(e.target.value);
-  const onVenueCityChange = (e) => setVenueCity(e.target.value);
+
+  const createVenue = (venue) => dispatch(createNewVenue(venue));
+
+  const validateAllInputs = () => {
+    venueName.validateInput();
+    venueCountry.validateInput();
+    venueCity.validateInput();
+
+  }
+
+  const isSaveValid = () => {
+    return venueName.ref.current.checkValidity()
+      && venueCountry.ref.current.checkValidity()
+      && venueCity.ref.current.checkValidity();
+  }
+
+  const saveNewVenue = useCallback(() => {
+    validateAllInputs();
+    if (isSaveValid()) {
+      createVenue({
+        name: venueName.value,
+        country: venueCountry.value,
+        city: venueCity.value,
+        seats: Number(venueSeats)
+      });
+      resetForm();
+    }
+  }, [venueName.isValid, venueCountry.isValid, venueCity.isValid]);
+
   const onVenueSeatsChange = (e) => setVenueSeats(e.target.value);
 
 
+
+
   return (
-    <ControlsContainer flexColumn>
+    <FlexContainer column>
       {
         !isNewVenue ? (
           <Button
@@ -52,22 +92,49 @@ export default function NewVenueForm() {
               <div>
                 <StyledTextField
                   autoFocus
+                  required
+                  inputProps={{
+                    ref: venueName.ref
+                  }}
+                  error={!venueName.isValid}
+                  helperText={venueName.errorMessage}
                   margin="dense"
                   id="name"
                   label="Name"
                   type="text"
                   placeholder="Venue Name"
-                  value={venueName}
-                  onChange={onVenueNameChange}
+                  value={venueName.value}
+                  onChange={venueName.onChange}
                 />
                 <StyledTextField
                   margin="dense"
+                  required
+                  inputProps={{
+                    ref: venueCountry.ref
+                  }}
+                  error={!venueCountry.isValid}
+                  helperText={venueCountry.errorMessage}
+                  id="country"
+                  label="Country"
+                  type="text"
+                  placeholder="Venue Country"
+                  value={venueCountry.value}
+                  onChange={venueCountry.onChange}
+                />
+                <StyledTextField
+                  margin="dense"
+                  required
+                  inputProps={{
+                    ref: venueCity.ref
+                  }}
+                  error={!venueCity.isValid}
+                  helperText={venueCity.errorMessage}
                   id="city"
                   label="City"
                   type="text"
                   placeholder="Venue City"
-                  value={venueCity}
-                  onChange={onVenueCityChange}
+                  value={venueCity.value}
+                  onChange={venueCity.onChange}
                 />
                 <StyledTextField
                   margin="dense"
@@ -82,14 +149,16 @@ export default function NewVenueForm() {
                   onChange={onVenueSeatsChange}
                 />
               </div>
-              <ControlsContainer>
+              <FlexContainer>
                 <Button
                   color="primary"
                   variant="contained"
+                  disabled={isSaving}
                   onClick={saveNewVenue}
                 >
                   Save
-              </Button>
+                  {isSaving && <CircularProgress size={24} />}
+                </Button>
                 <Button
                   color="secondary"
                   variant="contained"
@@ -97,12 +166,12 @@ export default function NewVenueForm() {
                 >
                   Cancel
               </Button>
-              </ControlsContainer>
+              </FlexContainer>
 
             </Fragment>
           )
       }
 
-    </ControlsContainer>
+    </FlexContainer>
   )
 }

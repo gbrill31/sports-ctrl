@@ -193,10 +193,30 @@ function getAllGames() {
     });
 }
 
+function createVenue(name, country, city, seats) {
+    return psqlDB.insert({ name, country, city, seats }, ['id', 'name', 'country', 'city', 'seats']).into('venues');
+}
+
+function getAllVenues() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('venues').then((exists) => {
+            if (exists) {
+                psqlDB.select().table('venues').then((venues) => {
+                    resolve(venues)
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        }, err => reject(err));
+    });
+}
+
 module.exports = {
     connect,
     checkConnection,
     createGame,
     getAllGames,
-    getTeam
+    getTeam,
+    getAllVenues,
+    createVenue
 };

@@ -8,7 +8,7 @@ const INITIAL_STATE = {
   }
 }
 
-const dbReducer = (state = INITIAL_STATE.dbConnection, action = {}) => {
+const dbConnectionReducer = (state = INITIAL_STATE.dbConnection, action = {}) => {
   switch (action.type) {
     case DB.CONNECTING:
       return {
@@ -33,4 +33,4 @@ const dbReducer = (state = INITIAL_STATE.dbConnection, action = {}) => {
   }
 };
 
-export default dbReducer;
+export default dbConnectionReducer;

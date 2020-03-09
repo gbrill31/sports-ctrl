@@ -1,8 +1,10 @@
 import styled from 'styled-components';
 
-const ControlsContainer = styled.div`
+const FlexContainer = styled.div`
   display: flex;
-  flex-flow: ${props => props.flexColumn ? 'column' : 'row'};
+  width: 90%;
+  flex-flow: ${props => props.column ? 'column' : 'row'};
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 10px;
@@ -18,5 +20,5 @@ const Title = styled.h3`
 
 export {
   Title,
-  ControlsContainer
+  FlexContainer
 }
