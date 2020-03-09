@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
@@ -49,6 +49,7 @@ function HeaderNav() {
 
   const isConnecting = useSelector(state => state.db.isPending);
   const isDBConnected = useSelector(state => state.db.isConnected);
+  const currentRoute = useSelector(state => state.routes.currentRoute);
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
 
@@ -76,20 +77,49 @@ function HeaderNav() {
         {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
       {
-        isDBConnected ? (
-          <Button
-            variant="contained"
-            color="primary"
-            className="align-right"
-            component={Link}
-            to="/game"
-          >
-            Start A New Game
-            <div className="button-icon-spacing">
-              <FontAwesomeIcon icon={faPlus} size="lg" />
-            </div>
+        isDBConnected && currentRoute === '/' ? (
+          <Fragment>
+            <Button
+              variant="contained"
+              color="primary"
+              className="btnSpacing"
+              component={Link}
+              to="/teams"
+            >
+              Manage Teams
           </Button>
-        ) : null
+            <Button
+              variant="contained"
+              color="primary"
+              component={Link}
+              to="/venues"
+            >
+              Manage Venues
+          </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              className="right"
+              component={Link}
+              to="/newgame"
+            >
+              Start A New Game
+            <div className="button-icon-spacing">
+                <FontAwesomeIcon icon={faPlus} size="lg" />
+              </div>
+            </Button>
+          </Fragment>
+        ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              className="right"
+              component={Link}
+              to="/"
+            >
+              Home
+            </Button>
+          )
       }
     </header>
   );

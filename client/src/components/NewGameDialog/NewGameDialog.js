@@ -27,6 +27,7 @@ function NewGameDialog({
         maxWidth="md"
         disableBackdropClick
         fullWidth
+        fullScreen
       >
         <DialogTitle id="create-new-game">Start a new game</DialogTitle>
         <DialogContent>

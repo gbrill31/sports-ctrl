@@ -15,118 +15,91 @@ const config = {
         host: 'localhost',
         user: '',
         password: '',
-        database: 'sports-control'
+        database: 'sportscontrol'
     }
 };
 
 const knex = require('knex');
 
-function generateNewGameValues(totalRows) {
-    totalRows = totalRows || 30;
-    let values = "VALUES ";
+// function generateNewGameValues(totalRows) {
+//     totalRows = totalRows || 30;
+//     let values = "VALUES ";
 
-    for (let i = 0; i < totalRows; i++) {
-        values += i < totalRows - 1 ? "(" + (i + 1) + ",'enter team name'," + (i < (totalRows / 2) ? '\'h\'' : '\'a\'') +
-            ",0,'enter player name',0,0,0,0,0)," : "(" + (i + 1) + ",'enter team name','a',0,'enter player name',0,0,0,0,0)";
-    }
+//     for (let i = 0; i < totalRows; i++) {
+//         values += i < totalRows - 1 ? "(" + (i + 1) + ",'enter team name'," + (i < (totalRows / 2) ? '\'h\'' : '\'a\'') +
+//             ",0,'enter player name',0,0,0,0,0)," : "(" + (i + 1) + ",'enter team name','a',0,'enter player name',0,0,0,0,0)";
+//     }
 
-    return values;
-}
+//     return values;
+// }
 
-function setPlayerToUpdate(player, teamName) {
+// function setPlayerToUpdate(player, teamName) {
 
-    player.team = teamName.replace(/\'/g, '\'\'');
-    player.name = player.name.replace(/\'/g, '\'\'');
+//     player.team = teamName.replace(/\'/g, '\'\'');
+//     player.name = player.name.replace(/\'/g, '\'\'');
 
-    return player;
-}
+//     return player;
+// }
 
-function tableExists(name) {
-    return new Promise((resolve, reject) => {
-        request("SELECT * " +
-            "FROM information_schema.tables " +
-            "WHERE table_name = \'" + name + "\'")
-            .then((res) => {
-                resolve(res.rowCount > 0);
-            });
-    });
-}
+// function updateTable(table, team) {
+//     return new Promise((resolve, reject) => {
+//         let requestPromises = [];
+//         team.players.forEach((player) => {
+//             let valuesToUpdate = '', id = 0;
+//             player = setPlayerToUpdate(player, team.name);
+//             if (!player.id) {
+//                 let maxId = _.max(team.players, (player) => {
+//                     return player.id;
+//                 }).id + 1;
+//                 requestPromises.push(request("INSERT INTO game_live " +
+//                     "(id, team, team_loc, number, name, points, fouls, rebounds, assists, blocks) " +
+//                     "VALUES (" + maxId + ",\'" + player.team + "\',\'" + player.team_loc + "\'," + player.number + ",\'" + player.name + "\',0,0,0,0,0)"));
 
-function insertEmptyGameRows() {
-    return new Promise((resolve, reject) => {
-        request("INSERT INTO game_live " +
-            "(id, team, team_loc, number, name, points, fouls, rebounds, assists, blocks) " +
-            generateNewGameValues())
-            .then((res) => {
-                console.log('game table created');
-                resolve(res);
-            }, (err) => {
-                reject(err);
-                throw err;
-            });
-    });
-}
+//             } else {
+//                 Object.keys(player).forEach((key, index, array) => {
+//                     if (key !== 'id' || key !== 'team') {
+//                         valuesToUpdate += (key + "=\'" + player[key] + "\'" + (index === array.length - 1 ? '' : ', '));
+//                     }
+//                 });
 
-function updateTable(table, team) {
-    return new Promise((resolve, reject) => {
-        let requestPromises = [];
-        team.players.forEach((player) => {
-            let valuesToUpdate = '', id = 0;
-            player = setPlayerToUpdate(player, team.name);
-            if (!player.id) {
-                let maxId = _.max(team.players, (player) => {
-                    return player.id;
-                }).id + 1;
-                requestPromises.push(request("INSERT INTO game_live " +
-                    "(id, team, team_loc, number, name, points, fouls, rebounds, assists, blocks) " +
-                    "VALUES (" + maxId + ",\'" + player.team + "\',\'" + player.team_loc + "\'," + player.number + ",\'" + player.name + "\',0,0,0,0,0)"));
+//                 requestPromises.push(request("UPDATE " + table + " SET " + valuesToUpdate +
+//                     " WHERE id = " + player.id).then(() => {
 
-            } else {
-                Object.keys(player).forEach((key, index, array) => {
-                    if (key !== 'id' || key !== 'team') {
-                        valuesToUpdate += (key + "=\'" + player[key] + "\'" + (index === array.length - 1 ? '' : ', '));
-                    }
-                });
+//                     }, (err) => {
+//                         console.log(err);
+//                     }));
+//             }
 
-                requestPromises.push(request("UPDATE " + table + " SET " + valuesToUpdate +
-                    " WHERE id = " + player.id).then(() => {
+//         });
+//         Promise.all(requestPromises).then((res) => {
+//             resolve(res);
+//         }, (err) => {
+//             reject(err);
+//         })
+//     });
+// }
 
-                    }, (err) => {
-                        console.log(err);
-                    }));
-            }
+// function request(sqlRequest) {
+//     return new Promise((resolve, reject) => {
+//         let request = new Request(sqlRequest, (err, rowCount, rows) => {
+//             if (err) {
+//                 reject(err);
+//             } else {
+//                 // console.log(rowCount + ' row(s) inserted', rows);
+//                 resolve({ rowCount: rowCount, rows: rows });
+//                 requests.shift();
+//                 if (requests.length) {
+//                     psqlDB.execSql(requests[0]);
+//                 }
+//             }
+//         });
+//         requests.push(request);
+//         if (requests.length >= 0 && requests.length <= 1) {
+//             psqlDB.execSql(request);
+//         }
 
-        });
-        Promise.all(requestPromises).then((res) => {
-            resolve(res);
-        }, (err) => {
-            reject(err);
-        })
-    });
-
-}
-
-function request(sqlRequest) {
-    return new Promise((resolve, reject) => {
-        let request = new Request(sqlRequest, (err, rowCount, rows) => {
-            if (err) {
-                reject(err);
-            } else {
-                // console.log(rowCount + ' row(s) inserted', rows);
-                resolve({ rowCount: rowCount, rows: rows });
-                requests.shift();
-                if (requests.length) {
-                    psqlDB.execSql(requests[0]);
-                }
-            }
-        });
-        requests.push(request);
-        if (requests.length >= 0 && requests.length <= 1) {
-            psqlDB.execSql(request);
-        }
-
-    });
-}
+//     });
+// }
 
 function createGamesTable() {
     return new Promise((resolve, reject) => {
@@ -137,6 +110,27 @@ function createGamesTable() {
                     table.string('home');
                     table.string('away');
                     table.string('venue');
+                    table.timestamps(false, true);
+                }).then(() => {
+                    resolve();
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+function createVenuesTable() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('venues').then((exists) => {
+            if (!exists) {
+                psqlDB.schema.createTable('venues', table => {
+                    table.increments();
+                    table.string('name');
+                    table.string('country');
+                    table.string('city');
+                    table.integer('seats');
                     table.timestamps(false, true);
                 }).then(() => {
                     resolve();
@@ -164,10 +158,11 @@ function connect() {
     return new Promise((resolve, reject) => {
         psqlDB = knex(config);
 
-        checkConnection().then((message) => {
-            createGamesTable().then(() => {
-                resolve(message);
-            }, err => reject(err));
+        checkConnection().then(() => {
+            Promise.all(createGamesTable(), createVenuesTable())
+                .then(() => {
+                    resolve();
+                }, err => reject(err));
         }).catch((err) => {
             reject(err);
         })

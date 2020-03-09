@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+import { Title } from '../../styledComponents';
 import GamesList from '../../components/GamesList/GamesList';
 
 import './Home.scss';
@@ -25,13 +25,6 @@ function Home() {
     }
   }, [isDBConnected, getPlayedGames]);
 
-  const Title = styled.h3`
-  font-size: 1.5em;
-  text-align: center;
-  color: #762390;
-  border: 1px solid #762070;
-  display: inline-block;
-  `;
 
   return (
     <div>
