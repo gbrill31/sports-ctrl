@@ -4,7 +4,6 @@ import NewVenueForm from '../NewVenueForm/NewVenueForm';
 import VenuesList from '../VenuesList/VenuesList';
 
 
-
 export default function Venues() {
   return (
     <div>

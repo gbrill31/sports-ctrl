@@ -19,16 +19,6 @@ gameRouter.post('/create', function (req, res) {
         });
 });
 
-function getTeam(team) {
-    return new Promise((resolve, reject) => {
-        psqlDB.getTeam(team).then((team) => {
-            resolve(team);
-        }, (err) => {
-            reject(err);
-        });
-    });
-}
-
 gameRouter.get('/exists', function (req, res) {
     psqlDB.hasGame(true).then((isGameExist) => {
         res.json(isGameExist);
@@ -38,7 +28,7 @@ gameRouter.get('/exists', function (req, res) {
 });
 
 gameRouter.get('/team', function (req, res) {
-    getTeam(JSON.parse(req.query.team)).then((team) => {
+    psqlDB.getTeam(team).then((team) => {
         res.json(team);
     }, (err) => {
         res.status(err.code || 500);

@@ -41,7 +41,9 @@ const venuesReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         venueSavePending: false,
-        items: [...state.items, action.payload]
+        items: [...state.items.filter(item => item.id !== action.payload.id),
+        action.payload
+        ]
       }
     case VENUES.SAVE_FAILED:
       return {

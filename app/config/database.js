@@ -159,7 +159,7 @@ function connect() {
         psqlDB = knex(config);
 
         checkConnection().then(() => {
-            Promise.all(createGamesTable(), createVenuesTable())
+            Promise.all([createGamesTable(), createVenuesTable()])
                 .then(() => {
                     resolve();
                 }, err => reject(err));
@@ -199,6 +199,13 @@ function createVenue(name, country, city, seats) {
         .into('venues');
 }
 
+function updateVenue(id, name, country, city, seats) {
+    return psqlDB('venues')
+        .where('id', id)
+        .returning(['id', 'name', 'country', 'city', 'seats'])
+        .update({ name, country, city, seats, 'updated_at': new Date() });
+}
+
 function deleteVenue(id) {
     return psqlDB('venues')
         .where('id', id)
@@ -227,5 +234,6 @@ module.exports = {
     getTeam,
     getAllVenues,
     createVenue,
+    updateVenue,
     deleteVenue
 };

@@ -4,7 +4,7 @@ import { VENUES } from '../constants';
 import {
   setVenues, venuesError, setNewVenue, newVenueError, clearDeletedVenue, deleteVenueError
 } from '../actions';
-import { getAllVenues, createNewVenue, deleteVenue } from '../api';
+import { getAllVenues, saveNewVenue, deleteVenue } from '../api';
 
 function* handleVenuesRequest() {
   try {
@@ -17,7 +17,7 @@ function* handleVenuesRequest() {
 
 function* handleNewVenue({ venue }) {
   try {
-    const newVenue = yield call(createNewVenue, venue);
+    const newVenue = yield call(saveNewVenue, venue);
     yield put(setNewVenue(newVenue));
   } catch (error) {
     yield put(newVenueError(error));

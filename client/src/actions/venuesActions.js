@@ -16,7 +16,7 @@ export const venuesError = error => ({
   payload: error
 })
 
-export const createNewVenue = venue => ({
+export const saveNewVenue = venue => ({
   type: VENUES.SAVE_PENDING,
   venue
 });

@@ -6,7 +6,7 @@ import useFormInput from '../../hooks/useFormInput';
 import styled from 'styled-components';
 
 import {
-  createNewVenue,
+  saveNewVenue,
 } from '../../actions';
 
 const StyledTextField = styled(TextField)`
@@ -43,7 +43,7 @@ export default function NewVenueForm() {
     resetForm();
   }
 
-  const createVenue = (venue) => dispatch(createNewVenue(venue));
+  const createVenue = (venue) => dispatch(saveNewVenue(venue));
 
   const validateAllInputs = () => {
     venueName.validateInput();
@@ -58,7 +58,7 @@ export default function NewVenueForm() {
       && venueCity.ref.current.checkValidity();
   }
 
-  const saveNewVenue = () => {
+  const createNewVenue = () => {
     validateAllInputs();
     if (isSaveValid()) {
       createVenue({
@@ -72,8 +72,6 @@ export default function NewVenueForm() {
   };
 
   const onVenueSeatsChange = (e) => setVenueSeats(e.target.value);
-
-
 
 
   return (
@@ -154,7 +152,7 @@ export default function NewVenueForm() {
                   color="primary"
                   variant="contained"
                   disabled={isSaving}
-                  onClick={saveNewVenue}
+                  onClick={createNewVenue}
                 >
                   Save
                   {isSaving && <CircularProgress size={24} />}

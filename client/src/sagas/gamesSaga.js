@@ -1,4 +1,4 @@
-import { takeEvery, call, put, fork, take } from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 
 import { GAMES } from '../constants';
 import { setGames, gamesError, setNewGame, newGameError } from '../actions';
@@ -24,6 +24,5 @@ function* handleNewGame({ teams }) {
 
 export default function* watchDbConnection() {
   yield takeEvery(GAMES.GET_ALL_PENDING, handleGamesRequest);
-  const teams = yield take(GAMES.CREATE_PENDING);
-  yield fork(handleNewGame, teams);
+  yield takeEvery(GAMES.CREATE_PENDING, handleNewGame);
 }

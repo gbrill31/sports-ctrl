@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
 import {
-  CircularProgress, Button, TextField
+  TextField
 } from '@material-ui/core';
-// import NewGameDialog from '../../components/NewGameDialog/NewGameDialog';
+import { Autocomplete } from '@material-ui/lab'
+
+import { FlexContainer, Title } from '../../styledComponents';
 
 import {
-  createNewGame
+  createNewGame,
+  getAllVenues
 } from '../../actions';
+
+const StyledTextField = styled(TextField)`
+  margin-right: 20px;
+`;
 
 
 function NewGameCreation() {
@@ -15,43 +23,53 @@ function NewGameCreation() {
   const game = useSelector(state => state.games.game);
   const isSaving = useSelector(state => state.games.gameCreatePending);
   const error = useSelector(state => state.games.gameError);
+  const venues = useSelector(state => state.venues.items);
 
   const [homeName, setHomeName] = useState('');
   const [awayName, setAwayName] = useState('');
   // const [isNewGame, setIsNewGame] = useState(false);
 
   const createGame = useCallback((teams) => dispatch(createNewGame(teams)), [dispatch]);
+  const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
 
   const onHomeInputChange = (e) => setHomeName(e.target.value);
   const onAwayInputChange = (e) => setAwayName(e.target.value);
 
 
   useEffect(() => {
-    // openNewGame();
+    getVenues();
   }, []);
 
   return (
     <div>
-      <h4>Select Teams</h4>
-      <TextField
-        autoFocus
-        margin="dense"
-        id="home"
-        label="Home Team"
-        type="text"
-        placeholder="Home team"
-        value={homeName}
-        onChange={onHomeInputChange}
-      />
-      <TextField
-        margin="dense"
-        id="away"
-        label="Away Team"
-        type="text"
-        placeholder="Away team"
-        value={awayName}
-        onChange={onAwayInputChange}
-      />
+      <Title>Select Teams</Title>
+      <FlexContainer>
+        <StyledTextField
+          autoFocus
+          margin="dense"
+          id="home"
+          label="Home Team"
+          type="text"
+          placeholder="Home team"
+          value={homeName}
+          onChange={onHomeInputChange}
+        />
+        <StyledTextField
+          margin="dense"
+          id="away"
+          label="Away Team"
+          type="text"
+          placeholder="Away team"
+          value={awayName}
+          onChange={onAwayInputChange}
+        />
+        <Autocomplete
+          id="venues"
+          options={venues}
+          getOptionLabel={option => option.name}
+          renderInput={params => <StyledTextField {...params} label="Venue" variant="outlined" />}
+        />
+      </FlexContainer>
       {/* {
         game && (
           <div>
