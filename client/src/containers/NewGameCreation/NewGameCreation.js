@@ -27,7 +27,6 @@ function NewGameCreation() {
 
   const [homeName, setHomeName] = useState('');
   const [awayName, setAwayName] = useState('');
-  // const [isNewGame, setIsNewGame] = useState(false);
 
   const createGame = useCallback((teams) => dispatch(createNewGame(teams)), [dispatch]);
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
@@ -70,19 +69,6 @@ function NewGameCreation() {
           renderInput={params => <StyledTextField {...params} label="Venue" variant="outlined" />}
         />
       </FlexContainer>
-      {/* {
-        game && (
-          <div>
-            {`${game.home} VS ${game.away}`}
-          </div>
-        )
-      } */}
-      {/* <NewGameDialog
-        isOpen={isNewGame}
-        handleClose={handleClose}
-        handleConfirm={createGame}
-        isSaving={isSaving}
-      /> */}
     </div>
   );
 };
