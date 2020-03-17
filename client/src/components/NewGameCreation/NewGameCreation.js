@@ -6,16 +6,14 @@ import {
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab'
 
-import { FlexContainer, Title } from '../../styledComponents';
+import { FlexContainer, MainTitle, SpaceSides } from '../../styledElements';
 
 import {
   createNewGame,
   getAllVenues
 } from '../../actions';
 
-const StyledTextField = styled(TextField)`
-  margin-right: 20px;
-`;
+const StyledTextField = SpaceSides(TextField);
 
 
 function NewGameCreation() {
@@ -41,7 +39,7 @@ function NewGameCreation() {
 
   return (
     <div>
-      <Title>Select Teams</Title>
+      <MainTitle>Select Teams</MainTitle>
       <FlexContainer>
         <StyledTextField
           autoFocus

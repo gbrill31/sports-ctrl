@@ -142,6 +142,47 @@ function createVenuesTable() {
     });
 }
 
+function createTeamsTable() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('teams').then((exists) => {
+            if (!exists) {
+                psqlDB.schema.createTable('teams', table => {
+                    table.increments();
+                    table.string('name');
+                    table.string('country');
+                    table.string('city');
+                    table.timestamps(false, true);
+                }).then(() => {
+                    resolve();
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
+function createPlayersTable() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('players').then((exists) => {
+            if (!exists) {
+                psqlDB.schema.createTable('players', table => {
+                    table.increments();
+                    table.string('name');
+                    table.integer('number');
+                    table.string('team');
+                    table.jsonb('stats');
+                    table.timestamps(false, true);
+                }).then(() => {
+                    resolve();
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        });
+    });
+}
+
 //Exported functions
 
 function checkConnection() {
@@ -159,7 +200,12 @@ function connect() {
         psqlDB = knex(config);
 
         checkConnection().then(() => {
-            Promise.all([createGamesTable(), createVenuesTable()])
+            Promise.all([
+                createGamesTable(),
+                createVenuesTable(),
+                createTeamsTable(),
+                createPlayersTable()
+            ])
                 .then(() => {
                     resolve();
                 }, err => reject(err));

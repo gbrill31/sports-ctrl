@@ -1,17 +1,15 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlexContainer } from '../../styledComponents';
+import { FlexContainer, SpaceSides } from '../../styledElements';
 import { Button, TextField, CircularProgress } from '@material-ui/core';
 import useFormInput from '../../hooks/useFormInput';
-import styled from 'styled-components';
 
 import {
   saveNewVenue,
 } from '../../actions';
 
-const StyledTextField = styled(TextField)`
-  margin-right: 20px;
-`;
+const SpacedTextField = SpaceSides(TextField);
+const SpacedButton = SpaceSides(Button);
 
 export default function NewVenueForm() {
   const dispatch = useDispatch();
@@ -89,7 +87,7 @@ export default function NewVenueForm() {
         ) : (
             <FlexContainer center>
               <div>
-                <StyledTextField
+                <SpacedTextField
                   autoFocus
                   required
                   inputProps={{
@@ -105,7 +103,7 @@ export default function NewVenueForm() {
                   value={venueName.value}
                   onChange={venueName.onChange}
                 />
-                <StyledTextField
+                <SpacedTextField
                   margin="dense"
                   required
                   inputProps={{
@@ -120,7 +118,7 @@ export default function NewVenueForm() {
                   value={venueCountry.value}
                   onChange={venueCountry.onChange}
                 />
-                <StyledTextField
+                <SpacedTextField
                   margin="dense"
                   required
                   inputProps={{
@@ -135,7 +133,7 @@ export default function NewVenueForm() {
                   value={venueCity.value}
                   onChange={venueCity.onChange}
                 />
-                <StyledTextField
+                <SpacedTextField
                   margin="dense"
                   id="seats"
                   label="Seats"
@@ -158,13 +156,13 @@ export default function NewVenueForm() {
                   Save
                   {isSaving && <CircularProgress size={24} />}
                 </Button>
-                <Button
+                <SpacedButton
                   color="secondary"
                   variant="contained"
                   onClick={cancelNewVenue}
                 >
                   Cancel
-              </Button>
+              </SpacedButton>
               </FlexContainer>
 
             </FlexContainer>

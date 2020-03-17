@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Title } from '../../styledComponents';
+import { MainTitle } from '../../styledElements';
 import GamesList from '../../components/GamesList/GamesList';
 
 import './Home.scss';
@@ -28,7 +28,7 @@ function Home() {
 
   return (
     <div>
-      <Title>Games</Title>
+      <MainTitle>Games Played</MainTitle>
       <GamesList games={games} isLoading={gamesLoading} />
     </div>
   );

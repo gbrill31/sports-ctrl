@@ -1,16 +1,17 @@
 import React, { useEffect, useCallback } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import Home from '../Home/Home';
-import Venues from '../../components/Venues/Venues';
-import NewGameCreation from '../NewGameCreation/NewGameCreation';
-import HeaderNav from '../../components/HeaderNav/HeaderNav';
+import Home from '../views/Home/Home';
+import Venues from '../views/Venues/Venues';
+import Teams from '../views/Teams/Teams';
+import NewGameCreation from '../components/NewGameCreation/NewGameCreation';
+import HeaderNav from '../components/HeaderNav/HeaderNav';
 import './App.scss';
 
 import {
   connectToDB,
   setRouteName
-} from '../../actions';
+} from '../actions';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route exact path="/" render={() => <Home />} />
           <Route exact path="/newgame" render={() => <NewGameCreation />} />
           <Route exact path="/venues" render={() => <Venues />} />
+          <Route exact path="/teams" render={() => <Teams />} />
         </Switch>
       </main>
     </div>
