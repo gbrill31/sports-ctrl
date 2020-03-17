@@ -7,8 +7,11 @@ import VenuesList from '../VenuesList/VenuesList';
 export default function Venues() {
   return (
     <div>
+
+      <Title>
+        Venues
+      </Title>
       <NewVenueForm />
-      <Title>Venues</Title>
       <FlexContainer>
         <VenuesList />
       </FlexContainer>

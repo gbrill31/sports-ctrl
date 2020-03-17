@@ -36,6 +36,7 @@ export default function NewVenueForm() {
     venueCountry.resetIsValid();
     venueCity.resetIsValid();
     setVenueSeats(0);
+    setIsNewVenue(false);
   }
 
   const cancelNewVenue = () => {
@@ -75,7 +76,7 @@ export default function NewVenueForm() {
 
 
   return (
-    <FlexContainer column>
+    <FlexContainer>
       {
         !isNewVenue ? (
           <Button
@@ -84,9 +85,9 @@ export default function NewVenueForm() {
             onClick={setNewVenue}
           >
             New Venue
-            </Button>
+          </Button>
         ) : (
-            <Fragment>
+            <FlexContainer center>
               <div>
                 <StyledTextField
                   autoFocus
@@ -100,7 +101,7 @@ export default function NewVenueForm() {
                   id="name"
                   label="Name"
                   type="text"
-                  placeholder="Venue Name"
+                  placeholder="Enter Venue Name"
                   value={venueName.value}
                   onChange={venueName.onChange}
                 />
@@ -115,7 +116,7 @@ export default function NewVenueForm() {
                   id="country"
                   label="Country"
                   type="text"
-                  placeholder="Venue Country"
+                  placeholder="Enter Venue Country"
                   value={venueCountry.value}
                   onChange={venueCountry.onChange}
                 />
@@ -130,7 +131,7 @@ export default function NewVenueForm() {
                   id="city"
                   label="City"
                   type="text"
-                  placeholder="Venue City"
+                  placeholder="Enter Venue City"
                   value={venueCity.value}
                   onChange={venueCity.onChange}
                 />
@@ -147,7 +148,7 @@ export default function NewVenueForm() {
                   onChange={onVenueSeatsChange}
                 />
               </div>
-              <FlexContainer>
+              <FlexContainer center>
                 <Button
                   color="primary"
                   variant="contained"
@@ -166,7 +167,7 @@ export default function NewVenueForm() {
               </Button>
               </FlexContainer>
 
-            </Fragment>
+            </FlexContainer>
           )
       }
 
