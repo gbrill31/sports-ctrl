@@ -16,7 +16,9 @@ import {
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
-    margin: 15
+    minHeight: 275,
+    margin: 15,
+    position: 'relative'
   },
   bullet: {
     display: 'inline-block',
@@ -33,6 +35,12 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
     textTransform: 'capitalize'
+  },
+  actions: {
+    position: 'absolute',
+    width: '95%',
+    bottom: '5px',
+    left: 0
   },
   actionRight: {
     marginLeft: 'auto'
@@ -170,14 +178,14 @@ export default function VenueListItem({
               onChange={onVenueSeatsChange}
             />
           ) : (
-              <Typography variant="body2" component="p">
+              <Typography variant="body2" component="p" style={{ maxWidth: 'fit-content' }}>
                 <span className={classes.venue}>{venue.name}</span>{` arena can host up to ${venue.seats} fans`}
               </Typography>
             )
         }
 
       </CardContent>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing className={classes.actions}>
         {
           !isEditVenue && <IconButton
             aria-label="delete venue"

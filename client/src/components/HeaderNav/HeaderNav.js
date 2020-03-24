@@ -1,12 +1,12 @@
 import React, { useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import { CircularProgress, Button } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 import { green } from '@material-ui/core/colors';
-import { faCheck, faDatabase, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faDatabase, faPlus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { Button, ButtonIcon } from '../../styledElements';
 
 import './HeaderNav.scss';
 
@@ -20,19 +20,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     position: 'relative',
   },
-  buttonSuccess: {
-    backgroundColor: green[500],
-    '&:hover': {
-      backgroundColor: green[700],
-    },
-  },
-  fabProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: -6,
-    left: -6,
-    zIndex: 1,
-  },
   buttonProgress: {
     color: green[500],
     position: 'absolute',
@@ -40,11 +27,12 @@ const useStyles = makeStyles(theme => ({
     left: '50%',
     marginTop: -12,
     marginLeft: -12,
-  },
+  }
 }));
 
 function HeaderNav() {
   const classes = useStyles();
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const isConnecting = useSelector(state => state.db.isPending);
@@ -53,73 +41,65 @@ function HeaderNav() {
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
 
-  const buttonClassname = clsx({
-    [classes.buttonSuccess]: isDBConnected,
-  });
+  const goToRoute = (route) => () => history.push(route);
 
   return (
     <header className="root">
       <div className={classes.wrapper}>
         <Button
-          variant="contained"
-          color="primary"
-          className={buttonClassname}
+          color={isDBConnected ? 'success' : 'primary'}
           disabled={isConnecting}
           onClick={connectDB}
         >
           {isDBConnected ? 'DB Connected' : 'Connect to Database'}
-          {<div className="button-icon-spacing">{
-            isDBConnected ? <FontAwesomeIcon icon={faCheck} size="lg" /> : <FontAwesomeIcon icon={faDatabase} size="lg" />
-          }
-          </div>
+          {
+            <ButtonIcon spaceLeft>
+              {
+                isDBConnected ? <FontAwesomeIcon icon={faCheck} size="sm" /> : <FontAwesomeIcon icon={faDatabase} size="sm" />
+              }
+            </ButtonIcon>
           }
         </Button>
         {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />}
       </div>
       {
-        isDBConnected && currentRoute === '/' ? (
+        isDBConnected && (currentRoute === '/' ? (
           <Fragment>
             <Button
-              variant="contained"
               color="primary"
-              className="btnSpacing"
-              component={Link}
-              to="/teams"
+              onClick={goToRoute('/teams')}
             >
               Manage Teams
           </Button>
             <Button
-              variant="contained"
               color="primary"
-              component={Link}
-              to="/venues"
+              onClick={goToRoute('/venues')}
             >
               Manage Venues
           </Button>
             <Button
-              variant="contained"
+              justifyRight
               color="primary"
-              className="right"
-              component={Link}
-              to="/newgame"
+              onClick={goToRoute('/newgame')}
             >
               Start A New Game
-            <div className="button-icon-spacing">
-                <FontAwesomeIcon icon={faPlus} size="lg" />
-              </div>
+              <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faPlus} size="sm" />
+              </ButtonIcon>
             </Button>
           </Fragment>
         ) : (
             <Button
-              variant="contained"
               color="secondary"
-              className="right"
-              component={Link}
-              to="/"
+              onClick={goToRoute('/')}
             >
+              <ButtonIcon spaceRight>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+              </ButtonIcon>
               Home
             </Button>
           )
+        )
       }
     </header>
   );

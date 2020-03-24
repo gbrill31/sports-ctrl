@@ -6,6 +6,10 @@ function useFormInput(initialValue) {
   const [isValid, setIsValid] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
 
+  function select(e) {
+    e ? e.target.select() : ref.current.select();
+  }
+
   function validateInput(e) {
     setErrorMessage(e ? e.target.validationMessage : ref.current.validationMessage);
     setIsValid(e ? e.target.checkValidity() : ref.current.checkValidity());
@@ -26,6 +30,7 @@ function useFormInput(initialValue) {
     setValue,
     isValid,
     errorMessage,
+    select,
     onChange,
     validateInput,
     resetIsValid

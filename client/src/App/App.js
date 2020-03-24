@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { ThemeProvider } from 'styled-components';
 import Home from '../views/Home/Home';
 import Venues from '../views/Venues/Venues';
 import Teams from '../views/Teams/Teams';
@@ -12,6 +13,30 @@ import {
   connectToDB,
   setRouteName
 } from '../actions';
+
+const theme = {
+  primary: {
+    color: '#272932',
+    hover: '#575C70'
+  },
+  secondary: {
+    color: '#173753',
+    hover: '#1F4A70'
+  },
+  error: {
+    color: '#DF2935',
+    hover: '#F92533'
+  },
+  success: {
+    color: '#0B9647',
+    hover: '#0DC45C'
+  },
+  generic: {
+    color: '#ED9B40',
+    hover: '#FFB056'
+  },
+  font: 'Roboto, sans-serif'
+}
 
 
 function App() {
@@ -33,17 +58,19 @@ function App() {
   }, [connectDB, history, setCurrentRoute]);
 
   return (
-    <div className="App">
-      <HeaderNav />
-      <main>
-        <Switch>
-          <Route exact path="/" render={() => <Home />} />
-          <Route exact path="/newgame" render={() => <NewGameCreation />} />
-          <Route exact path="/venues" render={() => <Venues />} />
-          <Route exact path="/teams" render={() => <Teams />} />
-        </Switch>
-      </main>
-    </div>
+    <ThemeProvider theme={theme}>
+      <div className="App">
+        <HeaderNav />
+        <main>
+          <Switch>
+            <Route exact path="/" render={() => <Home />} />
+            <Route exact path="/venues" render={() => <Venues />} />
+            <Route exact path="/teams" render={() => <Teams />} />
+            <Route exact path="/newgame" render={() => <NewGameCreation />} />
+          </Switch>
+        </main>
+      </div>
+    </ThemeProvider>
   );
 }
 

@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlexContainer, SpaceSides } from '../../styledElements';
-import { Button, TextField, CircularProgress } from '@material-ui/core';
+import {
+  TextField, DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
+  CircularProgress
+} from '@material-ui/core';
+import { Button, Input } from '../../styledElements';
 import useFormInput from '../../hooks/useFormInput';
 
 import {
@@ -17,7 +21,7 @@ export default function NewVenueForm() {
   const venueName = useFormInput('');
   const venueCountry = useFormInput('');
   const venueCity = useFormInput('');
-  const [venueSeats, setVenueSeats] = useState(0);
+  const venueSeats = useFormInput(0);
 
   const isSaving = useSelector(state => state.venues.venueSavePending);
 
@@ -30,10 +34,10 @@ export default function NewVenueForm() {
     venueName.setValue('');
     venueCountry.setValue('');
     venueCity.setValue('');
+    venueSeats.setValue(0);
     venueName.resetIsValid();
     venueCountry.resetIsValid();
     venueCity.resetIsValid();
-    setVenueSeats(0);
     setIsNewVenue(false);
   }
 
@@ -64,13 +68,12 @@ export default function NewVenueForm() {
         name: venueName.value,
         country: venueCountry.value,
         city: venueCity.value,
-        seats: Number(venueSeats)
+        seats: Number(venueSeats.value)
       });
       resetForm();
     }
   };
 
-  const onVenueSeatsChange = (e) => setVenueSeats(e.target.value);
 
 
   return (
@@ -78,94 +81,84 @@ export default function NewVenueForm() {
       {
         !isNewVenue ? (
           <Button
-            color="primary"
-            variant="contained"
+            color="generic"
             onClick={setNewVenue}
           >
             New Venue
           </Button>
         ) : (
-            <FlexContainer center>
-              <div>
-                <SpacedTextField
-                  autoFocus
-                  required
-                  inputProps={{
-                    ref: venueName.ref
-                  }}
-                  error={!venueName.isValid}
-                  helperText={venueName.errorMessage}
-                  margin="dense"
-                  id="name"
-                  label="Name"
-                  type="text"
-                  placeholder="Enter Venue Name"
-                  value={venueName.value}
-                  onChange={venueName.onChange}
-                />
-                <SpacedTextField
-                  margin="dense"
-                  required
-                  inputProps={{
-                    ref: venueCountry.ref
-                  }}
-                  error={!venueCountry.isValid}
-                  helperText={venueCountry.errorMessage}
-                  id="country"
-                  label="Country"
-                  type="text"
-                  placeholder="Enter Venue Country"
-                  value={venueCountry.value}
-                  onChange={venueCountry.onChange}
-                />
-                <SpacedTextField
-                  margin="dense"
-                  required
-                  inputProps={{
-                    ref: venueCity.ref
-                  }}
-                  error={!venueCity.isValid}
-                  helperText={venueCity.errorMessage}
-                  id="city"
-                  label="City"
-                  type="text"
-                  placeholder="Enter Venue City"
-                  value={venueCity.value}
-                  onChange={venueCity.onChange}
-                />
-                <SpacedTextField
-                  margin="dense"
-                  id="seats"
-                  label="Seats"
-                  type="number"
-                  inputProps={{
-                    min: 0
-                  }}
-                  placeholder="Venue Seats"
-                  value={venueSeats}
-                  onChange={onVenueSeatsChange}
-                />
-              </div>
+            <Fragment>
+              <h4>New Venue</h4>
               <FlexContainer center>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  disabled={isSaving}
-                  onClick={createNewVenue}
-                >
-                  Save
+                <div>
+                  <Input
+                    spaceRight
+                    required
+                    autoFocus
+                    onBlur={venueName.onChange}
+                    error={!venueName.isValid}
+                    ref={venueName.ref}
+                    id="name"
+                    type="text"
+                    placeholder={`Enter Venue Name${!venueName.isValid ? ' *' : ''}`}
+                    value={venueName.value}
+                    onChange={venueName.onChange}
+                  />
+                  <Input
+                    spaceRight
+                    required
+                    onBlur={venueCountry.onChange}
+                    error={!venueCountry.isValid}
+                    ref={venueCountry.ref}
+                    id="country"
+                    type="text"
+                    placeholder={`Enter Venue Country${!venueCountry.isValid ? ' *' : ''}`}
+                    value={venueCountry.value}
+                    onChange={venueCountry.onChange}
+                  />
+                  <Input
+                    spaceRight
+                    required
+                    onBlur={venueCity.onChange}
+                    error={!venueCity.isValid}
+                    ref={venueCity.ref}
+                    id="city"
+                    type="text"
+                    placeholder={`Enter Venue City${!venueCity.isValid ? ' *' : ''}`}
+                    value={venueCity.value}
+                    onChange={venueCity.onChange}
+                  />
+                  <label htmlFor="seats" style={{ color: 'white' }}>Venue Seats</label>
+                  <Input
+                    id="seats"
+                    type="number"
+                    min="0"
+                    ref={venueSeats.ref}
+                    placeholder="Venue Seats"
+                    value={venueSeats.value}
+                    onChange={venueSeats.onChange}
+                    onFocus={venueSeats.select}
+                  />
+                </div>
+                <FlexContainer center>
+                  <Button
+                    color="success"
+                    disabled={isSaving}
+                    onClick={createNewVenue}
+                  >
+                    Save
                   {isSaving && <CircularProgress size={24} />}
-                </Button>
-                <SpacedButton
-                  color="secondary"
-                  variant="contained"
-                  onClick={cancelNewVenue}
-                >
-                  Cancel
+                  </Button>
+                  <SpacedButton
+                    color="error"
+                    onClick={cancelNewVenue}
+                  >
+                    Cancel
               </SpacedButton>
-              </FlexContainer>
+                </FlexContainer>
 
-            </FlexContainer>
+              </FlexContainer>
+            </Fragment>
           )
       }
 
