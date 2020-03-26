@@ -61,7 +61,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <div className="App">
         <HeaderNav />
-        <main>
+        <main className="mainContent">
           <Switch>
             <Route exact path="/" render={() => <Home />} />
             <Route exact path="/venues" render={() => <Venues />} />

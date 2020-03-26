@@ -5,18 +5,18 @@ import {
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
-import useFormInput from '../../hooks/useFormInput';
+import useFormInput from '../../../hooks/useFormInput';
 import { faTrashAlt, faEdit, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
   saveNewVenue,
-} from '../../actions';
+} from '../../../actions';
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
-    minHeight: 275,
+    minHeight: 300,
     margin: 15,
     position: 'relative'
   },

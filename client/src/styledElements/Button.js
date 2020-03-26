@@ -10,7 +10,7 @@ export default styled.button`
   border-radius: 7px;
   padding: 10px;
   margin: 0px 5px;
-  transition: background 0.3s ease;
+  transition: background 0.2s ease;
   &:hover{
     background: ${props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};
     cursor: pointer;

@@ -26,6 +26,18 @@ import {
 } from './venuesActions';
 
 import {
+  getAllTeams,
+  setTeams,
+  teamsError,
+  saveNewTeam,
+  setNewTeam,
+  newTeamError,
+  deleteTeam,
+  clearDeletedTeam,
+  deleteTeamError
+} from './teamsActions';
+
+import {
   setRouteName
 } from './routeActions';
 
@@ -48,5 +60,14 @@ export {
   newVenueError,
   deleteVenue,
   clearDeletedVenue,
-  deleteVenueError
+  deleteVenueError,
+  getAllTeams,
+  setTeams,
+  teamsError,
+  saveNewTeam,
+  setNewTeam,
+  newTeamError,
+  deleteTeam,
+  clearDeletedTeam,
+  deleteTeamError
 }

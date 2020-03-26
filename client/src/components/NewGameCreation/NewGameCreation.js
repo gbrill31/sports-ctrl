@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
+// import styled from 'styled-components';
 import {
   TextField
 } from '@material-ui/core';
@@ -18,9 +18,9 @@ const StyledTextField = SpaceSides(TextField);
 
 function NewGameCreation() {
   const dispatch = useDispatch();
-  const game = useSelector(state => state.games.game);
-  const isSaving = useSelector(state => state.games.gameCreatePending);
-  const error = useSelector(state => state.games.gameError);
+  // const game = useSelector(state => state.games.game);
+  // const isSaving = useSelector(state => state.games.gameCreatePending);
+  // const error = useSelector(state => state.games.gameError);
   const venues = useSelector(state => state.venues.items);
 
   const [homeName, setHomeName] = useState('');

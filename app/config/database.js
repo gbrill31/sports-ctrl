@@ -1,8 +1,3 @@
-// const Connection = require('tedious').Connection;
-// const Request = require('tedious').Request;
-// const TYPES = require('tedious').TYPES;
-// const _ = require('underscore');
-
 const connectionConfig = {
     attempts: 3
 };
@@ -21,85 +16,6 @@ const config = {
 
 const knex = require('knex');
 
-// function generateNewGameValues(totalRows) {
-//     totalRows = totalRows || 30;
-//     let values = "VALUES ";
-
-//     for (let i = 0; i < totalRows; i++) {
-//         values += i < totalRows - 1 ? "(" + (i + 1) + ",'enter team name'," + (i < (totalRows / 2) ? '\'h\'' : '\'a\'') +
-//             ",0,'enter player name',0,0,0,0,0)," : "(" + (i + 1) + ",'enter team name','a',0,'enter player name',0,0,0,0,0)";
-//     }
-
-//     return values;
-// }
-
-// function setPlayerToUpdate(player, teamName) {
-
-//     player.team = teamName.replace(/\'/g, '\'\'');
-//     player.name = player.name.replace(/\'/g, '\'\'');
-
-//     return player;
-// }
-
-// function updateTable(table, team) {
-//     return new Promise((resolve, reject) => {
-//         let requestPromises = [];
-//         team.players.forEach((player) => {
-//             let valuesToUpdate = '', id = 0;
-//             player = setPlayerToUpdate(player, team.name);
-//             if (!player.id) {
-//                 let maxId = _.max(team.players, (player) => {
-//                     return player.id;
-//                 }).id + 1;
-//                 requestPromises.push(request("INSERT INTO game_live " +
-//                     "(id, team, team_loc, number, name, points, fouls, rebounds, assists, blocks) " +
-//                     "VALUES (" + maxId + ",\'" + player.team + "\',\'" + player.team_loc + "\'," + player.number + ",\'" + player.name + "\',0,0,0,0,0)"));
-
-//             } else {
-//                 Object.keys(player).forEach((key, index, array) => {
-//                     if (key !== 'id' || key !== 'team') {
-//                         valuesToUpdate += (key + "=\'" + player[key] + "\'" + (index === array.length - 1 ? '' : ', '));
-//                     }
-//                 });
-
-//                 requestPromises.push(request("UPDATE " + table + " SET " + valuesToUpdate +
-//                     " WHERE id = " + player.id).then(() => {
-
-//                     }, (err) => {
-//                         console.log(err);
-//                     }));
-//             }
-
-//         });
-//         Promise.all(requestPromises).then((res) => {
-//             resolve(res);
-//         }, (err) => {
-//             reject(err);
-//         })
-//     });
-// }
-
-// function request(sqlRequest) {
-//     return new Promise((resolve, reject) => {
-//         let request = new Request(sqlRequest, (err, rowCount, rows) => {
-//             if (err) {
-//                 reject(err);
-//             } else {
-//                 // console.log(rowCount + ' row(s) inserted', rows);
-//                 resolve({ rowCount: rowCount, rows: rows });
-//                 requests.shift();
-//                 if (requests.length) {
-//                     psqlDB.execSql(requests[0]);
-//                 }
-//             }
-//         });
-//         requests.push(request);
-//         if (requests.length >= 0 && requests.length <= 1) {
-//             psqlDB.execSql(request);
-//         }
-
-//     });
-// }
 
 function createGamesTable() {
     return new Promise((resolve, reject) => {
@@ -110,6 +26,7 @@ function createGamesTable() {
                     table.string('home');
                     table.string('away');
                     table.string('venue');
+                    table.boolean('active');
                     table.timestamps(false, true);
                 }).then(() => {
                     resolve();
@@ -272,6 +189,40 @@ function getAllVenues() {
     });
 }
 
+function getAllTeams() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('teams').then((exists) => {
+            if (exists) {
+                psqlDB.select().table('teams').then((teams) => {
+                    resolve(teams)
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        }, err => reject(err));
+    });
+}
+
+function createTeam(name, country, city) {
+    return psqlDB
+        .insert({ name, country, city }, ['id', 'name', 'country', 'city'])
+        .into('teams');
+}
+
+function updateTeam(id, name, country, city) {
+    return psqlDB('teams')
+        .where('id', id)
+        .returning(['id', 'name', 'country', 'city'])
+        .update({ name, country, city, 'updated_at': new Date() });
+}
+
+function deleteTeam(id) {
+    return psqlDB('teams')
+        .where('id', id)
+        .del();
+}
+
+
 module.exports = {
     connect,
     checkConnection,
@@ -281,5 +232,9 @@ module.exports = {
     getAllVenues,
     createVenue,
     updateVenue,
-    deleteVenue
+    deleteVenue,
+    getAllTeams,
+    createTeam,
+    updateTeam,
+    deleteTeam
 };

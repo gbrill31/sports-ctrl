@@ -1,21 +1,19 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlexContainer, SpaceSides } from '../../styledElements';
+import { FlexContainer } from '../../../styledElements';
 import {
-  TextField, DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
+  DialogActions, DialogTitle, DialogContent, Dialog,
   CircularProgress
 } from '@material-ui/core';
-import { Button, Input } from '../../styledElements';
-import useFormInput from '../../hooks/useFormInput';
+import { Button, Input } from '../../../styledElements';
+import useFormInput from '../../../hooks/useFormInput';
 
 import {
   saveNewVenue,
-} from '../../actions';
+} from '../../../actions';
 
-const SpacedTextField = SpaceSides(TextField);
-const SpacedButton = SpaceSides(Button);
 
-export default function NewVenueForm() {
+export default function NewVenueFormDialog({ isNewVenue, setIsNewVenue }) {
   const dispatch = useDispatch();
 
   const venueName = useFormInput('');
@@ -25,10 +23,6 @@ export default function NewVenueForm() {
 
   const isSaving = useSelector(state => state.venues.venueSavePending);
 
-  const [isNewVenue, setIsNewVenue] = useState(false);
-
-
-  const setNewVenue = () => setIsNewVenue(true);
 
   const resetForm = () => {
     venueName.setValue('');
@@ -77,22 +71,23 @@ export default function NewVenueForm() {
 
 
   return (
-    <FlexContainer>
+    <Fragment>
+
       {
-        !isNewVenue ? (
-          <Button
-            color="generic"
-            onClick={setNewVenue}
+        isNewVenue && (
+          <Dialog
+            open={isNewVenue}
+            aria-labelledby="new venue"
+            onEscapeKeyDown={cancelNewVenue}
+            fullWidth
+            maxWidth="sm"
           >
-            New Venue
-          </Button>
-        ) : (
-            <Fragment>
-              <h4>New Venue</h4>
-              <FlexContainer center>
-                <div>
+            <DialogTitle>Create a New Venue</DialogTitle>
+            <DialogContent>
+              <FlexContainer column justify="center" alig="center">
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>Name</label>
                   <Input
-                    spaceRight
                     required
                     autoFocus
                     onBlur={venueName.onChange}
@@ -104,8 +99,10 @@ export default function NewVenueForm() {
                     value={venueName.value}
                     onChange={venueName.onChange}
                   />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>Country</label>
                   <Input
-                    spaceRight
                     required
                     onBlur={venueCountry.onChange}
                     error={!venueCountry.isValid}
@@ -116,8 +113,10 @@ export default function NewVenueForm() {
                     value={venueCountry.value}
                     onChange={venueCountry.onChange}
                   />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>City</label>
                   <Input
-                    spaceRight
                     required
                     onBlur={venueCity.onChange}
                     error={!venueCity.isValid}
@@ -128,7 +127,9 @@ export default function NewVenueForm() {
                     value={venueCity.value}
                     onChange={venueCity.onChange}
                   />
-                  <label htmlFor="seats" style={{ color: 'white' }}>Venue Seats</label>
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>Seats</label>
                   <Input
                     id="seats"
                     type="number"
@@ -139,29 +140,21 @@ export default function NewVenueForm() {
                     onChange={venueSeats.onChange}
                     onFocus={venueSeats.select}
                   />
-                </div>
-                <FlexContainer center>
-                  <Button
-                    color="success"
-                    disabled={isSaving}
-                    onClick={createNewVenue}
-                  >
-                    Save
-                  {isSaving && <CircularProgress size={24} />}
-                  </Button>
-                  <SpacedButton
-                    color="error"
-                    onClick={cancelNewVenue}
-                  >
-                    Cancel
-              </SpacedButton>
                 </FlexContainer>
-
               </FlexContainer>
-            </Fragment>
-          )
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={cancelNewVenue} color="error">
+                Cancel
+      </Button>
+              <Button onClick={createNewVenue} color="success">
+                Create
+              </Button>
+              {isSaving && <CircularProgress size={24} />}
+            </DialogActions>
+          </Dialog>
+        )
       }
-
-    </FlexContainer>
+    </Fragment>
   )
 }

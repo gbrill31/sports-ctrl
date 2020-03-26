@@ -1,7 +1,10 @@
 .root{
   display: flex;
   align-items: center;
-  position: relative;
+  position: fixed;
+  width: 100%;
+  top: 0;
   background-color: #c17a2b;
   padding: 5px;
+  z-index: 999;
 }

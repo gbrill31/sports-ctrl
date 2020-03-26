@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import PromptDialog from '../PromptDialog/PromptDialog';
+import PromptDialog from '../../PromptDialog/PromptDialog';
 import VenueListItem from '../VenueListItem/VenueListItem';
 
-import { getAllVenues, deleteVenue } from '../../actions';
+import { getAllVenues, deleteVenue } from '../../../actions';
 
 
 
