@@ -3,8 +3,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { MainTitle } from '../../styledElements';
 import GamesList from '../../components/GamesList/GamesList';
 
-import './Home.scss';
-
 import {
   getAllGames
 } from '../../actions';
