@@ -7,6 +7,7 @@ import NewTeamFormDialog from '../../components/TeamsControl/NewTeamFormDialog/N
 
 export default function Teams() {
   const [isNewTeam, setIsNewTeam] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const setNewTeam = () => setIsNewTeam(true);
 
@@ -25,7 +26,12 @@ export default function Teams() {
         </Button>
       </FlexContainer>
       <FlexContainer>
-        <TeamsList />
+        <FlexContainer column>
+          <TeamsList selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
+        </FlexContainer>
+        <FlexContainer column>
+          <div>Players</div>
+        </FlexContainer>
       </FlexContainer>
       {
         isNewTeam && <NewTeamFormDialog isNewTeam={isNewTeam} setIsNewTeam={setIsNewTeam} />

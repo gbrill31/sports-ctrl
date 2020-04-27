@@ -18,7 +18,7 @@ const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting 
     <PromptDialog
       isOpen={isDeleteTeam}
       title="Delete Team"
-      content={`Are you sure you want to delete ${selectedTeam.name}`}
+      content={`Are you sure you want to delete ${selectedTeam.name}?`}
       confirmText="Delete"
       handleClose={handleCancel}
       handleConfirm={deleteSelectedTeam}
@@ -28,12 +28,12 @@ const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting 
 }
 
 
-export default function TeamsList() {
+export default function TeamsList({
+  selectedTeam, setSelectedTeam
+}) {
 
   const dispatch = useDispatch();
   const [isDeleteTeam, setIsDeleteTeam] = useState(false);
-
-  const [selectedTeam, setSelectedTeam] = useState(null);
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const teams = useSelector(state => state.teams.items);
@@ -41,7 +41,7 @@ export default function TeamsList() {
 
   const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
 
-  const deleteTeamPrompt = team => () => {
+  const deleteTeamPrompt = (team) => {
     setSelectedTeam(team);
     setIsDeleteTeam(true);
   };
@@ -70,6 +70,8 @@ export default function TeamsList() {
             <TeamListItem
               key={team.id}
               team={team}
+              setSelectedTeam={setSelectedTeam}
+              selectedTeam={selectedTeam}
               deleteTeamPrompt={deleteTeamPrompt}
             />
           ))

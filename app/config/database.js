@@ -66,6 +66,7 @@ function createTeamsTable() {
                 psqlDB.schema.createTable('teams', table => {
                     table.increments();
                     table.string('name');
+                    table.string('league');
                     table.string('country');
                     table.string('city');
                     table.timestamps(false, true);
@@ -88,6 +89,7 @@ function createPlayersTable() {
                     table.string('name');
                     table.integer('number');
                     table.string('team');
+                    table.integer('team_id');
                     table.jsonb('stats');
                     table.timestamps(false, true);
                 }).then(() => {
@@ -203,17 +205,18 @@ function getAllTeams() {
     });
 }
 
-function createTeam(name, country, city) {
+function createTeam(name, league, country, city) {
     return psqlDB
-        .insert({ name, country, city }, ['id', 'name', 'country', 'city'])
+        .returning(['id', 'name', 'league', 'country', 'city'])
+        .insert({ name, league, country, city })
         .into('teams');
 }
 
-function updateTeam(id, name, country, city) {
+function updateTeam(id, name, league, country, city) {
     return psqlDB('teams')
         .where('id', id)
-        .returning(['id', 'name', 'country', 'city'])
-        .update({ name, country, city, 'updated_at': new Date() });
+        .returning(['id', 'name', 'league', 'country', 'city'])
+        .update({ name, league, country, city, 'updated_at': new Date() });
 }
 
 function deleteTeam(id) {

@@ -10,16 +10,16 @@ teamsRouter.get('/all', (req, res) => {
 });
 
 teamsRouter.post('/save', function (req, res) {
-    const { id, name, country, city } = req.body;
+    const { id, name, league, country, city } = req.body;
     if (!id) {
-        psqlDB.createTeam(name, country, city)
+        psqlDB.createTeam(name, league, country, city)
             .then((data) => {
                 res.json(data[0]).status(200);
             }, (err) => {
                 res.status(err.code || 500);
             });
     } else {
-        psqlDB.updateTeam(id, name, country, city)
+        psqlDB.updateTeam(id, name, league, country, city)
             .then((data) => {
                 res.json(data[0]).status(200);
             }, (err) => {

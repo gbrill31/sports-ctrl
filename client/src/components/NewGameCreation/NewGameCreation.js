@@ -35,7 +35,7 @@ function NewGameCreation() {
 
   useEffect(() => {
     getVenues();
-  }, []);
+  }, [getVenues]);
 
   return (
     <div>

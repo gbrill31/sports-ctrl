@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  Button, DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
+  DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
   CircularProgress
 } from '@material-ui/core';
+import { Button } from "../../styledElements";
 
 
 import './PromptDialog.scss';
@@ -25,7 +26,7 @@ const PromptDialog = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="secondary">
+        <Button onClick={handleClose} color="error">
           Cancel
       </Button>
         <Button onClick={handleConfirm} color="primary">

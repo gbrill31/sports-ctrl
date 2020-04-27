@@ -16,6 +16,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
   const dispatch = useDispatch();
 
   const teamName = useFormInput('');
+  const teamLeague = useFormInput('');
   const teamCountry = useFormInput('');
   const teamCity = useFormInput('');
 
@@ -24,9 +25,11 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
 
   const resetForm = () => {
     teamName.setValue('');
+    teamLeague.setValue('');
     teamCountry.setValue('');
     teamCity.setValue('');
     teamName.resetIsValid();
+    teamLeague.resetIsValid();
     teamCountry.resetIsValid();
     teamCity.resetIsValid();
     setIsNewTeam(false);
@@ -41,6 +44,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
 
   const validateAllInputs = () => {
     teamName.validateInput();
+    teamLeague.validateInput();
     teamCountry.validateInput();
     teamCity.validateInput();
 
@@ -48,6 +52,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
 
   const isSaveValid = () => {
     return teamName.ref.current.checkValidity()
+      && teamLeague.ref.current.checkValidity()
       && teamCountry.ref.current.checkValidity()
       && teamCity.ref.current.checkValidity();
   }
@@ -57,6 +62,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
     if (isSaveValid()) {
       createTeam({
         name: teamName.value,
+        league: teamLeague.value,
         country: teamCountry.value,
         city: teamCity.value,
       });
@@ -94,6 +100,20 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
                     placeholder={`Enter Team Name${!teamName.isValid ? ' *' : ''}`}
                     value={teamName.value}
                     onChange={teamName.onChange}
+                  />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>League Name</label>
+                  <Input
+                    required
+                    onBlur={teamLeague.onChange}
+                    error={!teamLeague.isValid}
+                    ref={teamLeague.ref}
+                    id="league"
+                    type="text"
+                    placeholder={`Enter Team League${!teamLeague.isValid ? ' *' : ''}`}
+                    value={teamLeague.value}
+                    onChange={teamLeague.onChange}
                   />
                 </FlexContainer>
                 <FlexContainer fullWidth justify="space-evenly" align="center">
