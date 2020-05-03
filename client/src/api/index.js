@@ -6,6 +6,8 @@ import { getAllVenues, saveNewVenue, deleteVenue } from './venuesApi';
 
 import { getAllTeams, saveNewTeam, deleteTeam } from './teamsApi';
 
+import { getAllPlayers, getPlayersByTeam, addPlayersToTeam, deletePlayer } from './playersApi';
+
 export {
   connectDB,
   getAllGames,
@@ -15,5 +17,9 @@ export {
   deleteVenue,
   getAllTeams,
   saveNewTeam,
-  deleteTeam
+  deleteTeam,
+  getAllPlayers,
+  getPlayersByTeam,
+  addPlayersToTeam,
+  deletePlayer
 }

@@ -34,7 +34,7 @@ export const deleteTeam = async (id) => {
   });
   const deletedTeam = await res.json();
   if (res.status >= 400) {
-    throw new Error('New team creation failed');
+    throw new Error('Team deletion failed');
   }
   return deletedTeam;
 };

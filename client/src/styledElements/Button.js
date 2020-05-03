@@ -1,4 +1,16 @@
-import styled, { css } from 'styled-components';
+import styled, { css, keyframes } from 'styled-components';
+
+const saving = (props) => {
+  return keyframes`
+  from {
+    background: #666;
+  }
+
+  to {
+    background: ${props.theme[props.color].color};
+  }
+`;
+}
 
 export default styled.button`
   background: ${props => (props.color ? props.theme[props.color].color : props.theme.primary.color)};
@@ -11,6 +23,10 @@ export default styled.button`
   padding: 10px;
   margin: 0px 5px;
   transition: background 0.2s ease;
+  position: relative;
+  ${props => props.saving && css`
+  animation: ${props => saving(props)} 1s alternate infinite;
+  `}
   &:hover{
     background: ${props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};
     cursor: pointer;
@@ -21,5 +37,13 @@ export default styled.button`
   ${props => props.justifyRight && css`
     position: absolute;
     right: 15px;
+  `}
+    ${props => props.disabled && css`
+    background: ${props => props.theme.disabled.bgColor};
+    color: ${props => props.theme.disabled.color};
+    &:hover{
+      background: #666;
+      cursor: not-allowed;
+    }
   `}
 `;

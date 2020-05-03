@@ -2,8 +2,8 @@ const teamsRouter = require("express").Router();
 const psqlDB = require('../config/database');
 
 teamsRouter.get('/all', (req, res) => {
-    psqlDB.getAllTeams().then((venues) => {
-        res.json(venues).status(200);
+    psqlDB.getAllTeams().then((teams) => {
+        res.json(teams).status(200);
     }, (err) => {
         res.status(err.code || 500);
     });

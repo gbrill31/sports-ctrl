@@ -21,7 +21,7 @@ const ItemContainer = styled.div`
   text-transform: capitalize;
   padding: 0 15px;
   margin-bottom: 15px;
-  min-width: 350px;
+  min-width: 500px;
   transition: box-shadow 0.1s ease;
   cursor: pointer;
 
@@ -34,6 +34,7 @@ const ItemContainer = styled.div`
   `}
 
   h2{
+    font-size: 2rem;
     font-weight: bold;
   }
   h3{
@@ -64,8 +65,7 @@ export default function TeamListItem({
 }) {
   const dispatch = useDispatch();
   const [isEditTeam, setIsEditTeam] = useState(false);
-  const [isEnter, setIsEnter] = useState(false);
-  // const [isSelected, setIsSelected] = useState(false);
+  // const [isEnter, setIsEnter] = useState(false);
 
   const toggleSelected = () => setSelectedTeam(team);
 
@@ -196,8 +196,7 @@ export default function TeamListItem({
 
         </FlexContainer>
         <ItemActions
-          active={isEnter}
-          selected={selectedTeam && selectedTeam.id === team.id}
+          active={selectedTeam && selectedTeam.id === team.id}
         >
           <FlexContainer justify={isEditTeam ? 'flex-end' : false}>
             {

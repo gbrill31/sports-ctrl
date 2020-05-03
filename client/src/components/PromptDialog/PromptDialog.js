@@ -29,7 +29,7 @@ const PromptDialog = ({
         <Button onClick={handleClose} color="error">
           Cancel
       </Button>
-        <Button onClick={handleConfirm} color="primary">
+        <Button onClick={handleConfirm} color="success">
           {confirmText || 'OK'}
         </Button>
         {isPending && <CircularProgress size={24} />}

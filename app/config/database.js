@@ -89,7 +89,7 @@ function createPlayersTable() {
                     table.string('name');
                     table.integer('number');
                     table.string('team');
-                    table.integer('team_id');
+                    table.integer('teamId');
                     table.jsonb('stats');
                     table.timestamps(false, true);
                 }).then(() => {
@@ -141,7 +141,9 @@ function getTeam(team) {
 }
 
 function createGame(home, away, venue) {
-    return psqlDB.insert({ home, away, venue }, ['id', 'home', 'away', 'venue']).into('games');
+    return psqlDB
+        .insert({ home, away, venue }, ['id', 'home', 'away', 'venue'])
+        .into('games');
 }
 
 function getAllGames() {
@@ -225,6 +227,56 @@ function deleteTeam(id) {
         .del();
 }
 
+function getAllPlayers() {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('players').then((exists) => {
+            if (exists) {
+                psqlDB.select().table('players').then((players) => {
+                    resolve(players)
+                }, err => reject(err));
+            } else {
+                resolve();
+            }
+        }, err => reject(err));
+    });
+}
+
+function getPlayersByTeam(teamId) {
+    return new Promise((resolve, reject) => {
+        psqlDB.schema.hasTable('players').then((exists) => {
+            if (exists) {
+                psqlDB
+                    .select()
+                    .where('teamId', teamId)
+                    .table('players').then((players) => {
+                        resolve(players)
+                    }, err => reject(err));
+            } else {
+                resolve();
+            }
+        }, err => reject(err));
+    });
+}
+
+function addPlayers(players) {
+    return psqlDB
+        .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
+        .insert(players)
+        .into('players');
+}
+
+function updatePlayer(id, name, number, team, teamId) {
+    return psqlDB('players')
+        .where('id', id)
+        .returning(['id', 'name', 'number', 'team', 'teamId'])
+        .update({ name, number, team, teamId, 'updated_at': new Date() });
+}
+
+function deletePlayer(id) {
+    return psqlDB('players')
+        .where('id', id)
+        .del();
+}
 
 module.exports = {
     connect,
@@ -239,5 +291,10 @@ module.exports = {
     getAllTeams,
     createTeam,
     updateTeam,
-    deleteTeam
+    deleteTeam,
+    getAllPlayers,
+    getPlayersByTeam,
+    addPlayers,
+    updatePlayer,
+    deletePlayer
 };

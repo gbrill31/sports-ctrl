@@ -35,6 +35,10 @@ const theme = {
     color: '#ED9B40',
     hover: '#FFB056'
   },
+  disabled: {
+    bgColor: '#555',
+    color: '#fff'
+  },
   font: 'Roboto, sans-serif'
 }
 
