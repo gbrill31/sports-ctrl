@@ -10,7 +10,7 @@ import { getAllTeams, deleteTeam } from '../../../actions';
 
 const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting }) => {
   const dispatch = useDispatch();
-  const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.id)), [dispatch, selectedTeam.id]);
+  const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.getId())), [dispatch, selectedTeam]);
 
   const handleCancel = () => setIsDeleteTeam(false);
 
@@ -18,7 +18,7 @@ const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting 
     <PromptDialog
       isOpen={isDeleteTeam}
       title="Delete Team"
-      content={`Are you sure you want to delete ${selectedTeam.name}?`}
+      content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
       confirmText="Delete"
       handleClose={handleCancel}
       handleConfirm={deleteSelectedTeam}

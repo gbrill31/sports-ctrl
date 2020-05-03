@@ -8,7 +8,7 @@ export default function PlayersList({
   return (
     <Fragment>
       {
-        players && players.map(player => (<PlayersListItem key={player.id} player={player} />))
+        players && players.map(player => (<PlayersListItem key={player.getId()} player={player} />))
       }
     </Fragment>
   )

@@ -8,6 +8,8 @@ import PlayersList from '../../components/PlayersControl/PlayersList/PlayersList
 import NewTeamFormDialog from '../../components/TeamsControl/NewTeamFormDialog/NewTeamFormDialog';
 import NewPlayerFormDialog from '../../components/PlayersControl/NewPlayerFormDialog/NewPlayerFormDialog';
 
+import Player from '../../classes/Player';
+
 import { getPlayersByTeam } from '../../api';
 
 export default function Teams() {
@@ -16,18 +18,20 @@ export default function Teams() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [players, setPlayers] = useState(null);
 
-  const setNewTeam = () => setIsNewTeam(true);
-  const setNewPlayer = () => setIsNewPlayer(true);
+  const openNewTeam = () => setIsNewTeam(true);
+  const openNewPlayer = () => setIsNewPlayer(true);
+
+  const getMappedPlayers = (p) => p.map(player => new Player(player));
 
   useEffect(() => {
     if (selectedTeam) {
       getPlayersByTeam(selectedTeam.id)
-        .then(players => setPlayers(players));
+        .then(players => setPlayers(getMappedPlayers(players)));
     }
   }, [selectedTeam]);
 
   const updatePlayers = (addedPlayers) => {
-    setPlayers([...players, ...addedPlayers]);
+    setPlayers(getMappedPlayers([...players, ...addedPlayers]));
   }
 
   return (
@@ -36,7 +40,7 @@ export default function Teams() {
       <FlexContainer>
         <Button
           color="generic"
-          onClick={setNewTeam}
+          onClick={openNewTeam}
         >
           New Team
         <ButtonIcon spaceLeft>
@@ -47,7 +51,7 @@ export default function Teams() {
           selectedTeam && (
             <Button
               color="success"
-              onClick={setNewPlayer}
+              onClick={openNewPlayer}
               justifyRight
             >
               Add Players

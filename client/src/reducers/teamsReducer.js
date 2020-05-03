@@ -1,6 +1,8 @@
 import {
   TEAMS
 } from '../constants';
+import Team from '../classes/Team';
+
 
 const INTIAL_STATE = {
   items: [],
@@ -12,6 +14,8 @@ const INTIAL_STATE = {
   teamDeleteError: null
 }
 
+const getMappedTeams = teams => teams.map(team => new Team(team));
+
 const teamsReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
     case TEAMS.GET_TEAMS_PENDING:
@@ -22,7 +26,7 @@ const teamsReducer = (state = INTIAL_STATE, action = {}) => {
     case TEAMS.GET_TEAMS_SUCCESS:
       return {
         ...state,
-        items: action.payload,
+        items: getMappedTeams(action.payload),
         getTeamsError: null,
         getTeamsPending: false
       }
@@ -42,7 +46,7 @@ const teamsReducer = (state = INTIAL_STATE, action = {}) => {
         ...state,
         teamSavePending: false,
         items: [...state.items.filter(item => item.id !== action.payload.id),
-        action.payload
+        new Team(action.payload)
         ]
       }
     case TEAMS.SAVE_FAILED:

@@ -5,7 +5,7 @@ export default function PlayersListItem({
 }) {
   return (
     <div style={{ color: 'white' }}>
-      {`Name: ${player.name}, Number: ${player.number} Stats: ${JSON.stringify(player.stats)}`}
+      {`Name: ${player.getName()}, Number: ${player.getNumber()} Stats: ${JSON.stringify(player.getStats())}`}
     </div>
   )
 }

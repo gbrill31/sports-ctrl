@@ -1,7 +1,4 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import {
-  CircularProgress
-} from '@material-ui/core';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 // import { makeStyles } from '@material-ui/core/styles';
@@ -71,10 +68,10 @@ export default function TeamListItem({
 
   const isSaving = useSelector(state => state.teams.teamSavePending);
 
-  const teamName = useFormInput(team.name);
-  const teamLeague = useFormInput(team.league);
-  const teamCountry = useFormInput(team.country);
-  const teamCity = useFormInput(team.city);
+  const teamName = useFormInput(team.getName());
+  const teamLeague = useFormInput(team.getLeague());
+  const teamCountry = useFormInput(team.getCountry());
+  const teamCity = useFormInput(team.getCity());
 
   useEffect(() => {
     if (!isSaving) {
@@ -83,10 +80,10 @@ export default function TeamListItem({
   }, [isSaving]);
 
   useEffect(() => {
-    if (selectedTeam && selectedTeam.id !== team.id) {
+    if (selectedTeam && selectedTeam.getId() !== team.getId()) {
       setIsEditTeam(false);
     }
-  }, [selectedTeam, team.id]);
+  }, [selectedTeam, team]);
 
   // const onItemEnter = () => setIsEnter(true);
   // const onItemLeave = () => setIsEnter(false);
@@ -99,14 +96,14 @@ export default function TeamListItem({
   const saveTeam = (team) => dispatch(saveNewTeam(team));
 
   const editTeam = () => {
-    teamName.setValue(team.name);
-    teamLeague.setValue(team.league);
+    teamName.setValue(team.getName());
+    teamLeague.setValue(team.getLeague());
     setIsEditTeam(true);
   };
 
   const updateTeam = () => {
     saveTeam({
-      id: team.id,
+      id: team.getId(),
       name: teamName.value,
       league: teamLeague.value,
       country: teamCountry.value,
@@ -121,7 +118,7 @@ export default function TeamListItem({
   return (
     <Fragment>
       <ItemContainer
-        selected={selectedTeam && selectedTeam.id === team.id}
+        selected={selectedTeam && selectedTeam.getId() === team.getId()}
         onClick={toggleSelected}
       // onMouseEnter={onItemEnter}
       // onMouseLeave={onItemLeave}
@@ -142,7 +139,7 @@ export default function TeamListItem({
                   value={teamName.value}
                   onChange={teamName.onChange}
                 />
-              ) : team.name
+              ) : team.getName()
             }
           </h2>
           <h3>
@@ -159,7 +156,7 @@ export default function TeamListItem({
                   value={teamLeague.value}
                   onChange={teamLeague.onChange}
                 />
-              ) : team.league
+              ) : team.getLeague()
             }
           </h3>
           <h4>
@@ -190,13 +187,13 @@ export default function TeamListItem({
                     onChange={teamCountry.onChange}
                   />
                 </Fragment>
-              ) : `${team.city}, ${team.country}`
+              ) : `${team.getCity()}, ${team.getCountry()}`
             }
           </h4>
 
         </FlexContainer>
         <ItemActions
-          active={selectedTeam && selectedTeam.id === team.id}
+          active={selectedTeam && selectedTeam.getId() === team.getId()}
         >
           <FlexContainer justify={isEditTeam ? 'flex-end' : false}>
             {
@@ -237,152 +234,24 @@ export default function TeamListItem({
                         <FontAwesomeIcon icon={faTimesCircle} size="sm" />
                       </ButtonIcon>
                     </Button>
-                    {
-                      isSaving ? (
-                        <CircularProgress size={24} />
-                      ) : (
-                          <Button
-                            aria-label="update team"
-                            color="primary"
-                            onClick={updateTeam}
-                          >
-                            Save
-                            <ButtonIcon spaceLeft>
-                              <FontAwesomeIcon icon={faSave} size="sm" />
-                            </ButtonIcon>
-                          </Button>
-                        )
-
-                    }
+                    <Button
+                      aria-label="update team"
+                      color="success"
+                      onClick={updateTeam}
+                      disabled={isSaving}
+                      saving={isSaving}
+                    >
+                      {isSaving ? 'Saving...' : 'Save'}
+                      <ButtonIcon spaceLeft>
+                        <FontAwesomeIcon icon={faSave} size="sm" />
+                      </ButtonIcon>
+                    </Button>
                   </Fragment>
                 )
             }
           </FlexContainer>
         </ItemActions>
       </ItemContainer>
-      {/* <Card className={classes.root} key={team.id}>
-        <CardContent>
-          <Typography className={classes.team} variant="h5" component="h2">
-            {
-              isEditTeam ? (
-                <TextField
-                  autoFocus
-                  required
-                  disabled={isSaving}
-                  inputProps={{
-                    ref: teamName.ref
-                  }}
-                  error={!teamName.isValid}
-                  helperText={teamName.errorMessage}
-                  margin="dense"
-                  id="name"
-                  label="Name"
-                  type="text"
-                  placeholder="Team Name"
-                  value={teamName.value}
-                  onChange={teamName.onChange}
-                />
-              ) :
-                team.name
-            }
-          </Typography>
-          <Typography className={classes.title} component="h4" color="textSecondary">
-            {
-              isEditTeam ? (
-                <TextField
-                  margin="dense"
-                  required
-                  disabled={isSaving}
-                  inputProps={{
-                    ref: teamCity.ref
-                  }}
-                  error={!teamCity.isValid}
-                  helperText={teamCity.errorMessage}
-                  id="city"
-                  label="City"
-                  type="text"
-                  placeholder="Team City"
-                  value={teamCity.value}
-                  onChange={teamCity.onChange}
-                />
-              ) : team.city
-            }
-          </Typography>
-          <Typography className={classes.pos} component="h3" color="textSecondary" gutterBottom>
-            {
-              isEditTeam ? (
-                <TextField
-                  margin="dense"
-                  required
-                  disabled={isSaving}
-                  inputProps={{
-                    ref: teamCountry.ref
-                  }}
-                  error={!teamCountry.isValid}
-                  helperText={teamCountry.errorMessage}
-                  id="country"
-                  label="Country"
-                  type="text"
-                  placeholder="Team Country"
-                  value={teamCountry.value}
-                  onChange={teamCountry.onChange}
-                />
-              ) : team.country
-            }
-          </Typography>
-        </CardContent>
-        <CardActions disableSpacing className={classes.actions}>
-          {
-            !isEditTeam && <IconButton
-              aria-label="delete team"
-              color="secondary"
-              onClick={deleteTeamPrompt(team)}
-            >
-              <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-            </IconButton>
-          }
-          {
-            isEditTeam ? (
-              <Fragment>
-                <IconButton
-                  aria-label="update team"
-                  color="secondary"
-                  disabled={isSaving}
-                  onClick={cancelUpdateTeam}
-                >
-                  <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                </IconButton>
-                <div className={classes.actionRight}>
-                  {
-                    isSaving ? (
-                      <CircularProgress size={24} />
-                    ) : (
-                        <IconButton
-                          aria-label="update team"
-                          color="primary"
-                          onClick={updateTeam}
-                        >
-                          <FontAwesomeIcon icon={faSave} size="sm" />
-                        </IconButton>
-                      )
-
-                  }
-                </div>
-              </Fragment>
-            ) : (
-                <IconButton
-                  className={classes.actionRight}
-                  aria-label="edit team"
-                  color="primary"
-                  onClick={editTeam}
-                >
-                  <FontAwesomeIcon icon={faEdit} size="sm" />
-                </IconButton>
-              )
-          }
-
-        </CardActions>
-      </Card > */}
     </Fragment >
   )
 }
