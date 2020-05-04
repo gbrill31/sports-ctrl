@@ -90,7 +90,7 @@ function createPlayersTable() {
                     table.integer('number');
                     table.string('team');
                     table.integer('teamId');
-                    table.jsonb('stats');
+                    table.json('stats');
                     table.timestamps(false, true);
                 }).then(() => {
                     resolve();
@@ -265,10 +265,10 @@ function addPlayers(players) {
         .into('players');
 }
 
-function updatePlayer(id, name, number, team, teamId) {
+function updatePlayer({ id, name, number, team, teamId }) {
     return psqlDB('players')
         .where('id', id)
-        .returning(['id', 'name', 'number', 'team', 'teamId'])
+        .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
         .update({ name, number, team, teamId, 'updated_at': new Date() });
 }
 

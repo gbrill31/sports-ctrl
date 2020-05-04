@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { ThemeProvider } from 'styled-components';
 import Home from '../views/Home/Home';
 import Venues from '../views/Venues/Venues';
-import Teams from '../views/Teams/Teams';
+import Teams from '../views/TeamsManagement/TeamsManagement';
 import NewGameCreation from '../components/NewGameCreation/NewGameCreation';
 import HeaderNav from '../components/HeaderNav/HeaderNav';
 import './App.scss';

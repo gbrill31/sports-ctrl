@@ -5,10 +5,11 @@ import {
 import { Button, ButtonIcon, Input, FlexContainer } from '../../../styledElements';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import moment from 'moment';
 import useFormInput from '../../../hooks/useFormInput';
 
 import {
-  addPlayersToTeam,
+  savePlayersToTeam,
 } from '../../../api';
 
 
@@ -48,7 +49,7 @@ export default function NewPlayerFormDialog({
 
   const addPlayers = () => {
     setIsSaving(true);
-    addPlayersToTeam(players)
+    savePlayersToTeam(players)
       .then((players) => {
         updatePlayers(players);
         setIsSaving(false);
@@ -60,12 +61,23 @@ export default function NewPlayerFormDialog({
   const addPlayer = () => {
     validateAllInputs();
     if (isSaveValid()) {
+      const initialStats = {};
+      initialStats[moment().format('YYYY-MM-DD')] = {
+        playedAgainst: 'No Games Played',
+        data: {
+          PT: 0,
+          "2FG": 0,
+          "3FG": 0,
+          FT: 0,
+          FOULS: 0
+        }
+      };
       setPlayers([...players, {
         name: playerName.value,
         number: playerNumber.value,
         team: selectedTeam.name,
         teamId: selectedTeam.id,
-        stats: []
+        stats: [initialStats]
       }]);
       resetForm();
       playerName.ref.current.focus();

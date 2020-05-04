@@ -19,32 +19,29 @@ playersRouter.get('/team', (req, res) => {
 
 playersRouter.post('/save', function (req, res) {
     const players = req.body;
-    psqlDB.addPlayers(players)
-        .then((data) => {
-            res.json(data).status(200);
-        }, (err) => {
-            res.status(err.code || 500);
+    if (Array.isArray(players)) {
+        players.forEach((player) => {
+            Object.assign(player, { stats: JSON.stringify(player.stats) });
         });
-    // if (!id) {
-    //     psqlDB.addPlayers(players)
-    //         .then((data) => {
-    //             res.json(data[0]).status(200);
-    //         }, (err) => {
-    //             res.status(err.code || 500);
-    //         });
-    // } else {
-    //     psqlDB.updateTeam(name, number, team, teamId)
-    //         .then((data) => {
-    //             res.json(data[0]).status(200);
-    //         }, (err) => {
-    //             res.status(err.code || 500);
-    //         })
-    // }
+        psqlDB.addPlayers(players)
+            .then((data) => {
+                res.json(data).status(200);
+            }, (err) => {
+                res.status(err.code || 500);
+            });
+    } else {
+        psqlDB.updatePlayer(players)
+            .then((data) => {
+                res.json(data[0]).status(200);
+            }, (err) => {
+                res.status(err.code || 500);
+            });
+    }
 });
 
 playersRouter.post('/delete', function (req, res) {
     const { id } = req.body;
-    psqlDB.deleteTeam(id)
+    psqlDB.deletePlayer(id)
         .then(() => {
             res.json(id).status(200);
         }, (err) => {

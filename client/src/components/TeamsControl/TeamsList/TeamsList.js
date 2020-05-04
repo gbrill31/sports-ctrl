@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import PromptDialog from '../../PromptDialog/PromptDialog';
 import TeamListItem from '../TeamListItem/TeamListItem';
 
-import { getAllTeams, deleteTeam } from '../../../actions';
+import { deleteTeam } from '../../../actions';
 
 
 
@@ -29,29 +29,22 @@ const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting 
 
 
 export default function TeamsList({
-  selectedTeam, setSelectedTeam
+  teams, selectedTeam, setSelectedTeam
 }) {
-
-  const dispatch = useDispatch();
   const [isDeleteTeam, setIsDeleteTeam] = useState(false);
 
-  const isDBConnected = useSelector(state => state.db.isConnected);
-  const teams = useSelector(state => state.teams.items);
   const isDeleting = useSelector(state => state.teams.teamDeletePending);
-
-  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
 
   const deleteTeamPrompt = (team) => {
     setSelectedTeam(team);
     setIsDeleteTeam(true);
   };
 
-
   useEffect(() => {
-    if (isDBConnected) {
-      getTeams();
+    if (teams.length && !selectedTeam) {
+      setSelectedTeam(teams[0]);
     }
-  }, [getTeams, isDBConnected]);
+  }, [teams, selectedTeam, setSelectedTeam]);
 
 
   useEffect(() => {

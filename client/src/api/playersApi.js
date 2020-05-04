@@ -16,7 +16,7 @@ export const getPlayersByTeam = async (teamId) => {
   return players;
 };
 
-export const addPlayersToTeam = async (players) => {
+export const savePlayersToTeam = async (players) => {
   const body = JSON.stringify(players);
   const res = await fetch('/players/save', {
     method: 'POST',

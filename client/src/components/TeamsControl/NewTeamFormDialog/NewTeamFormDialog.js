@@ -86,7 +86,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
           >
             <DialogTitle>Create a New Team</DialogTitle>
             <DialogContent>
-              <FlexContainer column justify="center" alig="center">
+              <FlexContainer column justify="center" align="center">
                 <FlexContainer fullWidth justify="space-evenly" align="center">
                   <label style={{ width: '10px' }}>Name</label>
                   <Input

@@ -13,6 +13,7 @@ import {
 
 const ItemContainer = styled.div`
   width: fit-content;
+  border-radius: 15px;
   background-color: #fff;
   color: #333;
   text-transform: capitalize;
@@ -27,7 +28,7 @@ const ItemContainer = styled.div`
   }
 
   ${props => props.selected && css`
-    box-shadow: 0 3px 1px 1px ${props => props.theme.success.color} inset;
+    box-shadow: 0 5px 8px 0px ${props => props.theme.success.color} inset;
   `}
 
   h2{
@@ -48,12 +49,13 @@ const ItemContainer = styled.div`
 `;
 
 const ItemActions = styled.div`
-  height: 0;
-  transition: height 0.1s ease-in;
+  height: auto;
+  max-height: 0;
+  transition: max-height 0.3s ease;
   overflow: hidden;
 
   ${props => (props.active || props.selected) && css`
-    height: 60px;
+    max-height: 100px;
   `}
 `;
 
@@ -64,7 +66,7 @@ export default function TeamListItem({
   const [isEditTeam, setIsEditTeam] = useState(false);
   // const [isEnter, setIsEnter] = useState(false);
 
-  const toggleSelected = () => setSelectedTeam(team);
+  const selectTeam = () => setSelectedTeam(team);
 
   const isSaving = useSelector(state => state.teams.teamSavePending);
 
@@ -115,57 +117,58 @@ export default function TeamListItem({
     setIsEditTeam(false);
   };
 
+  const isTeamSelected = () => {
+    return selectedTeam && selectedTeam.getId() === team.getId()
+  }
+
   return (
     <Fragment>
       <ItemContainer
-        selected={selectedTeam && selectedTeam.getId() === team.getId()}
-        onClick={toggleSelected}
+        selected={isTeamSelected()}
+        onClick={selectTeam}
       // onMouseEnter={onItemEnter}
       // onMouseLeave={onItemLeave}
       >
-        <FlexContainer align="baseline" >
-          <h2>
-            {
-              isEditTeam ? (
-                <Input
-                  autoFocus
-                  required
-                  disabled={isSaving}
-                  ref={teamName.ref}
-                  error={!teamName.isValid}
-                  id="name"
-                  type="text"
-                  placeholder={`Enter Team Name${!teamName.isValid ? ' *' : ''}`}
-                  value={teamName.value}
-                  onChange={teamName.onChange}
-                />
-              ) : team.getName()
-            }
-          </h2>
-          <h3>
-            {
-              isEditTeam ? (
-                <Input
-                  required
-                  disabled={isSaving}
-                  ref={teamLeague.ref}
-                  error={!teamLeague.isValid}
-                  id="league"
-                  type="text"
-                  placeholder={`Enter League Name${!teamLeague.isValid ? ' *' : ''}`}
-                  value={teamLeague.value}
-                  onChange={teamLeague.onChange}
-                />
-              ) : team.getLeague()
-            }
-          </h3>
-          <h4>
-            {
-              isEditTeam ? (
-                <Fragment>
+        <FlexContainer align="baseline">
+          {
+            isEditTeam ? (
+              <FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>Name:</label>
+                  <Input
+                    autoFocus
+                    required
+                    disabled={isSaving}
+                    ref={teamName.ref}
+                    error={!teamName.isValid}
+                    id="name"
+                    type="text"
+                    placeholder={`Enter Team Name${!teamName.isValid ? ' *' : ''}`}
+                    value={teamName.value}
+                    onChange={teamName.onChange}
+                    spaceLeft
+                  />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>League:</label>
                   <Input
                     required
-                    spaceRight
+                    disabled={isSaving}
+                    ref={teamLeague.ref}
+                    error={!teamLeague.isValid}
+                    id="league"
+                    type="text"
+                    placeholder={`Enter League Name${!teamLeague.isValid ? ' *' : ''}`}
+                    value={teamLeague.value}
+                    onChange={teamLeague.onChange}
+                    spaceLeft
+                  />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>City:</label>
+                  <Input
+                    required
+                    spaceLeft
                     disabled={isSaving}
                     ref={teamCity.ref}
                     error={!teamCity.isValid}
@@ -175,6 +178,9 @@ export default function TeamListItem({
                     value={teamCity.value}
                     onChange={teamCity.onChange}
                   />
+                </FlexContainer>
+                <FlexContainer fullWidth justify="space-evenly" align="center">
+                  <label style={{ width: '10px' }}>Country:</label>
                   <Input
                     required
                     disabled={isSaving}
@@ -186,14 +192,19 @@ export default function TeamListItem({
                     value={teamCountry.value}
                     onChange={teamCountry.onChange}
                   />
-                </Fragment>
-              ) : `${team.getCity()}, ${team.getCountry()}`
-            }
-          </h4>
-
+                </FlexContainer>
+              </FlexContainer>
+            ) : (
+                <>
+                  <h2>{team.getName()}</h2>
+                  <h3>{team.getLeague()}</h3>
+                  <h4>{`${team.getCity()}, ${team.getCountry()}`}</h4>
+                </>
+              )
+          }
         </FlexContainer>
         <ItemActions
-          active={selectedTeam && selectedTeam.getId() === team.getId()}
+          active={isTeamSelected()}
         >
           <FlexContainer justify={isEditTeam ? 'flex-end' : false}>
             {
