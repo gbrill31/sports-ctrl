@@ -1,19 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-// import styled from 'styled-components';
-import {
-  TextField
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab'
+import AutoCompleteInput from '../AutoCompleteInput/AutoCompleteInput';
 
-import { FlexContainer, MainTitle, SpaceSides } from '../../styledElements';
+import { FlexContainer, MainTitle } from '../../styledElements';
 
 import {
   createNewGame,
-  getAllVenues
+  getAllVenues,
+  getAllTeams
 } from '../../actions';
 
-const StyledTextField = SpaceSides(TextField);
 
 
 function NewGameCreation() {
@@ -21,53 +17,61 @@ function NewGameCreation() {
   // const game = useSelector(state => state.games.game);
   // const isSaving = useSelector(state => state.games.gameCreatePending);
   // const error = useSelector(state => state.games.gameError);
-  const venues = useSelector(state => state.venues.items);
 
   const [homeName, setHomeName] = useState('');
   const [awayName, setAwayName] = useState('');
+  const [venueName, setVenueName] = useState('');
 
-  const createGame = useCallback((teams) => dispatch(createNewGame(teams)), [dispatch]);
+  const venues = useSelector(state => state.venues.items);
+  const teams = useSelector(state => state.teams.items);
+  // const createGame = useCallback((teams) => dispatch(createNewGame(teams)), [dispatch]);
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
-
-  const onHomeInputChange = (e) => setHomeName(e.target.value);
-  const onAwayInputChange = (e) => setAwayName(e.target.value);
+  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
 
 
   useEffect(() => {
     getVenues();
-  }, [getVenues]);
+    getTeams();
+  }, [getVenues, getTeams]);
 
   return (
-    <div>
-      <MainTitle>Select Teams</MainTitle>
+    <>
+      <MainTitle>Select Teams and Venue</MainTitle>
       <FlexContainer>
-        <StyledTextField
-          autoFocus
-          margin="dense"
+        <AutoCompleteInput
           id="home"
-          label="Home Team"
-          type="text"
-          placeholder="Home team"
-          value={homeName}
-          onChange={onHomeInputChange}
+          color="#fff"
+          spaceLeft
+          selectedValue={homeName}
+          options={teams}
+          getOptionLabel={option => option.name}
+          placeholder="Select Home Team"
+          onSelection={setHomeName}
         />
-        <StyledTextField
-          margin="dense"
+        <MainTitle>VS</MainTitle>
+        <AutoCompleteInput
           id="away"
-          label="Away Team"
-          type="text"
-          placeholder="Away team"
-          value={awayName}
-          onChange={onAwayInputChange}
+          color="#fff"
+          spaceLeft
+          selectedValue={awayName}
+          options={teams}
+          getOptionLabel={option => option.name}
+          placeholder="Select Away Team"
+          onSelection={setAwayName}
         />
-        <Autocomplete
-          id="venues"
+        <MainTitle>AT</MainTitle>
+        <AutoCompleteInput
+          id="vanues"
+          color="#fff"
+          spaceLeft
+          selectedValue={venueName}
           options={venues}
           getOptionLabel={option => option.name}
-          renderInput={params => <StyledTextField {...params} label="Venue" variant="outlined" />}
+          placeholder="Select Vanue"
+          onSelection={setVenueName}
         />
       </FlexContainer>
-    </div>
+    </>
   );
 };
 

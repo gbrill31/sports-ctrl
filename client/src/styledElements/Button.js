@@ -18,7 +18,7 @@ export default styled.button`
   font-family: ${props => props.theme.font};
   font-size: 0.8rem;
   font-weight: bold;
-  border: none;
+  border: ${props => props.rounded ? '1px solid transparent' : 'none'};
   border-radius: 7px;
   padding: 10px;
   margin: 0px 5px;
@@ -30,15 +30,17 @@ export default styled.button`
   &:hover{
     background: ${props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};
     cursor: pointer;
-  }
-  &:focus{
-    outline: none;
-  }
+  };
   ${props => props.justifyRight && css`
     position: absolute;
     right: 15px;
-  `}
-    ${props => props.disabled && css`
+  `};
+  ${props => props.rounded && css`
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  `};
+  ${props => props.disabled && css`
     background: ${props => props.theme.disabled.bgColor};
     color: ${props => props.theme.disabled.color};
     &:hover{

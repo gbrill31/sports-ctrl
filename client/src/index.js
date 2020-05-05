@@ -19,6 +19,9 @@ const AppGlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  *:focus{
+    outline: none;
+  }
 `;
 
 ReactDOM.render(

@@ -8,7 +8,6 @@ export default styled.input`
     (props.color || '#444343')};
   color: ${props => props.color || '#444343'};
   background: transparent;
-  outline: none;
   padding: 15px;
   margin-right: ${props => props.spaceRight ? '10px' : ''};
   margin-left: ${props => props.spaceLeft ? '10px' : ''};

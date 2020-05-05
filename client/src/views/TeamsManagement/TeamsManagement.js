@@ -48,7 +48,8 @@ export default function Teams() {
 
   useEffect(() => {
     if (selectedTeam) {
-      getPlayersByTeam(selectedTeam.id)
+      setSelectedPlayer(null);
+      getPlayersByTeam(selectedTeam.getId())
         .then(players => setPlayers(getMappedPlayers(players)));
     }
   }, [selectedTeam]);
