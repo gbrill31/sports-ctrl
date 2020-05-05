@@ -1,7 +1,6 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-// import { makeStyles } from '@material-ui/core/styles';
 import useFormInput from '../../../hooks/useFormInput';
 import { faTrashAlt, faEdit, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -51,7 +50,7 @@ const ItemContainer = styled.div`
 const ItemActions = styled.div`
   height: auto;
   max-height: 0;
-  transition: max-height 0.3s ease;
+  transition: max-height 0.2s ease-in-out;
   overflow: hidden;
 
   ${props => (props.active || props.selected) && css`

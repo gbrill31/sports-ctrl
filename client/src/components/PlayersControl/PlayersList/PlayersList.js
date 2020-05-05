@@ -53,16 +53,18 @@ export default function PlayersList({
     <Fragment>
       {
         players && players.length > 0 ? (
-          players.map(player => (
-            <PlayersListItem
-              key={player.getId()}
-              player={player}
-              selectedPlayer={selectedPlayer}
-              setSelectedPlayer={setSelectedPlayer}
-              deletePlayerPrompt={deletePlayerPrompt}
-              updatePlayers={updatePlayers}
-            />
-          ))
+          players
+            .sort((playerA, playerB) => playerA.name.toLowerCase() > playerB.name.toLowerCase() ? 1 : -1)
+            .map(player => (
+              <PlayersListItem
+                key={player.getId()}
+                player={player}
+                selectedPlayer={selectedPlayer}
+                setSelectedPlayer={setSelectedPlayer}
+                deletePlayerPrompt={deletePlayerPrompt}
+                updatePlayers={updatePlayers}
+              />
+            ))
         ) : <MainTitle>No Players Assigned</MainTitle>
       }
       {

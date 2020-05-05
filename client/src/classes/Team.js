@@ -7,15 +7,15 @@ export default class Team {
     return this.id;
   }
   getName() {
-    return this.name;
+    return this.name.toLowerCase();
   }
   getLeague() {
-    return this.league;
+    return this.league.toLowerCase();
   }
   getCountry() {
-    return this.country;
+    return this.country.toLowerCase();
   }
   getCity() {
-    return this.city;
+    return this.city.toLowerCase();
   }
 }

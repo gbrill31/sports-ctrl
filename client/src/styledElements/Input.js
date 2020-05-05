@@ -3,8 +3,10 @@ import styled from 'styled-components';
 export default styled.input`
   font-size: 1rem;
   border: none;
-  border-bottom: 1px solid ${props => props.error ? 'rgba(200, 0, 0, 0.9)' : '#444343'};
-  color: #444343;
+  width: ${props => props.width || ''};
+  border-bottom: 1px solid ${props => props.error ? 'rgba(200, 0, 0, 0.9)' :
+    (props.color || '#444343')};
+  color: ${props => props.color || '#444343'};
   background: transparent;
   outline: none;
   padding: 15px;

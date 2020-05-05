@@ -29,22 +29,16 @@ export default class Player {
     return this.id;
   }
   getName() {
-    return this.name;
+    return this.name.toLowerCase();
   }
   getNumber() {
     return this.number;
   }
   getStats() {
-    if (this.stats > 1) {
-      let lastGameStats = this.stats[0];
-      this.stats.forEach(stat => {
-        let statDate = Object.keys(stat)[0];
-        let lastGameStatDate = Object.keys(lastGameStats)[0];
-        if (moment(statDate).isAfter(lastGameStatDate)) {
-          lastGameStats = stat;
-        }
+    if (this.stats.length > 1) {
+      this.stats.sort((statA, statB) => {
+        return moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? 1 : -1;
       });
-      return lastGameStats;
     }
     return this.stats[0];
   }

@@ -54,7 +54,7 @@ const ItemContainer = styled.div`
 const ItemStats = styled.div`
   height: auto;
   max-height: 0;
-  transition: max-height 0.3s ease-in;
+  transition: max-height 0.5s ease-in-out;
   overflow: hidden;
 
   ${props => (props.active || props.selected) && css`
@@ -184,66 +184,62 @@ export default function PlayersListItem({
             )
         }
       </FlexContainer>
-      {
-        isPlayerSelected() ? (
-          <FlexContainer justify={isEditPlayer ? 'flex-end' : false}>
-            {
-              !isEditPlayer ? (
+      <ItemStats active={isPlayerSelected()}>
+        <FlexContainer justify={isEditPlayer ? 'flex-end' : false}>
+          {
+            !isEditPlayer ? (
+              <Fragment>
+                <Button
+                  aria-label="edit player"
+                  color="primary"
+                  onClick={editPlayer}
+                  justifyRight
+                >
+                  Edit
+                  <ButtonIcon spaceLeft>
+                    <FontAwesomeIcon icon={faEdit} size="sm" />
+                  </ButtonIcon>
+                </Button>
+                <Button
+                  aria-label="delete player"
+                  color="error"
+                  onClick={deleteItem}
+                >
+                  Delete
+                <ButtonIcon spaceLeft>
+                    <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+                  </ButtonIcon>
+                </Button>
+              </Fragment>
+            ) : (
                 <Fragment>
                   <Button
-                    aria-label="edit player"
-                    color="primary"
-                    onClick={editPlayer}
-                    justifyRight
+                    aria-label="cencel edit player"
+                    color="error"
+                    disabled={isSaving}
+                    onClick={cancelUpdatePlayer}
                   >
-                    Edit
-                  <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faEdit} size="sm" />
+                    Cancel
+                    <ButtonIcon spaceLeft>
+                      <FontAwesomeIcon icon={faTimesCircle} size="sm" />
                     </ButtonIcon>
                   </Button>
                   <Button
-                    aria-label="delete player"
-                    color="error"
-                    onClick={deleteItem}
+                    aria-label="update team"
+                    color="success"
+                    onClick={savePlayer}
+                    disabled={isSaving}
+                    saving={isSaving}
                   >
-                    Delete
-                <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+                    {isSaving ? 'Saving...' : 'Save'}
+                    <ButtonIcon spaceLeft>
+                      <FontAwesomeIcon icon={faSave} size="sm" />
                     </ButtonIcon>
                   </Button>
                 </Fragment>
-              ) : (
-                  <Fragment>
-                    <Button
-                      aria-label="cencel edit player"
-                      color="error"
-                      disabled={isSaving}
-                      onClick={cancelUpdatePlayer}
-                    >
-                      Cancel
-                    <ButtonIcon spaceLeft>
-                        <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                      </ButtonIcon>
-                    </Button>
-                    <Button
-                      aria-label="update team"
-                      color="success"
-                      onClick={savePlayer}
-                      disabled={isSaving}
-                      saving={isSaving}
-                    >
-                      {isSaving ? 'Saving...' : 'Save'}
-                      <ButtonIcon spaceLeft>
-                        <FontAwesomeIcon icon={faSave} size="sm" />
-                      </ButtonIcon>
-                    </Button>
-                  </Fragment>
-                )
-            }
-          </FlexContainer>
-        ) : null
-      }
-      <ItemStats active={isPlayerSelected()}>
+              )
+          }
+        </FlexContainer>
         <h4>Last Game</h4>
         <h3>{player.getPlayedAgainst()}</h3>
         <h4>Game Statistics</h4>
