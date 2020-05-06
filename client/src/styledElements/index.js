@@ -6,6 +6,7 @@ import ScrollableContainer from './ScrollableContainer';
 import MainTitle from './MainTitle';
 import Button from './Button';
 import ButtonIcon from './ButtonIcon';
+import ClearButton from './ClearButton';
 import Input from './Input';
 
 const SpaceSides = element => styled(element)`
@@ -21,5 +22,5 @@ export {
   Button,
   ButtonIcon,
   Input,
-  SpaceSides
+  ClearButton
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   MainTitle, FlexContainer, Button, ButtonIcon, GridContainer, ScrollableContainer,
-  Input
+  Input, ClearButton
 } from '../../styledElements';
 import { faPlus, faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -71,6 +71,9 @@ export default function Teams() {
   const openFilterPlayers = () => setIsFilterPlayers(true);
   const closeFilterPlayers = () => setIsFilterPlayers(false);
 
+  const clearFilterTeams = () => { filterTeamsInput.setValue('') };
+  const clearFilterPlayers = () => { filterPlayersInput.setValue('') };
+
   const getFilteredTeams = () => {
     const value = filterTeamsInput.value.toLowerCase();
     return isFilterTeams ? teams
@@ -111,24 +114,39 @@ export default function Teams() {
                   </ButtonIcon>
                 </Button>
               ) : (
-                  <FlexContainer align="center" fullWidth>
-                    <Input
-                      type="text"
-                      placeholder="Team Name, League, Country"
-                      value={filterTeamsInput.value}
-                      onChange={filterTeamsInput.onChange}
-                      color="#fff"
-                      width="80%"
-                    />
+                  <>
                     <Button
-                      color="primary"
+                      color="error"
                       onClick={closeFilterTeams}
+                      justifyRight
                     >
-                      <ButtonIcon>
+                      Close Filter
+                    <ButtonIcon spaceLeft>
                         <FontAwesomeIcon icon={faTimes} size="sm" />
                       </ButtonIcon>
                     </Button>
-                  </FlexContainer>
+                    <FlexContainer align="center" fullWidth>
+                      <FlexContainer padding="0" width="85%">
+                        <Input
+                          type="text"
+                          placeholder="Team Name, League, Country"
+                          value={filterTeamsInput.value}
+                          onChange={filterTeamsInput.onChange}
+                          color="#fff"
+                          width="100%"
+                        />
+                        <ClearButton
+                          color="#fff"
+                          show={filterTeamsInput.value.length > 0}
+                          onClick={clearFilterTeams}
+                        >
+                          <ButtonIcon>
+                            <FontAwesomeIcon icon={faTimes} size="sm" />
+                          </ButtonIcon>
+                        </ClearButton>
+                      </FlexContainer>
+                    </FlexContainer>
+                  </>
                 )
             }
           </FlexContainer>
@@ -163,24 +181,39 @@ export default function Teams() {
                         </ButtonIcon>
                       </Button>
                     ) : (
-                        <FlexContainer align="center" fullWidth>
-                          <Input
-                            type="text"
-                            placeholder="Player Name, Number"
-                            value={filterPlayersInput.value}
-                            onChange={filterPlayersInput.onChange}
-                            color="#fff"
-                            width="80%"
-                          />
+                        <>
                           <Button
-                            color="primary"
+                            color="error"
                             onClick={closeFilterPlayers}
+                            justifyRight
                           >
-                            <ButtonIcon>
-                              <FontAwesomeIcon icon={faTimes} size="sm" />
+                            Close Filter
+                          <ButtonIcon spaceLeft>
+                              <FontAwesomeIcon icon={faFilter} size="sm" />
                             </ButtonIcon>
                           </Button>
-                        </FlexContainer>
+                          <FlexContainer align="center" fullWidth>
+                            <FlexContainer padding="0" width="85%">
+                              <Input
+                                type="text"
+                                placeholder="Player Name, Number"
+                                value={filterPlayersInput.value}
+                                onChange={filterPlayersInput.onChange}
+                                color="#fff"
+                                width="100%"
+                              />
+                              <ClearButton
+                                color="#fff"
+                                show={filterPlayersInput.value.length > 0}
+                                onClick={clearFilterPlayers}
+                              >
+                                <ButtonIcon>
+                                  <FontAwesomeIcon icon={faTimes} size="sm" />
+                                </ButtonIcon>
+                              </ClearButton>
+                            </FlexContainer>
+                          </FlexContainer>
+                        </>
                       )
                   }
                 </>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FlexContainer, Input, ButtonIcon } from '../../styledElements';
+import { FlexContainer, Input, ButtonIcon, ClearButton } from '../../styledElements';
 import styled from 'styled-components';
+import shortid from 'shortid';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useFormInput from '../../hooks/useFormInput';
@@ -29,17 +30,6 @@ const OptionItem = styled.div`
     background: ${props => props.theme.primary.hover};
     color: #fff;
   }
-`;
-
-const ClearInputButton = styled.button`
-  position: absolute;
-  right: 0;
-  top: 18px;
-  background: transparent;
-  cursor: pointer;
-  border: none;
-  color: ${props => props.color || '#fff'};
-  padding: 5px;
 `;
 
 export default function AutoCompleteInput({
@@ -108,6 +98,7 @@ export default function AutoCompleteInput({
           <Input
             ref={ref}
             id={id}
+            name={shortid.generate()}
             color={color}
             spaceLeft={spaceLeft}
             placeholder={placeholder}
@@ -118,12 +109,16 @@ export default function AutoCompleteInput({
             onFocus={handleFocus}
           />
           {
-            selection.value !== '' && (
-              <ClearInputButton color={color} onClick={clearSelectionInput}>
+            (
+              <ClearButton
+                color={color}
+                show={selection.value.length > 0}
+                onClick={clearSelectionInput}
+              >
                 <ButtonIcon>
                   <FontAwesomeIcon icon={faTimes} size="sm" />
                 </ButtonIcon>
-              </ClearInputButton>
+              </ClearButton>
             )
           }
         </FlexContainer>
