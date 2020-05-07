@@ -80,7 +80,7 @@ function HeaderNav() {
             <Button
               justifyRight
               color="primary"
-              onClick={goToRoute('/newgame')}
+              onClick={goToRoute('/game')}
             >
               Start A New Game
               <ButtonIcon spaceLeft>

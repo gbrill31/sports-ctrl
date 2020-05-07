@@ -10,8 +10,8 @@ gameRouter.get('/all', (req, res) => {
 });
 
 gameRouter.post('/create', function (req, res) {
-    const { home, away, venue } = req.body;
-    psqlDB.createGame(home, away, venue)
+    const { home, homeId, away, awayId, venue, active } = req.body;
+    psqlDB.createGame(home, homeId, away, awayId, venue, active)
         .then((data) => {
             res.json(data[0]).status(200);
         }, (err) => {
@@ -19,17 +19,17 @@ gameRouter.post('/create', function (req, res) {
         });
 });
 
-gameRouter.get('/exists', function (req, res) {
-    psqlDB.hasGame(true).then((isGameExist) => {
-        res.json(isGameExist);
+gameRouter.get('/active', function (req, res) {
+    psqlDB.getActiveGame().then((game) => {
+        res.json(game.length ? game[0] : null).status(200);
     }, (err) => {
-        res.status(err.code || 500);
+        res.status(err.code || 500).json();
     });
 });
 
 gameRouter.get('/team', function (req, res) {
     psqlDB.getTeam(team).then((team) => {
-        res.json(team);
+        res.json(team).status(200);
     }, (err) => {
         res.status(err.code || 500);
     });

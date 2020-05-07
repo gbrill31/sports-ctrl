@@ -1,18 +1,21 @@
 import React, { useEffect, useCallback } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { ThemeProvider } from 'styled-components';
-import Home from '../views/Home/Home';
-import Venues from '../views/Venues/Venues';
-import Teams from '../views/TeamsManagement/TeamsManagement';
-import NewGameCreation from '../components/NewGameCreation/NewGameCreation';
-import HeaderNav from '../components/HeaderNav/HeaderNav';
-import './App.scss';
+import { toast } from 'react-toastify';
+import styled, { ThemeProvider } from 'styled-components';
+import Home from './views/Home/Home';
+import Venues from './views/Venues/Venues';
+import Teams from './views/TeamsManagement/TeamsManagement';
+import GameControl from './views/GameControl/GameControl';
+import HeaderNav from './components/HeaderNav/HeaderNav';
+
+import 'react-toastify/dist/ReactToastify.min.css';
 
 import {
   connectToDB,
   setRouteName
-} from '../actions';
+} from './actions';
+
 
 const theme = {
   primary: {
@@ -40,7 +43,22 @@ const theme = {
     color: '#fff'
   },
   font: 'Roboto, sans-serif'
-}
+};
+
+const AppContainer = styled.div`
+  background-color: #272932;
+  min-height: 100vh;
+  position: relative;
+`;
+
+const AppMainContent = styled.main`
+  padding-top: 100px;
+`;
+
+toast.configure({
+  position: toast.POSITION.BOTTOM_LEFT,
+  autoClose: 8000
+});
 
 
 function App() {
@@ -63,17 +81,17 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="App">
+      <AppContainer>
         <HeaderNav />
-        <main className="mainContent">
+        <AppMainContent>
           <Switch>
             <Route exact path="/" render={() => <Home />} />
             <Route exact path="/venues" render={() => <Venues />} />
             <Route exact path="/teams" render={() => <Teams />} />
-            <Route exact path="/newgame" render={() => <NewGameCreation />} />
+            <Route exact path="/game" render={() => <GameControl />} />
           </Switch>
-        </main>
-      </div>
+        </AppMainContent>
+      </AppContainer>
     </ThemeProvider>
   );
 }

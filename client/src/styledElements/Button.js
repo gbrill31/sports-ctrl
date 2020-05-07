@@ -25,7 +25,7 @@ export default styled.button`
   transition: background 0.2s ease;
   position: relative;
   ${props => props.saving && css`
-  animation: ${props => saving(props)} 1s alternate infinite;
+    animation: ${props => saving(props)} 1s alternate infinite;
   `}
   &:hover{
     background: ${props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};

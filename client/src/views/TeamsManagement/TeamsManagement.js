@@ -12,6 +12,7 @@ import TeamsList from '../../components/TeamsControl/TeamsList/TeamsList';
 import PlayersList from '../../components/PlayersControl/PlayersList/PlayersList';
 import NewTeamFormDialog from '../../components/TeamsControl/NewTeamFormDialog/NewTeamFormDialog';
 import NewPlayerFormDialog from '../../components/PlayersControl/NewPlayerFormDialog/NewPlayerFormDialog';
+import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 
 import Player from '../../classes/Player';
 import { getAllTeams } from '../../actions';
@@ -27,11 +28,14 @@ export default function Teams() {
   const [selectedTeam, setSelectedTeam] = useState(null);
   const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [players, setPlayers] = useState(null);
+  const [isPlayersLoading, setIsPlayersLoading] = useState(true);
+
   const filterTeamsInput = useFormInput('');
   const filterPlayersInput = useFormInput('');
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const teams = useSelector(state => state.teams.items);
+  const isTeamsLoading = useSelector(state => state.teams.getTeamsPending);
 
   const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
 
@@ -48,9 +52,13 @@ export default function Teams() {
 
   useEffect(() => {
     if (selectedTeam) {
+      setIsPlayersLoading(true);
       setSelectedPlayer(null);
       getPlayersByTeam(selectedTeam.getId())
-        .then(players => setPlayers(getMappedPlayers(players)));
+        .then(players => {
+          setIsPlayersLoading(false);
+          setPlayers(getMappedPlayers(players))
+        });
     }
   }, [selectedTeam]);
 
@@ -91,144 +99,148 @@ export default function Teams() {
       <MainTitle>Teams</MainTitle>
       <GridContainer columnsSpread="1fr 2fr">
         <FlexContainer column borderRight>
-          <FlexContainer fullWidth>
-            <Button
-              color="generic"
-              onClick={openNewTeam}
-            >
-              New Team
+          <ComponentLoader loading={isTeamsLoading} size={100}>
+            <FlexContainer fullWidth>
+              <Button
+                color="generic"
+                onClick={openNewTeam}
+              >
+                New Team
               <ButtonIcon spaceLeft>
-                <FontAwesomeIcon icon={faPlus} size="sm" />
-              </ButtonIcon>
-            </Button>
-            {
-              !isFilterTeams ? (
-                <Button
-                  color="secondary"
-                  onClick={openFilterTeams}
-                  justifyRight
-                >
-                  Filter
-                  <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faFilter} size="sm" />
-                  </ButtonIcon>
-                </Button>
-              ) : (
-                  <>
-                    <Button
-                      color="error"
-                      onClick={closeFilterTeams}
-                      justifyRight
-                    >
-                      Close Filter
-                    <ButtonIcon spaceLeft>
-                        <FontAwesomeIcon icon={faTimes} size="sm" />
-                      </ButtonIcon>
-                    </Button>
-                    <FlexContainer align="center" fullWidth>
-                      <FlexContainer padding="0" width="85%">
-                        <Input
-                          type="text"
-                          placeholder="Team Name, League, Country"
-                          value={filterTeamsInput.value}
-                          onChange={filterTeamsInput.onChange}
-                          color="#fff"
-                          width="100%"
-                        />
-                        <ClearButton
-                          color="#fff"
-                          show={filterTeamsInput.value.length > 0}
-                          onClick={clearFilterTeams}
-                        >
-                          <ButtonIcon>
-                            <FontAwesomeIcon icon={faTimes} size="sm" />
-                          </ButtonIcon>
-                        </ClearButton>
-                      </FlexContainer>
-                    </FlexContainer>
-                  </>
-                )
-            }
-          </FlexContainer>
-          <ScrollableContainer padding="5px">
-            <TeamsList teams={getFilteredTeams()} selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
-          </ScrollableContainer>
-        </FlexContainer>
-        <FlexContainer>
-          <FlexContainer fullWidth>
-            {
-              selectedTeam && (
-                <>
+                  <FontAwesomeIcon icon={faPlus} size="sm" />
+                </ButtonIcon>
+              </Button>
+              {
+                !isFilterTeams ? (
                   <Button
-                    color="success"
-                    onClick={openNewPlayer}
+                    color="secondary"
+                    onClick={openFilterTeams}
+                    justifyRight
                   >
-                    Add Players
-                  <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faPlus} size="sm" />
+                    Filter
+                    <ButtonIcon spaceLeft>
+                      <FontAwesomeIcon icon={faFilter} size="sm" />
                     </ButtonIcon>
                   </Button>
-                  {
-                    !isFilterPlayers ? (
+                ) : (
+                    <>
                       <Button
-                        color="secondary"
-                        onClick={openFilterPlayers}
+                        color="error"
+                        onClick={closeFilterTeams}
                         justifyRight
                       >
-                        Filter
-                        <ButtonIcon spaceLeft>
-                          <FontAwesomeIcon icon={faFilter} size="sm" />
+                        Close Filter
+                    <ButtonIcon spaceLeft>
+                          <FontAwesomeIcon icon={faTimes} size="sm" />
                         </ButtonIcon>
                       </Button>
-                    ) : (
-                        <>
-                          <Button
-                            color="error"
-                            onClick={closeFilterPlayers}
-                            justifyRight
+                      <FlexContainer align="center" fullWidth>
+                        <FlexContainer padding="0" width="85%">
+                          <Input
+                            type="text"
+                            placeholder="Name, League, Country"
+                            value={filterTeamsInput.value}
+                            onChange={filterTeamsInput.onChange}
+                            color="#fff"
+                            width="100%"
+                          />
+                          <ClearButton
+                            color="#fff"
+                            show={filterTeamsInput.value.length > 0}
+                            onClick={clearFilterTeams}
                           >
-                            Close Filter
-                          <ButtonIcon spaceLeft>
-                              <FontAwesomeIcon icon={faFilter} size="sm" />
+                            <ButtonIcon>
+                              <FontAwesomeIcon icon={faTimes} size="sm" />
                             </ButtonIcon>
-                          </Button>
-                          <FlexContainer align="center" fullWidth>
-                            <FlexContainer padding="0" width="85%">
-                              <Input
-                                type="text"
-                                placeholder="Player Name, Number"
-                                value={filterPlayersInput.value}
-                                onChange={filterPlayersInput.onChange}
-                                color="#fff"
-                                width="100%"
-                              />
-                              <ClearButton
-                                color="#fff"
-                                show={filterPlayersInput.value.length > 0}
-                                onClick={clearFilterPlayers}
-                              >
-                                <ButtonIcon>
-                                  <FontAwesomeIcon icon={faTimes} size="sm" />
-                                </ButtonIcon>
-                              </ClearButton>
+                          </ClearButton>
+                        </FlexContainer>
+                      </FlexContainer>
+                    </>
+                  )
+              }
+            </FlexContainer>
+            <ScrollableContainer padding="5px">
+              <TeamsList teams={getFilteredTeams()} selectedTeam={selectedTeam} setSelectedTeam={setSelectedTeam} />
+            </ScrollableContainer>
+          </ComponentLoader>
+        </FlexContainer>
+        <FlexContainer>
+          <ComponentLoader loading={isPlayersLoading} size={100}>
+            <FlexContainer fullWidth>
+              {
+                selectedTeam && (
+                  <>
+                    <Button
+                      color="success"
+                      onClick={openNewPlayer}
+                    >
+                      Add Players
+                  <ButtonIcon spaceLeft>
+                        <FontAwesomeIcon icon={faPlus} size="sm" />
+                      </ButtonIcon>
+                    </Button>
+                    {
+                      !isFilterPlayers ? (
+                        <Button
+                          color="secondary"
+                          onClick={openFilterPlayers}
+                          justifyRight
+                        >
+                          Filter
+                          <ButtonIcon spaceLeft>
+                            <FontAwesomeIcon icon={faFilter} size="sm" />
+                          </ButtonIcon>
+                        </Button>
+                      ) : (
+                          <>
+                            <Button
+                              color="error"
+                              onClick={closeFilterPlayers}
+                              justifyRight
+                            >
+                              Close Filter
+                          <ButtonIcon spaceLeft>
+                                <FontAwesomeIcon icon={faTimes} size="sm" />
+                              </ButtonIcon>
+                            </Button>
+                            <FlexContainer align="center" fullWidth>
+                              <FlexContainer padding="0" width="85%">
+                                <Input
+                                  type="text"
+                                  placeholder="Player Name, Number"
+                                  value={filterPlayersInput.value}
+                                  onChange={filterPlayersInput.onChange}
+                                  color="#fff"
+                                  width="100%"
+                                />
+                                <ClearButton
+                                  color="#fff"
+                                  show={filterPlayersInput.value.length > 0}
+                                  onClick={clearFilterPlayers}
+                                >
+                                  <ButtonIcon>
+                                    <FontAwesomeIcon icon={faTimes} size="sm" />
+                                  </ButtonIcon>
+                                </ClearButton>
+                              </FlexContainer>
                             </FlexContainer>
-                          </FlexContainer>
-                        </>
-                      )
-                  }
-                </>
-              )
-            }
-          </FlexContainer>
-          <ScrollableContainer padding="5px">
-            <PlayersList
-              players={getFilteredPlayers()}
-              selectedPlayer={selectedPlayer}
-              setSelectedPlayer={setSelectedPlayer}
-              updatePlayers={updatePlayers}
-              deleteFromPlayer={deleteFromPlayer}
-            />
-          </ScrollableContainer>
+                          </>
+                        )
+                    }
+                  </>
+                )
+              }
+            </FlexContainer>
+            <ScrollableContainer padding="5px">
+              <PlayersList
+                players={getFilteredPlayers()}
+                selectedPlayer={selectedPlayer}
+                setSelectedPlayer={setSelectedPlayer}
+                updatePlayers={updatePlayers}
+                deleteFromPlayer={deleteFromPlayer}
+              />
+            </ScrollableContainer>
+          </ComponentLoader>
         </FlexContainer>
       </GridContainer>
       {

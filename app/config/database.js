@@ -24,7 +24,9 @@ function createGamesTable() {
                 psqlDB.schema.createTable('games', table => {
                     table.increments();
                     table.string('home');
+                    table.integer('homeId');
                     table.string('away');
+                    table.integer('awayId');
                     table.string('venue');
                     table.boolean('active');
                     table.timestamps(false, true);
@@ -134,16 +136,19 @@ function connect() {
     });
 }
 
-function getTeam(team) {
-    return new Promise((resolve, reject) => {
-
-    });
+function createGame(home, homeId, away, awayId, venue, active) {
+    return psqlDB
+        .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
+        .insert({ home, homeId, away, awayId, venue, active })
+        .into('games');
 }
 
-function createGame(home, away, venue) {
+function getActiveGame() {
     return psqlDB
-        .insert({ home, away, venue }, ['id', 'home', 'away', 'venue'])
-        .into('games');
+        .select()
+        .from('games')
+        .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
+        .where('active', true)
 }
 
 function getAllGames() {
@@ -282,8 +287,8 @@ module.exports = {
     connect,
     checkConnection,
     createGame,
+    getActiveGame,
     getAllGames,
-    getTeam,
     getAllVenues,
     createVenue,
     updateVenue,

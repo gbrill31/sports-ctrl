@@ -70,6 +70,13 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    const { keyCode, key } = e;
+    if (keyCode === 13 || key === 'Enter') {
+      createNewTeam();
+    }
+  }
+
 
 
   return (
@@ -100,6 +107,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
                     placeholder={`Enter Team Name${!teamName.isValid ? ' *' : ''}`}
                     value={teamName.value}
                     onChange={teamName.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
                 <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -114,6 +122,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
                     placeholder={`Enter Team League${!teamLeague.isValid ? ' *' : ''}`}
                     value={teamLeague.value}
                     onChange={teamLeague.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
                 <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -128,6 +137,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
                     placeholder={`Enter Team Country${!teamCountry.isValid ? ' *' : ''}`}
                     value={teamCountry.value}
                     onChange={teamCountry.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
                 <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -142,6 +152,7 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
                     placeholder={`Enter Team City${!teamCity.isValid ? ' *' : ''}`}
                     value={teamCity.value}
                     onChange={teamCity.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
               </FlexContainer>

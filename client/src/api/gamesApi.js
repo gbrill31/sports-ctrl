@@ -1,14 +1,14 @@
 export const getAllGames = async () => {
   const res = await fetch('/games/all');
-  const games = await res.json();
   if (res.status >= 400) {
     throw new Error('No games found');
   }
+  const games = await res.json();
   return games;
 }
 
-export const createNewGame = async (teams) => {
-  const body = JSON.stringify(teams);
+export const createNewGame = async (game) => {
+  const body = JSON.stringify(game);
   const res = await fetch('/games/create', {
     method: 'POST',
     headers: {
@@ -16,9 +16,18 @@ export const createNewGame = async (teams) => {
     },
     body
   });
-  const game = await res.json();
   if (res.status >= 400) {
     throw new Error('New game creation failed');
   }
-  return game;
+  const newGame = await res.json();
+  return newGame;
 };
+
+export const requestActiveGame = async () => {
+  const res = await fetch('/games/active');
+  if (res.status >= 400) {
+    throw new Error('Cannot Load Active Game');
+  }
+  const activeGame = await res.json();
+  return activeGame;
+}

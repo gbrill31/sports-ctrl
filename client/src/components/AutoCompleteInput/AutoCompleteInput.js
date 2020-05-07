@@ -34,7 +34,7 @@ const OptionItem = styled.div`
 
 export default function AutoCompleteInput({
   id, color, spaceLeft, placeholder, options, getOptionLabel,
-  onSelection, selectedValue
+  onSelection, selectedValue, loading
 }) {
   const [isOptionsExpanded, setIsOptionsExpanded] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -66,7 +66,7 @@ export default function AutoCompleteInput({
   }
 
   const handleSelection = (option) => () => {
-    onSelection(option.name);
+    onSelection(option.id);
     setIsOptionsExpanded(false);
   }
 
@@ -107,6 +107,8 @@ export default function AutoCompleteInput({
             onChange={handleInputChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
+            loading={loading}
+            disabled={loading}
           />
           {
             (

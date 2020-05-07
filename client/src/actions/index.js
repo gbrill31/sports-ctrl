@@ -9,8 +9,10 @@ import {
   gamesError,
   setGames,
   createNewGame,
-  setNewGame,
-  newGameError
+  setGame,
+  gameError,
+  getActiveGame,
+  stopLoading
 } from './gamesControlActions'
 
 import {
@@ -47,11 +49,13 @@ export {
   connectToDB,
   getAllGames,
   gamesError,
+  getActiveGame,
   setGames,
   setRouteName,
   createNewGame,
-  setNewGame,
-  newGameError,
+  setGame,
+  gameError,
+  stopLoading,
   getAllVenues,
   setVenues,
   venuesError,

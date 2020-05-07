@@ -16,17 +16,29 @@ export const gamesError = error => ({
   payload: error
 })
 
-export const createNewGame = teams => ({
-  type: GAMES.CREATE_PENDING,
-  teams
+export const createNewGame = game => ({
+  type: GAMES.GAME_PENDING,
+  game
 });
 
-export const setNewGame = game => ({
-  type: GAMES.CREATE_SUCCESS,
-  payload: game
+export const setGame = game => {
+  return {
+    type: GAMES.GAME_SUCCESS,
+    payload: game
+  }
+};
+
+export const gameError = error => {
+  return {
+    type: GAMES.GAME_FAILED,
+    payload: error
+  }
+};
+
+export const getActiveGame = () => ({
+  type: GAMES.ACTIVE_GAME_PENDING
 });
 
-export const newGameError = error => ({
-  type: GAMES.CREATE_FAILED,
-  payload: error
+export const stopLoading = () => ({
+  type: GAMES.GAME_PENDING_STOP
 });

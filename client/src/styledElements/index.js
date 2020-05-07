@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import FlexContainer from './FlexContainer';
 import GridContainer from './GridContainer';
 import ScrollableContainer from './ScrollableContainer';
@@ -8,11 +6,6 @@ import Button from './Button';
 import ButtonIcon from './ButtonIcon';
 import ClearButton from './ClearButton';
 import Input from './Input';
-
-const SpaceSides = element => styled(element)`
-  margin: 0px 10px;
-`;
-
 
 export {
   MainTitle,

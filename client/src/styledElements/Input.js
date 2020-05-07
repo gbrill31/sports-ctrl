@@ -1,4 +1,17 @@
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
+
+const loading = (props) => {
+  return keyframes`
+  from {
+    border-color: ${props.color || '#444343'};
+  }
+
+  to {
+    border-color: ${props.theme.success.color}
+  }
+`;
+}
+
 
 export default styled.input`
   font-size: 1rem;
@@ -21,4 +34,7 @@ export default styled.input`
   &::placeholder{
     color: ${props => props.error ? 'rgba(200, 0, 0, 0.9)' : 'rgba(150, 150, 150, 0.7)'};
   }
+   ${props => props.loading && css`
+    animation: ${props => loading(props)} 0.4s alternate infinite;
+  `}
   `;

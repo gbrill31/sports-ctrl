@@ -4,7 +4,7 @@ import {
 
 const INTIAL_STATE = {
   game: null,
-  gameCreatePending: false,
+  gamePending: true,
   gameError: null,
   played: [],
   getGamesPending: false,
@@ -13,23 +13,33 @@ const INTIAL_STATE = {
 
 const gamesReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
-    case GAMES.CREATE_PENDING:
+    case (GAMES.GAME_PENDING):
       return {
         ...state,
-        gameCreatePending: true
+        gamePending: true
       }
-    case GAMES.CREATE_SUCCESS:
+    case (GAMES.ACTIVE_GAME_PENDING):
+      return {
+        ...state,
+        gamePending: true
+      }
+    case GAMES.GAME_SUCCESS:
       return {
         ...state,
         game: action.payload,
         gameError: null,
-        gameCreatePending: false
+        gamePending: false
       }
-    case GAMES.CREATE_FAILED:
+    case GAMES.GAME_FAILED:
       return {
         ...state,
         gameError: action.payload,
-        gameCreatePending: false
+        gamePending: false
+      }
+    case GAMES.GAME_PENDING_STOP:
+      return {
+        ...state,
+        gamePending: false
       }
     case GAMES.GET_ALL_PENDING:
       return {

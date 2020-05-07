@@ -35,7 +35,6 @@ export default function NewPlayerFormDialog({
     resetForm();
   }
 
-  // const createPlayer = (player) => dispatch(saveNewPlayer(player));
 
   const validateAllInputs = () => {
     playerName.validateInput();
@@ -47,7 +46,7 @@ export default function NewPlayerFormDialog({
       && playerNumber.ref.current.checkValidity();
   }
 
-  const addPlayers = () => {
+  const savePlayers = () => {
     setIsSaving(true);
     savePlayersToTeam(players)
       .then((players) => {
@@ -57,6 +56,7 @@ export default function NewPlayerFormDialog({
         setIsNewPlayer(false);
       });
   };
+
 
   const addPlayer = () => {
     validateAllInputs();
@@ -84,6 +84,13 @@ export default function NewPlayerFormDialog({
     }
   };
 
+  const handleKeyDown = (e) => {
+    const { keyCode, key } = e;
+    if (keyCode === 13 || key === 'Enter') {
+      addPlayer();
+    }
+  }
+
   const removePlayer = player => () => {
     setPlayers(players.filter(p => (p.name !== player.name && p.number !== player.number)));
   }
@@ -91,7 +98,6 @@ export default function NewPlayerFormDialog({
 
   return (
     <Fragment>
-
       {
         isNewPlayer && (
           <Dialog
@@ -117,6 +123,7 @@ export default function NewPlayerFormDialog({
                     placeholder={`Enter Player Name${!playerName.isValid ? ' *' : ''}`}
                     value={playerName.value}
                     onChange={playerName.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
                 <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -131,6 +138,7 @@ export default function NewPlayerFormDialog({
                     placeholder={`Enter Player Number${!playerNumber.isValid ? ' *' : ''}`}
                     value={playerNumber.value}
                     onChange={playerNumber.onChange}
+                    onKeyDown={handleKeyDown}
                   />
                 </FlexContainer>
               </FlexContainer>
@@ -150,7 +158,7 @@ export default function NewPlayerFormDialog({
                       key={`${player.name}${player.number}`}
                       onClick={removePlayer(player)}
                     >
-                      {player.name}
+                      {`${player.number} ${player.name}`}
                       <ButtonIcon spaceLeft>
                         <FontAwesomeIcon icon={faTimes} size="sm" />
                       </ButtonIcon>
@@ -164,7 +172,7 @@ export default function NewPlayerFormDialog({
                 Cancel
               </Button>
               <Button
-                onClick={addPlayers}
+                onClick={savePlayers}
                 color="success"
                 disabled={players.length === 0 || isSaving}
                 saving={isSaving}
