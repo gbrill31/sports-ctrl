@@ -1,9 +1,7 @@
 export const getAllVenues = async () => {
   const res = await fetch('/venues/all');
+  if (res.status >= 400) throw new Error('No venues found');
   const venues = await res.json();
-  if (res.status >= 400) {
-    throw new Error('No venues found');
-  }
   return venues;
 };
 
@@ -16,10 +14,8 @@ export const saveNewVenue = async (venue) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('New venue creation failed');
   const newVenue = await res.json();
-  if (res.status >= 400) {
-    throw new Error('New venue creation failed');
-  }
   return newVenue;
 };
 
@@ -32,9 +28,7 @@ export const deleteVenue = async (id) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('New venue creation failed');
   const deletedVenue = await res.json();
-  if (res.status >= 400) {
-    throw new Error('New venue creation failed');
-  }
   return deletedVenue;
 };

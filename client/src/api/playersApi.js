@@ -1,18 +1,14 @@
 export const getAllPlayers = async () => {
   const res = await fetch('/players/all');
+  if (res.status >= 400) throw new Error('No players found');
   const players = await res.json();
-  if (res.status >= 400) {
-    throw new Error('No players found');
-  }
   return players;
 };
 
 export const getPlayersByTeam = async (teamId) => {
   const res = await fetch(`/players/team?id=${teamId}`);
+  if (res.status >= 400) throw new Error('No players found');
   const players = await res.json();
-  if (res.status >= 400) {
-    throw new Error('No players found');
-  }
   return players;
 };
 
@@ -25,10 +21,8 @@ export const savePlayersToTeam = async (players) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('New players creation failed');
   const newPlayers = await res.json();
-  if (res.status >= 400) {
-    throw new Error('New players creation failed');
-  }
   return newPlayers;
 };
 
@@ -41,9 +35,7 @@ export const deletePlayer = async (id) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('Player deletion failed');
   const deletedPlayer = await res.json();
-  if (res.status >= 400) {
-    throw new Error('Player deletion failed');
-  }
   return deletedPlayer;
 };

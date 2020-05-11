@@ -1,8 +1,6 @@
 export const getAllGames = async () => {
   const res = await fetch('/games/all');
-  if (res.status >= 400) {
-    throw new Error('No games found');
-  }
+  if (res.status >= 400) throw new Error('No games found');
   const games = await res.json();
   return games;
 }
@@ -16,18 +14,14 @@ export const createNewGame = async (game) => {
     },
     body
   });
-  if (res.status >= 400) {
-    throw new Error('New game creation failed');
-  }
+  if (res.status >= 400) throw new Error('New game creation failed');
   const newGame = await res.json();
   return newGame;
 };
 
 export const requestActiveGame = async () => {
   const res = await fetch('/games/active');
-  if (res.status >= 400) {
-    throw new Error('Cannot Load Active Game');
-  }
+  if (res.status >= 400) throw new Error('Cannot Load Active Game');
   const activeGame = await res.json();
   return activeGame;
 }

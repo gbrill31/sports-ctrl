@@ -1,9 +1,7 @@
 export const getAllTeams = async () => {
   const res = await fetch('/teams/all');
+  if (res.status >= 400) throw new Error('No teams found');
   const teams = await res.json();
-  if (res.status >= 400) {
-    throw new Error('No teams found');
-  }
   return teams;
 };
 
@@ -16,10 +14,8 @@ export const saveNewTeam = async (team) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('New team creation failed');
   const newTeam = await res.json();
-  if (res.status >= 400) {
-    throw new Error('New team creation failed');
-  }
   return newTeam;
 };
 
@@ -32,9 +28,7 @@ export const deleteTeam = async (id) => {
     },
     body
   });
+  if (res.status >= 400) throw new Error('Team deletion failed');
   const deletedTeam = await res.json();
-  if (res.status >= 400) {
-    throw new Error('Team deletion failed');
-  }
   return deletedTeam;
 };

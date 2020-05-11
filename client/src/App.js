@@ -77,6 +77,7 @@ function App() {
       setCurrentRoute(location.pathname);
     });
     return () => {
+      HttpInterceptors.clearInterceptors();
       unlisten();
     }
   }, [connectDB, history, setCurrentRoute]);
