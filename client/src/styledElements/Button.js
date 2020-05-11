@@ -15,15 +15,17 @@ const saving = (props) => {
 export default styled.button`
   background: ${props => (props.color ? props.theme[props.color].color : props.theme.primary.color)};
   color: #fff;
+  width: ${props => props.fullWidth ? '100%' : (props.width || '')};
   font-family: ${props => props.theme.font};
   font-size: 0.8rem;
   font-weight: bold;
   border: ${props => props.rounded ? '1px solid transparent' : 'none'};
-  border-radius: 7px;
+  border-radius: ${props => !props.noRaduis ? '7px' : ''};
   padding: 10px;
   margin: 0px 5px;
   transition: background 0.2s ease;
   position: relative;
+
   ${props => props.saving && css`
     animation: ${props => saving(props)} 1s alternate infinite;
   `}

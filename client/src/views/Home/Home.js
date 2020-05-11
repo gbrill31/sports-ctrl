@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { MainTitle } from '../../styledElements';
 
 import GamesList from '../../components/GamesList/GamesList';
 
@@ -27,7 +26,6 @@ function Home() {
 
   return (
     <div>
-      <MainTitle>Games Played</MainTitle>
       <GamesList games={games} isLoading={gamesLoading} />
     </div>
   );

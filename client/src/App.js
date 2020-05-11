@@ -3,6 +3,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled, { ThemeProvider } from 'styled-components';
+import { HttpInterceptors } from './utils';
 import Home from './views/Home/Home';
 import Venues from './views/Venues/Venues';
 import Teams from './views/TeamsManagement/TeamsManagement';
@@ -70,6 +71,7 @@ function App() {
 
   useEffect(() => {
     connectDB();
+    HttpInterceptors.initInterceptors(history);
     setCurrentRoute(history.location.pathname);
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);

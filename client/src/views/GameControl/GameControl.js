@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { faBasketballBall } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { toast } from 'react-toastify';
 
 import AutoCompleteInput from '../../components/AutoCompleteInput/AutoCompleteInput';
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
@@ -29,7 +28,6 @@ export default function GameControl() {
   const isDBConnected = useSelector(state => state.db.isConnected);
   const game = useSelector(state => state.games.game);
   const isGameLoading = useSelector(state => state.games.gamePending);
-  const gameLoadError = useSelector(state => state.games.gameError);
 
   const venues = useSelector(state => state.venues.items);
   const isVenuesLoading = useSelector(state => state.venues.getVenuesPending);
@@ -70,11 +68,6 @@ export default function GameControl() {
     }
   }, [getVenues, getTeams, game, isGameLoading, stopCurrentGameLoading, isDBConnected]);
 
-  useEffect(() => {
-    if (gameLoadError) {
-      toast.error(gameLoadError.message);
-    }
-  }, [gameLoadError]);
 
   const startNewGame = () => {
     const game = {
@@ -90,11 +83,11 @@ export default function GameControl() {
 
   return (
     <>
-      <MainTitle>Select Teams and Venue</MainTitle>
       <ComponentLoader loading={isGameLoading}>
         {
           !game ? (
             <>
+              <MainTitle>Select Teams and Venue</MainTitle>
               <FlexContainer align="baseline" justify="center">
                 <AutoCompleteInput
                   id="home"

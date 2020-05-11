@@ -5,6 +5,10 @@ gameRouter.get('/all', (req, res) => {
     psqlDB.getAllGames().then((games) => {
         res.json(games).status(200);
     }, (err) => {
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Could Not Load All Games Played'
+        }));
         res.status(err.code || 500);
     });
 });
@@ -15,6 +19,10 @@ gameRouter.post('/create', function (req, res) {
         .then((data) => {
             res.json(data[0]).status(200);
         }, (err) => {
+            res.header('notification', JSON.stringify({
+                type: 'error',
+                message: 'Could Not Create A New Game'
+            }));
             res.status(err.code || 500);
         });
 });
@@ -23,6 +31,10 @@ gameRouter.get('/active', function (req, res) {
     psqlDB.getActiveGame().then((game) => {
         res.json(game.length ? game[0] : null).status(200);
     }, (err) => {
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Cannot Load Active Game'
+        }));
         res.status(err.code || 500).json();
     });
 });
@@ -31,7 +43,11 @@ gameRouter.get('/team', function (req, res) {
     psqlDB.getTeam(team).then((team) => {
         res.json(team).status(200);
     }, (err) => {
-        res.status(err.code || 500);
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Cannot Load Team'
+        }));
+        res.status(err.code || 500).json();
     });
 });
 
