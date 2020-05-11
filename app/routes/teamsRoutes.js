@@ -5,7 +5,11 @@ teamsRouter.get('/all', (req, res) => {
     psqlDB.getAllTeams().then((teams) => {
         res.json(teams).status(200);
     }, (err) => {
-        res.status(err.code || 500);
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Could Not Load All Teams'
+        }));
+        res.status(404).json(err);
     });
 });
 
@@ -16,14 +20,22 @@ teamsRouter.post('/save', function (req, res) {
             .then((data) => {
                 res.json(data[0]).status(200);
             }, (err) => {
-                res.status(err.code || 500);
+                res.header('notification', JSON.stringify({
+                    type: 'error',
+                    message: 'Could Not Save Team'
+                }));
+                res.status(500).json(err);
             });
     } else {
         psqlDB.updateTeam(id, name, league, country, city)
             .then((data) => {
                 res.json(data[0]).status(200);
             }, (err) => {
-                res.status(err.code || 500);
+                res.header('notification', JSON.stringify({
+                    type: 'error',
+                    message: 'Could Not Save Team'
+                }));
+                res.status(500).json(err);
             })
     }
 });
@@ -34,7 +46,11 @@ teamsRouter.post('/delete', function (req, res) {
         .then(() => {
             res.json(id).status(200);
         }, (err) => {
-            res.status(err.code || 500);
+            res.header('notification', JSON.stringify({
+                type: 'error',
+                message: 'Could Not Delete Team'
+            }));
+            res.status(500).json(err);
         });
 });
 

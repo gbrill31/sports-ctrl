@@ -70,8 +70,8 @@ function App() {
   const setCurrentRoute = useCallback((route) => dispatch(setRouteName(route)), [dispatch]);
 
   useEffect(() => {
-    connectDB();
     HttpInterceptors.initInterceptors(history);
+    connectDB();
     setCurrentRoute(history.location.pathname);
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);

@@ -129,7 +129,9 @@ function connect() {
             ])
                 .then(() => {
                     resolve();
-                }, err => reject(err));
+                }, err => {
+                    reject(err)
+                });
         }).catch((err) => {
             reject(err);
         })

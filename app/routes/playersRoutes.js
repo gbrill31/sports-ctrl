@@ -5,7 +5,11 @@ playersRouter.get('/all', (req, res) => {
     psqlDB.getAllPlayers().then((players) => {
         res.json(players).status(200);
     }, (err) => {
-        res.status(err.code || 500);
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Could Not Load All Players'
+        }));
+        res.status(500).json(err);
     });
 });
 playersRouter.get('/team', (req, res) => {
@@ -13,7 +17,11 @@ playersRouter.get('/team', (req, res) => {
     psqlDB.getPlayersByTeam(id).then((players) => {
         res.json(players).status(200);
     }, (err) => {
-        res.status(err.code || 500);
+        res.header('notification', JSON.stringify({
+            type: 'error',
+            message: 'Could Not Load Players For Requested Team'
+        }));
+        res.status(404).json(err);
     });
 });
 
@@ -27,14 +35,22 @@ playersRouter.post('/save', function (req, res) {
             .then((data) => {
                 res.json(data).status(200);
             }, (err) => {
-                res.status(err.code || 500);
+                res.header('notification', JSON.stringify({
+                    type: 'error',
+                    message: 'Could Not Add Players'
+                }));
+                res.status(500).json(err);
             });
     } else {
         psqlDB.updatePlayer(players)
             .then((data) => {
                 res.json(data[0]).status(200);
             }, (err) => {
-                res.status(err.code || 500);
+                res.header('notification', JSON.stringify({
+                    type: 'error',
+                    message: 'Could Not Update Players'
+                }));
+                res.status(500).json(err);
             });
     }
 });
@@ -45,7 +61,11 @@ playersRouter.post('/delete', function (req, res) {
         .then(() => {
             res.json(id).status(200);
         }, (err) => {
-            res.status(err.code || 500);
+            res.header('notification', JSON.stringify({
+                type: 'error',
+                message: 'Could Not Delete Player'
+            }));
+            res.status(406).json(err);
         });
 });
 

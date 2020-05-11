@@ -9,7 +9,7 @@ gameRouter.get('/all', (req, res) => {
             type: 'error',
             message: 'Could Not Load All Games Played'
         }));
-        res.status(err.code || 500);
+        res.status(err.code || 404);
     });
 });
 
@@ -35,7 +35,7 @@ gameRouter.get('/active', function (req, res) {
             type: 'error',
             message: 'Cannot Load Active Game'
         }));
-        res.status(err.code || 500).json();
+        res.status(err.code || 404).json();
     });
 });
 
@@ -47,7 +47,7 @@ gameRouter.get('/team', function (req, res) {
             type: 'error',
             message: 'Cannot Load Team'
         }));
-        res.status(err.code || 500).json();
+        res.status(err.code || 404).json();
     });
 });
 
