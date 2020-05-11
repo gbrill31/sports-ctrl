@@ -12,8 +12,6 @@ function Home() {
   const dispatch = useDispatch();
 
   const isDBConnected = useSelector(state => state.db.isConnected);
-  const games = useSelector(state => state.games.played);
-  const gamesLoading = useSelector(state => state.games.getGamesPending);
 
   const getPlayedGames = useCallback(() => dispatch(getAllGames()), [dispatch]);
 
@@ -26,7 +24,7 @@ function Home() {
 
   return (
     <div>
-      <GamesList games={games} isLoading={gamesLoading} />
+      <GamesList />
     </div>
   );
 };

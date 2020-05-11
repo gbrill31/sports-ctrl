@@ -2,7 +2,7 @@ const connectionConfig = {
     attempts: 3
 };
 
-let psqlDB, connectionAttempts = 0, requests = [];
+let DB, connectionAttempts = 0, requests = [];
 
 const config = {
     client: 'pg',
@@ -19,9 +19,9 @@ const knex = require('knex');
 
 function createGamesTable() {
     return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('games').then((exists) => {
+        DB.schema.hasTable('games').then((exists) => {
             if (!exists) {
-                psqlDB.schema.createTable('games', table => {
+                DB.schema.createTable('games', table => {
                     table.increments();
                     table.string('home');
                     table.integer('homeId');
@@ -42,9 +42,9 @@ function createGamesTable() {
 
 function createVenuesTable() {
     return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('venues').then((exists) => {
+        DB.schema.hasTable('venues').then((exists) => {
             if (!exists) {
-                psqlDB.schema.createTable('venues', table => {
+                DB.schema.createTable('venues', table => {
                     table.increments();
                     table.string('name');
                     table.string('country');
@@ -63,9 +63,9 @@ function createVenuesTable() {
 
 function createTeamsTable() {
     return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('teams').then((exists) => {
+        DB.schema.hasTable('teams').then((exists) => {
             if (!exists) {
-                psqlDB.schema.createTable('teams', table => {
+                DB.schema.createTable('teams', table => {
                     table.increments();
                     table.string('name');
                     table.string('league');
@@ -84,9 +84,9 @@ function createTeamsTable() {
 
 function createPlayersTable() {
     return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('players').then((exists) => {
+        DB.schema.hasTable('players').then((exists) => {
             if (!exists) {
-                psqlDB.schema.createTable('players', table => {
+                DB.schema.createTable('players', table => {
                     table.increments();
                     table.string('name');
                     table.integer('number');
@@ -106,153 +106,11 @@ function createPlayersTable() {
 
 //Exported functions
 
-function checkConnection() {
-    return new Promise((resolve, reject) => {
-        psqlDB.raw('SELECT 1').then((message) => {
-            resolve(message);
-        }).catch((err) => {
-            reject(err);
-        });
-    });
-}
-
-function connect() {
-    return new Promise((resolve, reject) => {
-        psqlDB = knex(config);
-
-        checkConnection().then(() => {
-            Promise.all([
-                createGamesTable(),
-                createVenuesTable(),
-                createTeamsTable(),
-                createPlayersTable()
-            ])
-                .then(() => {
-                    resolve();
-                }, err => {
-                    reject(err)
-                });
-        }).catch((err) => {
-            reject(err);
-        })
-    });
-}
-
-function createGame(home, homeId, away, awayId, venue, active) {
-    return psqlDB
-        .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
-        .insert({ home, homeId, away, awayId, venue, active })
-        .into('games');
-}
-
-function getActiveGame() {
-    return psqlDB
-        .select()
-        .from('games')
-        .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
-        .where('active', true)
-}
-
-function getAllGames() {
-    return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('games').then((exists) => {
-            if (exists) {
-                psqlDB.select().table('games').then((games) => {
-                    resolve(games)
-                }, err => reject(err));
-            } else {
-                resolve();
-            }
-        }, err => reject(err));
-    });
-}
-
-function createVenue(name, country, city, seats) {
-    return psqlDB
-        .insert({ name, country, city, seats }, ['id', 'name', 'country', 'city', 'seats'])
-        .into('venues');
-}
-
-function updateVenue(id, name, country, city, seats) {
-    return psqlDB('venues')
-        .where('id', id)
-        .returning(['id', 'name', 'country', 'city', 'seats'])
-        .update({ name, country, city, seats, 'updated_at': new Date() });
-}
-
-function deleteVenue(id) {
-    return psqlDB('venues')
-        .where('id', id)
-        .del();
-}
-
-function getAllVenues() {
-    return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('venues').then((exists) => {
-            if (exists) {
-                psqlDB.select().table('venues').then((venues) => {
-                    resolve(venues)
-                }, err => reject(err));
-            } else {
-                resolve();
-            }
-        }, err => reject(err));
-    });
-}
-
-function getAllTeams() {
-    return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('teams').then((exists) => {
-            if (exists) {
-                psqlDB.select().table('teams').then((teams) => {
-                    resolve(teams)
-                }, err => reject(err));
-            } else {
-                resolve();
-            }
-        }, err => reject(err));
-    });
-}
-
-function createTeam(name, league, country, city) {
-    return psqlDB
-        .returning(['id', 'name', 'league', 'country', 'city'])
-        .insert({ name, league, country, city })
-        .into('teams');
-}
-
-function updateTeam(id, name, league, country, city) {
-    return psqlDB('teams')
-        .where('id', id)
-        .returning(['id', 'name', 'league', 'country', 'city'])
-        .update({ name, league, country, city, 'updated_at': new Date() });
-}
-
-function deleteTeam(id) {
-    return psqlDB('teams')
-        .where('id', id)
-        .del();
-}
-
-function getAllPlayers() {
-    return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('players').then((exists) => {
-            if (exists) {
-                psqlDB.select().table('players').then((players) => {
-                    resolve(players)
-                }, err => reject(err));
-            } else {
-                resolve();
-            }
-        }, err => reject(err));
-    });
-}
-
 function getPlayersByTeam(teamId) {
     return new Promise((resolve, reject) => {
-        psqlDB.schema.hasTable('players').then((exists) => {
+        DB.schema.hasTable('players').then((exists) => {
             if (exists) {
-                psqlDB
+                DB
                     .select()
                     .where('teamId', teamId)
                     .table('players').then((players) => {
@@ -265,43 +123,208 @@ function getPlayersByTeam(teamId) {
     });
 }
 
-function addPlayers(players) {
-    return psqlDB
-        .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
-        .insert(players)
-        .into('players');
+const DB_EXPORTS = {
+    checkConnection: function () {
+        return new Promise((resolve, reject) => {
+            DB.raw('SELECT 1').then((message) => {
+                resolve(message);
+            }).catch((err) => {
+                reject(err);
+            });
+        });
+    },
+
+    connect: function () {
+        return new Promise((resolve, reject) => {
+            DB = knex(config);
+
+            checkConnection().then(() => {
+                Promise.all([
+                    createGamesTable(),
+                    createVenuesTable(),
+                    createTeamsTable(),
+                    createPlayersTable()
+                ])
+                    .then(() => {
+                        resolve();
+                    }, err => {
+                        reject(err)
+                    });
+            }).catch((err) => {
+                reject(err);
+            })
+        });
+    },
+
+    createGame: function (home, homeId, away, awayId, venue, active) {
+        return new Promise((resolve, reject) => {
+            DB
+                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
+                .insert({ home, homeId, away, awayId, venue, active })
+                .into('games')
+                .asCallback(function (err, rows) {
+                    if (err) reject(err);
+                    if (rows.length) {
+                        const game = rows[0];
+                        Promise.all([
+                            getPlayersByTeam(game.homeId),
+                            getPlayersByTeam(game.awayId)
+                        ]).then((data) => {
+                            Object.assign(game, {
+                                homePlayers: data[0],
+                                awayPlayers: data[1]
+                            });
+                            resolve(game);
+                        }, err => reject(err));
+                    } else {
+                        resolve(null);
+                    }
+                });
+        })
+    },
+
+    getActiveGame: function () {
+        return new Promise((resolve, reject) => {
+            DB.select().from('games')
+                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
+                .where('active', true)
+                .asCallback(function (err, rows) {
+                    if (err) reject(err);
+                    if (rows.length) {
+                        const game = rows[0];
+                        Promise.all([
+                            getPlayersByTeam(game.homeId),
+                            getPlayersByTeam(game.awayId)
+                        ]).then((data) => {
+                            Object.assign(game, {
+                                homePlayers: data[0],
+                                awayPlayers: data[1]
+                            });
+                            resolve(game);
+                        }, err => reject(err));
+                    } else {
+                        resolve(null);
+                    }
+                });
+        });
+
+    },
+
+    getAllGames: function () {
+        return new Promise((resolve, reject) => {
+            DB.schema.hasTable('games').then((exists) => {
+                if (exists) {
+                    DB.select().table('games').then((games) => {
+                        resolve(games)
+                    }, err => reject(err));
+                } else {
+                    resolve();
+                }
+            }, err => reject(err));
+        });
+    },
+
+    createVenue: function (name, country, city, seats) {
+        return DB
+            .insert({ name, country, city, seats }, ['id', 'name', 'country', 'city', 'seats'])
+            .into('venues');
+    },
+
+    updateVenue: function (id, name, country, city, seats) {
+        return DB('venues')
+            .where('id', id)
+            .returning(['id', 'name', 'country', 'city', 'seats'])
+            .update({ name, country, city, seats, 'updated_at': new Date() });
+    },
+
+    deleteVenue: function (id) {
+        return DB('venues')
+            .where('id', id)
+            .del();
+    },
+
+    getAllVenues: function () {
+        return new Promise((resolve, reject) => {
+            DB.schema.hasTable('venues').then((exists) => {
+                if (exists) {
+                    DB.select().table('venues').then((venues) => {
+                        resolve(venues)
+                    }, err => reject(err));
+                } else {
+                    resolve();
+                }
+            }, err => reject(err));
+        });
+    },
+
+    getAllTeams: function () {
+        return new Promise((resolve, reject) => {
+            DB.schema.hasTable('teams').then((exists) => {
+                if (exists) {
+                    DB.select().table('teams').then((teams) => {
+                        resolve(teams)
+                    }, err => reject(err));
+                } else {
+                    resolve();
+                }
+            }, err => reject(err));
+        });
+    },
+
+    createTeam: function (name, league, country, city) {
+        return DB
+            .returning(['id', 'name', 'league', 'country', 'city'])
+            .insert({ name, league, country, city })
+            .into('teams');
+    },
+
+    updateTeam: function (id, name, league, country, city) {
+        return DB('teams')
+            .where('id', id)
+            .returning(['id', 'name', 'league', 'country', 'city'])
+            .update({ name, league, country, city, 'updated_at': new Date() });
+    },
+
+    deleteTeam: function (id) {
+        return DB('teams')
+            .where('id', id)
+            .del();
+    },
+
+    getAllPlayers: function () {
+        return new Promise((resolve, reject) => {
+            DB.schema.hasTable('players').then((exists) => {
+                if (exists) {
+                    DB.select().table('players').then((players) => {
+                        resolve(players)
+                    }, err => reject(err));
+                } else {
+                    resolve();
+                }
+            }, err => reject(err));
+        });
+    },
+
+    getPlayersByTeam: getPlayersByTeam,
+
+    addPlayers: function (players) {
+        return DB
+            .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
+            .insert(players)
+            .into('players');
+    },
+
+    updatePlayer: function ({ id, name, number, team, teamId }) {
+        return DB('players')
+            .where('id', id)
+            .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
+            .update({ name, number, team, teamId, 'updated_at': new Date() });
+    },
+    deletePlayer: function (id) {
+        return DB('players')
+            .where('id', id)
+            .del();
+    }
 }
 
-function updatePlayer({ id, name, number, team, teamId }) {
-    return psqlDB('players')
-        .where('id', id)
-        .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
-        .update({ name, number, team, teamId, 'updated_at': new Date() });
-}
-
-function deletePlayer(id) {
-    return psqlDB('players')
-        .where('id', id)
-        .del();
-}
-
-module.exports = {
-    connect,
-    checkConnection,
-    createGame,
-    getActiveGame,
-    getAllGames,
-    getAllVenues,
-    createVenue,
-    updateVenue,
-    deleteVenue,
-    getAllTeams,
-    createTeam,
-    updateTeam,
-    deleteTeam,
-    getAllPlayers,
-    getPlayersByTeam,
-    addPlayers,
-    updatePlayer,
-    deletePlayer
-};
+module.exports = DB_EXPORTS;

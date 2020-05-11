@@ -16,8 +16,8 @@ gameRouter.get('/all', (req, res) => {
 gameRouter.post('/create', function (req, res) {
     const { home, homeId, away, awayId, venue, active } = req.body;
     psqlDB.createGame(home, homeId, away, awayId, venue, active)
-        .then((data) => {
-            res.json(data[0]).status(200);
+        .then((game) => {
+            res.json(game).status(200);
         }, (err) => {
             res.header('notification', JSON.stringify({
                 type: 'error',
@@ -29,7 +29,7 @@ gameRouter.post('/create', function (req, res) {
 
 gameRouter.get('/active', function (req, res) {
     psqlDB.getActiveGame().then((game) => {
-        res.json(game.length ? game[0] : null).status(200);
+        res.json(game).status(200);
     }, (err) => {
         res.header('notification', JSON.stringify({
             type: 'error',

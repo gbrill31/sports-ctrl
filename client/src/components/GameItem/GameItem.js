@@ -14,6 +14,14 @@ const iconLoop = keyframes`
   }
 `;
 
+const ItemWrapper = styled.div`
+    background: ${props => props.active ? 'inherit' : '#fff'};
+    
+    &:nth-child(2n) {
+      background: #e2e2e2;
+    }
+`;
+
 const TeamName = styled.h1`
   text-transform: capitalize;
   color: ${props => props.theme.primary.color};
@@ -32,23 +40,25 @@ const ActiveIcon = styled.div`
 
 const GameItem = ({ game }) => {
   return (
-    <FlexContainer
-      fullWidth
-      align="center"
-      justify="space-evenly"
-    >
-      <TeamName>{game.home}</TeamName>
-      <Title>VS</Title>
-      <TeamName>{game.away}</TeamName>
-      <Title>{game.venue}</Title>
-      {
-        game.active && (
-          <ActiveIcon>
-            <FontAwesomeIcon icon={faChevronRight} size="4x" />
-          </ActiveIcon>
-        )
-      }
-    </FlexContainer>
+    <ItemWrapper active={game.active}>
+      <FlexContainer
+        fullWidth
+        align="center"
+        justify="space-evenly"
+      >
+        <TeamName>{game.home}</TeamName>
+        <Title>VS</Title>
+        <TeamName>{game.away}</TeamName>
+        <Title>{game.venue}</Title>
+        {
+          game.active && (
+            <ActiveIcon>
+              <FontAwesomeIcon icon={faChevronRight} size="4x" />
+            </ActiveIcon>
+          )
+        }
+      </FlexContainer>
+    </ItemWrapper>
   )
 };
 

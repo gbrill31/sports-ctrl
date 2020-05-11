@@ -3,9 +3,10 @@ import {
 } from '../constants';
 
 const INTIAL_STATE = {
-  game: null,
-  gamePending: true,
-  gameError: null,
+  activeGame: null,
+  activeGamePending: true,
+  activeGameError: null,
+  active: {},
   played: [],
   getGamesPending: false,
   gamesError: null
@@ -16,30 +17,30 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
     case (GAMES.GAME_PENDING):
       return {
         ...state,
-        gamePending: true
+        activeGamePending: true
       }
     case (GAMES.ACTIVE_GAME_PENDING):
       return {
         ...state,
-        gamePending: true
+        activeGamePending: true
       }
     case GAMES.GAME_SUCCESS:
       return {
         ...state,
-        game: action.payload,
-        gameError: null,
-        gamePending: false
+        activeGame: action.payload,
+        activeGameError: null,
+        activeGamePending: false
       }
     case GAMES.GAME_FAILED:
       return {
         ...state,
-        gameError: action.payload,
-        gamePending: false
+        activeGameError: action.payload,
+        activeGamePending: false
       }
     case GAMES.GAME_PENDING_STOP:
       return {
         ...state,
-        gamePending: false
+        activeGamePending: false
       }
     case GAMES.GET_ALL_PENDING:
       return {
@@ -50,6 +51,7 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         played: action.payload,
+        active: action.payload.find(game => game.active),
         getGamesPending: false
       }
     case GAMES.GET_ALL_FAILED:

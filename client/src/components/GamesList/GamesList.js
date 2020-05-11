@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { MainTitle, Button } from '../../styledElements';
 
@@ -8,23 +8,13 @@ import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import GameItem from '../GameItem/GameItem';
 
 
-const ListWrapper = styled.div`
-    margin: 15px 0 15px 0;
-    
-    &:nth-child(2n) {
-      background-color: #e2e2e2;
-    }
-`;
-
-export default function GamesList({ games, isLoading }) {
+export default function GamesList() {
   const history = useHistory();
-  const [activeGame, setActiveGame] = useState(null);
 
-  useEffect(() => {
-    if (games && !activeGame) {
-      setActiveGame(games.find(game => game.active));
-    }
-  }, [games, activeGame]);
+  const games = useSelector(state => state.games.played);
+  const gamesLoading = useSelector(state => state.games.getGamesPending);
+  const activeGame = useSelector(state => state.games.active);
+
 
   const goToActiveGame = () => {
     history.push('/game');
@@ -32,9 +22,9 @@ export default function GamesList({ games, isLoading }) {
 
   return (
     <>
-      <ComponentLoader loading={isLoading}>
+      <ComponentLoader loading={gamesLoading}>
         {
-          activeGame && (
+          activeGame && activeGame.id && (
             <>
               <MainTitle>Active Game</MainTitle>
               <Button
@@ -49,13 +39,11 @@ export default function GamesList({ games, isLoading }) {
           )
         }
         <MainTitle>Games Played</MainTitle>
-        <ListWrapper>
-          {
-            games && games
-              .filter(game => !game.active)
-              .map(game => <GameItem key={game.id} game={game} />)
-          }
-        </ListWrapper>
+        {
+          games && games
+            .filter(game => !game.active)
+            .map(game => <GameItem key={game.id} game={game} />)
+        }
       </ComponentLoader>
     </>
   );

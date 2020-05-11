@@ -35,9 +35,12 @@ function HeaderNav() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+
   const isConnecting = useSelector(state => state.db.isPending);
   const isDBConnected = useSelector(state => state.db.isConnected);
   const currentRoute = useSelector(state => state.routes.currentRoute);
+
+  const isActiveGame = useSelector(state => state.games.active);
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
 
@@ -70,23 +73,27 @@ function HeaderNav() {
               onClick={goToRoute('/teams')}
             >
               Manage Teams
-          </Button>
+            </Button>
             <Button
               color="primary"
               onClick={goToRoute('/venues')}
             >
               Manage Venues
-          </Button>
-            <Button
-              justifyRight
-              color="primary"
-              onClick={goToRoute('/game')}
-            >
-              Start A New Game
-              <ButtonIcon spaceLeft>
-                <FontAwesomeIcon icon={faPlus} size="sm" />
-              </ButtonIcon>
             </Button>
+            {
+              !isActiveGame ? (
+                <Button
+                  justifyRight
+                  color="primary"
+                  onClick={goToRoute('/game')}
+                >
+                  Start A New Game
+                  <ButtonIcon spaceLeft>
+                    <FontAwesomeIcon icon={faPlus} size="sm" />
+                  </ButtonIcon>
+                </Button>
+              ) : null
+            }
           </Fragment>
         ) : (
             <Button
