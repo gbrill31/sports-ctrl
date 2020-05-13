@@ -23,9 +23,9 @@ function Home() {
 
 
   return (
-    <div>
+    <>
       <GamesList />
-    </div>
+    </>
   );
 };
 

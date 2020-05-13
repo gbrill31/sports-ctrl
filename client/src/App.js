@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import styled, { ThemeProvider } from 'styled-components';
 import { HttpInterceptors } from './utils';
 import Home from './views/Home/Home';
-import Venues from './views/Venues/Venues';
+import Venues from './views/VenuesManagement/VenuesManagement';
 import Teams from './views/TeamsManagement/TeamsManagement';
 import GameControl from './views/GameControl/GameControl';
 import HeaderNav from './components/HeaderNav/HeaderNav';
@@ -48,12 +48,15 @@ const theme = {
 
 const AppContainer = styled.div`
   background-color: #272932;
-  min-height: 100vh;
   position: relative;
+  width: 100vw;
+  overflow: hidden;
+
 `;
 
 const AppMainContent = styled.main`
   padding-top: 100px;
+  height: calc(100vh - 100px);
 `;
 
 toast.configure({

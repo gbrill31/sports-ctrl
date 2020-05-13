@@ -6,6 +6,7 @@ import Team from '../classes/Team';
 
 const INTIAL_STATE = {
   items: [],
+  selected: null,
   getTeamsPending: false,
   getTeamsError: null,
   teamSavePending: false,
@@ -18,6 +19,11 @@ const getMappedTeams = teams => teams.map(team => new Team(team));
 
 const teamsReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
+    case TEAMS.SET_SELECTED:
+      return {
+        ...state,
+        selected: new Team(action.payload)
+      }
     case TEAMS.GET_TEAMS_PENDING:
       return {
         ...state,
@@ -27,6 +33,7 @@ const teamsReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         items: getMappedTeams(action.payload),
+        selected: null,
         getTeamsError: null,
         getTeamsPending: false
       }

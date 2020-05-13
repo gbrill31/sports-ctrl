@@ -11,7 +11,7 @@ import {
 } from '../../../actions';
 
 const ItemContainer = styled.div`
-  width: fit-content;
+  width: 90%;
   border-radius: 15px;
   background-color: #fff;
   color: #333;

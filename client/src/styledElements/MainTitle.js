@@ -5,4 +5,6 @@ export default styled.h1`
   text-align: left;
   color: #dcdbdb;
   padding: 15px;
+  margin: ${props => props.margin || 'initial'};
+  text-transform : ${props => props.capitalize ? 'capitalize' : ''};
   `;

@@ -14,7 +14,7 @@ import {
 
 
 const ItemContainer = styled.div`
-  width: fit-content;
+  width: 90%;
   background-color: #fff;
   color: #333;
   text-transform: capitalize;
@@ -92,6 +92,7 @@ export default function PlayersListItem({
   const [isEditPlayer, setIsEditPlayer] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const selectPlayer = () => setSelectedPlayer(player);
+
   const playerName = useFormInput('');
   const playerNumber = useFormInput('');
 

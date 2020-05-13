@@ -30,6 +30,7 @@ import {
 import {
   getAllTeams,
   setTeams,
+  setSelectedTeam,
   teamsError,
   saveNewTeam,
   setNewTeam,
@@ -38,6 +39,20 @@ import {
   clearDeletedTeam,
   deleteTeamError
 } from './teamsActions';
+
+import {
+  getAllPlayers,
+  getPlayersTeamId,
+  setPlayers,
+  playersError,
+  savePlayers,
+  setNewPlayers,
+  newPlayersError,
+  deletePlayer,
+  clearDeletedPlayer,
+  deletePlayerError,
+  setSelectedPlayer
+} from './playersActions';
 
 import {
   setRouteName
@@ -66,6 +81,7 @@ export {
   clearDeletedVenue,
   deleteVenueError,
   getAllTeams,
+  setSelectedTeam,
   setTeams,
   teamsError,
   saveNewTeam,
@@ -73,5 +89,16 @@ export {
   newTeamError,
   deleteTeam,
   clearDeletedTeam,
-  deleteTeamError
+  deleteTeamError,
+  getAllPlayers,
+  setPlayers,
+  playersError,
+  savePlayers,
+  setNewPlayers,
+  newPlayersError,
+  deletePlayer,
+  clearDeletedPlayer,
+  deletePlayerError,
+  getPlayersTeamId,
+  setSelectedPlayer
 }

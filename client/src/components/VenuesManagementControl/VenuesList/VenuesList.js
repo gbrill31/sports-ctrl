@@ -3,6 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import PromptDialog from '../../PromptDialog/PromptDialog';
 import VenueListItem from '../VenueListItem/VenueListItem';
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import { FlexContainer } from '../../../styledElements';
 
 import { getAllVenues, deleteVenue } from '../../../actions';
 
@@ -37,6 +39,7 @@ export default function VenuesList() {
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const venues = useSelector(state => state.venues.items);
+  const isVenuesLoading = useSelector(state => state.venues.getVenuesPending);
   const isDeleting = useSelector(state => state.venues.venueDeletePending);
 
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
@@ -62,17 +65,21 @@ export default function VenuesList() {
 
   return (
     <Fragment>
-      {
-        venues && venues
-          .sort((venueA, venueB) => venueA.name.toLowerCase() > venueB.name.toLowerCase() ? 1 : -1)
-          .map(venue => (
-            <VenueListItem
-              key={venue.id}
-              venue={venue}
-              deleteVenuePrompt={deleteVenuePrompt}
-            />
-          ))
-      }
+      <ComponentLoader loading={isVenuesLoading} >
+        <FlexContainer>
+          {
+            venues && venues
+              .sort((venueA, venueB) => venueA.name.toLowerCase() > venueB.name.toLowerCase() ? 1 : -1)
+              .map(venue => (
+                <VenueListItem
+                  key={venue.id}
+                  venue={venue}
+                  deleteVenuePrompt={deleteVenuePrompt}
+                />
+              ))
+          }
+        </FlexContainer>
+      </ComponentLoader>
       {
         isDeleteVenue && (
           <DeletePrompt

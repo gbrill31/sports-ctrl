@@ -11,6 +11,13 @@ export const setTeams = teams => ({
   payload: teams
 });
 
+export const setSelectedTeam = team => {
+  return {
+    type: TEAMS.SET_SELECTED,
+    payload: team
+  }
+}
+
 export const teamsError = error => ({
   type: TEAMS.GET_TEAMS_FAILED,
   payload: error
