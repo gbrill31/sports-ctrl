@@ -5,21 +5,18 @@ import {
 import { Button } from "../../styledElements";
 
 
-import './PromptDialog.scss';
-
 const PromptDialog = ({
   isOpen, handleClose, handleConfirm, title, content, confirmText, isPending,
   pendingTitle
 }) => (
     <Dialog
       open={isOpen}
-      aria-labelledby="form-dialog-title"
-      className="new-project-dialog"
+      aria-labelledby={title}
       onEscapeKeyDown={handleClose}
       fullWidth
       maxWidth="sm"
     >
-      <DialogTitle id="form-dialog-title">{title}</DialogTitle>
+      <DialogTitle id={title}>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>
           {content}

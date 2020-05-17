@@ -38,6 +38,7 @@ const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting 
       handleClose={handleCancel}
       handleConfirm={deleteSelectedTeam}
       isPending={isDeleting}
+      pendingTitle="Deleting..."
     />
   )
 }

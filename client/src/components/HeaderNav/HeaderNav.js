@@ -1,37 +1,33 @@
 import React, { useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { makeStyles } from '@material-ui/core/styles';
-import { CircularProgress } from '@material-ui/core';
-import { green } from '@material-ui/core/colors';
+import styled from 'styled-components';
 import { faCheck, faDatabase, faPlus, faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
 import { Button, ButtonIcon } from '../../styledElements';
 
-import './HeaderNav.scss';
 
 import {
   connectToDB
 } from '../../actions';
 
+const NavRootWrapper = styled.header`
+  display: flex;
+  align-items: center;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: #c17a2b;
+  padding: 5px;
+  z-index: 999;
+`;
 
-const useStyles = makeStyles(theme => ({
-  wrapper: {
-    margin: theme.spacing(1),
-    position: 'relative',
-  },
-  buttonProgress: {
-    color: green[500],
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  }
-}));
+const NavContentWrapper = styled.div`
+  position: relative;
+  margin: 10px;
+`;
 
 function HeaderNav() {
-  const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -47,14 +43,15 @@ function HeaderNav() {
   const goToRoute = (route) => () => history.push(route);
 
   return (
-    <header className="root">
-      <div className={classes.wrapper}>
+    <NavRootWrapper>
+      <NavContentWrapper>
         <Button
           color={isDBConnected ? 'success' : 'primary'}
           disabled={isConnecting}
           onClick={connectDB}
+          isSaving={isConnecting}
         >
-          {isDBConnected ? 'DB Connected' : 'Connect to Database'}
+          {isConnecting ? 'Connecting...' : (isDBConnected ? 'DB Connected' : 'Connect to Database')}
           {
             <ButtonIcon spaceLeft>
               {
@@ -63,8 +60,8 @@ function HeaderNav() {
             </ButtonIcon>
           }
         </Button>
-        {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />}
-      </div>
+        {/* {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />} */}
+      </NavContentWrapper>
       {
         isDBConnected && (currentRoute === '/' ? (
           <Fragment>
@@ -108,7 +105,7 @@ function HeaderNav() {
           )
         )
       }
-    </header>
+    </NavRootWrapper>
   );
 }
 
