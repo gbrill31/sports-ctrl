@@ -1,7 +1,6 @@
 import React from 'react';
 import {
-  DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog,
-  CircularProgress
+  DialogActions, DialogContentText, DialogTitle, DialogContent, Dialog
 } from '@material-ui/core';
 import { Button } from "../../styledElements";
 
@@ -9,7 +8,8 @@ import { Button } from "../../styledElements";
 import './PromptDialog.scss';
 
 const PromptDialog = ({
-  isOpen, handleClose, handleConfirm, title, content, confirmText, isPending
+  isOpen, handleClose, handleConfirm, title, content, confirmText, isPending,
+  pendingTitle
 }) => (
     <Dialog
       open={isOpen}
@@ -26,13 +26,12 @@ const PromptDialog = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="error">
+        <Button onClick={handleClose} color="error" isSaving={isPending}>
           Cancel
       </Button>
         <Button onClick={handleConfirm} color="success">
-          {confirmText || 'OK'}
+          {isPending ? (pendingTitle || 'Pending...') : (confirmText || 'OK')}
         </Button>
-        {isPending && <CircularProgress size={24} />}
       </DialogActions>
     </Dialog>
   );

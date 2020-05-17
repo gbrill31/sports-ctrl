@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   DialogActions, DialogTitle, DialogContent, Dialog,
@@ -9,10 +9,11 @@ import useFormInput from '../../../hooks/useFormInput';
 
 import {
   saveNewTeam,
+  closeNewTeamDialog
 } from '../../../actions';
 
 
-export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
+export default function NewTeamFormDialog() {
   const dispatch = useDispatch();
 
   const teamName = useFormInput('');
@@ -20,8 +21,14 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
   const teamCountry = useFormInput('');
   const teamCity = useFormInput('');
 
-  const isSaving = useSelector(state => state.teams.teamSavePending);
+  const {
+    teamSavePending: isSaving,
+    newTeamDialog: isNewTeam
+  } = useSelector(state => state.teams);
 
+  const closeDialog = useCallback(() => dispatch(closeNewTeamDialog()), [dispatch]);
+
+  const createTeam = useCallback((team) => dispatch(saveNewTeam(team)), [dispatch]);
 
   const resetForm = () => {
     teamName.setValue('');
@@ -32,15 +39,13 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
     teamLeague.resetIsValid();
     teamCountry.resetIsValid();
     teamCity.resetIsValid();
-    setIsNewTeam(false);
   }
 
   const cancelNewTeam = () => {
-    setIsNewTeam(false);
     resetForm();
+    closeDialog();
   }
 
-  const createTeam = (team) => dispatch(saveNewTeam(team));
 
   const validateAllInputs = () => {
     teamName.validateInput();
@@ -76,8 +81,6 @@ export default function NewTeamFormDialog({ isNewTeam, setIsNewTeam }) {
       createNewTeam();
     }
   }
-
-
 
   return (
     <Fragment>

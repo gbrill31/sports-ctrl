@@ -56,3 +56,11 @@ export const newPlayersError = error => ({
   type: PLAYERS.SAVE_FAILED,
   payload: error
 });
+
+export const openNewPlayersDialog = () => ({
+  type: PLAYERS.OPEN_NEW_PLAYERS_DIALOG
+});
+
+export const closeNewPlayersDialog = () => ({
+  type: PLAYERS.CLOSE_NEW_PLAYERS_DIALOG
+});

@@ -12,13 +12,24 @@ const INTIAL_STATE = {
   teamSavePending: false,
   teamSaveError: null,
   teamDeletePending: false,
-  teamDeleteError: null
+  teamDeleteError: null,
+  newTeamDialog: false
 }
 
 const getMappedTeams = teams => teams.map(team => new Team(team));
 
 const teamsReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
+    case TEAMS.OPEN_NEW_TEAM_DIALOG:
+      return {
+        ...state,
+        newTeamDialog: true
+      }
+    case TEAMS.CLOSE_NEW_TEAM_DIALOG:
+      return {
+        ...state,
+        newTeamDialog: false
+      }
     case TEAMS.SET_SELECTED:
       return {
         ...state,
@@ -51,6 +62,7 @@ const teamsReducer = (state = INTIAL_STATE, action = {}) => {
     case TEAMS.SAVE_SUCCESS:
       return {
         ...state,
+        newTeamDialog: false,
         teamSavePending: false,
         items: [...state.items.filter(item => item.id !== action.payload.id),
         new Team(action.payload)

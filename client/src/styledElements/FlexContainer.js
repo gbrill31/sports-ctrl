@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export default styled.div`
   display: flex;
   position: relative;
-  min-width: 700px;
+  min-width: ${props => props.minWidth + 'px' || ''};
   width: ${props => props.fullWidth ? '100%' : (props.width || '')};
   flex-flow: ${props => props.column ? 'column' : 'row'};
   flex-wrap: wrap;

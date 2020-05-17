@@ -37,7 +37,9 @@ import {
   newTeamError,
   deleteTeam,
   clearDeletedTeam,
-  deleteTeamError
+  deleteTeamError,
+  openNewTeamDialog,
+  closeNewTeamDialog
 } from './teamsActions';
 
 import {
@@ -51,7 +53,9 @@ import {
   deletePlayer,
   clearDeletedPlayer,
   deletePlayerError,
-  setSelectedPlayer
+  setSelectedPlayer,
+  openNewPlayersDialog,
+  closeNewPlayersDialog
 } from './playersActions';
 
 import {
@@ -100,5 +104,9 @@ export {
   clearDeletedPlayer,
   deletePlayerError,
   getPlayersTeamId,
-  setSelectedPlayer
+  setSelectedPlayer,
+  openNewPlayersDialog,
+  openNewTeamDialog,
+  closeNewPlayersDialog,
+  closeNewTeamDialog
 }

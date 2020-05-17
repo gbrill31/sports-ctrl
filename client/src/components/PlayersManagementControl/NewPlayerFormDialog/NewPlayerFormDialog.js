@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   DialogActions, DialogTitle, DialogContent, Dialog
 } from '@material-ui/core';
@@ -9,18 +10,26 @@ import moment from 'moment';
 import useFormInput from '../../../hooks/useFormInput';
 
 import {
-  savePlayersToTeam,
-} from '../../../api';
+  savePlayers,
+  closeNewPlayersDialog
+} from '../../../actions';
 
 
-export default function NewPlayerFormDialog({
-  isNewPlayer, setIsNewPlayer, selectedTeam, updatePlayers
-}) {
+export default function NewPlayerFormDialog() {
+  const dispatch = useDispatch();
 
-  const [isSaving, setIsSaving] = useState(false);
   const [players, setPlayers] = useState([]);
   const playerName = useFormInput('');
   const playerNumber = useFormInput('');
+
+  const selectedTeam = useSelector(state => state.teams.selected);
+  const {
+    playerSavePending: isSaving,
+    newPlayersDialog: isNewPlayersDialog
+  } = useSelector(state => state.players);
+
+  const saveNewPlayers = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
+  const closeDialog = useCallback(() => dispatch(closeNewPlayersDialog()), [dispatch]);
 
 
   const resetForm = () => {
@@ -31,8 +40,8 @@ export default function NewPlayerFormDialog({
   }
 
   const cancelNewPlayer = () => {
-    setIsNewPlayer(false);
     resetForm();
+    closeDialog();
   }
 
 
@@ -46,15 +55,8 @@ export default function NewPlayerFormDialog({
       && playerNumber.ref.current.checkValidity();
   }
 
-  const savePlayers = () => {
-    setIsSaving(true);
-    savePlayersToTeam(players)
-      .then((players) => {
-        updatePlayers(players);
-        setIsSaving(false);
-        resetForm();
-        setIsNewPlayer(false);
-      });
+  const savePlayersToTeam = () => {
+    saveNewPlayers(players);
   };
 
 
@@ -80,7 +82,9 @@ export default function NewPlayerFormDialog({
         stats: [initialStats]
       }]);
       resetForm();
-      playerName.ref.current.focus();
+      setTimeout(() => {
+        playerName.ref.current.focus();
+      }, 250);
     }
   };
 
@@ -99,9 +103,9 @@ export default function NewPlayerFormDialog({
   return (
     <Fragment>
       {
-        isNewPlayer && (
+        isNewPlayersDialog && (
           <Dialog
-            open={isNewPlayer}
+            open={isNewPlayersDialog}
             aria-labelledby="add players"
             onEscapeKeyDown={cancelNewPlayer}
             fullWidth
@@ -172,7 +176,7 @@ export default function NewPlayerFormDialog({
                 Cancel
               </Button>
               <Button
-                onClick={savePlayers}
+                onClick={savePlayersToTeam}
                 color="success"
                 disabled={players.length === 0 || isSaving}
                 saving={isSaving}

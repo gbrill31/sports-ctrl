@@ -13,12 +13,18 @@ import NewTeamFormDialog from '../../../components/TeamsManagementControl/NewTea
 import TeamListItem from '../TeamListItem/TeamListItem';
 import ComponentLoader from '../../../components/ComponentLoader/ComponentLoader';
 
-import { deleteTeam, setSelectedTeam, getAllTeams } from '../../../actions';
+import {
+  deleteTeam,
+  setSelectedTeam,
+  getAllTeams,
+  openNewTeamDialog
+} from '../../../actions';
 
 
 
 const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting }) => {
   const dispatch = useDispatch();
+
   const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.getId())), [dispatch, selectedTeam]);
 
   const handleCancel = () => setIsDeleteTeam(false);
@@ -42,15 +48,13 @@ export default function TeamsList() {
 
   const setSelected = useCallback((team) => { dispatch(setSelectedTeam(team)) }, [dispatch]);
   const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
+  const openCreateTeam = useCallback(() => dispatch(openNewTeamDialog()), [dispatch]);
 
   const filterTeamsInput = useFormInput('');
   const [isFilterTeams, setIsFilterTeams] = useState(false);
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
 
   const isDBConnected = useSelector(state => state.db.isConnected);
-
-  const [isNewTeamDialog, setIsNewTeamDialog] = useState(false);
-
 
   const {
     selected: selectedTeam,
@@ -59,7 +63,7 @@ export default function TeamsList() {
     getTeamsPending: isTeamsLoading
   } = useSelector(state => state.teams);
 
-  const openNewTeam = () => setIsNewTeamDialog(true);
+  // const openNewTeam = () => setIsNewTeamDialog(true);
   const openFilterTeams = () => setIsFilterTeams(true);
   const closeFilterTeams = () => setIsFilterTeams(false);
 
@@ -98,13 +102,13 @@ export default function TeamsList() {
 
   return (
     <Fragment>
-      <FlexContainer borderRight fullWidth>
+      <FlexContainer borderRight minWidth="700">
         <ComponentLoader loading={isTeamsLoading} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>
             <Button
               color="generic"
-              onClick={openNewTeam}
+              onClick={openCreateTeam}
             >
               New Team
               <ButtonIcon spaceLeft>
@@ -189,10 +193,7 @@ export default function TeamsList() {
           />
         )
       }
-      {
-        isNewTeamDialog && <NewTeamFormDialog isNewTeam={isNewTeamDialog} setIsNewTeam={setIsNewTeamDialog} />
-      }
-
+      <NewTeamFormDialog />
     </Fragment>
   )
 };

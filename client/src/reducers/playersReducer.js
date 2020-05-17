@@ -13,13 +13,24 @@ const INTIAL_STATE = {
   playerSavePending: false,
   playerSaveError: null,
   playerDeletePending: false,
-  playerDeleteError: null
+  playerDeleteError: null,
+  newPlayersDialog: false
 }
 
 const getMappedPlayers = players => players.map(player => new Player(player));
 
 const playersReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
+    case PLAYERS.OPEN_NEW_PLAYERS_DIALOG:
+      return {
+        ...state,
+        newPlayersDialog: true
+      }
+    case PLAYERS.CLOSE_NEW_PLAYERS_DIALOG:
+      return {
+        ...state,
+        newPlayersDialog: false
+      }
     case PLAYERS.SET_SELECTED:
       return {
         ...state,
@@ -50,11 +61,13 @@ const playersReducer = (state = INTIAL_STATE, action = {}) => {
         playerSavePending: true
       }
     case PLAYERS.SAVE_SUCCESS:
+      console.log(action.payload);
       return {
         ...state,
         playerSavePending: false,
+        newPlayersDialog: false,
         items: [...state.items.filter(item => item.id !== action.payload.id),
-        new Player(action.payload)
+        ...getMappedPlayers(Array.isArray(action.payload) ? action.payload : [action.payload])
         ]
       }
     case PLAYERS.SAVE_FAILED:

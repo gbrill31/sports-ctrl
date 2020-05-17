@@ -18,7 +18,7 @@ import {
   deletePlayer,
   savePlayers,
   getPlayersTeamId,
-  setPlayers
+  openNewPlayersDialog
 } from '../../../actions';
 
 const DeletePrompt = ({
@@ -43,6 +43,7 @@ const DeletePrompt = ({
       handleClose={handleCancel}
       handleConfirm={deleteSelectedPlayer}
       isPending={isDeleting}
+      pendingTitle="Deleting..."
     />
   )
 }
@@ -52,8 +53,8 @@ export default function PlayersList() {
 
   const setSelected = useCallback((player) => dispatch(setSelectedPlayer(player)), [dispatch]);
   const savePlayersToTeam = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
-  const updatePlayersItems = useCallback((players) => dispatch(setPlayers(players)), [dispatch]);
   const getPlayersByTeamId = useCallback((id) => dispatch(getPlayersTeamId(id)), [dispatch]);
+  const openAddPlayers = useCallback(() => dispatch(openNewPlayersDialog()), [dispatch]);
 
   const selectedTeam = useSelector(state => state.teams.selected);
 
@@ -67,7 +68,6 @@ export default function PlayersList() {
 
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isFilterPlayers, setIsFilterPlayers] = useState(false);
-  const [isNewPlayerDialog, setIsNewPlayerDialog] = useState(false);
   const filterPlayersInput = useFormInput('');
 
   useEffect(() => {
@@ -83,15 +83,6 @@ export default function PlayersList() {
     }
   }, [isDeleting]);
 
-  const openNewPlayer = () => setIsNewPlayerDialog(true);
-
-  const updatePlayers = (addedPlayers) => {
-    if (Array.isArray(addedPlayers)) {
-      updatePlayersItems([...players, ...addedPlayers]);
-    } else {
-      updatePlayersItems([...players.filter(p => p.getId() !== addedPlayers.id), addedPlayers]);
-    }
-  }
 
   const openFilterPlayers = () => setIsFilterPlayers(true);
   const closeFilterPlayers = () => setIsFilterPlayers(false);
@@ -111,7 +102,7 @@ export default function PlayersList() {
 
   return (
     <Fragment>
-      <FlexContainer>
+      <FlexContainer minWidth="700">
         <ComponentLoader loading={isPlayersLoading} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0" capitalize>{selectedTeam ? `${selectedTeam.getName()} Players` : ''}</MainTitle>
@@ -119,7 +110,7 @@ export default function PlayersList() {
               selectedTeam && (
                 <Button
                   color="success"
-                  onClick={openNewPlayer}
+                  onClick={openAddPlayers}
                 >
                   Add Players
                   <ButtonIcon spaceLeft>
@@ -178,7 +169,7 @@ export default function PlayersList() {
             }
           </FlexContainer>
           <ScrollableContainer padding="5px" heightDiff={400} fullWidth>
-            <FlexContainer column align="center" fullWidth>
+            <FlexContainer column fullWidth>
               {
                 players && players.length > 0 ? (
                   getFilteredPlayers()
@@ -210,17 +201,7 @@ export default function PlayersList() {
           />
         )
       }
-      {
-        isNewPlayerDialog && (
-          <NewPlayerFormDialog
-            isNewPlayer={isNewPlayerDialog}
-            setIsNewPlayer={setIsNewPlayerDialog}
-            selectedTeam={selectedTeam}
-            updatePlayers={updatePlayers}
-          />
-        )
-      }
-
+      <NewPlayerFormDialog />
     </Fragment>
   )
 }
