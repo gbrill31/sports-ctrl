@@ -22,10 +22,16 @@ export default function CreateGameForm() {
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const isGameLoading = useSelector(state => state.games.activeGamePending);
-  const venues = useSelector(state => state.venues.items);
-  const isVenuesLoading = useSelector(state => state.venues.getVenuesPending);
-  const teams = useSelector(state => state.teams.items);
-  const isTeamsLoading = useSelector(state => state.teams.getTeamsPending);
+
+  const {
+    items: venues,
+    getVenuesPending: isVenuesLoading
+  } = useSelector(state => state.venues);
+
+  const {
+    items: teams,
+    getTeamsPending: isTeamsLoading
+  } = useSelector(state => state.teams);
 
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
   const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);

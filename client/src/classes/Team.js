@@ -1,6 +1,11 @@
+import Player from './Player';
+
 export default class Team {
   constructor(data) {
     Object.assign(this, data);
+    if (this.players) {
+      this.players = this.players.map(player => new Player(player));
+    }
   }
 
   getId() {
@@ -17,5 +22,8 @@ export default class Team {
   }
   getCity() {
     return this.city.toLowerCase();
+  }
+  getPlayers() {
+    return this.players || [];
   }
 }

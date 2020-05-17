@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback } from 'react';
+import React, { Fragment, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   DialogActions, DialogTitle, DialogContent, Dialog
@@ -6,7 +6,6 @@ import {
 import { Button, ButtonIcon, Input, FlexContainer } from '../../../styledElements';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import moment from 'moment';
 import useFormInput from '../../../hooks/useFormInput';
 
 import {
@@ -31,6 +30,11 @@ export default function NewPlayerFormDialog() {
   const saveNewPlayers = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(closeNewPlayersDialog()), [dispatch]);
 
+  useEffect(() => {
+    if (!isNewPlayersDialog && players.length) {
+      setPlayers([]);
+    }
+  }, [players, isNewPlayersDialog]);
 
   const resetForm = () => {
     playerName.setValue('');
@@ -63,28 +67,16 @@ export default function NewPlayerFormDialog() {
   const addPlayer = () => {
     validateAllInputs();
     if (isSaveValid()) {
-      const initialStats = {};
-      initialStats[moment().format('YYYY-MM-DD')] = {
-        playedAgainst: 'No Games Played',
-        data: {
-          PT: 0,
-          "2FG": 0,
-          "3FG": 0,
-          FT: 0,
-          FOULS: 0
-        }
-      };
       setPlayers([...players, {
         name: playerName.value,
         number: playerNumber.value,
         team: selectedTeam.name,
-        teamId: selectedTeam.id,
-        stats: [initialStats]
+        teamId: selectedTeam.id
       }]);
       resetForm();
       setTimeout(() => {
         playerName.ref.current.focus();
-      }, 250);
+      }, 50);
     }
   };
 

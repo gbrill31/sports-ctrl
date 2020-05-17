@@ -3,8 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/GameControl/CreateGameForm/CreateGameForm';
+import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 
-import { MainTitle } from '../../styledElements';
+import { GridContainer } from '../../styledElements';
 
 import {
   getActiveGame
@@ -35,7 +36,10 @@ export default function GameControl() {
           !activeGame ? (
             <CreateGameForm />
           ) : (
-              <MainTitle>{JSON.stringify(activeGame)}</MainTitle>
+              <GridContainer columnsSpread="auto auto">
+                <TeamGameControl team={activeGame.getHomeTeam()} />
+                <TeamGameControl team={activeGame.getAwayTeam()} />
+              </GridContainer>
             )
 
         }

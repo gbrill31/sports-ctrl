@@ -34,7 +34,7 @@ const OptionItem = styled.div`
 
 export default function AutoCompleteInput({
   id, color, spaceLeft, placeholder, options, getOptionLabel,
-  onSelection, selectedValue, loading
+  onSelection, selectedValue, loading = false
 }) {
   const [isOptionsExpanded, setIsOptionsExpanded] = useState(false);
   const [isFocused, setIsFocused] = useState(false);

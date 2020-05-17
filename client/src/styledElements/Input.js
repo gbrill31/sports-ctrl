@@ -1,6 +1,6 @@
 import styled, { keyframes, css } from 'styled-components';
 
-const loading = (props) => {
+const loadingAnimation = (props) => {
   return keyframes`
   from {
     border-color: ${props.color || '#444343'};
@@ -34,7 +34,15 @@ export default styled.input`
   &::placeholder{
     color: ${props => props.error ? 'rgba(200, 0, 0, 0.9)' : 'rgba(150, 150, 150, 0.7)'};
   }
-   ${props => props.loading && css`
-    animation: ${props => loading(props)} 0.4s alternate infinite;
+  ${props => props.loading && (css`
+    animation: ${props => loadingAnimation(props)} 0.4s alternate infinite;
+  `)}
+  ${props => props.disabled && css`
+    /* background: ${props => props.theme.disabled.bgColor}; */
+    /* color: ${props => props.theme.disabled.color}; */
+    &:hover{
+      /* background: #666; */
+      cursor: not-allowed;
+    }
   `}
   `;

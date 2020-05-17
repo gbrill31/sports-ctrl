@@ -28,9 +28,6 @@ playersRouter.get('/team', (req, res) => {
 playersRouter.post('/save', function (req, res) {
     const players = req.body;
     if (Array.isArray(players)) {
-        players.forEach((player) => {
-            Object.assign(player, { stats: JSON.stringify(player.stats) });
-        });
         psqlDB.addPlayers(players)
             .then((data) => {
                 res.json(data).status(200);

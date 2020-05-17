@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const connectionConfig = {
     attempts: 3
 };
@@ -104,24 +106,79 @@ function createPlayersTable() {
     });
 }
 
-//Exported functions
+function getInitialPlayerStats(newGameName) {
+    const initialStats = {};
+    initialStats[moment().format('YYYY-MM-DD')] = {
+        playedAgainst: newGameName || 'No Games Played',
+        data: {
+            PT: 0,
+            "2FG": 0,
+            "3FG": 0,
+            FT: 0,
+            FOULS: 0
+        }
+    };
+    return [initialStats];
+}
 
-function getPlayersByTeam(teamId) {
+function setNewGamePlayerStats(player, newGameName) {
+    return DB('players')
+        .where('id', player.id)
+        .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
+        .update({
+            stats: JSON.stringify([...player.stats, ...getInitialPlayerStats(newGameName)]),
+            'updated_at': new Date()
+        });
+}
+
+function getPlayersByTeamId(teamId, newGameName) {
     return new Promise((resolve, reject) => {
         DB.schema.hasTable('players').then((exists) => {
             if (exists) {
-                DB
-                    .select()
+                DB.select()
                     .where('teamId', teamId)
                     .table('players').then((players) => {
-                        resolve(players)
+                        if (newGameName) {
+                            const updates = [];
+                            players.forEach(player => updates.push(setNewGamePlayerStats(player, newGameName)));
+                            Promise.all(updates).then(() => {
+                                DB.select()
+                                    .where('teamId', teamId)
+                                    .table('players').then((players) => {
+                                        resolve(players);
+                                    }, err => reject(err));
+                            })
+
+                        } else {
+                            resolve(players);
+                        }
                     }, err => reject(err));
             } else {
-                resolve();
+                resolve([]);
             }
         }, err => reject(err));
     });
 }
+
+function getGameObject(game, data) {
+    Object.assign(game, {
+        home: {
+            id: game.homeId,
+            name: game.home,
+            players: data[0]
+        },
+        away: {
+            id: game.awayId,
+            name: game.away,
+            players: data[1]
+        }
+    });
+    return game;
+}
+
+//Exported functions
+
+
 
 const DB_EXPORTS = {
     checkConnection: function () {
@@ -167,14 +224,10 @@ const DB_EXPORTS = {
                     if (rows.length) {
                         const game = rows[0];
                         Promise.all([
-                            getPlayersByTeam(game.homeId),
-                            getPlayersByTeam(game.awayId)
+                            getPlayersByTeamId(game.homeId, `Against ${away}`),
+                            getPlayersByTeamId(game.awayId, `Against ${home}`)
                         ]).then((data) => {
-                            Object.assign(game, {
-                                homePlayers: data[0],
-                                awayPlayers: data[1]
-                            });
-                            resolve(game);
+                            resolve(getGameObject(game, data));
                         }, err => reject(err));
                     } else {
                         resolve(null);
@@ -193,14 +246,10 @@ const DB_EXPORTS = {
                     if (rows.length) {
                         const game = rows[0];
                         Promise.all([
-                            getPlayersByTeam(game.homeId),
-                            getPlayersByTeam(game.awayId)
+                            getPlayersByTeamId(game.homeId),
+                            getPlayersByTeamId(game.awayId)
                         ]).then((data) => {
-                            Object.assign(game, {
-                                homePlayers: data[0],
-                                awayPlayers: data[1]
-                            });
-                            resolve(game);
+                            resolve(getGameObject(game, data));
                         }, err => reject(err));
                     } else {
                         resolve(null);
@@ -305,9 +354,12 @@ const DB_EXPORTS = {
         });
     },
 
-    getPlayersByTeam: getPlayersByTeam,
+    getPlayersByTeam: getPlayersByTeamId,
 
     addPlayers: function (players) {
+        players.forEach((player) => {
+            Object.assign(player, { stats: JSON.stringify(getInitialPlayerStats()) });
+        });
         return DB
             .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
             .insert(players)

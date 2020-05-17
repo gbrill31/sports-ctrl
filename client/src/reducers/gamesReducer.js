@@ -1,6 +1,7 @@
 import {
   GAMES
 } from '../constants';
+import Game from '../classes/Game';
 
 const INTIAL_STATE = {
   activeGame: null,
@@ -27,7 +28,7 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
     case GAMES.GAME_SUCCESS:
       return {
         ...state,
-        activeGame: action.payload,
+        activeGame: new Game(action.payload),
         activeGameError: null,
         activeGamePending: false
       }
