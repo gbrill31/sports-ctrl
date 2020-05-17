@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import PromptDialog from '../../PromptDialog/PromptDialog';
 import VenueListItem from '../VenueListItem/VenueListItem';
 import ComponentLoader from '../../ComponentLoader/ComponentLoader';
-import { FlexContainer } from '../../../styledElements';
+import NewVenueFormDialog from '../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog';
+import { FlexContainer, ScrollableContainer, Button, MainTitle, ButtonIcon } from '../../../styledElements';
 
-import { getAllVenues, deleteVenue } from '../../../actions';
+import { getAllVenues, deleteVenue, openNewVenueDialog } from '../../../actions';
 
 
 
@@ -25,6 +28,7 @@ const DeletePrompt = ({ selectedVenue, isDeleteVenue, setIsDeleteVenue, isDeleti
       handleClose={handleCancel}
       handleConfirm={deleteSelectedVenue}
       isPending={isDeleting}
+      pendingTitle="Deleting..."
     />
   )
 }
@@ -43,6 +47,7 @@ export default function VenuesList() {
   const isDeleting = useSelector(state => state.venues.venueDeletePending);
 
   const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
+  const openNewVenue = useCallback(() => dispatch(openNewVenueDialog()), [dispatch]);
 
   const deleteVenuePrompt = venue => () => {
     setSelectedVenue(venue);
@@ -65,20 +70,36 @@ export default function VenuesList() {
 
   return (
     <Fragment>
-      <ComponentLoader loading={isVenuesLoading} >
-        <FlexContainer>
-          {
-            venues && venues
-              .sort((venueA, venueB) => venueA.name.toLowerCase() > venueB.name.toLowerCase() ? 1 : -1)
-              .map(venue => (
-                <VenueListItem
-                  key={venue.id}
-                  venue={venue}
-                  deleteVenuePrompt={deleteVenuePrompt}
-                />
-              ))
-          }
+      <ComponentLoader loading={isVenuesLoading}>
+        <FlexContainer fullWidth align="center">
+          <MainTitle>Venues</MainTitle>
+          <FlexContainer>
+            <Button
+              color="generic"
+              onClick={openNewVenue}
+            >
+              New Venue
+        <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faPlus} size="sm" />
+              </ButtonIcon>
+            </Button>
+          </FlexContainer>
         </FlexContainer>
+        <ScrollableContainer padding="0" heightDiff={267}>
+          <FlexContainer>
+            {
+              venues && venues
+                .sort((venueA, venueB) => venueA.name.toLowerCase() > venueB.name.toLowerCase() ? 1 : -1)
+                .map(venue => (
+                  <VenueListItem
+                    key={venue.id}
+                    venue={venue}
+                    deleteVenuePrompt={deleteVenuePrompt}
+                  />
+                ))
+            }
+          </FlexContainer>
+        </ScrollableContainer>
       </ComponentLoader>
       {
         isDeleteVenue && (
@@ -90,6 +111,7 @@ export default function VenuesList() {
           />
         )
       }
+      <NewVenueFormDialog />
     </Fragment>
   )
 };

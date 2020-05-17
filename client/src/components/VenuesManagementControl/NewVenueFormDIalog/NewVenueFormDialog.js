@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlexContainer } from '../../../styledElements';
 import {
@@ -10,10 +10,11 @@ import useFormInput from '../../../hooks/useFormInput';
 
 import {
   saveNewVenue,
+  closeNewVenueDialog
 } from '../../../actions';
 
 
-export default function NewVenueFormDialog({ isNewVenue, setIsNewVenue }) {
+export default function NewVenueFormDialog() {
   const dispatch = useDispatch();
 
   const venueName = useFormInput('');
@@ -21,7 +22,13 @@ export default function NewVenueFormDialog({ isNewVenue, setIsNewVenue }) {
   const venueCity = useFormInput('');
   const venueSeats = useFormInput(0);
 
-  const isSaving = useSelector(state => state.venues.venueSavePending);
+  const createVenue = useCallback((venue) => dispatch(saveNewVenue(venue)), [dispatch]);
+  const closeDialog = useCallback(() => dispatch(closeNewVenueDialog()), [dispatch]);
+
+  const {
+    venueSavePending: isSaving,
+    newVenueDialog: isNewVenue
+  } = useSelector(state => state.venues);
 
 
   const resetForm = () => {
@@ -32,15 +39,13 @@ export default function NewVenueFormDialog({ isNewVenue, setIsNewVenue }) {
     venueName.resetIsValid();
     venueCountry.resetIsValid();
     venueCity.resetIsValid();
-    setIsNewVenue(false);
   }
 
   const cancelNewVenue = () => {
-    setIsNewVenue(false);
     resetForm();
+    closeDialog();
   }
 
-  const createVenue = (venue) => dispatch(saveNewVenue(venue));
 
   const validateAllInputs = () => {
     venueName.validateInput();
@@ -69,10 +74,8 @@ export default function NewVenueFormDialog({ isNewVenue, setIsNewVenue }) {
   };
 
 
-
   return (
     <Fragment>
-
       {
         isNewVenue && (
           <Dialog

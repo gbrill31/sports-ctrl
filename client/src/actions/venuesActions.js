@@ -45,3 +45,11 @@ export const newVenueError = error => ({
   type: VENUES.SAVE_FAILED,
   payload: error
 });
+
+export const openNewVenueDialog = () => ({
+  type: VENUES.OPEN_NEW_VENUE_DIALOG
+});
+
+export const closeNewVenueDialog = () => ({
+  type: VENUES.CLOSE_NEW_VENUE_DIALOG
+});

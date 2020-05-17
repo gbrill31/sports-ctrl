@@ -9,11 +9,22 @@ const INTIAL_STATE = {
   venueSavePending: false,
   venueSaveError: null,
   venueDeletePending: false,
-  venueDeleteError: null
+  venueDeleteError: null,
+  newVenueDialog: false
 }
 
 const venuesReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
+    case VENUES.OPEN_NEW_VENUE_DIALOG:
+      return {
+        ...state,
+        newVenueDialog: true
+      }
+    case VENUES.CLOSE_NEW_VENUE_DIALOG:
+      return {
+        ...state,
+        newVenueDialog: false
+      }
     case VENUES.GET_VENUES_PENDING:
       return {
         ...state,
@@ -41,6 +52,7 @@ const venuesReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         venueSavePending: false,
+        newVenueDialog: false,
         items: [...state.items.filter(item => item.id !== action.payload.id),
         action.payload
         ]

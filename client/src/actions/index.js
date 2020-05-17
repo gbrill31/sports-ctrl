@@ -24,7 +24,9 @@ import {
   newVenueError,
   deleteVenue,
   clearDeletedVenue,
-  deleteVenueError
+  deleteVenueError,
+  openNewVenueDialog,
+  closeNewVenueDialog
 } from './venuesActions';
 
 import {
@@ -108,5 +110,7 @@ export {
   openNewPlayersDialog,
   openNewTeamDialog,
   closeNewPlayersDialog,
-  closeNewTeamDialog
+  closeNewTeamDialog,
+  openNewVenueDialog,
+  closeNewVenueDialog
 }
