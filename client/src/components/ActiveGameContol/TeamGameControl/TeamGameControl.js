@@ -60,12 +60,15 @@ const ItemStat = styled.div`
   }
 `;
 
-export default function TeamGameControl({ team, borderRight }) {
+export default function TeamGameControl({ teamLocation, team, borderRight }) {
   return (
     <div>
+      <FlexContainer justify="center">
+        <MainTitle soft uppercase>{teamLocation}</MainTitle>
+      </FlexContainer>
       <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
       <ScrollableContainer heightDiff={250} fullWidth>
-        <FlexContainer column align="center" minWidth="600" borderRight>
+        <FlexContainer column align="center" minWidth="600" borderRight={borderRight}>
           {
             team.getPlayers()
               .map(player => (

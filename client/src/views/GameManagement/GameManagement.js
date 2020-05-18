@@ -37,8 +37,12 @@ export default function GameManagement() {
             <CreateGameForm />
           ) : (
               <GridContainer columnsSpread="auto auto">
-                <TeamGameControl team={activeGame.getHomeTeam()} borderRight />
-                <TeamGameControl team={activeGame.getAwayTeam()} />
+                <TeamGameControl
+                  teamLocation="home"
+                  team={activeGame.getHomeTeam()}
+                  borderRight
+                />
+                <TeamGameControl teamLocation="away" team={activeGame.getAwayTeam()} />
               </GridContainer>
             )
 
