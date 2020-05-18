@@ -51,7 +51,6 @@ const AppContainer = styled.div`
   position: relative;
   width: 100vw;
   overflow: hidden;
-
 `;
 
 const AppMainContent = styled.main`

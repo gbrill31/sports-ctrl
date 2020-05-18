@@ -2,8 +2,9 @@ import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
-import CreateGameForm from '../../components/GameControl/CreateGameForm/CreateGameForm';
+import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
+import GameClockControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
 
 import { GridContainer } from '../../styledElements';
 
@@ -36,14 +37,17 @@ export default function GameManagement() {
           !activeGame ? (
             <CreateGameForm />
           ) : (
-              <GridContainer columnsSpread="auto auto">
-                <TeamGameControl
-                  teamLocation="home"
-                  team={activeGame.getHomeTeam()}
-                  borderRight
-                />
-                <TeamGameControl teamLocation="away" team={activeGame.getAwayTeam()} />
-              </GridContainer>
+              <>
+                <GameClockControl />
+                <GridContainer columnsSpread="auto auto">
+                  <TeamGameControl
+                    teamLocation="home"
+                    team={activeGame.getHomeTeam()}
+                    borderRight
+                  />
+                  <TeamGameControl teamLocation="away" team={activeGame.getAwayTeam()} />
+                </GridContainer>
+              </>
             )
 
         }

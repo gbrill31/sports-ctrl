@@ -1,0 +1,4 @@
+@font-face {
+    font-family: 'Led';
+    src: local('Led'), url('./fonts/highspeed.ttf') format('truetype');
+  }

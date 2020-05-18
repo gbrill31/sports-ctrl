@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
+
+import './index.css';
 import App from './App';
 
 import buildStore from './store';
@@ -21,6 +23,7 @@ const AppGlobalStyle = createGlobalStyle`
   *:focus{
     outline: none;
   }
+  
 `;
 
 ReactDOM.render(
