@@ -36,7 +36,7 @@ const ItemContainer = styled.div`
     margin-left: 15px;
   }
   h4{
-    margin:0;
+    margin: 0;
     color: #999;
     font-weight: 300;
     margin-left: 10px;
@@ -44,6 +44,12 @@ const ItemContainer = styled.div`
 `;
 
 const ItemStat = styled.div`
+  color: ${props => props.color ? props.theme[props.color].color : props.theme.success.color};
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-left: 20px;
+
   h3{
     margin: 0;
     color: #777;
@@ -54,12 +60,12 @@ const ItemStat = styled.div`
   }
 `;
 
-export default function TeamGameControl({ team }) {
+export default function TeamGameControl({ team, borderRight }) {
   return (
     <div>
       <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
       <ScrollableContainer heightDiff={250} fullWidth>
-        <FlexContainer column align="center" minWidth="600">
+        <FlexContainer column align="center" minWidth="600" borderRight>
           {
             team.getPlayers()
               .map(player => (
@@ -71,12 +77,15 @@ export default function TeamGameControl({ team }) {
                     <h3>
                       {player.getName()}
                     </h3>
+                    <ItemStat>
+                      Points: {player.getTotalPoints()}
+                    </ItemStat>
+                    <ItemStat color="primary">
+                      FOULS: {player.getTotalFouls()}
+                    </ItemStat>
                   </FlexContainer>
                   <h4>Game Statistics</h4>
                   <FlexContainer>
-                    <ItemStat>
-                      <h3>PT: {player.getTotalPoints()}</h3>
-                    </ItemStat>
                     <ItemStat>
                       <h3>2FG: {player.get2FG()}</h3>
                     </ItemStat>
@@ -85,9 +94,6 @@ export default function TeamGameControl({ team }) {
                     </ItemStat>
                     <ItemStat>
                       <h3>FT: {player.getFT()}</h3>
-                    </ItemStat>
-                    <ItemStat>
-                      <h3>FOULS: {player.getTotalFouls()}</h3>
                     </ItemStat>
                   </FlexContainer>
                 </ItemContainer>

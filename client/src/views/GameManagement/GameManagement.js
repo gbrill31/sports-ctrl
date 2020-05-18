@@ -13,7 +13,7 @@ import {
 
 
 
-export default function GameControl() {
+export default function GameManagement() {
   const dispatch = useDispatch();
 
   const isDBConnected = useSelector(state => state.db.isConnected);
@@ -37,7 +37,7 @@ export default function GameControl() {
             <CreateGameForm />
           ) : (
               <GridContainer columnsSpread="auto auto">
-                <TeamGameControl team={activeGame.getHomeTeam()} />
+                <TeamGameControl team={activeGame.getHomeTeam()} borderRight />
                 <TeamGameControl team={activeGame.getAwayTeam()} />
               </GridContainer>
             )

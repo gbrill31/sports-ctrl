@@ -7,7 +7,7 @@ import { HttpInterceptors } from './utils';
 import Home from './views/Home/Home';
 import Venues from './views/VenuesManagement/VenuesManagement';
 import Teams from './views/TeamsManagement/TeamsManagement';
-import GameControl from './views/GameControl/GameControl';
+import GameManagement from './views/GameManagement/GameManagement';
 import HeaderNav from './components/HeaderNav/HeaderNav';
 
 import 'react-toastify/dist/ReactToastify.min.css';
@@ -79,6 +79,7 @@ function App() {
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);
     });
+
     return () => {
       HttpInterceptors.clearInterceptors();
       unlisten();
@@ -94,7 +95,7 @@ function App() {
             <Route exact path="/" render={() => <Home />} />
             <Route exact path="/venues" render={() => <Venues />} />
             <Route exact path="/teams" render={() => <Teams />} />
-            <Route exact path="/game" render={() => <GameControl />} />
+            <Route exact path="/game" render={() => <GameManagement />} />
           </Switch>
         </AppMainContent>
       </AppContainer>
