@@ -6,7 +6,7 @@ import {
 } from '../../../../styledElements';
 import PromptDialog from '../../../PromptDialog/PromptDialog';
 
-import clock from '../../../../workers/gameClock';
+import clock from '../../../../workers/clock';
 import { WebWorker, convertSecToDuration } from '../../../../utils';
 
 const Q_TIME_MINUTES = 12;
@@ -87,7 +87,7 @@ export default function GameClock() {
 
   return (
     <FlexContainer column>
-      <FlexContainer justify="center" fullWidth>
+      <FlexContainer justify="space-evenly" fullWidth>
         {
           !isClockRunning ? (
             <Button onClick={startClock} color="success">

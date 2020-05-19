@@ -5,7 +5,7 @@ import {
   FlexContainer, Button
 } from '../../../../styledElements';
 
-import clock from '../../../../workers/attackClock';
+import clock from '../../../../workers/clock';
 import { WebWorker, convertSecToDuration } from '../../../../utils';
 
 
@@ -92,7 +92,7 @@ export default function AttackClock({
 
   return (
     <FlexContainer column>
-      <FlexContainer justify="center" fullWidth>
+      <FlexContainer justify="space-evenly" fullWidth>
         {
           !isClockRunning ? (
             <Button onClick={startClock} color="success">
