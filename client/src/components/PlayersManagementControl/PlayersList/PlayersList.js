@@ -21,40 +21,10 @@ import {
   openNewPlayersDialog
 } from '../../../actions';
 
-const DeletePrompt = ({
-  isDeletePlayer, setIsDeletePlayer, selectedPlayer, isDeleting
-}) => {
-  const dispatch = useDispatch();
-
-  const deleteSelected = useCallback((id) => dispatch(deletePlayer(id)), [dispatch]);
-  const handleCancel = () => setIsDeletePlayer(false);
-
-
-  const deleteSelectedPlayer = () => {
-    deleteSelected(selectedPlayer.getId());
-  }
-
-  return (
-    <PromptDialog
-      isOpen={isDeletePlayer}
-      title="Delete Team"
-      content={`Are you sure you want to delete ${selectedPlayer.getName()}?`}
-      confirmText="Delete"
-      handleClose={handleCancel}
-      handleConfirm={deleteSelectedPlayer}
-      isPending={isDeleting}
-      pendingTitle="Deleting..."
-    />
-  )
-}
-
 export default function PlayersList() {
   const dispatch = useDispatch();
 
-  const setSelected = useCallback((player) => dispatch(setSelectedPlayer(player)), [dispatch]);
-  const savePlayersToTeam = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
-  const getPlayersByTeamId = useCallback((id) => dispatch(getPlayersTeamId(id)), [dispatch]);
-  const openAddPlayers = useCallback(() => dispatch(openNewPlayersDialog()), [dispatch]);
+  const handleCancelPrompt = () => setIsDeletePlayer(false);
 
   const selectedTeam = useSelector(state => state.teams.selected);
 
@@ -69,6 +39,18 @@ export default function PlayersList() {
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isFilterPlayers, setIsFilterPlayers] = useState(false);
   const filterPlayersInput = useFormInput('');
+
+  const setSelected = useCallback((player) => dispatch(setSelectedPlayer(player)), [dispatch]);
+  const savePlayersToTeam = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
+  const getPlayersByTeamId = useCallback((id) => dispatch(getPlayersTeamId(id)), [dispatch]);
+  const openAddPlayers = useCallback(() => dispatch(openNewPlayersDialog()), [dispatch]);
+
+  const deleteSelected = useCallback((id) => dispatch(deletePlayer(id)), [dispatch]);
+
+  const deleteSelectedPlayer = () => {
+    deleteSelected(selectedPlayer.getId());
+  }
+
 
   useEffect(() => {
     if (selectedTeam) {
@@ -193,11 +175,15 @@ export default function PlayersList() {
 
       {
         isDeletePlayer && (
-          <DeletePrompt
-            selectedPlayer={selectedPlayer}
-            isDeletePlayer={isDeletePlayer}
-            setIsDeletePlayer={setIsDeletePlayer}
-            isDeleting={isDeleting}
+          <PromptDialog
+            isOpen={isDeletePlayer}
+            title="Delete Team"
+            content={`Are you sure you want to delete ${selectedPlayer.getName()}?`}
+            confirmText="Delete"
+            handleClose={handleCancelPrompt}
+            handleConfirm={deleteSelectedPlayer}
+            isPending={isDeleting}
+            pendingTitle="Deleting..."
           />
         )
       }

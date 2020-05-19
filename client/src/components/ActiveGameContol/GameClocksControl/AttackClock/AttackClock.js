@@ -6,65 +6,52 @@ import {
 } from '../../../../styledElements';
 
 import clock from '../../../../workers/attackClock';
-import { WebWorker } from '../../../../utils';
+import { WebWorker, convertSecToDuration } from '../../../../utils';
 
 
 const Clock = styled.div`
-  font-family: Led;
-  font-size: 3rem;
+  font-family: Led2;
+  font-size: 3.3rem;
   position: relative;
   width: 100px;
   height: 50px;
   padding: 15px;
   background-color: #000;
   color: ${props => props.theme.generic.color};
+  border: 2px solid ${props => props.theme.secondary.color};
+  transition: color 0.3s ease-in-out;
 
   ${props => props.stress && css`
       color: ${props => props.theme.error.color};
+      border-color: ${props => props.theme.error.color};
   `};
 
   span{
     position: absolute;
-    left: 35px;
-    top: 7px;
+    left: 38px;
+    top: 20px;
     user-select: none;
-    text-shadow: 0 0 2px #fff, 0 0 2px #fff,
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color};
   }
 `;
 
-const convertSecToDuration = (sec) => {
-
-  var hours = Math.floor(sec / 3600);
-  var minutes = Math.floor((sec - (hours * 3600)) / 60);
-  var seconds = Math.floor(sec - (hours * 3600) - (minutes * 60));
-  // var ms = Math.floor((sec % 1) * 10);
-
-  if (hours < 10) { hours = "0" + hours; }
-  if (minutes < 10) { minutes = "0" + minutes; }
-  if (seconds < 10) { seconds = "0" + seconds; }
-
-  return `${seconds}`;
-}
-
-
 let webWorker, milliseconds;
+const clockOptions = {
+  showMin: false,
+  showSec: true,
+  showMil: false
+}
 
 export default function AttackClock({
   startTimeSeconds, startTimeMilliseconds
 }) {
   const [isClockRunning, setIsClockRunning] = useState(false);
-  const [attackClock, setAttackClock] = useState(convertSecToDuration(startTimeSeconds));
+  const [attackClock, setAttackClock] = useState(convertSecToDuration(startTimeSeconds, clockOptions));
   const [timeLeft, setTimeLeft] = useState(startTimeMilliseconds);
 
   const resetClockCount = () => {
     milliseconds = startTimeMilliseconds;
     setTimeLeft(startTimeMilliseconds);
-    setAttackClock(convertSecToDuration(startTimeSeconds));
+    setAttackClock(convertSecToDuration(startTimeSeconds, clockOptions));
   }
 
   const stopClock = () => {
@@ -76,7 +63,7 @@ export default function AttackClock({
   };
 
   const setClock = (e) => {
-    setAttackClock(e.data.clock);
+    setAttackClock(convertSecToDuration(e.data.timeLeft / 1000, clockOptions));
     milliseconds = e.data.timeLeft;
     setTimeLeft(e.data.timeLeft);
     if (e.data.timeLeft === 0) {
@@ -106,12 +93,17 @@ export default function AttackClock({
   return (
     <FlexContainer column>
       <FlexContainer justify="center" fullWidth>
-        <Button onClick={startClock} color="success" disabled={isClockRunning}>
-          Start Clock
-        </Button>
-        <Button onClick={stopClock} color="error" disabled={!isClockRunning}>
-          Stop Clock
-        </Button>
+        {
+          !isClockRunning ? (
+            <Button onClick={startClock} color="success">
+              Start Clock
+            </Button>
+          ) : (
+              <Button onClick={stopClock} color="error">
+                Stop Clock
+              </Button>
+            )
+        }
         <Button onClick={resetClock} color="generic">
           Reset Clock
         </Button>

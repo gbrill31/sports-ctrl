@@ -22,38 +22,28 @@ import {
 
 
 
-const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting }) => {
-  const dispatch = useDispatch();
+// const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting }) => {
+//   const dispatch = useDispatch();
 
-  const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.getId())), [dispatch, selectedTeam]);
 
-  const handleCancel = () => setIsDeleteTeam(false);
 
-  return (
-    <PromptDialog
-      isOpen={isDeleteTeam}
-      title="Delete Team"
-      content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
-      confirmText="Delete"
-      handleClose={handleCancel}
-      handleConfirm={deleteSelectedTeam}
-      isPending={isDeleting}
-      pendingTitle="Deleting..."
-    />
-  )
-}
+//   return (
+//     <PromptDialog
+//       isOpen={isDeleteTeam}
+//       title="Delete Team"
+//       content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
+//       confirmText="Delete"
+//       handleClose={handleCancel}
+//       handleConfirm={deleteSelectedTeam}
+//       isPending={isDeleting}
+//       pendingTitle="Deleting..."
+//     />
+//   )
+// }
 
 
 export default function TeamsList() {
   const dispatch = useDispatch();
-
-  const setSelected = useCallback((team) => { dispatch(setSelectedTeam(team)) }, [dispatch]);
-  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
-  const openCreateTeam = useCallback(() => dispatch(openNewTeamDialog()), [dispatch]);
-
-  const filterTeamsInput = useFormInput('');
-  const [isFilterTeams, setIsFilterTeams] = useState(false);
-  const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
 
   const isDBConnected = useSelector(state => state.db.isConnected);
 
@@ -64,7 +54,17 @@ export default function TeamsList() {
     getTeamsPending: isTeamsLoading
   } = useSelector(state => state.teams);
 
-  // const openNewTeam = () => setIsNewTeamDialog(true);
+  const filterTeamsInput = useFormInput('');
+  const [isFilterTeams, setIsFilterTeams] = useState(false);
+  const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
+
+  const setSelected = useCallback((team) => { dispatch(setSelectedTeam(team)) }, [dispatch]);
+  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
+  const openCreateTeam = useCallback(() => dispatch(openNewTeamDialog()), [dispatch]);
+  const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.getId())), [dispatch, selectedTeam]);
+
+  const handleCancelPrompt = () => setIsDeleteTeamPrompt(false);
+
   const openFilterTeams = () => setIsFilterTeams(true);
   const closeFilterTeams = () => setIsFilterTeams(false);
 
@@ -186,11 +186,15 @@ export default function TeamsList() {
       </FlexContainer>
       {
         isDeleteTeamPrompt && (
-          <DeletePrompt
-            selectedTeam={selectedTeam}
-            isDeleteTeam={isDeleteTeamPrompt}
-            setIsDeleteTeam={setIsDeleteTeamPrompt}
-            isDeleting={isDeleting}
+          <PromptDialog
+            isOpen={isDeleteTeamPrompt}
+            title="Delete Team"
+            content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
+            confirmText="Delete"
+            handleClose={handleCancelPrompt}
+            handleConfirm={deleteSelectedTeam}
+            isPending={isDeleting}
+            pendingTitle="Deleting..."
           />
         )
       }

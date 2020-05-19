@@ -4,9 +4,10 @@ import styled from 'styled-components';
 import {
   FlexContainer, Button
 } from '../../../../styledElements';
+import PromptDialog from '../../../PromptDialog/PromptDialog';
 
 import clock from '../../../../workers/gameClock';
-import { WebWorker } from '../../../../utils';
+import { WebWorker, convertSecToDuration } from '../../../../utils';
 
 const Q_TIME_MINUTES = 12;
 const Q_TIME_MILLISECONDS = Q_TIME_MINUTES * 60 * 1000;
@@ -14,47 +15,29 @@ let milliseconds = Q_TIME_MILLISECONDS;
 
 
 const Clock = styled.div`
-  font-family: Led;
-  font-size: 3rem;
+  font-family: Led2;
+  font-size: 3.3rem;
   position: relative;
   width: 200px;
   height: 50px;
   padding: 15px;
   background-color: #000;
+  border: 2px solid ${props => props.theme.secondary.color};
   color: ${props => props.theme.generic.color};
 
   span{
     position: absolute;
-    left: 23px;
-    top: 7px;
+    left: 28px;
+    top: 20px;
     user-select: none;
-    text-shadow: 0 0 2px #fff, 0 0 2px #fff,
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color}, 
-    0 0 1px ${props => props.theme.generic.color};
   }
 `;
 
 let webWorker;
 
-const convertSecToDuration = (sec) => {
-
-  var hours = Math.floor(sec / 3600);
-  var minutes = Math.floor((sec - (hours * 3600)) / 60);
-  var seconds = Math.floor(sec - (hours * 3600) - (minutes * 60));
-  var ms = Math.floor((sec % 1) * 10);
-
-  if (hours < 10) { hours = "0" + hours; }
-  if (minutes < 10) { minutes = "0" + minutes; }
-  if (seconds < 10) { seconds = "0" + seconds; }
-
-  return `${minutes}:${seconds}:${ms}`;
-}
-
 export default function GameClock() {
   const [isClockRunning, setIsClockRunning] = useState(false);
+  const [isResetPrompt, setIsResetPrompt] = useState(false);
   const [gameClock, setGameClock] = useState(convertSecToDuration(Q_TIME_MINUTES * 60));
 
   const resetClockCount = () => {
@@ -63,14 +46,17 @@ export default function GameClock() {
   }
 
   const stopClock = () => {
-    webWorker.stopWorker();
-    webWorker = null;
+    if (webWorker) {
+      webWorker.stopWorker();
+      webWorker = null;
+    }
+
     setIsClockRunning(false);
   };
 
   const setClock = (e) => {
     milliseconds = e.data.timeLeft;
-    setGameClock(e.data.clock);
+    setGameClock(convertSecToDuration(e.data.timeLeft / 1000));
     if (milliseconds === 0) {
       setIsClockRunning(false);
     }
@@ -89,21 +75,31 @@ export default function GameClock() {
     setIsClockRunning(true);
   };
 
+  const openResetPrompot = () => setIsResetPrompt(true);
+  const handleCancelPrompt = () => setIsResetPrompt(false);
+
   const resetClock = () => {
     stopClock();
     resetClockCount();
+    handleCancelPrompt();
   }
+
 
   return (
     <FlexContainer column>
       <FlexContainer justify="center" fullWidth>
-        <Button onClick={startClock} color="success" disabled={isClockRunning}>
-          Start Clock
-        </Button>
-        <Button onClick={stopClock} color="error" disabled={!isClockRunning}>
-          Stop Clock
-        </Button>
-        <Button onClick={resetClock} color="generic">
+        {
+          !isClockRunning ? (
+            <Button onClick={startClock} color="success">
+              Start Clock
+            </Button>
+          ) : (
+              <Button onClick={stopClock} color="error">
+                Stop Clock
+              </Button>
+            )
+        }
+        <Button onClick={openResetPrompot} color="generic">
           Reset Clock
         </Button>
       </FlexContainer>
@@ -112,6 +108,18 @@ export default function GameClock() {
           <span>{gameClock}</span>
         </Clock>
       </FlexContainer>
+      {
+        isResetPrompt && (
+          <PromptDialog
+            isOpen={isResetPrompt}
+            title="Reset Game Clock"
+            content="Are you sure you want to reset the game clock?"
+            confirmText="Reset"
+            handleClose={handleCancelPrompt}
+            handleConfirm={resetClock}
+          />
+        )
+      }
     </FlexContainer>
   )
 }
