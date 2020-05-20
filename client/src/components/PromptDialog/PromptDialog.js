@@ -8,11 +8,20 @@ import { Button } from "../../styledElements";
 const PromptDialog = ({
   isOpen, handleClose, handleConfirm, title, content, confirmText, isPending,
   pendingTitle
-}) => (
+}) => {
+
+  const handleEnterConfirm = (e) => {
+    if (e.keyCode === 13 || e.key === 'Enter') {
+      handleConfirm();
+    }
+  }
+
+  return (
     <Dialog
       open={isOpen}
       aria-labelledby={title}
       onEscapeKeyDown={handleClose}
+      onKeyPress={handleEnterConfirm}
       fullWidth
       maxWidth="sm"
     >
@@ -25,12 +34,13 @@ const PromptDialog = ({
       <DialogActions>
         <Button onClick={handleClose} color="error" isSaving={isPending}>
           Cancel
-      </Button>
+        </Button>
         <Button onClick={handleConfirm} color="success">
           {isPending ? (pendingTitle || 'Pending...') : (confirmText || 'OK')}
         </Button>
       </DialogActions>
     </Dialog>
   );
+}
 
 export default PromptDialog;

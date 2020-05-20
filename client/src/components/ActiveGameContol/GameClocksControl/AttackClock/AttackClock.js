@@ -3,8 +3,10 @@ import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  FlexContainer, Button
+  FlexContainer, Button, ButtonIcon
 } from '../../../../styledElements';
+import { faHistory, faHandPaper, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import clock from '../../../../workers/clock';
 import {
@@ -60,11 +62,11 @@ export default function AttackClock({
   startTimeSeconds
 }) {
   const dispatch = useDispatch();
-  // const [timeLeft, setTimeLeft] = useState(convertSecToMilli(startTimeSeconds));
 
   const {
     isAttackClockRunning: isClockRunning,
     attackClockValue: attackClock,
+    isReset,
     timeLeft
   } = useSelector(state => state.attackClock);
 
@@ -97,7 +99,8 @@ export default function AttackClock({
       setTimeLeft(milliseconds);
       setClockValue(getClockInitTime());
     }
-  }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft]);
+    if (isReset) resetMilliseconds();
+  }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft, isReset]);
 
   useEffect(() => {
     if (isClockRunning) {
@@ -120,15 +123,24 @@ export default function AttackClock({
           !isClockRunning ? (
             <Button onClick={startClock} color="success">
               Start Clock
+              <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faStopwatch} size="sm" />
+              </ButtonIcon>
             </Button>
           ) : (
               <Button onClick={stopClock} color="error">
                 Stop Clock
+                <ButtonIcon spaceLeft>
+                  <FontAwesomeIcon icon={faHandPaper} size="sm" />
+                </ButtonIcon>
               </Button>
             )
         }
         <Button onClick={resetClock} color="generic">
           Reset Clock
+          <ButtonIcon spaceLeft>
+            <FontAwesomeIcon icon={faHistory} size="sm" />
+          </ButtonIcon>
         </Button>
       </FlexContainer>
       <FlexContainer justify="center" fullWidth>

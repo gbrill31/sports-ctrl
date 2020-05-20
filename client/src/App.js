@@ -39,6 +39,10 @@ const theme = {
     color: '#ED9B40',
     hover: '#FFB056'
   },
+  menu: {
+    color: '#A6A9AD',
+    hover: '#E6EAEB'
+  },
   disabled: {
     bgColor: '#555',
     color: '#fff'

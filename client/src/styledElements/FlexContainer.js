@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export default styled.div`
   display: flex;
-  position: relative;
+  position: ${props => props.absolute ? 'absolute' : 'relative'};
   min-width: ${props => props.minWidth + 'px' || ''};
   width: ${props => props.fullWidth ? '100%' : (props.width || '')};
   flex-flow: ${props => props.column ? 'column' : 'row'};

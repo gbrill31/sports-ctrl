@@ -3,8 +3,11 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
-  FlexContainer, Button
+  FlexContainer, Button, ButtonIcon
 } from '../../../../styledElements';
+import { faHistory, faHandPaper, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import PromptDialog from '../../../PromptDialog/PromptDialog';
 
 import clock from '../../../../workers/clock';
@@ -51,7 +54,8 @@ export default function GameClock({ startTimeMinutes }) {
   const [isResetPrompt, setIsResetPrompt] = useState(false);
   const {
     isGameClockRunning: isClockRunning,
-    gameClockValue: gameClock
+    gameClockValue: gameClock,
+    isReset
   } = useSelector(state => state.gameClock);
 
   const setClockValue = useCallback((value) => dispatch(setGameClock(value)), [dispatch]);
@@ -62,6 +66,7 @@ export default function GameClock({ startTimeMinutes }) {
 
   const resetClock = useCallback((value) => {
     resetMilliseconds();
+    localStorage.removeItem('gameClock');
     dispatch(resetGameClock(value));
   }, [dispatch, resetMilliseconds]);
 
@@ -70,6 +75,7 @@ export default function GameClock({ startTimeMinutes }) {
   const setClock = useCallback((e) => {
     milliseconds = e.data.timeLeft;
     setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft)));
+    localStorage.setItem('gameClock', e.data.timeLeft);
     if (milliseconds === 0) {
       stopClock();
     }
@@ -77,10 +83,12 @@ export default function GameClock({ startTimeMinutes }) {
 
   useEffect(() => {
     if (!gameClock) {
-      resetMilliseconds();
-      setClockValue(getClockInitTime());
+      const savedStartTime = parseInt(localStorage.getItem('gameClock'));
+      milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
+      setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime)) : getClockInitTime());
     }
-  }, [gameClock, setClockValue, getClockInitTime, startTimeMinutes, resetMilliseconds]);
+    if (isReset) resetMilliseconds();
+  }, [gameClock, setClockValue, getClockInitTime, startTimeMinutes, resetMilliseconds, isReset]);
 
   useEffect(() => {
     if (isClockRunning) {
@@ -120,15 +128,24 @@ export default function GameClock({ startTimeMinutes }) {
           !isClockRunning ? (
             <Button onClick={startClock} color="success">
               Start Clock
+              <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faStopwatch} size="sm" />
+              </ButtonIcon>
             </Button>
           ) : (
               <Button onClick={stopClock} color="error">
                 Stop Clock
+                <ButtonIcon spaceLeft>
+                  <FontAwesomeIcon icon={faHandPaper} size="sm" />
+                </ButtonIcon>
               </Button>
             )
         }
         <Button onClick={openResetPrompot} color="generic">
           Reset Clock
+          <ButtonIcon spaceLeft>
+            <FontAwesomeIcon icon={faHistory} size="sm" />
+          </ButtonIcon>
         </Button>
       </FlexContainer>
       <FlexContainer justify="center" fullWidth>

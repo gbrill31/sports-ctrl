@@ -5,20 +5,16 @@ import {
   FlexContainer
 } from '../../../styledElements';
 
-const ATTACK_TIME_SECONDS = 24;
-const Q_TIME_MINUTES = 0.1;
 
-export default function GameClocksControl() {
+export default function GameClocksControl({
+  gameClockStartTime, attackClockStartTime
+}) {
 
   return (
     <>
       <FlexContainer justify="center">
-        <GameClock
-          startTimeMinutes={Q_TIME_MINUTES}
-        />
-        <AttackClock
-          startTimeSeconds={ATTACK_TIME_SECONDS}
-        />
+        <GameClock startTimeMinutes={gameClockStartTime} />
+        <AttackClock startTimeSeconds={attackClockStartTime} />
       </FlexContainer>
     </>
   )

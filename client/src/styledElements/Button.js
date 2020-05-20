@@ -22,9 +22,10 @@ export default styled.button`
   border: ${props => props.rounded ? '1px solid transparent' : 'none'};
   border-radius: ${props => !props.noRaduis ? '7px' : ''};
   padding: 10px;
-  margin: 0px 5px;
-  transition: background 0.2s ease;
+  margin: ${props => props.margin || '0px 5px'};
+  transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   position: relative;
+  z-index:99;
 
   ${props => props.saving && css`
     animation: ${props => saving(props)} 1s alternate infinite;
@@ -32,10 +33,14 @@ export default styled.button`
   &:hover{
     background: ${props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};
     cursor: pointer;
+    color: ${props => props.color === 'menu' ? props.theme[props.color].color : ''};
   };
   ${props => props.justifyRight && css`
     position: absolute;
     right: 15px;
+  `};
+  ${props => props.spaceTop && css`
+    margin-top: 15px;
   `};
   ${props => props.rounded && css`
     border-radius: 50%;
