@@ -61,6 +61,18 @@ import {
 } from './playersActions';
 
 import {
+  startGameClock,
+  stopGameClock,
+  resetGameClock,
+  setGameClock,
+  startAttackClock,
+  stopAttackClock,
+  resetAttackClock,
+  setAttackClock,
+  setAttackClockTimeleft
+} from './clocksActions';
+
+import {
   setRouteName
 } from './routeActions';
 
@@ -112,5 +124,14 @@ export {
   closeNewPlayersDialog,
   closeNewTeamDialog,
   openNewVenueDialog,
-  closeNewVenueDialog
+  closeNewVenueDialog,
+  startGameClock,
+  stopGameClock,
+  resetGameClock,
+  setGameClock,
+  startAttackClock,
+  stopAttackClock,
+  resetAttackClock,
+  setAttackClock,
+  setAttackClockTimeleft
 }

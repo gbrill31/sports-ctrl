@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import styled, { css } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FlexContainer, Button
 } from '../../../../styledElements';
 
 import clock from '../../../../workers/clock';
-import { WebWorker, convertSecToDuration } from '../../../../utils';
+import {
+  WebWorker,
+  convertSecToDuration,
+  convertSecToMilli,
+  convertMilliToSec
+} from '../../../../utils';
+
+import {
+  startAttackClock,
+  stopAttackClock,
+  setAttackClock,
+  resetAttackClock,
+  setAttackClockTimeleft
+} from '../../../../actions';
 
 
 const Clock = styled.div`
@@ -34,7 +48,8 @@ const Clock = styled.div`
   }
 `;
 
-let webWorker, milliseconds;
+let milliseconds;
+const webWorker = new WebWorker();
 const clockOptions = {
   showMin: false,
   showSec: true,
@@ -42,53 +57,61 @@ const clockOptions = {
 }
 
 export default function AttackClock({
-  startTimeSeconds, startTimeMilliseconds
+  startTimeSeconds
 }) {
-  const [isClockRunning, setIsClockRunning] = useState(false);
-  const [attackClock, setAttackClock] = useState(convertSecToDuration(startTimeSeconds, clockOptions));
-  const [timeLeft, setTimeLeft] = useState(startTimeMilliseconds);
+  const dispatch = useDispatch();
+  // const [timeLeft, setTimeLeft] = useState(convertSecToMilli(startTimeSeconds));
 
-  const resetClockCount = () => {
-    milliseconds = startTimeMilliseconds;
-    setTimeLeft(startTimeMilliseconds);
-    setAttackClock(convertSecToDuration(startTimeSeconds, clockOptions));
-  }
+  const {
+    isAttackClockRunning: isClockRunning,
+    attackClockValue: attackClock,
+    timeLeft
+  } = useSelector(state => state.attackClock);
 
-  const stopClock = () => {
-    if (webWorker) {
-      webWorker.stopWorker();
-      webWorker = null;
-    }
-    setIsClockRunning(false);
-  };
+  const setClockValue = useCallback((value) => dispatch(setAttackClock(value)), [dispatch]);
+  const startClock = useCallback(() => dispatch(startAttackClock()), [dispatch]);
+  const stopClock = useCallback(() => dispatch(stopAttackClock()), [dispatch]);
+  const setTimeLeft = useCallback((value) => dispatch(setAttackClockTimeleft(value)), [dispatch]);
 
-  const setClock = (e) => {
-    setAttackClock(convertSecToDuration(e.data.timeLeft / 1000, clockOptions));
+  const resetMilliseconds = useCallback(() => milliseconds = convertSecToMilli(startTimeSeconds), [startTimeSeconds]);
+  const getClockInitTime = useCallback(() => convertSecToDuration(startTimeSeconds, clockOptions), [startTimeSeconds]);
+
+  const resetClock = useCallback(() => {
+    resetMilliseconds();
+    setTimeLeft(milliseconds);
+    dispatch(resetAttackClock(getClockInitTime()));
+  }, [dispatch, resetMilliseconds, getClockInitTime, setTimeLeft]);
+
+  const setClock = useCallback((e) => {
+    setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft), clockOptions));
     milliseconds = e.data.timeLeft;
     setTimeLeft(e.data.timeLeft);
     if (e.data.timeLeft === 0) {
-      setIsClockRunning(false);
+      stopClock();
     }
-  }
+  }, [setTimeLeft, stopClock, setClockValue]);
 
-  const startClock = () => {
-    if (!isClockRunning && (milliseconds === 0 || !milliseconds)) {
-      resetClockCount();
+  useEffect(() => {
+    if (!attackClock) {
+      resetMilliseconds();
+      setTimeLeft(milliseconds);
+      setClockValue(getClockInitTime());
     }
-    const worker = {
-      file: clock,
-      initialData: milliseconds
-    }
-    webWorker = new WebWorker();
-    webWorker.startWorker(worker, setClock);
-    setIsClockRunning(true);
-  };
+  }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft]);
 
-  const resetClock = () => {
-    resetClockCount();
-    stopClock();
-    if (isClockRunning) startClock();
-  }
+  useEffect(() => {
+    if (isClockRunning) {
+      if (milliseconds === 0) resetMilliseconds();
+      const worker = {
+        file: clock,
+        initialData: milliseconds
+      }
+      webWorker.start(worker, setClock);
+    }
+    return () => {
+      webWorker.stop();
+    }
+  }, [isClockRunning, resetClock, setClock, resetMilliseconds]);
 
   return (
     <FlexContainer column>

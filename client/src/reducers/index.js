@@ -6,6 +6,8 @@ import routesReucer from './routesReducer';
 import venuesReducer from './venuesReducer';
 import teamsReducer from './teamsReducer';
 import playersReducer from './playersReducer';
+import gameClockReducer from './gameClockReducer';
+import attackClockReducer from './attackClockReducer';
 
 const rootReducer = combineReducers({
   db: dbConnectionReducer,
@@ -13,7 +15,9 @@ const rootReducer = combineReducers({
   routes: routesReucer,
   venues: venuesReducer,
   teams: teamsReducer,
-  players: playersReducer
+  players: playersReducer,
+  gameClock: gameClockReducer,
+  attackClock: attackClockReducer
 });
 
 export default rootReducer;

@@ -2,7 +2,7 @@ export default (startValue) => {
   let milliseconds = startValue;
   let interval;
 
-  const stopGameClock = () => {
+  const stopClock = () => {
     if (interval) interval = clearInterval(interval);
   };
 
@@ -11,7 +11,7 @@ export default (startValue) => {
       if (milliseconds > 0) {
         milliseconds -= 100;
       } else {
-        stopGameClock();
+        stopClock();
       }
       postMessage({
         timeLeft: milliseconds

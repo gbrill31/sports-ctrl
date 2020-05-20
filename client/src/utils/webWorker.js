@@ -3,7 +3,7 @@ export default class WebWorker {
     this.worker = null;
   }
 
-  startWorker(workerSetup, handleMessage) {
+  start(workerSetup, handleMessage) {
     if (typeof (Worker) !== "undefined") {
       if (!this.worker) {
         const code = workerSetup.file.toString();
@@ -16,7 +16,7 @@ export default class WebWorker {
       };
     }
   }
-  stopWorker() {
+  stop() {
     if (this.worker) {
       this.worker.terminate();
       this.worker = undefined;

@@ -61,7 +61,6 @@ const playersReducer = (state = INTIAL_STATE, action = {}) => {
         playerSavePending: true
       }
     case PLAYERS.SAVE_SUCCESS:
-      console.log(action.payload);
       return {
         ...state,
         playerSavePending: false,

@@ -18,3 +18,16 @@ export const convertSecToDuration = (sec, options = { showMin: true, showSec: tr
   if (!showMin && showSec && !showMil) return `${seconds}`;
 
 };
+
+export const convertMinToSec = (min) => {
+  return min * 60;
+}
+export const convertMinToMilli = (min) => {
+  return min * 60 * 1000;
+}
+export const convertMilliToSec = (milli) => {
+  return milli / 1000;
+}
+export const convertSecToMilli = (sec) => {
+  return sec * 1000;
+}

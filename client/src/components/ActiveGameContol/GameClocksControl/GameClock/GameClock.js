@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FlexContainer, Button
@@ -7,12 +8,20 @@ import {
 import PromptDialog from '../../../PromptDialog/PromptDialog';
 
 import clock from '../../../../workers/clock';
-import { WebWorker, convertSecToDuration } from '../../../../utils';
+import {
+  WebWorker,
+  convertSecToDuration,
+  convertMinToMilli,
+  convertMinToSec,
+  convertMilliToSec
+} from '../../../../utils';
 
-const Q_TIME_MINUTES = 12;
-const Q_TIME_MILLISECONDS = Q_TIME_MINUTES * 60 * 1000;
-let milliseconds = Q_TIME_MILLISECONDS;
-
+import {
+  startGameClock,
+  stopGameClock,
+  setGameClock,
+  resetGameClock
+} from '../../../../actions';
 
 const Clock = styled.div`
   font-family: Led2;
@@ -33,54 +42,73 @@ const Clock = styled.div`
   }
 `;
 
-let webWorker;
+let milliseconds;
+const webWorker = new WebWorker();
 
-export default function GameClock() {
-  const [isClockRunning, setIsClockRunning] = useState(false);
+export default function GameClock({ startTimeMinutes }) {
+  const dispatch = useDispatch();
+
   const [isResetPrompt, setIsResetPrompt] = useState(false);
-  const [gameClock, setGameClock] = useState(convertSecToDuration(Q_TIME_MINUTES * 60));
+  const {
+    isGameClockRunning: isClockRunning,
+    gameClockValue: gameClock
+  } = useSelector(state => state.gameClock);
 
-  const resetClockCount = () => {
-    milliseconds = Q_TIME_MILLISECONDS;
-    setGameClock(convertSecToDuration(Q_TIME_MINUTES * 60));
-  }
+  const setClockValue = useCallback((value) => dispatch(setGameClock(value)), [dispatch]);
+  const startClock = useCallback(() => dispatch(startGameClock()), [dispatch]);
+  const stopClock = useCallback(() => dispatch(stopGameClock()), [dispatch]);
 
-  const stopClock = () => {
-    if (webWorker) {
-      webWorker.stopWorker();
-      webWorker = null;
-    }
+  const resetMilliseconds = useCallback(() => milliseconds = convertMinToMilli(startTimeMinutes), [startTimeMinutes]);
 
-    setIsClockRunning(false);
-  };
+  const resetClock = useCallback((value) => {
+    resetMilliseconds();
+    dispatch(resetGameClock(value));
+  }, [dispatch, resetMilliseconds]);
 
-  const setClock = (e) => {
+  const getClockInitTime = useCallback(() => convertSecToDuration(convertMinToSec(startTimeMinutes)), [startTimeMinutes]);
+
+  const setClock = useCallback((e) => {
     milliseconds = e.data.timeLeft;
-    setGameClock(convertSecToDuration(e.data.timeLeft / 1000));
+    setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft)));
     if (milliseconds === 0) {
-      setIsClockRunning(false);
+      stopClock();
+    }
+  }, [setClockValue, stopClock]);
+
+  useEffect(() => {
+    if (!gameClock) {
+      resetMilliseconds();
+      setClockValue(getClockInitTime());
+    }
+  }, [gameClock, setClockValue, getClockInitTime, startTimeMinutes, resetMilliseconds]);
+
+  useEffect(() => {
+    if (isClockRunning) {
+      if (milliseconds === 0) resetMilliseconds();
+      const worker = {
+        file: clock,
+        initialData: milliseconds
+      }
+
+      webWorker.start(worker, setClock);
+    }
+    return () => {
+      webWorker.stop();
+    }
+  }, [isClockRunning, resetClock, setClock, resetMilliseconds]);
+
+  const openResetPrompot = () => {
+    if (milliseconds === 0 && !isClockRunning) {
+      resetClock();
+    } else {
+      setIsResetPrompt(true);
     }
   }
-
-  const startClock = () => {
-    if (!isClockRunning && milliseconds === 0) {
-      resetClockCount();
-    }
-    const worker = {
-      file: clock,
-      initialData: milliseconds
-    }
-    webWorker = new WebWorker();
-    webWorker.startWorker(worker, setClock);
-    setIsClockRunning(true);
-  };
-
-  const openResetPrompot = () => setIsResetPrompt(true);
   const handleCancelPrompt = () => setIsResetPrompt(false);
 
-  const resetClock = () => {
+  const resetClockConfirm = () => {
     stopClock();
-    resetClockCount();
+    resetClock(getClockInitTime());
     handleCancelPrompt();
   }
 
@@ -116,7 +144,7 @@ export default function GameClock() {
             content="Are you sure you want to reset the game clock?"
             confirmText="Reset"
             handleClose={handleCancelPrompt}
-            handleConfirm={resetClock}
+            handleConfirm={resetClockConfirm}
           />
         )
       }
