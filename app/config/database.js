@@ -176,20 +176,22 @@ function getGameObject(game, data) {
     return game;
 }
 
+function checkConnection() {
+    return new Promise((resolve, reject) => {
+        DB.raw('SELECT 1').then((message) => {
+            resolve(message);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+}
+
 //Exported functions
 
 
 
 const DB_EXPORTS = {
-    checkConnection: function () {
-        return new Promise((resolve, reject) => {
-            DB.raw('SELECT 1').then((message) => {
-                resolve(message);
-            }).catch((err) => {
-                reject(err);
-            });
-        });
-    },
+    checkConnection,
 
     connect: function () {
         return new Promise((resolve, reject) => {

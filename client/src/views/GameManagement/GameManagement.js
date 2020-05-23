@@ -41,8 +41,8 @@ const ClocksMenu = styled.div`
   `}
 `;
 
-const ATTACK_TIME_SECONDS = 24;
 const Q_TIME_MINUTES = 1;
+const ATTACK_TIME_SECONDS = 24;
 const attackClockOptions = {
   showMin: false,
   showSec: true,

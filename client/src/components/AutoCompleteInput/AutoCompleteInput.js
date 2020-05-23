@@ -107,7 +107,7 @@ export default function AutoCompleteInput({
             onChange={handleInputChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
-            loading={loading}
+            isLoading={loading}
             disabled={loading}
           />
           {

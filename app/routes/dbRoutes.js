@@ -4,7 +4,7 @@ const DB = require('../config/database');
 dbRouter.get('/', function (req, res) {
     DB.checkConnection().then((message) => {
         res.json(message || {}).status(200);
-    }, () => {
+    }, (checkError) => {
         DB.connect().then((message) => {
             res.json(message || {}).status(200);
         }, (err) => {
@@ -12,7 +12,7 @@ dbRouter.get('/', function (req, res) {
                 type: 'error',
                 message: 'Could Not Connect To Database'
             }));
-            res.status(503).json({ error: err });
+            res.sendStatus(503);
         });
     })
 

@@ -9,7 +9,7 @@ playersRouter.get('/all', (req, res) => {
             type: 'error',
             message: 'Could Not Load All Players'
         }));
-        res.status(500).json(err);
+        res.sendStatus(500);
     });
 });
 playersRouter.get('/team', (req, res) => {
@@ -21,7 +21,7 @@ playersRouter.get('/team', (req, res) => {
             type: 'error',
             message: 'Could Not Load Players For Requested Team'
         }));
-        res.status(404).json(err);
+        res.sendStatus(404);
     });
 });
 
@@ -36,7 +36,7 @@ playersRouter.post('/save', function (req, res) {
                     type: 'error',
                     message: 'Could Not Add Players'
                 }));
-                res.status(500).json(err);
+                res.sendStatus(500);
             });
     } else {
         psqlDB.updatePlayer(players)
@@ -47,7 +47,7 @@ playersRouter.post('/save', function (req, res) {
                     type: 'error',
                     message: 'Could Not Update Players'
                 }));
-                res.status(500).json(err);
+                res.sendStatus(500);
             });
     }
 });
@@ -62,7 +62,7 @@ playersRouter.post('/delete', function (req, res) {
                 type: 'error',
                 message: 'Could Not Delete Player'
             }));
-            res.status(406).json(err);
+            res.sendStatus(406);
         });
 });
 

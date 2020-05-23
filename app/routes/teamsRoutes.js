@@ -35,7 +35,7 @@ teamsRouter.post('/save', function (req, res) {
                     type: 'error',
                     message: 'Could Not Save Team'
                 }));
-                res.status(500).json(err);
+                res.sendStatus(500);
             })
     }
 });
@@ -50,7 +50,7 @@ teamsRouter.post('/delete', function (req, res) {
                 type: 'error',
                 message: 'Could Not Delete Team'
             }));
-            res.status(500).json(err);
+            res.sendStatus(500);
         });
 });
 

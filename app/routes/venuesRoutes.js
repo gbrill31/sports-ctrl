@@ -9,7 +9,7 @@ venuesRouter.get('/all', (req, res) => {
             type: 'error',
             message: 'Could Not Load Venues'
         }));
-        res.status(404).json(err);
+        res.sendStatus(404);
     });
 });
 
@@ -24,7 +24,7 @@ venuesRouter.post('/save', function (req, res) {
                     type: 'error',
                     message: 'Could Not Save Venue'
                 }));
-                res.status(500).json(err);
+                res.sendStatus(500);
             });
     } else {
         psqlDB.updateVenue(id, name, country, city, seats)
@@ -35,7 +35,7 @@ venuesRouter.post('/save', function (req, res) {
                     type: 'error',
                     message: 'Could Not Save Venue'
                 }));
-                res.status(500).json(err);
+                res.sendStatus(500);
             })
     }
 });
@@ -50,7 +50,7 @@ venuesRouter.post('/delete', function (req, res) {
                 type: 'error',
                 message: 'Could Not Delete Venue'
             }));
-            res.status(500).json(err);
+            res.sendStatus(500);
         });
 });
 

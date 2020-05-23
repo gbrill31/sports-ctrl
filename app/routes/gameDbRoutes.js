@@ -9,7 +9,7 @@ gameRouter.get('/all', (req, res) => {
             type: 'error',
             message: 'Could Not Load All Games Played'
         }));
-        res.status(err.code || 404);
+        res.sendStatus(err.code || 404);
     });
 });
 
@@ -23,7 +23,7 @@ gameRouter.post('/create', function (req, res) {
                 type: 'error',
                 message: 'Could Not Create A New Game'
             }));
-            res.status(err.code || 500);
+            res.sendStatus(err.code || 500);
         });
 });
 
@@ -35,7 +35,7 @@ gameRouter.get('/active', function (req, res) {
             type: 'error',
             message: 'Cannot Load Active Game'
         }));
-        res.status(err.code || 404).json();
+        res.sendStatus(err.code || 404);
     });
 });
 
@@ -47,7 +47,7 @@ gameRouter.get('/team', function (req, res) {
             type: 'error',
             message: 'Cannot Load Team'
         }));
-        res.status(err.code || 404).json();
+        res.sendStatus(err.code || 404);
     });
 });
 
