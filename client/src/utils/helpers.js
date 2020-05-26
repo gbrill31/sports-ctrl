@@ -31,3 +31,6 @@ export const convertMilliToSec = (milli) => {
 export const convertSecToMilli = (sec) => {
   return sec * 1000;
 }
+export const convertMilliToMin = (milli) => {
+  return Math.floor(milli / 1000 / 60);
+}

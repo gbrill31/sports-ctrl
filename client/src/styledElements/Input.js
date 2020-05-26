@@ -24,6 +24,9 @@ export default styled.input`
   padding: 15px;
   margin-right: ${props => props.spaceRight ? '10px' : ''};
   margin-left: ${props => props.spaceLeft ? '10px' : ''};
+  z-index: 99;
+  text-align: ${props => props.align || ''};
+
   appearance: ${props => props.type === 'number' ? 'textfield' : ''};
   &::-webkit-inner-spin-button{
     appearance: ${props => props.type === 'number' ? 'none' : ''};
@@ -38,10 +41,10 @@ export default styled.input`
     animation: ${props => loadingAnimation(props)} 0.4s alternate infinite;
   `)}
   ${props => props.disabled && css`
-    /* background: ${props => props.theme.disabled.bgColor}; */
-    /* color: ${props => props.theme.disabled.color}; */
+    color: ${props => props.theme.disabled.color};
+    border-color: ${props => props.theme.disabled.color};
     &:hover{
-      /* background: #666; */
+      user-select: none;
       cursor: not-allowed;
     }
   `}

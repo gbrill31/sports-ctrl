@@ -13,8 +13,8 @@ export default function GameClocksControl({
   return (
     <>
       <FlexContainer justify="center">
-        <GameClock startTimeMinutes={gameClockStartTime} />
-        <AttackClock startTimeSeconds={attackClockStartTime} />
+        <GameClock startTime={gameClockStartTime} />
+        <AttackClock startTime={attackClockStartTime} />
       </FlexContainer>
     </>
   )

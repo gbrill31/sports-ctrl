@@ -14,8 +14,6 @@ import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
-  convertMinToMilli,
-  convertMinToSec,
   convertMilliToSec
 } from '../../../../utils';
 
@@ -48,7 +46,7 @@ const Clock = styled.div`
 let milliseconds;
 const webWorker = new WebWorker();
 
-export default function GameClock({ startTimeMinutes }) {
+export default function GameClock({ startTime }) {
   const dispatch = useDispatch();
 
   const [isResetPrompt, setIsResetPrompt] = useState(false);
@@ -62,7 +60,7 @@ export default function GameClock({ startTimeMinutes }) {
   const startClock = useCallback(() => dispatch(startGameClock()), [dispatch]);
   const stopClock = useCallback(() => dispatch(stopGameClock()), [dispatch]);
 
-  const resetMilliseconds = useCallback(() => milliseconds = convertMinToMilli(startTimeMinutes), [startTimeMinutes]);
+  const resetMilliseconds = useCallback(() => milliseconds = startTime, [startTime]);
 
   const resetClock = useCallback((value) => {
     resetMilliseconds();
@@ -70,7 +68,7 @@ export default function GameClock({ startTimeMinutes }) {
     dispatch(resetGameClock(value));
   }, [dispatch, resetMilliseconds]);
 
-  const getClockInitTime = useCallback(() => convertSecToDuration(convertMinToSec(startTimeMinutes)), [startTimeMinutes]);
+  const getClockInitTime = useCallback(() => convertSecToDuration(convertMilliToSec(startTime)), [startTime]);
 
   const setClock = useCallback((e) => {
     milliseconds = e.data.timeLeft;
@@ -82,13 +80,19 @@ export default function GameClock({ startTimeMinutes }) {
   }, [setClockValue, stopClock]);
 
   useEffect(() => {
+    resetMilliseconds();
+    localStorage.removeItem('gameClock');
+    setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
+  }, [startTime, setClockValue, resetMilliseconds]);
+
+  useEffect(() => {
     if (!gameClock) {
       const savedStartTime = parseInt(localStorage.getItem('gameClock'));
       milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
       setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime)) : getClockInitTime());
     }
     if (isReset) resetMilliseconds();
-  }, [gameClock, setClockValue, getClockInitTime, startTimeMinutes, resetMilliseconds, isReset]);
+  }, [gameClock, setClockValue, getClockInitTime, startTime, resetMilliseconds, isReset]);
 
   useEffect(() => {
     if (isClockRunning) {
@@ -141,7 +145,7 @@ export default function GameClock({ startTimeMinutes }) {
               </Button>
             )
         }
-        <Button onClick={openResetPrompot} color="generic">
+        <Button onClick={openResetPrompot} color="secondary">
           Reset Clock
           <ButtonIcon spaceLeft>
             <FontAwesomeIcon icon={faHistory} size="sm" />

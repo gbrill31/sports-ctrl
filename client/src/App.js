@@ -45,7 +45,7 @@ const theme = {
   },
   disabled: {
     bgColor: '#555',
-    color: '#fff'
+    color: '#888'
   },
   font: 'Roboto, sans-serif'
 };

@@ -6,6 +6,7 @@ import Button from './Button';
 import ButtonIcon from './ButtonIcon';
 import ClearButton from './ClearButton';
 import Input from './Input';
+import Divider from './Divider';
 
 export {
   MainTitle,
@@ -15,5 +16,6 @@ export {
   Button,
   ButtonIcon,
   Input,
-  ClearButton
+  ClearButton,
+  Divider
 }

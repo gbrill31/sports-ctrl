@@ -5,7 +5,8 @@ import {
   convertMinToMilli,
   convertMilliToSec,
   convertMinToSec,
-  convertSecToMilli
+  convertSecToMilli,
+  convertMilliToMin
 } from './helpers';
 
 export {
@@ -15,5 +16,6 @@ export {
   convertMinToMilli,
   convertMilliToSec,
   convertMinToSec,
-  convertSecToMilli
+  convertSecToMilli,
+  convertMilliToMin
 }

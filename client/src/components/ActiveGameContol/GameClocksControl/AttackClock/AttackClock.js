@@ -12,7 +12,6 @@ import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
-  convertSecToMilli,
   convertMilliToSec
 } from '../../../../utils';
 
@@ -59,7 +58,7 @@ const clockOptions = {
 }
 
 export default function AttackClock({
-  startTimeSeconds
+  startTime
 }) {
   const dispatch = useDispatch();
 
@@ -75,8 +74,8 @@ export default function AttackClock({
   const stopClock = useCallback(() => dispatch(stopAttackClock()), [dispatch]);
   const setTimeLeft = useCallback((value) => dispatch(setAttackClockTimeleft(value)), [dispatch]);
 
-  const resetMilliseconds = useCallback(() => milliseconds = convertSecToMilli(startTimeSeconds), [startTimeSeconds]);
-  const getClockInitTime = useCallback(() => convertSecToDuration(startTimeSeconds, clockOptions), [startTimeSeconds]);
+  const resetMilliseconds = useCallback(() => milliseconds = startTime, [startTime]);
+  const getClockInitTime = useCallback(() => convertSecToDuration(convertMilliToSec(startTime), clockOptions), [startTime]);
 
   const resetClock = useCallback(() => {
     resetMilliseconds();
@@ -92,6 +91,11 @@ export default function AttackClock({
       stopClock();
     }
   }, [setTimeLeft, stopClock, setClockValue]);
+
+  useEffect(() => {
+    resetMilliseconds();
+    setClockValue(convertSecToDuration(convertMilliToSec(startTime), clockOptions));
+  }, [startTime, setClockValue, resetMilliseconds]);
 
   useEffect(() => {
     if (!attackClock) {
@@ -136,7 +140,7 @@ export default function AttackClock({
               </Button>
             )
         }
-        <Button onClick={resetClock} color="generic">
+        <Button onClick={resetClock} color="secondary">
           Reset Clock
           <ButtonIcon spaceLeft>
             <FontAwesomeIcon icon={faHistory} size="sm" />

@@ -9,14 +9,18 @@ import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 import GameClocksControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
+import useFormInput from '../../hooks/useFormInput';
 
 import {
-  GridContainer, FlexContainer, Button, ButtonIcon
+  GridContainer, FlexContainer, Button, ButtonIcon, Input
 } from '../../styledElements';
 
 import {
   convertSecToDuration,
-  convertMinToSec,
+  convertMinToMilli,
+  convertMilliToMin,
+  convertSecToMilli,
+  convertMilliToSec
 } from '../../utils';
 
 import {
@@ -34,6 +38,8 @@ const ClocksMenu = styled.div`
   max-width: 0;
   transition: max-height 0.3s ease-in-out, max-width 0.3s ease-in-out;
   overflow: hidden;
+  color: #fff;
+  z-index: 999;
 
   ${props => props.show && css`
     max-height: 500px;
@@ -41,8 +47,21 @@ const ClocksMenu = styled.div`
   `}
 `;
 
-const Q_TIME_MINUTES = 1;
-const ATTACK_TIME_SECONDS = 24;
+const ClocksSetMenu = styled.div`
+  max-height: 0;
+  transition: max-height 0.3s ease-in-out;
+  overflow: hidden;
+  background: #272727;
+  width: 150px;
+
+  ${props => props.show && css`
+    max-height: 500px;
+  `}
+`;
+
+
+const Q_TIME = 12; //Minutes
+const ATTACK_TIME = 24; //Seconds
 const attackClockOptions = {
   showMin: false,
   showSec: true,
@@ -53,14 +72,25 @@ export default function GameManagement() {
   const dispatch = useDispatch();
 
   const [isShowClocksMenu, setIsShowClocksMenu] = useState(false);
-  const [gameClockStartTime, setGameClockStartTime] = useState(Q_TIME_MINUTES);
-  const [attackClockStartTime, setAttackClockStartTime] = useState(ATTACK_TIME_SECONDS);
+  const [isShowSetGameClock, setIsShowSetGameClock] = useState(false);
+  const [isShowSetAttackClock, setIsShowSetAttackClock] = useState(false);
+  const [gameClockStartTime, setGameClockStartTime] = useState(convertMinToMilli(Q_TIME));
+  const [attackClockStartTime, setAttackClockStartTime] = useState(convertSecToMilli(ATTACK_TIME));
+  const gameClockMinutes = useFormInput('');
+  const gameClockSeconds = useFormInput('');
+  const attackClockSeconds = useFormInput('');
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const activeGame = useSelector(state => state.games.activeGame);
   const isGameLoading = useSelector(state => state.games.activeGamePending);
+  const {
+    isGameClockRunning
+  } = useSelector(state => state.gameClock);
+  const {
+    isAttackClockRunning
+  } = useSelector(state => state.attackClock);
 
-  const getGameClockInitTime = () => convertSecToDuration(convertMinToSec(gameClockStartTime));
+  const getGameClockInitTime = () => convertSecToDuration(convertMilliToSec(gameClockStartTime));
   const getAttackClockInitTime = () => convertSecToDuration(attackClockStartTime, attackClockOptions);
 
   const getCurrentGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
@@ -70,7 +100,7 @@ export default function GameManagement() {
   const startClockAttack = useCallback(() => dispatch(startAttackClock()), [dispatch]);
   const stopClockAttack = useCallback(() => dispatch(stopAttackClock()), [dispatch]);
 
-  const resetClockGame = (value) => {
+  const resetClockGame = () => {
     localStorage.removeItem('gameClock');
     dispatch(resetGameClock(getGameClockInitTime()));
   };
@@ -91,11 +121,60 @@ export default function GameManagement() {
     resetClockAttack();
   }
 
-  // const openClocksMenu = () => setIsShowClocksMenu(true);
-  // const closeClocksMenu = () => setIsShowClocksMenu(false);
-
   const toggleClocksMenu = () => setIsShowClocksMenu(!isShowClocksMenu);
 
+  const getFormattedSeconds = (value) => {
+    const numValue = parseInt(value);
+    return numValue < 10 ? `0${numValue}` : `${numValue}`;
+  }
+
+  const toggleSetGameClock = () => {
+    if (!isShowSetGameClock) {
+      const gameMinutes = convertMilliToMin(gameClockStartTime);
+      const gameSeconds = Math.floor(convertMilliToSec(gameClockStartTime) - (gameMinutes * 60));
+      gameClockMinutes.setValue(gameMinutes);
+      gameClockSeconds.setValue(getFormattedSeconds(gameSeconds));
+    }
+    setIsShowSetGameClock(!isShowSetGameClock)
+  };
+  const toggleSetAttackClock = () => {
+    if (!isShowSetAttackClock) {
+      attackClockSeconds.setValue(getFormattedSeconds(convertMilliToSec(attackClockStartTime)));
+    }
+    setIsShowSetAttackClock(!isShowSetAttackClock);
+  }
+
+  const setGameClockStart = () => {
+    const startTime = convertSecToMilli(parseInt(gameClockSeconds.value)) + convertMinToMilli(parseInt(gameClockMinutes.value));
+    setGameClockStartTime(startTime);
+  }
+
+  const handleGameClockSecondsChange = (e) => {
+    const { value } = e.target;
+    gameClockSeconds.setValue(getFormattedSeconds(value));
+  }
+
+  const handleAttackClockChange = (e) => {
+    const { value } = e.target;
+    attackClockSeconds.setValue(getFormattedSeconds(value));
+  }
+
+  const setAttackClockSeconds = () => {
+    const startTime = convertSecToMilli(parseInt(attackClockSeconds.value));
+    setAttackClockStartTime(startTime);
+  };
+
+  useEffect(() => {
+    if (isShowSetGameClock && isGameClockRunning) {
+      setIsShowSetGameClock(false);
+    }
+  }, [isShowSetGameClock, isGameClockRunning, setIsShowSetGameClock]);
+
+  useEffect(() => {
+    if (isShowSetAttackClock && isAttackClockRunning) {
+      setIsShowSetAttackClock(false);
+    }
+  }, [isShowSetAttackClock, isAttackClockRunning, setIsShowSetAttackClock]);
 
   useEffect(() => {
     if (isDBConnected && !activeGame) {
@@ -125,6 +204,7 @@ export default function GameManagement() {
                   </Button>
                   <ClocksMenu show={isShowClocksMenu}>
                     <FlexContainer column align="center" padding="0">
+                      <h4>Control</h4>
                       <Button
                         noRaduis
                         margin="0"
@@ -132,7 +212,7 @@ export default function GameManagement() {
                         color="success"
                         onClick={startAllClocks}
                       >
-                        Start Clocks
+                        Start All Clocks
                       <ButtonIcon spaceLeft>
                           <FontAwesomeIcon icon={faStopwatch} size="sm" />
                         </ButtonIcon>
@@ -141,11 +221,10 @@ export default function GameManagement() {
                         noRaduis
                         margin="0"
                         fullWidth
-                        // spaceTop
                         color="error"
                         onClick={stopAllClocks}
                       >
-                        Stop Clocks
+                        Stop All Clocks
                       <ButtonIcon spaceLeft>
                           <FontAwesomeIcon icon={faHandPaper} size="sm" />
                         </ButtonIcon>
@@ -154,17 +233,103 @@ export default function GameManagement() {
                         noRaduis
                         margin="0"
                         fullWidth
-                        // spaceTop
                         color="secondary"
                         onClick={resetAllClocks}
                       >
-                        Reset Clocks
+                        Reset All Clocks
                       <ButtonIcon spaceLeft>
                           <FontAwesomeIcon icon={faHistory} size="sm" />
                         </ButtonIcon>
                       </Button>
+                      <h4>Setup</h4>
+                      <Button
+                        noRaduis
+                        margin="0"
+                        fullWidth
+                        color="generic"
+                        onClick={toggleSetGameClock}
+                        disabled={isGameClockRunning}
+                      >
+                        Set Game Clock
+                      </Button>
+                      <ClocksSetMenu show={isShowSetGameClock}>
+                        <FlexContainer justify="space-between" align="center">
+                          <Input
+                            id="gameClockMinutes"
+                            spaceRight
+                            color="#fff"
+                            value={gameClockMinutes.value}
+                            onChange={gameClockMinutes.onChange}
+                            type="number"
+                            min="0"
+                            width="15%"
+                            align="center"
+                          />
+                          <h4>:</h4>
+                          <Input
+                            id="gameClockSeconds"
+                            spaceLeft
+                            color="#fff"
+                            value={gameClockSeconds.value}
+                            onChange={handleGameClockSecondsChange}
+                            type="number"
+                            min="0"
+                            max="59"
+                            width="15%"
+                            align="center"
+                          />
+                        </FlexContainer>
+                        <FlexContainer align="center" justify="center">
+                          <Button
+                            noRaduis
+                            margin="0"
+                            fullWidth
+                            color="success"
+                            onClick={setGameClockStart}
+                          >
+                            Set
+                          </Button>
+                        </FlexContainer>
+                      </ClocksSetMenu>
                     </FlexContainer>
+                    <Button
+                      noRaduis
+                      margin="0"
+                      fullWidth
+                      color="generic"
+                      onClick={toggleSetAttackClock}
+                      disabled={isAttackClockRunning}
+                    >
+                      Set Attack Clock
+                      </Button>
+                    <ClocksSetMenu show={isShowSetAttackClock}>
+                      <FlexContainer justify="center" align="center">
+                        <Input
+                          id="attackClockSeconds"
+                          color="#fff"
+                          value={attackClockSeconds.value}
+                          onChange={handleAttackClockChange}
+                          type="number"
+                          min="1"
+                          max="60"
+                          width="15%"
+                          align="center"
+                        />
+                      </FlexContainer>
+                      <FlexContainer align="center" justify="center">
+                        <Button
+                          noRaduis
+                          margin="0"
+                          fullWidth
+                          color="success"
+                          onClick={setAttackClockSeconds}
+                        >
+                          Set
+                          </Button>
+                      </FlexContainer>
+                    </ClocksSetMenu>
                   </ClocksMenu>
+
                 </FlexContainer>
                 <GameClocksControl
                   gameClockStartTime={gameClockStartTime}
