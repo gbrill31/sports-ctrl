@@ -9,6 +9,7 @@ import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 import GameClocksControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
+import PromptDialog from '../../components/PromptDialog/PromptDialog';
 import useFormInput from '../../hooks/useFormInput';
 import useOutsideMouseDown from '../../hooks/useOutsideMouseDown'
 
@@ -85,6 +86,7 @@ const attackClockOptions = {
 export default function GameManagement() {
   const dispatch = useDispatch();
 
+  const [isResetPrompt, setIsResetPrompt] = useState(false);
   const [isShowClocksMenu, setIsShowClocksMenu] = useState(false);
   const [isShowSetGameClock, setIsShowSetGameClock] = useState(false);
   const [isShowSetAttackClock, setIsShowSetAttackClock] = useState(false);
@@ -112,7 +114,7 @@ export default function GameManagement() {
   } = useSelector(state => state.attackClock);
 
   const getGameClockInitTime = () => convertSecToDuration(convertMilliToSec(gameClockStartTime));
-  const getAttackClockInitTime = () => convertSecToDuration(attackClockStartTime, attackClockOptions);
+  const getAttackClockInitTime = () => convertSecToDuration(convertMilliToSec(attackClockStartTime), attackClockOptions);
 
   const getCurrentGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
 
@@ -137,9 +139,12 @@ export default function GameManagement() {
     stopClockGame();
     stopClockAttack();
   }
-  const resetAllClocks = () => {
+  const resetAllClocksPrompt = () => setIsResetPrompt(true);
+  const handleCancelPrompt = () => setIsResetPrompt(false);
+  const resetAllClocksConfirm = () => {
     resetClockGame();
     resetClockAttack();
+    handleCancelPrompt();
   }
 
   const toggleClocksMenu = () => {
@@ -259,7 +264,7 @@ export default function GameManagement() {
                         margin="0"
                         fullWidth
                         color="secondary"
-                        onClick={resetAllClocks}
+                        onClick={resetAllClocksPrompt}
                       >
                         Reset All Clocks
                       <ButtonIcon spaceLeft>
@@ -373,6 +378,18 @@ export default function GameManagement() {
               </>
             )
 
+        }
+        {
+          isResetPrompt && (
+            <PromptDialog
+              isOpen={isResetPrompt}
+              title="Reset Game Clock"
+              content="Are you sure you want to reset the game clock?"
+              confirmText="Reset"
+              handleClose={handleCancelPrompt}
+              handleConfirm={resetAllClocksConfirm}
+            />
+          )
         }
       </ComponentLoader>
     </>
