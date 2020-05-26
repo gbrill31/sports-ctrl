@@ -71,7 +71,9 @@ const ClocksSetMenu = styled.div`
   `}
 `;
 
-
+/**
+ * Need to move clocks settings to DB
+ */
 const Q_TIME = 12; //Minutes
 const ATTACK_TIME = 24; //Seconds
 const attackClockOptions = {
