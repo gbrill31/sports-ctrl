@@ -6,15 +6,13 @@ import {
 } from '../../../styledElements';
 
 
-export default function GameClocksControl({
-  gameClockStartTime, attackClockStartTime
-}) {
+export default function GameClocksControl() {
 
   return (
     <>
       <FlexContainer justify="center">
-        <GameClock startTime={gameClockStartTime} />
-        <AttackClock startTime={attackClockStartTime} />
+        <GameClock />
+        <AttackClock />
       </FlexContainer>
     </>
   )

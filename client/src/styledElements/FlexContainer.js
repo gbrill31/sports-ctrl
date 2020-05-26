@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export default styled.div`
   display: flex;
@@ -13,4 +13,9 @@ export default styled.div`
   overflow: ${props => props.innerScroll ? 'auto' : ''};
   border-right: ${props => props.borderRight ? '1px solid #777' : ''};
   background: ${props => props.bg ? props.theme[props.color].color : ''};
+
+  ${props => props.absolute && css`
+      left: ${props => props.left || '0'};
+      top: ${props => props.top || '0'};
+  `};
 `;

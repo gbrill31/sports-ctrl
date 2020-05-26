@@ -46,13 +46,14 @@ const Clock = styled.div`
 let milliseconds;
 const webWorker = new WebWorker();
 
-export default function GameClock({ startTime }) {
+export default function GameClock() {
   const dispatch = useDispatch();
 
   const [isResetPrompt, setIsResetPrompt] = useState(false);
   const {
     isGameClockRunning: isClockRunning,
     gameClockValue: gameClock,
+    startTime,
     isReset
   } = useSelector(state => state.gameClock);
 

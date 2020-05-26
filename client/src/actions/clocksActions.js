@@ -16,6 +16,10 @@ export const setGameClock = (value) => ({
   type: CLOCKS.SET_GAME_CLOCK,
   payload: value
 });
+export const setGameClockStart = (value) => ({
+  type: CLOCKS.SET_GAME_CLOCK_START,
+  payload: value
+});
 
 export const startAttackClock = () => ({
   type: CLOCKS.START_ATTACK_CLOCK
@@ -29,6 +33,10 @@ export const resetAttackClock = (value) => ({
 });
 export const setAttackClock = (value) => ({
   type: CLOCKS.SET_ATTACK_CLOCK,
+  payload: value
+});
+export const setAttackClockStart = (value) => ({
+  type: CLOCKS.SET_ATTACK_CLOCK_START,
   payload: value
 });
 export const setAttackClockTimeleft = (value) => ({

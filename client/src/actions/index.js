@@ -65,10 +65,12 @@ import {
   stopGameClock,
   resetGameClock,
   setGameClock,
+  setGameClockStart,
   startAttackClock,
   stopAttackClock,
   resetAttackClock,
   setAttackClock,
+  setAttackClockStart,
   setAttackClockTimeleft
 } from './clocksActions';
 
@@ -129,9 +131,11 @@ export {
   stopGameClock,
   resetGameClock,
   setGameClock,
+  setGameClockStart,
   startAttackClock,
   stopAttackClock,
   resetAttackClock,
   setAttackClock,
+  setAttackClockStart,
   setAttackClockTimeleft
 }

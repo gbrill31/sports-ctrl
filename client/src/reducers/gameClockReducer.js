@@ -5,6 +5,7 @@ import {
 
 const INTIAL_STATE = {
   gameClockValue: null,
+  startTime: null,
   isGameClockRunning: false,
   isReset: false
 }
@@ -15,6 +16,11 @@ const clocksReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         gameClockValue: action.payload
+      }
+    case CLOCKS.SET_GAME_CLOCK_START:
+      return {
+        ...state,
+        startTime: action.payload
       }
     case CLOCKS.START_GAME_CLOCK:
       return {

@@ -5,6 +5,7 @@ import {
 
 const INTIAL_STATE = {
   attackClockValue: null,
+  startTime: null,
   isAttackClockRunning: false,
   timeLeft: null,
   isReset: false
@@ -16,6 +17,11 @@ const clocksReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         attackClockValue: action.payload
+      }
+    case CLOCKS.SET_ATTACK_CLOCK_START:
+      return {
+        ...state,
+        startTime: action.payload
       }
     case CLOCKS.START_ATTACK_CLOCK:
       return {

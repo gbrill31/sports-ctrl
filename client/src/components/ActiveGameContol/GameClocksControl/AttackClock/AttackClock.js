@@ -57,14 +57,13 @@ const clockOptions = {
   showMil: false
 }
 
-export default function AttackClock({
-  startTime
-}) {
+export default function AttackClock() {
   const dispatch = useDispatch();
 
   const {
     isAttackClockRunning: isClockRunning,
     attackClockValue: attackClock,
+    startTime,
     isReset,
     timeLeft
   } = useSelector(state => state.attackClock);
