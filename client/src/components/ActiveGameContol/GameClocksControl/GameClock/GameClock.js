@@ -81,7 +81,6 @@ export default function GameClock({ startTime }) {
 
   useEffect(() => {
     resetMilliseconds();
-    localStorage.removeItem('gameClock');
     setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
   }, [startTime, setClockValue, resetMilliseconds]);
 

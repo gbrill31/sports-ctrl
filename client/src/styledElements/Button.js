@@ -35,6 +35,10 @@ export default styled.button`
     cursor: pointer;
     color: ${props => props.color === 'menu' ? props.theme[props.color].color : ''};
   };
+  ${props => props.active && css`
+    background: ${ props => (props.color ? props.theme[props.color].hover : props.theme.primary.hover)};
+    color: ${ props => props.color === 'menu' ? props.theme[props.color].color : ''};
+  `};
   ${props => props.justifyRight && css`
     position: absolute;
     right: 15px;

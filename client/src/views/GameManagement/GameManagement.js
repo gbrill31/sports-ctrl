@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled, { css } from 'styled-components';
 
@@ -10,6 +10,7 @@ import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/Cre
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 import GameClocksControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
 import useFormInput from '../../hooks/useFormInput';
+import useOutsideMouseDown from '../../hooks/useOutsideMouseDown'
 
 import {
   GridContainer, FlexContainer, Button, ButtonIcon, Input
@@ -40,6 +41,17 @@ const ClocksMenu = styled.div`
   overflow: hidden;
   color: #fff;
   z-index: 999;
+
+  h4{
+    box-sizing: border-box;
+    width: 100%;
+    text-align: center;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    margin: 0;
+    padding: 10px 0;
+    background: #444;
+  }
 
   ${props => props.show && css`
     max-height: 500px;
@@ -79,6 +91,13 @@ export default function GameManagement() {
   const gameClockMinutes = useFormInput('');
   const gameClockSeconds = useFormInput('');
   const attackClockSeconds = useFormInput('');
+
+  const menuRef = useRef(null);
+  useOutsideMouseDown(menuRef, isShowClocksMenu, () => {
+    setIsShowClocksMenu(false);
+    setIsShowSetAttackClock(false);
+    setIsShowSetGameClock(false);
+  });
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const activeGame = useSelector(state => state.games.activeGame);
@@ -121,7 +140,9 @@ export default function GameManagement() {
     resetClockAttack();
   }
 
-  const toggleClocksMenu = () => setIsShowClocksMenu(!isShowClocksMenu);
+  const toggleClocksMenu = () => {
+    setIsShowClocksMenu(!isShowClocksMenu);
+  }
 
   const getFormattedSeconds = (value) => {
     const numValue = parseInt(value);
@@ -147,6 +168,7 @@ export default function GameManagement() {
   const setGameClockStart = () => {
     const startTime = convertSecToMilli(parseInt(gameClockSeconds.value)) + convertMinToMilli(parseInt(gameClockMinutes.value));
     setGameClockStartTime(startTime);
+    localStorage.removeItem('gameClock');
   }
 
   const handleGameClockSecondsChange = (e) => {
@@ -159,9 +181,10 @@ export default function GameManagement() {
     attackClockSeconds.setValue(getFormattedSeconds(value));
   }
 
-  const setAttackClockSeconds = () => {
+  const setAttackClockStart = () => {
     const startTime = convertSecToMilli(parseInt(attackClockSeconds.value));
     setAttackClockStartTime(startTime);
+    localStorage.removeItem('attackClock');
   };
 
   useEffect(() => {
@@ -190,7 +213,7 @@ export default function GameManagement() {
             <CreateGameForm />
           ) : (
               <>
-                <FlexContainer padding="0" absolute>
+                <FlexContainer padding="0" absolute ref={menuRef}>
                   <Button
                     noRaduis
                     margin="0"
@@ -246,7 +269,8 @@ export default function GameManagement() {
                         noRaduis
                         margin="0"
                         fullWidth
-                        color="generic"
+                        color="menu"
+                        active={isShowSetGameClock}
                         onClick={toggleSetGameClock}
                         disabled={isGameClockRunning}
                       >
@@ -265,7 +289,7 @@ export default function GameManagement() {
                             width="15%"
                             align="center"
                           />
-                          <h4>:</h4>
+                          <span>:</span>
                           <Input
                             id="gameClockSeconds"
                             spaceLeft
@@ -296,7 +320,8 @@ export default function GameManagement() {
                       noRaduis
                       margin="0"
                       fullWidth
-                      color="generic"
+                      color="menu"
+                      active={isShowSetAttackClock}
                       onClick={toggleSetAttackClock}
                       disabled={isAttackClockRunning}
                     >
@@ -322,7 +347,7 @@ export default function GameManagement() {
                           margin="0"
                           fullWidth
                           color="success"
-                          onClick={setAttackClockSeconds}
+                          onClick={setAttackClockStart}
                         >
                           Set
                           </Button>

@@ -79,12 +79,14 @@ export default function AttackClock({
 
   const resetClock = useCallback(() => {
     resetMilliseconds();
+    localStorage.removeItem('attackClock');
     setTimeLeft(milliseconds);
     dispatch(resetAttackClock(getClockInitTime()));
   }, [dispatch, resetMilliseconds, getClockInitTime, setTimeLeft]);
 
   const setClock = useCallback((e) => {
     setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft), clockOptions));
+    localStorage.setItem('attackClock', e.data.timeLeft);
     milliseconds = e.data.timeLeft;
     setTimeLeft(e.data.timeLeft);
     if (e.data.timeLeft === 0) {
@@ -99,9 +101,10 @@ export default function AttackClock({
 
   useEffect(() => {
     if (!attackClock) {
-      resetMilliseconds();
+      const savedStartTime = parseInt(localStorage.getItem('attackClock'));
+      milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
       setTimeLeft(milliseconds);
-      setClockValue(getClockInitTime());
+      setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime), clockOptions) : getClockInitTime());
     }
     if (isReset) resetMilliseconds();
   }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft, isReset]);

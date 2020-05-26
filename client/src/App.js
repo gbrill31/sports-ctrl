@@ -40,7 +40,7 @@ const theme = {
     hover: '#FFB056'
   },
   menu: {
-    color: '#A6A9AD',
+    color: '#7c7d7d',
     hover: '#E6EAEB'
   },
   disabled: {
