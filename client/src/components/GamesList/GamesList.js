@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { MainTitle, Button } from '../../styledElements';
+import { MainTitle, Button, ScrollableContainer } from '../../styledElements';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import GameItem from '../GameItem/GameItem';
@@ -39,11 +39,13 @@ export default function GamesList() {
           )
         }
         <MainTitle>Games Played</MainTitle>
-        {
-          games && games
-            .filter(game => !game.active)
-            .map(game => <GameItem key={game.id} game={game} />)
-        }
+        <ScrollableContainer fullWidth heightDiff={activeGame ? 345 : 170}>
+          {
+            games && games
+              .filter(game => !game.active)
+              .map(game => <GameItem key={game.id} game={game} />)
+          }
+        </ScrollableContainer>
       </ComponentLoader>
     </>
   );

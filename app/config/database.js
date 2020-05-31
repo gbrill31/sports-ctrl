@@ -106,10 +106,11 @@ function createPlayersTable() {
     });
 }
 
-function getInitialPlayerStats(newGameName) {
+function getInitialPlayerStats(game) {
     const initialStats = {};
     initialStats[moment().format('YYYY-MM-DD')] = {
-        playedAgainst: newGameName || 'No Games Played',
+        gameId: game.id || null,
+        playedAgainst: game.name || 'No Games Played',
         data: {
             PT: 0,
             "2FG": 0,
@@ -121,34 +122,34 @@ function getInitialPlayerStats(newGameName) {
     return [initialStats];
 }
 
-function setNewGamePlayerStats(player, newGameName) {
+function setNewGamePlayerStats(player, game) {
     return DB('players')
         .where('id', player.id)
         .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
         .update({
-            stats: JSON.stringify([...player.stats, ...getInitialPlayerStats(newGameName)]),
+            stats: JSON.stringify([...player.stats, ...getInitialPlayerStats(game)]),
             'updated_at': new Date()
         });
 }
 
-function getPlayersByTeamId(teamId, newGameName) {
+function getPlayersByTeamId(teamId, game) {
     return new Promise((resolve, reject) => {
         DB.schema.hasTable('players').then((exists) => {
             if (exists) {
                 DB.select()
                     .where('teamId', teamId)
-                    .table('players').then((players) => {
-                        if (newGameName) {
+                    .table('players')
+                    .then((players) => {
+                        if (game) {
                             const updates = [];
-                            players.forEach(player => updates.push(setNewGamePlayerStats(player, newGameName)));
+                            players.forEach(player => updates.push(setNewGamePlayerStats(player, game)));
                             Promise.all(updates).then(() => {
                                 DB.select()
                                     .where('teamId', teamId)
-                                    .table('players').then((players) => {
-                                        resolve(players);
+                                    .table('players').then((updatedPlayers) => {
+                                        resolve(updatedPlayers);
                                     }, err => reject(err));
-                            })
-
+                            });
                         } else {
                             resolve(players);
                         }
@@ -226,8 +227,8 @@ const DB_EXPORTS = {
                     if (rows.length) {
                         const game = rows[0];
                         Promise.all([
-                            getPlayersByTeamId(game.homeId, `Against ${away}`),
-                            getPlayersByTeamId(game.awayId, `Against ${home}`)
+                            getPlayersByTeamId(game.homeId, { id: game.id, name: `Against ${away}` }),
+                            getPlayersByTeamId(game.awayId, { id: game.id, name: `Against ${home}` })
                         ]).then((data) => {
                             resolve(getGameObject(game, data));
                         }, err => reject(err));

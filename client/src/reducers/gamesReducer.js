@@ -28,7 +28,7 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
     case GAMES.GAME_SUCCESS:
       return {
         ...state,
-        activeGame: new Game(action.payload),
+        activeGame: action.payload ? new Game(action.payload) : null,
         activeGameError: null,
         activeGamePending: false
       }

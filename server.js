@@ -1,10 +1,8 @@
 const express = require('express');
 const path = require('path');
-const bodyParser = require('body-parser');
 // const favicon = require('serve-favicon');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
-// const sqlDB = require('./app/config/database');
 const logger = require('morgan');
 
 const app = express();
@@ -15,10 +13,9 @@ app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(compression());
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'src/assets', 'logo.png')));
-// app.use(logger('dev'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 // app.use(session({
 //     secret: "sportsControl.io", //TODO change

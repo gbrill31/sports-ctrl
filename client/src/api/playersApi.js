@@ -5,8 +5,8 @@ export const getAllPlayers = async () => {
   return players;
 };
 
-export const getPlayersByTeamId = async (teamId) => {
-  const res = await fetch(`/players/team?id=${teamId}`);
+export const getPlayersByTeamId = async (id) => {
+  const res = await fetch(`/players/team?id=${id}`);
   if (res.status >= 400) throw new Error('No players found');
   const players = await res.json();
   return players;

@@ -13,6 +13,7 @@ import {
 
 import {
   getActiveGame,
+  setGame,
   setGameClockStart,
   setAttackClockStart
 } from '../../actions';
@@ -38,9 +39,11 @@ export default function GameManagement() {
   const gameClockStartTime = useSelector(state => state.gameClock.startTime);
   const attackClockStartTime = useSelector(state => state.attackClock.startTime);
 
+  const setActiveGame = useCallback((game) => dispatch(setGame(game)), [dispatch]);
   const getCurrentGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
   const setAttackStart = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
   const setGameStart = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
+
 
   useEffect(() => {
     if (!gameClockStartTime) {
@@ -55,7 +58,7 @@ export default function GameManagement() {
     if (isDBConnected && !activeGame) {
       getCurrentGame();
     }
-  }, [getCurrentGame, activeGame, isDBConnected]);
+  }, [getCurrentGame, activeGame, isDBConnected, setActiveGame]);
 
   return (
     <>
@@ -73,7 +76,10 @@ export default function GameManagement() {
                     team={activeGame.getHomeTeam()}
                     borderRight
                   />
-                  <TeamGameControl teamLocation="away" team={activeGame.getAwayTeam()} />
+                  <TeamGameControl
+                    teamLocation="away"
+                    team={activeGame.getAwayTeam()}
+                  />
                 </GridContainer>
               </>
             )
