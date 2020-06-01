@@ -42,3 +42,21 @@ export const getActiveGame = () => ({
 export const stopLoading = () => ({
   type: GAMES.GAME_PENDING_STOP
 });
+
+export const setIsPlayerStatsDialog = (isOpen) => ({
+  type: GAMES.SET_PLAYER_STATS_DIALOG,
+  payload: isOpen
+});
+
+export const updatePlayerStats = (id, stats) => ({
+  type: GAMES.SET_PLAYER_STATS_PENDING,
+  payload: { id, stats }
+});
+export const updatePlayerStatsError = (error) => ({
+  type: GAMES.SET_PLAYER_STATS_FAILED,
+  payload: error
+});
+export const setGameSelectedPlayer = (player) => ({
+  type: GAMES.SET_SELECTED_PLAYER,
+  payload: player
+});

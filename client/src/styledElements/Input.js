@@ -37,9 +37,9 @@ export default styled.input`
   &::placeholder{
     color: ${props => props.error ? 'rgba(200, 0, 0, 0.9)' : 'rgba(150, 150, 150, 0.7)'};
   }
-  ${props => props.isLoading && (css`
+  ${props => props.isLoading && css`
     animation: ${props => loadingAnimation(props)} 0.4s alternate infinite;
-  `)}
+  `}
   ${props => props.disabled && css`
     color: ${props => props.theme.disabled.color};
     border-color: ${props => props.theme.disabled.color};

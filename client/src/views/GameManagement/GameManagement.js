@@ -6,6 +6,7 @@ import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/Cre
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 import GameClocksControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
 import GameClocksMenu from '../../components/ActiveGameContol/GameClocksControl/GameClocksMenu';
+import SetPlayerStatsDialog from '../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog';
 
 import {
   GridContainer
@@ -81,6 +82,7 @@ export default function GameManagement() {
                     team={activeGame.getAwayTeam()}
                   />
                 </GridContainer>
+                <SetPlayerStatsDialog />
               </>
             )
 

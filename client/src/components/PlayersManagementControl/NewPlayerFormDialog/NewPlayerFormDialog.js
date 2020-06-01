@@ -105,7 +105,7 @@ export default function NewPlayerFormDialog() {
           >
             <DialogTitle>Add players to team</DialogTitle>
             <DialogContent>
-              <FlexContainer column justify="center" alig="center">
+              <FlexContainer column justify="center" align="center">
                 <FlexContainer fullWidth justify="space-evenly" align="center">
                   <label style={{ width: '10px' }}>Name</label>
                   <Input

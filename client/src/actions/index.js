@@ -12,7 +12,11 @@ import {
   setGame,
   gameError,
   getActiveGame,
-  stopLoading
+  stopLoading,
+  setIsPlayerStatsDialog,
+  updatePlayerStats,
+  updatePlayerStatsError,
+  setGameSelectedPlayer
 } from './gamesControlActions'
 
 import {
@@ -137,5 +141,9 @@ export {
   resetAttackClock,
   setAttackClock,
   setAttackClockStart,
-  setAttackClockTimeleft
+  setAttackClockTimeleft,
+  setIsPlayerStatsDialog,
+  updatePlayerStats,
+  updatePlayerStatsError,
+  setGameSelectedPlayer
 }

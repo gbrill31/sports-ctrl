@@ -11,9 +11,11 @@ import GameItem from '../GameItem/GameItem';
 export default function GamesList() {
   const history = useHistory();
 
-  const games = useSelector(state => state.games.played);
-  const gamesLoading = useSelector(state => state.games.getGamesPending);
-  const activeGame = useSelector(state => state.games.active);
+  const {
+    items: games,
+    getAllGamesPending: gamesLoading,
+    active: activeGame
+  } = useSelector(state => state.games);
 
 
   const goToActiveGame = () => {

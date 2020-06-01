@@ -8,9 +8,13 @@ const INTIAL_STATE = {
   activeGamePending: true,
   activeGameError: null,
   active: {},
-  played: [],
-  getGamesPending: false,
-  gamesError: null
+  items: [],
+  getAllGamesPending: false,
+  getAllGamesError: null,
+  selectedPlayer: null,
+  isSetPlayerStatsDialog: false,
+  setPlayerStatsPending: false,
+  setPlayerStatsError: null
 }
 
 const gamesReducer = (state = INTIAL_STATE, action = {}) => {
@@ -46,20 +50,47 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
     case GAMES.GET_ALL_PENDING:
       return {
         ...state,
-        getGamesPending: true
+        getAllGamesPending: true
       }
     case GAMES.GET_ALL_SUCCESS:
       return {
         ...state,
-        played: action.payload,
+        items: action.payload,
         active: action.payload.find(game => game.active),
-        getGamesPending: false
+        getAllGamesPending: false
       }
     case GAMES.GET_ALL_FAILED:
       return {
         ...state,
-        gamesError: action.payload,
-        getGamesPending: false
+        getAllGamesError: action.payload,
+        getAllGamesPending: false
+      }
+    case GAMES.SET_SELECTED_PLAYER:
+      return {
+        ...state,
+        selectedPlayer: action.payload
+      }
+    case GAMES.SET_PLAYER_STATS_PENDING:
+      return {
+        ...state,
+        setPlayerStatsPending: true
+      }
+    case GAMES.SET_PLAYER_STATS_SUCCESS:
+      return {
+        ...state,
+        setPlayerStatsPending: false,
+        selectedPlayer: action.payload
+      }
+    case GAMES.SET_PLAYER_STATS_FAILED:
+      return {
+        ...state,
+        setPlayerStatsPending: false,
+        setPlayerStatsError: action.payload
+      }
+    case GAMES.SET_PLAYER_STATS_DIALOG:
+      return {
+        ...state,
+        isSetPlayerStatsDialog: action.payload
       }
     default:
       return state;
