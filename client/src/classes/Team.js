@@ -26,4 +26,9 @@ export default class Team {
   getPlayers() {
     return this.players || [];
   }
+  updatePlayerStats(id, data) {
+    const player = this.players.find(p => p.getId() === id);
+    if (player) player.updateStats(data);
+    return this;
+  }
 }

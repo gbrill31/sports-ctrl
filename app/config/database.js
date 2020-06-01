@@ -109,14 +109,20 @@ function createPlayersTable() {
 function getInitialPlayerStats(game) {
     const initialStats = {};
     initialStats[moment().format('YYYY-MM-DD')] = {
-        gameId: game.id || null,
-        playedAgainst: game.name || 'No Games Played',
+        gameId: game ? game.id : null,
+        playedAgainst: game ? game.name : 'No Games Played',
         data: {
             PT: 0,
             "2FG": 0,
             "3FG": 0,
             FT: 0,
-            FOULS: 0
+            FOULS: 0,
+            PtLocations: {
+                Q1: [],
+                Q2: [],
+                Q3: [],
+                Q4: []
+            }
         }
     };
     return [initialStats];
@@ -379,7 +385,39 @@ const DB_EXPORTS = {
         return DB('players')
             .where('id', id)
             .del();
+    },
+    updatePlayerStats: function (gameId, playerId, stats) {
+        return new Promise((resolve, reject) => {
+            DB('players')
+                .where('id', playerId)
+                .select()
+                .asCallback((err, rows) => {
+                    if (err) reject(err);
+                    const player = rows[0];
+                    const statsToUpdate = player.stats.find(game => game[Object.keys(game)].gameId === gameId);
+                    const updatedStats = { ...statsToUpdate[Object.keys(statsToUpdate)], data: stats };
+                    const newStatsArray = [
+                        ...player.stats.filter(game => game[Object.keys(game)].gameId !== gameId),
+                        {
+                            [Object.keys(statsToUpdate)[0]]: updatedStats
+                        }
+                    ];
+
+                    DB('players')
+                        .where('id', playerId)
+                        .returning(['id', 'stats', 'teamId'])
+                        .update({
+                            stats: JSON.stringify(newStatsArray),
+                            'updated_at': new Date()
+                        })
+                        .then((player) => {
+                            resolve(player[0]);
+                        })
+                        .catch(err => reject(err));
+                });
+        })
     }
+
 }
 
 module.exports = DB_EXPORTS;

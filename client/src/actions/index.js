@@ -16,7 +16,8 @@ import {
   setIsPlayerStatsDialog,
   updatePlayerStats,
   updatePlayerStatsError,
-  setGameSelectedPlayer
+  setGameSelectedPlayer,
+  setNewPlayerStats
 } from './gamesControlActions'
 
 import {
@@ -145,5 +146,6 @@ export {
   setIsPlayerStatsDialog,
   updatePlayerStats,
   updatePlayerStatsError,
-  setGameSelectedPlayer
+  setGameSelectedPlayer,
+  setNewPlayerStats
 }

@@ -38,13 +38,17 @@ export default class Player {
     const stats = this.stats;
     if (stats.length > 1) {
       stats.sort((statA, statB) => {
-        return moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? -1 : 1;
+        return moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? 1 : -1;
       });
     }
     return stats[0];
   }
   getStatsDate() {
     return Object.keys(this.getStats())[0];
+  }
+  updateStats(data) {
+    this.stats = data;
+    return this;
   }
   getPlayedAgainst() {
     return this.getStats()[this.getStatsDate()].playedAgainst;

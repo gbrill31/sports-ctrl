@@ -62,7 +62,21 @@ playersRouter.post('/delete', function (req, res) {
                 type: 'error',
                 message: 'Could Not Delete Player'
             }));
-            res.sendStatus(406);
+            res.sendStatus(400);
+        });
+});
+
+playersRouter.post('/statsupdate', function (req, res) {
+    const { gameId, playerId, stats } = req.body;
+    psqlDB.updatePlayerStats(gameId, playerId, stats)
+        .then((newStats) => {
+            res.json(newStats).status(200);
+        }, (err) => {
+            res.header('notification', JSON.stringify({
+                type: 'error',
+                message: 'Could Not Update Player Stats'
+            }));
+            res.sendStatus(400);
         });
 });
 

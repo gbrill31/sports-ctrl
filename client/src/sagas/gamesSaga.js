@@ -2,9 +2,9 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 
 import { GAMES } from '../constants';
 import {
-  setGames, gamesError, setGame, gameError,
+  setGames, gamesError, setGame, gameError, setNewPlayerStats, updatePlayerStatsError
 } from '../actions';
-import { getAllGames, createNewGame, requestActiveGame } from '../api';
+import { getAllGames, createNewGame, requestActiveGame, updatePlayerStats } from '../api';
 
 function* handleGamesRequest() {
   try {
@@ -33,8 +33,19 @@ function* handleActiveGameRequest() {
   }
 }
 
+
+function* handleUpdatePlayerStats({ gameId, playerId, data }) {
+  try {
+    const updatedPlayer = yield call(updatePlayerStats, gameId, playerId, data);
+    yield put(setNewPlayerStats(updatedPlayer.id, updatedPlayer.teamId, updatedPlayer.stats));
+  } catch (error) {
+    yield put(updatePlayerStatsError(error));
+  }
+}
+
 export default function* watchDbConnection() {
   yield takeEvery(GAMES.GET_ALL_PENDING, handleGamesRequest);
   yield takeEvery(GAMES.GAME_PENDING, handleNewGame);
   yield takeEvery(GAMES.ACTIVE_GAME_PENDING, handleActiveGameRequest);
+  yield takeEvery(GAMES.SET_PLAYER_STATS_PENDING, handleUpdatePlayerStats);
 }

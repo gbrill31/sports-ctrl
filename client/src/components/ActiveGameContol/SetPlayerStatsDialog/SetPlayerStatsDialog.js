@@ -11,8 +11,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
   setIsPlayerStatsDialog,
-  setGameSelectedPlayer
+  setGameSelectedPlayer,
+  updatePlayerStats
 } from '../../../actions';
+
 
 const statChangeAnimation = keyframes`
   from {
@@ -85,22 +87,21 @@ const StatsControlContainer = styled.div`
     }
 `;
 
-const StatsCourt = styled.div`
+const StatsCourtContainer = styled.div`
   position: relative;
   
   img{
     width: 100%;
-    height: 280px;
   }
 `;
 
 const StatsCourt2PointsRegion = styled.div`
   position: absolute;
-  width: 318px;
-  height: 227px;
+  width: 61%;
+  height: 81%;
   overflow: hidden;
-  top: 26px;
-  left: 6px;
+  top: 9%;
+  left: 1%;
 
   div{
     position: absolute;
@@ -126,6 +127,8 @@ const CourtPositionMarker = styled.div`
   transform: translate(-50%, -50%);
 `;
 
+let xPos, yPos;
+
 
 export default function SetPlayerStatsDialog() {
   const dispatch = useDispatch();
@@ -136,7 +139,8 @@ export default function SetPlayerStatsDialog() {
   const {
     setPlayerStatsPending: isSaving,
     isSetPlayerStatsDialog,
-    selectedPlayer
+    selectedPlayer,
+    activeGame
   } = useSelector(state => state.games);
 
   const [playerLocalStats, setPlayerLocalStats] = useState(null);
@@ -151,6 +155,7 @@ export default function SetPlayerStatsDialog() {
 
   const clearSelectedPlayer = useCallback(() => dispatch(setGameSelectedPlayer(null)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(false)), [dispatch]);
+  const updateStats = useCallback((gameId, playerId, data) => dispatch(updatePlayerStats(gameId, playerId, data)), [dispatch]);
 
   useEffect(() => {
     if (selectedPlayer) {
@@ -159,6 +164,26 @@ export default function SetPlayerStatsDialog() {
       setPlayerLocalStats(data);
     }
   }, [selectedPlayer, setPlayerLocalStats]);
+
+  const savePlayerStats = () => {
+    let statsData = { ...playerLocalStats };
+    if (xPos && yPos) {
+      statsData = {
+        ...statsData, PtLocations: {
+          ...statsData.PtLocations,
+          Q1: [...statsData.PtLocations.Q1, {
+            x: xPos,
+            y: yPos
+          }]
+        }
+      }
+    }
+    updateStats(activeGame.getId(), selectedPlayer.getId(), statsData);
+    // .then((stats) => {
+    //   console.log(stats);
+    //   closeDialog();
+    // });
+  }
 
   const initData = () => {
     setIsPointsSet(false);
@@ -223,8 +248,10 @@ export default function SetPlayerStatsDialog() {
     if (!isPointsSet) {
       setIsShowCourtMarker(true);
       const rect = courtRegionRef.current.getBoundingClientRect();
-      markerRef.current.style.top = `${(e.pageY - rect.top) / rect.height * 100}%`;
-      markerRef.current.style.left = `${(e.pageX - rect.left) / rect.width * 100}%`;
+      xPos = (e.pageX - rect.left) / rect.width * 100;
+      yPos = (e.pageY - rect.top) / rect.height * 100;
+      markerRef.current.style.top = `${yPos}%`;
+      markerRef.current.style.left = `${xPos}%`;
       setIsPointsSet(true);
       const is2Points = pointsRegion === 2;
       setIsPointsUpdate(true);
@@ -234,7 +261,7 @@ export default function SetPlayerStatsDialog() {
         ...playerLocalStats,
         PT: playerLocalStats.PT + pointsRegion,
         '2FG': is2Points ? playerLocalStats['2FG'] + 2 : playerLocalStats['2FG'],
-        '3FG': !is2Points ? playerLocalStats['3FG'] + 3 : playerLocalStats['3FG'],
+        '3FG': !is2Points ? playerLocalStats['3FG'] + 3 : playerLocalStats['3FG']
       });
 
       setTimeout(() => {
@@ -251,7 +278,8 @@ export default function SetPlayerStatsDialog() {
     setIsPointsUpdate(true);
     setIs2fgUpdate(is2Points);
     setIs3fgUpdate(!is2Points);
-
+    xPos = null;
+    yPos = null;
     setPlayerLocalStats({
       ...playerLocalStats,
       PT: playerLocalStats.PT - pointsRegion,
@@ -322,7 +350,7 @@ export default function SetPlayerStatsDialog() {
                           <StatsControlContainer>
                             <FlexContainer column align="center" fullWidth>
                               <FlexContainer align="center" justify="center" >
-                                <FlexContainer align="center" justify="center" column borderRight>
+                                <FlexContainer align="center" justify="center" column fullBorder>
                                   <h3>Free Throws</h3>
                                   <FlexContainer>
                                     <Button
@@ -345,7 +373,7 @@ export default function SetPlayerStatsDialog() {
                                     </Button>
                                   </FlexContainer>
                                 </FlexContainer>
-                                <FlexContainer align="center" justify="center" column>
+                                <FlexContainer align="center" justify="center" column fullBorder>
                                   <h3>Fouls</h3>
                                   <FlexContainer>
                                     <Button
@@ -398,7 +426,7 @@ export default function SetPlayerStatsDialog() {
                                   }
 
                                 </FlexContainer>
-                                <StatsCourt
+                                <StatsCourtContainer
                                   ref={courtRegionRef}
                                   onMouseMove={checkCourtPosition}
                                   onClick={handlePointsClick}
@@ -416,7 +444,7 @@ export default function SetPlayerStatsDialog() {
                                   >
                                   </CourtPositionMarker>
 
-                                </StatsCourt>
+                                </StatsCourtContainer>
                               </FlexContainer>
                             </FlexContainer>
                           </StatsControlContainer>
@@ -434,6 +462,7 @@ export default function SetPlayerStatsDialog() {
               <Button
                 color="success"
                 saving={isSaving}
+                onClick={savePlayerStats}
               >
                 {isSaving ? 'Saving...' : 'Save Stats'}
               </Button>

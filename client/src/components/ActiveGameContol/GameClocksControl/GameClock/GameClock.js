@@ -81,17 +81,16 @@ export default function GameClock() {
   }, [setClockValue, stopClock]);
 
   useEffect(() => {
-    resetMilliseconds();
-    setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
-  }, [startTime, setClockValue, resetMilliseconds]);
-
-  useEffect(() => {
     if (!gameClock) {
       const savedStartTime = parseInt(localStorage.getItem('gameClock'));
       milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
       setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime)) : getClockInitTime());
     }
-    if (isReset) resetMilliseconds();
+    if (isReset) {
+      localStorage.removeItem('gameClock');
+      resetMilliseconds();
+      setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
+    }
   }, [gameClock, setClockValue, getClockInitTime, startTime, resetMilliseconds, isReset]);
 
   useEffect(() => {

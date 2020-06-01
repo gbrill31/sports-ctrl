@@ -76,10 +76,16 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
         setPlayerStatsPending: true
       }
     case GAMES.SET_PLAYER_STATS_SUCCESS:
+      const { id: playerId, teamId, stats } = action.payload;
       return {
         ...state,
         setPlayerStatsPending: false,
-        selectedPlayer: action.payload
+        isSetPlayerStatsDialog: false,
+        activeGame: new Game({
+          ...state.activeGame,
+          away: state.activeGame.away.getId() === teamId ? state.activeGame.away.updatePlayerStats(playerId, stats) : state.activeGame.away,
+          home: state.activeGame.home.getId() === teamId ? state.activeGame.home.updatePlayerStats(playerId, stats) : state.activeGame.home,
+        })
       }
     case GAMES.SET_PLAYER_STATS_FAILED:
       return {

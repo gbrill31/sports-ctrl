@@ -94,19 +94,19 @@ export default function AttackClock() {
   }, [setTimeLeft, stopClock, setClockValue]);
 
   useEffect(() => {
-    resetMilliseconds();
-    setClockValue(convertSecToDuration(convertMilliToSec(startTime), clockOptions));
-  }, [startTime, setClockValue, resetMilliseconds]);
-
-  useEffect(() => {
     if (!attackClock) {
       const savedStartTime = parseInt(localStorage.getItem('attackClock'));
       milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
       setTimeLeft(milliseconds);
       setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime), clockOptions) : getClockInitTime());
     }
-    if (isReset) resetMilliseconds();
-  }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft, isReset]);
+    if (isReset) {
+      localStorage.removeItem('attackClock');
+      resetMilliseconds();
+      setTimeLeft(milliseconds);
+      setClockValue(convertSecToDuration(convertMilliToSec(startTime), clockOptions));
+    }
+  }, [attackClock, setClockValue, getClockInitTime, resetMilliseconds, setTimeLeft, isReset, startTime]);
 
   useEffect(() => {
     if (isClockRunning) {
@@ -150,7 +150,7 @@ export default function AttackClock() {
         </Button>
       </FlexContainer>
       <FlexContainer justify="center" fullWidth>
-        <Clock stress={timeLeft / 1000 <= 10}>
+        <Clock stress={timeLeft && Math.floor(convertMilliToSec(timeLeft)) <= 10}>
           <span>{attackClock}</span>
         </Clock>
       </FlexContainer>

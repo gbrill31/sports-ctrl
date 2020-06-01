@@ -39,3 +39,17 @@ export const deletePlayer = async (id) => {
   const deletedPlayer = await res.json();
   return deletedPlayer;
 };
+
+export const updatePlayerStats = async (gameId, playerId, stats) => {
+  const body = JSON.stringify({ gameId, playerId, stats });
+  const res = await fetch('/players/statsupdate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body
+  });
+  if (res.status >= 400) throw new Error('Player stats update failed');
+  const updatedStats = await res.json();
+  return updatedStats;
+};
