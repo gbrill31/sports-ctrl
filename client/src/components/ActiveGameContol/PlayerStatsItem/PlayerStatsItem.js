@@ -67,7 +67,7 @@ const ItemStat = styled.div`
   }
 `;
 
-export default function PlayerStatsItem({ player }) {
+export default function PlayerStatsItem({ player, gameId }) {
   const dispatch = useDispatch();
 
   const setSelectedPlayer = useCallback((player) => dispatch(setGameSelectedPlayer(player)), [dispatch]);
@@ -88,22 +88,22 @@ export default function PlayerStatsItem({ player }) {
           {player.getName()}
         </h3>
         <ItemStat>
-          Points: {player.getTotalPoints()}
+          Points: {player.getTotalPoints(gameId)}
         </ItemStat>
-        <ItemStat color={player.getTotalFouls() > 3 ? 'error' : 'primary'}>
-          FOULS: {player.getTotalFouls()}
+        <ItemStat color={player.getTotalFouls(gameId) > 3 ? 'error' : 'primary'}>
+          FOULS: {player.getTotalFouls(gameId)}
         </ItemStat>
       </FlexContainer>
       <h4>Game Statistics</h4>
       <FlexContainer>
         <ItemStat>
-          <h3>2FG: {player.get2FG()}</h3>
+          <h3>2FG: {player.get2FG(gameId)}</h3>
         </ItemStat>
         <ItemStat>
-          <h3>3FG: {player.get3FG()}</h3>
+          <h3>3FG: {player.get3FG(gameId)}</h3>
         </ItemStat>
         <ItemStat>
-          <h3>FT: {player.getFT()}</h3>
+          <h3>FT: {player.getFT(gameId)}</h3>
         </ItemStat>
       </FlexContainer>
     </ItemContainer>

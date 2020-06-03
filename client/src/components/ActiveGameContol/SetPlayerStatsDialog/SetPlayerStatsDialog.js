@@ -12,7 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   setIsPlayerStatsDialog,
   setGameSelectedPlayer,
-  updatePlayerStats
+  updatePlayerStats,
+  setGameScore
 } from '../../../actions';
 
 
@@ -127,7 +128,7 @@ const CourtPositionMarker = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-let xPos, yPos;
+let xPos, yPos, pointsToAdd = 0;
 
 
 export default function SetPlayerStatsDialog() {
@@ -156,14 +157,16 @@ export default function SetPlayerStatsDialog() {
   const clearSelectedPlayer = useCallback(() => dispatch(setGameSelectedPlayer(null)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(false)), [dispatch]);
   const updateStats = useCallback((gameId, playerId, data) => dispatch(updatePlayerStats(gameId, playerId, data)), [dispatch]);
+  const saveGameScore = useCallback((gameId, teamId, points) => dispatch(setGameScore(gameId, teamId, points)), [dispatch]);
 
   useEffect(() => {
     if (selectedPlayer) {
-      const stats = selectedPlayer.getStats();
+      const stats = selectedPlayer.getStats(activeGame.id);
       const data = stats[selectedPlayer.getStatsDate()].data;
       setPlayerLocalStats(data);
+      pointsToAdd = 0;
     }
-  }, [selectedPlayer, setPlayerLocalStats]);
+  }, [selectedPlayer, setPlayerLocalStats, activeGame.id]);
 
   const savePlayerStats = () => {
     let statsData = { ...playerLocalStats };
@@ -178,11 +181,8 @@ export default function SetPlayerStatsDialog() {
         }
       }
     }
+    saveGameScore(activeGame.getId(), selectedPlayer.getTeamId(), pointsToAdd);
     updateStats(activeGame.getId(), selectedPlayer.getId(), statsData);
-    // .then((stats) => {
-    //   console.log(stats);
-    //   closeDialog();
-    // });
   }
 
   const initData = () => {
@@ -218,6 +218,7 @@ export default function SetPlayerStatsDialog() {
       FT: playerLocalStats.FT + 1,
       PT: playerLocalStats.PT + 1
     });
+    pointsToAdd += 1;
     setTimeout(() => {
       setIsFtUpdate(false);
       setIsPointsUpdate(false);
@@ -231,6 +232,7 @@ export default function SetPlayerStatsDialog() {
       FT: playerLocalStats.FT - 1,
       PT: playerLocalStats.PT - 1
     });
+    pointsToAdd -= 1;
     setTimeout(() => {
       setIsFtUpdate(false);
       setIsPointsUpdate(false);
@@ -263,7 +265,7 @@ export default function SetPlayerStatsDialog() {
         '2FG': is2Points ? playerLocalStats['2FG'] + 2 : playerLocalStats['2FG'],
         '3FG': !is2Points ? playerLocalStats['3FG'] + 3 : playerLocalStats['3FG']
       });
-
+      pointsToAdd += pointsRegion;
       setTimeout(() => {
         setIsPointsUpdate(false);
         setIs2fgUpdate(false);
@@ -286,6 +288,7 @@ export default function SetPlayerStatsDialog() {
       '2FG': is2Points ? playerLocalStats['2FG'] - 2 : playerLocalStats['2FG'],
       '3FG': !is2Points ? playerLocalStats['3FG'] - 3 : playerLocalStats['3FG'],
     });
+    pointsToAdd -= pointsRegion;
     setIsPointsSet(false);
     setTimeout(() => {
       setIsPointsSet(false);

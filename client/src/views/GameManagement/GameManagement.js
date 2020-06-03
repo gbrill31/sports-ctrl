@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
@@ -32,7 +33,7 @@ const ATTACK_TIME = 24; //Seconds
 
 export default function GameManagement() {
   const dispatch = useDispatch();
-
+  const history = useHistory();
 
   const isDBConnected = useSelector(state => state.db.isConnected);
   const activeGame = useSelector(state => state.games.activeGame);
@@ -42,18 +43,29 @@ export default function GameManagement() {
 
   const setActiveGame = useCallback((game) => dispatch(setGame(game)), [dispatch]);
   const getCurrentGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
-  const setAttackStart = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
-  const setGameStart = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
+  const setAttackStartClock = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
+  const setGameStartClock = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
 
+  useEffect(() => {
+    const unlisten = history.listen((location) => {
+      if (location.pathName !== '/game') {
+        setActiveGame(null);
+      }
+    });
+
+    return () => {
+      unlisten();
+    }
+  }, [setActiveGame, history]);
 
   useEffect(() => {
     if (!gameClockStartTime) {
-      setGameStart(convertMinToMilli(Q_TIME));
+      setGameStartClock(convertMinToMilli(Q_TIME));
     }
     if (!attackClockStartTime) {
-      setAttackStart(convertSecToMilli(ATTACK_TIME));
+      setAttackStartClock(convertSecToMilli(ATTACK_TIME));
     }
-  }, [gameClockStartTime, attackClockStartTime, setGameStart, setAttackStart]);
+  }, [gameClockStartTime, attackClockStartTime, setGameStartClock, setAttackStartClock]);
 
   useEffect(() => {
     if (isDBConnected && !activeGame) {
@@ -75,11 +87,15 @@ export default function GameManagement() {
                   <TeamGameControl
                     teamLocation="home"
                     team={activeGame.getHomeTeam()}
+                    points={activeGame.getHomePoints()}
+                    gameId={activeGame.id}
                     borderRight
                   />
                   <TeamGameControl
                     teamLocation="away"
                     team={activeGame.getAwayTeam()}
+                    points={activeGame.getAwayPoints()}
+                    gameId={activeGame.id}
                   />
                 </GridContainer>
                 <SetPlayerStatsDialog />

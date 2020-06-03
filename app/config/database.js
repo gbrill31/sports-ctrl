@@ -27,8 +27,10 @@ function createGamesTable() {
                     table.increments();
                     table.string('home');
                     table.integer('homeId');
+                    table.integer('homePoints');
                     table.string('away');
                     table.integer('awayId');
+                    table.integer('awayPoints');
                     table.string('venue');
                     table.boolean('active');
                     table.timestamps(false, true);
@@ -193,6 +195,42 @@ function checkConnection() {
     });
 }
 
+function updateGameScore(gameId, teamId, points) {
+    return new Promise((resolve, reject) => {
+        DB('games')
+            .where({ id: gameId })
+            .asCallback((err, rows) => {
+                if (err) reject(err);
+
+                const game = rows[0];
+                const isHomeTeam = game.homeId === teamId;
+                if (isHomeTeam) {
+                    DB('games')
+                        .where({ id: gameId }).returning(['id', 'homePoints', 'homeId'])
+                        .update({ homePoints: game.homePoints + points, 'updated_at': new Date() })
+                        .then((teamScore) => {
+                            resolve({
+                                teamId: teamScore[0].homeId,
+                                score: teamScore[0].homePoints
+                            })
+                        })
+                        .catch(err => reject(err));
+                } else {
+                    DB('games')
+                        .where({ id: gameId }).returning(['id', 'awayPoints', 'awayId'])
+                        .update({ awayPoints: game.awayPoints + points, 'updated_at': new Date() })
+                        .then((teamScore) => {
+                            resolve({
+                                teamId: teamScore[0].awayId,
+                                score: teamScore[0].awayPoints
+                            })
+                        })
+                        .catch(err => reject(err));
+                }
+            });
+    });
+}
+
 //Exported functions
 
 
@@ -225,8 +263,8 @@ const DB_EXPORTS = {
     createGame: function (home, homeId, away, awayId, venue, active) {
         return new Promise((resolve, reject) => {
             DB
-                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
-                .insert({ home, homeId, away, awayId, venue, active })
+                .returning(['id', 'home', 'homeId', 'homePoints', 'away', 'awayId', 'awayPoints', 'venue'])
+                .insert({ home, homeId, homePoints: 0, away, awayId, awayPoints: 0, venue, active })
                 .into('games')
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
@@ -252,7 +290,7 @@ const DB_EXPORTS = {
                 .where('active', true)
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
-                    if (rows.length) {
+                    if (rows && rows.length) {
                         const game = rows[0];
                         Promise.all([
                             getPlayersByTeamId(game.homeId),
@@ -267,6 +305,9 @@ const DB_EXPORTS = {
         });
 
     },
+
+    updateGameScore,
+
 
     getAllGames: function () {
         return new Promise((resolve, reject) => {

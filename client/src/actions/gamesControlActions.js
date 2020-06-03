@@ -28,6 +28,19 @@ export const setGame = game => {
   }
 };
 
+export const setGameScore = (gameId, teamId, points) => {
+  return {
+    type: GAMES.SET_GAME_SCORE,
+    gameId, teamId, points
+  }
+};
+export const updateGameScore = (teamId, score) => {
+  return {
+    type: GAMES.GAME_SCORE_UPDATE,
+    payload: { teamId, score }
+  }
+};
+
 export const gameError = error => {
   return {
     type: GAMES.GAME_FAILED,

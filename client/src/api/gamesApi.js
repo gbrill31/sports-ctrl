@@ -25,3 +25,17 @@ export const requestActiveGame = async () => {
   const activeGame = await res.json();
   return activeGame;
 }
+
+export const setGameScore = async (gameId, teamId, points) => {
+  const body = JSON.stringify({ gameId, teamId, points });
+  const res = await fetch('/games/score', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body
+  });
+  if (res.status >= 400) throw new Error('Cannot set score in game');
+  const activeGame = await res.json();
+  return activeGame;
+}

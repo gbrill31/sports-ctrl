@@ -7,7 +7,7 @@ const INTIAL_STATE = {
   activeGame: null,
   activeGamePending: true,
   activeGameError: null,
-  active: {},
+  active: null,
   items: [],
   getAllGamesPending: false,
   getAllGamesError: null,
@@ -46,6 +46,16 @@ const gamesReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         activeGamePending: false
+      }
+    case GAMES.GAME_SCORE_UPDATE:
+      const { teamId: id, score } = action.payload;
+      return {
+        ...state,
+        activeGame: new Game({
+          ...state.activeGame,
+          awayPoints: state.activeGame.away.getId() === id ? score : state.activeGame.awayPoints,
+          homePoints: state.activeGame.home.getId() === id ? score : state.activeGame.homePoints
+        })
       }
     case GAMES.GET_ALL_PENDING:
       return {

@@ -51,6 +51,16 @@ gameRouter.get('/team', function (req, res) {
     });
 });
 
+gameRouter.post('/score', function (req, res) {
+    const { gameId, teamId, points } = req.body;
+    psqlDB.updateGameScore(gameId, teamId, points)
+        .then((score) => {
+            res.json(score).status(200);
+        }, (err) => {
+            res.sendStatus(err.code || 500);
+        });
+});
+
 gameRouter.post('/updateteam', function (req, res) {
     let team = req.body.team;
     psqlDB.updateTeam(team).then((players) => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { MainTitle, Button, ScrollableContainer } from '../../styledElements';
+import { MainTitle, ScrollableContainer } from '../../styledElements';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import GameItem from '../GameItem/GameItem';
@@ -29,14 +29,7 @@ export default function GamesList() {
           activeGame && activeGame.id && (
             <>
               <MainTitle>Active Game</MainTitle>
-              <Button
-                noRaduis
-                fullWidth
-                color="success"
-                onClick={goToActiveGame}
-              >
-                <GameItem game={activeGame} />
-              </Button>
+              <GameItem goToActive={goToActiveGame} game={activeGame} />
             </>
           )
         }

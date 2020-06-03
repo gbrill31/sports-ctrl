@@ -23,6 +23,11 @@ stats: [
 export default class Player {
   constructor(data) {
     Object.assign(this, data);
+    if (data.stats.length > 1) {
+      this.lastGameStats = data.stats.sort((statA, statB) =>
+        moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? -1 : 1)[0];
+      this.lastGameStatsDate = Object.keys(this.lastGameStats)[0];
+    }
   }
 
   getId() {
@@ -34,39 +39,39 @@ export default class Player {
   getNumber() {
     return this.number;
   }
-  getStats() {
+  getStats(id) {
     const stats = this.stats;
     if (stats.length > 1) {
-      stats.sort((statA, statB) => {
-        return moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? 1 : -1;
-      });
+      if (!id) {
+        return this.lastGameStats;
+      }
+      return stats.filter(game => game[Object.keys(game)].gameId === id)[0];
     }
-    return stats[0];
   }
   getStatsDate() {
-    return Object.keys(this.getStats())[0];
+    return this.lastGameStatsDate;
   }
   updateStats(data) {
     this.stats = data;
     return this;
   }
-  getPlayedAgainst() {
-    return this.getStats()[this.getStatsDate()].playedAgainst;
+  getPlayedAgainst(id) {
+    return this.getStats(id)[this.getStatsDate()].playedAgainst;
   }
-  getTotalPoints() {
-    return this.getStats()[this.getStatsDate()].data.PT;
+  getTotalPoints(id) {
+    return this.getStats(id)[this.getStatsDate()].data.PT;
   }
-  get2FG() {
-    return this.getStats()[this.getStatsDate()].data['2FG'];
+  get2FG(id) {
+    return this.getStats(id)[this.getStatsDate()].data['2FG'];
   }
-  get3FG() {
-    return this.getStats()[this.getStatsDate()].data['3FG'];
+  get3FG(id) {
+    return this.getStats(id)[this.getStatsDate()].data['3FG'];
   }
-  getFT() {
-    return this.getStats()[this.getStatsDate()].data.FT;
+  getFT(id) {
+    return this.getStats(id)[this.getStatsDate()].data.FT;
   }
-  getTotalFouls() {
-    return this.getStats()[this.getStatsDate()].data.FOULS;
+  getTotalFouls(id) {
+    return this.getStats(id)[this.getStatsDate()].data.FOULS;
   }
   getTeamId() {
     return this.teamId;

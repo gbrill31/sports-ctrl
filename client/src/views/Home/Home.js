@@ -13,13 +13,13 @@ function Home() {
 
   const isDBConnected = useSelector(state => state.db.isConnected);
 
-  const getPlayedGames = useCallback(() => dispatch(getAllGames()), [dispatch]);
+  const getAllPlayedGames = useCallback(() => dispatch(getAllGames()), [dispatch]);
 
   useEffect(() => {
     if (isDBConnected) {
-      getPlayedGames();
+      getAllPlayedGames();
     }
-  }, [isDBConnected, getPlayedGames]);
+  }, [isDBConnected, getAllPlayedGames]);
 
 
   return (

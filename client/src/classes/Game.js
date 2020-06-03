@@ -11,6 +11,9 @@ export default class Game {
   getId() {
     return this.id;
   }
+  isActive() {
+    return this.active;
+  }
   getName() {
     return `${this.home} vs ${this.away}`;
   }
@@ -19,5 +22,11 @@ export default class Game {
   }
   getAwayTeam() {
     return this.away;
+  }
+  getHomePoints() {
+    return this.homePoints;
+  }
+  getAwayPoints() {
+    return this.awayPoints;
   }
 }
