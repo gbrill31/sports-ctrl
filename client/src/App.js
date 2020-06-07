@@ -64,7 +64,7 @@ const AppMainContent = styled.main`
 
 toast.configure({
   position: toast.POSITION.BOTTOM_LEFT,
-  autoClose: 8000
+  autoClose: 7000
 });
 
 

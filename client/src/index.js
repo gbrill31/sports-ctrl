@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { createGlobalStyle } from 'styled-components';
 
-import './index.css';
+import './import-fonts.css';
 import App from './App';
 
 import buildStore from './store';

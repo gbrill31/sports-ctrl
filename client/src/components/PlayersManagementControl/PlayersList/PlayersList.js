@@ -84,7 +84,7 @@ export default function PlayersList() {
 
   return (
     <Fragment>
-      <FlexContainer minWidth="700">
+      <FlexContainer minWidth={isPlayersLoading ? '50vw' : false}>
         <ComponentLoader loading={isPlayersLoading} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0" capitalize>{selectedTeam ? `${selectedTeam.getName()} Players` : ''}</MainTitle>

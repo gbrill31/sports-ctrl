@@ -39,7 +39,7 @@ const TeamScore = styled.h1`
   margin: 0;
   font-size: 4rem;
   text-transform: capitalize;
-  color: ${props => props.winner ? props.theme.generic.color : props.theme.secondary.color};
+  color: ${props => props.winner ? props.theme.success.color : props.theme.secondary.color};
 `;
 
 const Title = styled.h2`

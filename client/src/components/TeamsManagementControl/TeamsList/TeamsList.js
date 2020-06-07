@@ -103,7 +103,7 @@ export default function TeamsList() {
 
   return (
     <Fragment>
-      <FlexContainer borderRight minWidth="700">
+      <FlexContainer borderRight minWidth={isTeamsLoading ? '50vw' : false}>
         <ComponentLoader loading={isTeamsLoading} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>

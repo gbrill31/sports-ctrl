@@ -18,7 +18,6 @@ const ItemContainer = styled.div`
   text-transform: capitalize;
   padding: 0 15px;
   margin-bottom: 15px;
-  min-width: 500px;
   transition: box-shadow 0.1s ease;
   cursor: pointer;
 
