@@ -29,7 +29,7 @@ export default function QuarterControl() {
     statusPending
   } = useSelector(state => state.game);
 
-  const saveGameStatus = useCallback((status) => dispatch(updateGameStatus(activeGameId, status)), [dispatch]);
+  const saveGameStatus = useCallback((status) => dispatch(updateGameStatus(activeGameId, status)), [dispatch, activeGameId]);
 
   const openSetStatus = () => {
     setQNumber(parseInt(status[1]));

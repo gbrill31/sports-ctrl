@@ -28,9 +28,11 @@ function createGamesTable() {
                     table.integer('homeId');
                     table.string('home');
                     table.integer('homePoints');
+                    table.integer('homeFouls');
                     table.integer('awayId');
                     table.string('away');
                     table.integer('awayPoints');
+                    table.integer('awayFouls');
                     table.string('venue');
                     table.string('status');
                     table.boolean('active');
@@ -264,8 +266,14 @@ const DB_EXPORTS = {
     createGame: function (home, homeId, away, awayId, venue, active) {
         return new Promise((resolve, reject) => {
             DB
-                .returning(['id', 'home', 'homeId', 'homePoints', 'away', 'awayId', 'awayPoints', 'venue', 'status'])
-                .insert({ home, homeId, homePoints: 0, away, awayId, awayPoints: 0, venue, active, status: 'Q1' })
+                .returning([
+                    'id', 'home', 'homeId', 'homePoints', 'homeFouls', 'away', 'awayId',
+                    'awayPoints', 'awayFouls', 'venue', 'status'
+                ])
+                .insert({
+                    home, homeId, homePoints: 0, homeFouls: 0, away, awayId,
+                    awayPoints: 0, awayFouls: 0, venue, active, status: 'Q1'
+                })
                 .into('games')
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
@@ -287,7 +295,6 @@ const DB_EXPORTS = {
     getActiveGame: function () {
         return new Promise((resolve, reject) => {
             DB.select().from('games')
-                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue', 'status'])
                 .where('active', true)
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
@@ -296,8 +303,8 @@ const DB_EXPORTS = {
                         Promise.all([
                             getPlayersByTeamId(game.homeId),
                             getPlayersByTeamId(game.awayId)
-                        ]).then((data) => {
-                            resolve(getGameObject(game, data));
+                        ]).then((teamsData) => {
+                            resolve(getGameObject(game, teamsData));
                         }, err => reject(err));
                     } else {
                         resolve(null);
@@ -464,6 +471,52 @@ const DB_EXPORTS = {
             .where({ id: gameId })
             .returning('status')
             .update({ status, 'updated_at': new Date() });
+    },
+    updateTeamFouls: function (gameId, teamId, fouls) {
+        return new Promise((resolve, reject) => {
+            DB('games')
+                .where({ id: gameId })
+                .asCallback((err, rows) => {
+                    if (err) reject(err);
+
+                    const game = rows[0];
+                    if (teamId) {
+                        const isHomeTeam = game.homeId === teamId;
+                        if (isHomeTeam) {
+                            DB('games')
+                                .where({ id: gameId }).returning(['id', 'homeFouls', 'homeId'])
+                                .update({ homeFouls: game.homeFouls + fouls, 'updated_at': new Date() })
+                                .then((teamFouls) => {
+                                    resolve({
+                                        teamId: teamFouls[0].homeId,
+                                        fouls: teamFouls[0].homeFouls
+                                    })
+                                })
+                                .catch(err => reject(err));
+                        } else {
+                            DB('games')
+                                .where({ id: gameId }).returning(['id', 'awayFouls', 'awayId'])
+                                .update({ awayFouls: game.awayFouls + fouls, 'updated_at': new Date() })
+                                .then((teamFouls) => {
+                                    resolve({
+                                        teamId: teamFouls[0].awayId,
+                                        fouls: teamFouls[0].awayFouls
+                                    })
+                                })
+                                .catch(err => reject(err));
+                        }
+                    } else {
+                        DB('games')
+                            .where({ id: gameId })
+                            // .returning(['id', 'awayFouls', 'homeFouls', 'awayId', 'homeId'])
+                            .update({ awayFouls: 0, homeFouls: 0, 'updated_at': new Date() })
+                            .then(() => {
+                                resolve(gameId);
+                            })
+                            .catch(err => reject(err));
+                    }
+                });
+        });
     }
 
 

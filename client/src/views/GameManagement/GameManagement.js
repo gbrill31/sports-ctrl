@@ -7,7 +7,7 @@ import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/Cre
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 import GameClock from '../../components/ActiveGameContol/GameClocksControl/GameClock/GameClock';
 import AttackClock from '../../components/ActiveGameContol/GameClocksControl/AttackClock/AttackClock';
-import GameClocksMenu from '../../components/ActiveGameContol/GameClocksControl/GameClocksMenu';
+import GameControlMenu from '../../components/ActiveGameContol/GameControlMenu';
 import SetPlayerStatsDialog from '../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog';
 import QuarterControl from '../../components/ActiveGameContol/QuarterControl/QuarterControl';
 
@@ -31,7 +31,9 @@ export default function GameManagement() {
     homeTeam,
     awayTeam,
     homePoints,
-    awayPoints
+    awayPoints,
+    homeFouls,
+    awayFouls
   } = useSelector(state => state.game);
 
   const setActiveGame = useCallback((game) => dispatch(setGame(game)), [dispatch]);
@@ -63,7 +65,7 @@ export default function GameManagement() {
             <CreateGameForm />
           ) : (
               <>
-                <GameClocksMenu />
+                <GameControlMenu />
                 <FlexContainer justify="center" align="center">
                   <QuarterControl />
                   <GameClock />
@@ -74,6 +76,7 @@ export default function GameManagement() {
                     teamLocation="home"
                     team={homeTeam}
                     points={homePoints}
+                    fouls={homeFouls}
                     gameId={activeGameId}
                     borderRight
                   />
@@ -81,6 +84,7 @@ export default function GameManagement() {
                     teamLocation="away"
                     team={awayTeam}
                     points={awayPoints}
+                    fouls={awayFouls}
                     gameId={activeGameId}
                   />
                 </GridContainer>

@@ -14,13 +14,24 @@ const ScoreContainer = styled.div`
   text-align: center;
 `;
 
-export default function TeamGameControl({ teamLocation, team, borderRight, points, gameId }) {
+const FoulsContainer = styled.div`
+  color: ${props => props.danger ? props.theme.error.color : '#fff'};
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 5px;
+  text-align: center;
+`;
+
+export default function TeamGameControl({ teamLocation, team, borderRight, points, fouls, gameId }) {
 
   return (
     <div>
       <FlexContainer justify="center">
         <MainTitle soft uppercase>{teamLocation}</MainTitle>
       </FlexContainer>
+      <FoulsContainer danger={fouls > 3}>
+        {`Team Fouls: ${fouls}`}
+      </FoulsContainer>
       <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
       <ScoreContainer>
         {points}

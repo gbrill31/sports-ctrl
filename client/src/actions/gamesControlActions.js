@@ -92,3 +92,17 @@ export const setGameStatus = status => ({
   type: GAMES.SET_GAME_STATUS,
   payload: status
 });
+
+export const updateTeamFouls = (gameId, teamId, fouls) => ({
+  type: GAMES.UPDATE_TEAM_FOULS,
+  gameId, teamId, fouls
+});
+export const setTeamFouls = (teamId, fouls) => ({
+  type: GAMES.SET_TEAM_FOULS,
+  payload: { teamId, fouls }
+});
+
+export const resetTeamFouls = (gameId) => ({
+  type: GAMES.UPDATE_TEAM_FOULS,
+  gameId
+});

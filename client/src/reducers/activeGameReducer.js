@@ -12,6 +12,8 @@ const INTIAL_STATE = {
   awayTeam: null,
   homePoints: null,
   awayPoints: null,
+  homeFouls: null,
+  awayFouls: null,
   active: null,
   selectedPlayer: null,
   isSetPlayerStatsDialog: false,
@@ -36,7 +38,9 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
       }
     case GAMES.GAME_SUCCESS:
       if (action.payload) {
-        const { id: gameId, home, away, homePoints, awayPoints, status } = action.payload;
+        const {
+          id: gameId, home, away, homePoints, homeFouls, awayPoints, awayFouls, status
+        } = action.payload;
         return {
           ...state,
           activeGameId: gameId,
@@ -44,12 +48,18 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
           awayTeam: new Team(away),
           homePoints,
           awayPoints,
+          homeFouls,
+          awayFouls,
           status,
           activeGameError: null,
           activeGamePending: false
         }
       }
-      return { ...state, activeGameId: action.payload };
+      return {
+        ...state,
+        activeGameId: action.payload,
+        activeGamePending: false
+      };
     case GAMES.GAME_FAILED:
       return {
         ...state,
@@ -97,6 +107,19 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
       return {
         ...state,
         isSetPlayerStatsDialog: action.payload
+      }
+    case GAMES.SET_TEAM_FOULS:
+      if (action.payload.teamId) {
+        return {
+          ...state,
+          awayFouls: state.awayTeam.getId() === action.payload.teamId ? action.payload.fouls : state.awayFouls,
+          homeFouls: state.homeTeam.getId() === action.payload.teamId ? action.payload.fouls : state.homeFouls
+        }
+      }
+      return {
+        ...state,
+        awayFouls: 0,
+        homeFouls: 0
       }
     case GAMES.UPDATE_GAME_STATUS:
       return {

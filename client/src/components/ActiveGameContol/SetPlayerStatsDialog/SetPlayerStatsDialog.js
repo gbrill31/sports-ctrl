@@ -13,7 +13,8 @@ import {
   setIsPlayerStatsDialog,
   setGameSelectedPlayer,
   updatePlayerStats,
-  setGameScore
+  setGameScore,
+  updateTeamFouls
 } from '../../../actions';
 
 
@@ -128,7 +129,7 @@ const CourtPositionMarker = styled.div`
   transform: translate(-50%, -50%);
 `;
 
-let xPos, yPos, pointsToAdd = 0;
+let xPos, yPos, pointsToAdd = 0, foulsToAdd = 0;
 
 
 export default function SetPlayerStatsDialog() {
@@ -158,7 +159,8 @@ export default function SetPlayerStatsDialog() {
   const clearSelectedPlayer = useCallback(() => dispatch(setGameSelectedPlayer(null)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(false)), [dispatch]);
   const updateStats = useCallback((gameId, playerId, data) => dispatch(updatePlayerStats(gameId, playerId, data)), [dispatch]);
-  const saveGameScore = useCallback((gameId, teamId, points) => dispatch(setGameScore(gameId, teamId, points)), [dispatch]);
+  const saveGameScore = useCallback((teamId, points) => dispatch(setGameScore(activeGameId, teamId, points)), [dispatch, activeGameId]);
+  const saveTeamFouls = useCallback((teamId, fouls) => dispatch(updateTeamFouls(activeGameId, teamId, fouls)), [dispatch, activeGameId]);
 
   useEffect(() => {
     if (selectedPlayer) {
@@ -166,6 +168,7 @@ export default function SetPlayerStatsDialog() {
       const data = stats[selectedPlayer.getStatsDate()].data;
       setPlayerLocalStats(data);
       pointsToAdd = 0;
+      foulsToAdd = 0;
     }
   }, [selectedPlayer, setPlayerLocalStats, activeGameId]);
 
@@ -182,8 +185,9 @@ export default function SetPlayerStatsDialog() {
         }
       }
     }
-    saveGameScore(activeGameId, selectedPlayer.getTeamId(), pointsToAdd);
     updateStats(activeGameId, selectedPlayer.getId(), statsData);
+    saveGameScore(selectedPlayer.getTeamId(), pointsToAdd);
+    saveTeamFouls(selectedPlayer.getTeamId(), foulsToAdd);
   }
 
   const initData = () => {
@@ -200,6 +204,7 @@ export default function SetPlayerStatsDialog() {
     if (playerLocalStats.FOULS < 5) {
       setIsFoulsUpdate(true);
       setPlayerLocalStats({ ...playerLocalStats, FOULS: playerLocalStats.FOULS + 1 });
+      foulsToAdd += 1;
       setTimeout(() => setIsFoulsUpdate(false), 350);
     }
   }
@@ -207,6 +212,7 @@ export default function SetPlayerStatsDialog() {
     if (playerLocalStats.FOULS > 0) {
       setIsFoulsUpdate(true);
       setPlayerLocalStats({ ...playerLocalStats, FOULS: playerLocalStats.FOULS - 1 });
+      foulsToAdd -= 1;
       setTimeout(() => setIsFoulsUpdate(false), 350);
     }
   }
@@ -240,12 +246,12 @@ export default function SetPlayerStatsDialog() {
     }, 350);
   }
 
-  // const handleKeyDown = (e) => {
-  //   const { keyCode, key } = e;
-  //   if (keyCode === 13 || key === 'Enter') {
-  //     addPlayer();
-  //   }
-  // }
+  const handleKeyDown = (e) => {
+    const { keyCode, key } = e;
+    if (keyCode === 13 || key === 'Enter') {
+      savePlayerStats();
+    }
+  }
 
   const handlePointsClick = (e) => {
     if (!isPointsSet) {
@@ -315,6 +321,7 @@ export default function SetPlayerStatsDialog() {
             aria-labelledby="set player stats"
             onEscapeKeyDown={cancelSetPlayerStats}
             onEnter={initData}
+            onKeyPress={handleKeyDown}
             fullWidth
             maxWidth="sm"
           >
@@ -322,7 +329,6 @@ export default function SetPlayerStatsDialog() {
             <DialogContent>
               <FlexContainer column justify="center" align="center" padding="0">
                 <DialogStatsContainer>
-                  {/* <h2>Player Info</h2> */}
                   <FlexContainer fullWidth justify="center" align="center" padding="0">
                     <h2>{selectedPlayer.getNumber()}</h2>
                     <h2 style={{ marginLeft: '10px' }}>{selectedPlayer.getName()}</h2>

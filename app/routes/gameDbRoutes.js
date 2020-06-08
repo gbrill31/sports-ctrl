@@ -71,6 +71,16 @@ gameRouter.post('/status', function (req, res) {
         });
 });
 
+gameRouter.post('/teamfouls', function (req, res) {
+    const { gameId, teamId, fouls } = req.body;
+    psqlDB.updateTeamFouls(gameId, teamId, fouls)
+        .then((data) => {
+            res.json(data).status(200);
+        }, (err) => {
+            res.sendStatus(err.code || 500);
+        });
+});
+
 gameRouter.post('/updateteam', function (req, res) {
     let team = req.body.team;
     psqlDB.updateTeam(team).then((players) => {
