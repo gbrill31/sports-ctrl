@@ -19,7 +19,9 @@ import {
   updatePlayerStats,
   updatePlayerStatsError,
   setGameSelectedPlayer,
-  setNewPlayerStats
+  setNewPlayerStats,
+  setGameStatus,
+  updateGameStatus
 } from './gamesControlActions'
 
 import {
@@ -151,5 +153,7 @@ export {
   updatePlayerStats,
   updatePlayerStatsError,
   setGameSelectedPlayer,
-  setNewPlayerStats
+  setNewPlayerStats,
+  setGameStatus,
+  updateGameStatus
 }

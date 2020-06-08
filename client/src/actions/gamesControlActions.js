@@ -2,6 +2,8 @@ import {
   GAMES
 } from '../constants';
 
+// Get all played games
+
 export const getAllGames = () => ({
   type: GAMES.GET_ALL_PENDING
 });
@@ -14,7 +16,9 @@ export const setGames = games => ({
 export const gamesError = error => ({
   type: GAMES.GET_ALL_FAILED,
   payload: error
-})
+});
+
+//Create and control active game
 
 export const createNewGame = game => ({
   type: GAMES.GAME_PENDING,
@@ -78,4 +82,13 @@ export const updatePlayerStatsError = (error) => ({
 export const setGameSelectedPlayer = (player) => ({
   type: GAMES.SET_SELECTED_PLAYER,
   payload: player
+});
+
+export const updateGameStatus = (gameId, status) => ({
+  type: GAMES.UPDATE_GAME_STATUS,
+  gameId, status
+});
+export const setGameStatus = status => ({
+  type: GAMES.SET_GAME_STATUS,
+  payload: status
 });

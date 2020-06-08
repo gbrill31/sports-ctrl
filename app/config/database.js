@@ -25,13 +25,14 @@ function createGamesTable() {
             if (!exists) {
                 DB.schema.createTable('games', table => {
                     table.increments();
-                    table.string('home');
                     table.integer('homeId');
+                    table.string('home');
                     table.integer('homePoints');
-                    table.string('away');
                     table.integer('awayId');
+                    table.string('away');
                     table.integer('awayPoints');
                     table.string('venue');
+                    table.string('status');
                     table.boolean('active');
                     table.timestamps(false, true);
                 }).then(() => {
@@ -263,8 +264,8 @@ const DB_EXPORTS = {
     createGame: function (home, homeId, away, awayId, venue, active) {
         return new Promise((resolve, reject) => {
             DB
-                .returning(['id', 'home', 'homeId', 'homePoints', 'away', 'awayId', 'awayPoints', 'venue'])
-                .insert({ home, homeId, homePoints: 0, away, awayId, awayPoints: 0, venue, active })
+                .returning(['id', 'home', 'homeId', 'homePoints', 'away', 'awayId', 'awayPoints', 'venue', 'status'])
+                .insert({ home, homeId, homePoints: 0, away, awayId, awayPoints: 0, venue, active, status: 'Q1' })
                 .into('games')
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
@@ -286,7 +287,7 @@ const DB_EXPORTS = {
     getActiveGame: function () {
         return new Promise((resolve, reject) => {
             DB.select().from('games')
-                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue'])
+                .returning(['id', 'home', 'homeId', 'away', 'awayId', 'venue', 'status'])
                 .where('active', true)
                 .asCallback(function (err, rows) {
                     if (err) reject(err);
@@ -457,7 +458,14 @@ const DB_EXPORTS = {
                         .catch(err => reject(err));
                 });
         })
+    },
+    updateGameStatus: function (gameId, status) {
+        return DB('games')
+            .where({ id: gameId })
+            .returning('status')
+            .update({ status, 'updated_at': new Date() });
     }
+
 
 }
 

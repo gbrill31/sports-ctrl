@@ -21,12 +21,12 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
       <FlexContainer justify="center">
         <MainTitle soft uppercase>{teamLocation}</MainTitle>
       </FlexContainer>
+      <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
       <ScoreContainer>
         {points}
       </ScoreContainer>
-      <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
       <ScrollableContainer heightDiff={420} fullWidth>
-        <FlexContainer column align="center" minWidth="50vw" borderRight={borderRight}>
+        <FlexContainer column align="center" borderRight={borderRight}>
           {
             team.getPlayers()
               .map(player => (

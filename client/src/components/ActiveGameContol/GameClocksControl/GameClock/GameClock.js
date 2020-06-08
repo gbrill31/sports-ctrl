@@ -14,14 +14,16 @@ import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
-  convertMilliToSec
+  convertMilliToSec,
+  convertMinToMilli
 } from '../../../../utils';
 
 import {
   startGameClock,
   stopGameClock,
   setGameClock,
-  resetGameClock
+  resetGameClock,
+  setGameClockStart
 } from '../../../../actions';
 
 const Clock = styled.div`
@@ -43,6 +45,7 @@ const Clock = styled.div`
   }
 `;
 
+const Q_TIME = 12;
 let milliseconds;
 const webWorker = new WebWorker();
 
@@ -60,6 +63,7 @@ export default function GameClock() {
   const setClockValue = useCallback((value) => dispatch(setGameClock(value)), [dispatch]);
   const startClock = useCallback(() => dispatch(startGameClock()), [dispatch]);
   const stopClock = useCallback(() => dispatch(stopGameClock()), [dispatch]);
+  const setGameStartClock = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
 
   const resetMilliseconds = useCallback(() => milliseconds = startTime, [startTime]);
 
@@ -69,7 +73,7 @@ export default function GameClock() {
     dispatch(resetGameClock(value));
   }, [dispatch, resetMilliseconds]);
 
-  const getClockInitTime = useCallback(() => convertSecToDuration(convertMilliToSec(startTime)), [startTime]);
+  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [startTime]);
 
   const setClock = useCallback((e) => {
     milliseconds = e.data.timeLeft;
@@ -81,10 +85,16 @@ export default function GameClock() {
   }, [setClockValue, stopClock]);
 
   useEffect(() => {
-    if (!gameClock) {
+    if (!startTime) {
+      setGameStartClock(convertMinToMilli(Q_TIME));
+    }
+  }, [startTime, setGameStartClock]);
+
+  useEffect(() => {
+    if (!gameClock && startTime) {
       const savedStartTime = parseInt(localStorage.getItem('gameClock'));
       milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
-      setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime)) : getClockInitTime());
+      setClockValue(convertSecToDuration(savedStartTime ? convertMilliToSec(savedStartTime) : getClockInitTime()));
     }
     if (isReset) {
       localStorage.removeItem('gameClock');

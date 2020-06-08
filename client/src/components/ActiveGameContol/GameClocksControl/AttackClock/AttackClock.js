@@ -12,7 +12,8 @@ import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
-  convertMilliToSec
+  convertMilliToSec,
+  convertSecToMilli
 } from '../../../../utils';
 
 import {
@@ -20,7 +21,8 @@ import {
   stopAttackClock,
   setAttackClock,
   resetAttackClock,
-  setAttackClockTimeleft
+  setAttackClockTimeleft,
+  setAttackClockStart
 } from '../../../../actions';
 
 
@@ -49,6 +51,7 @@ const Clock = styled.div`
   }
 `;
 
+const ATTACK_TIME = 24;
 let milliseconds;
 const webWorker = new WebWorker();
 const clockOptions = {
@@ -72,9 +75,10 @@ export default function AttackClock() {
   const startClock = useCallback(() => dispatch(startAttackClock()), [dispatch]);
   const stopClock = useCallback(() => dispatch(stopAttackClock()), [dispatch]);
   const setTimeLeft = useCallback((value) => dispatch(setAttackClockTimeleft(value)), [dispatch]);
+  const setAttackStartClock = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
 
   const resetMilliseconds = useCallback(() => milliseconds = startTime, [startTime]);
-  const getClockInitTime = useCallback(() => convertSecToDuration(convertMilliToSec(startTime), clockOptions), [startTime]);
+  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [startTime]);
 
   const resetClock = useCallback(() => {
     resetMilliseconds();
@@ -94,11 +98,17 @@ export default function AttackClock() {
   }, [setTimeLeft, stopClock, setClockValue]);
 
   useEffect(() => {
-    if (!attackClock) {
+    if (!startTime) {
+      setAttackStartClock(convertSecToMilli(ATTACK_TIME));
+    }
+  }, [startTime, setAttackStartClock]);
+
+  useEffect(() => {
+    if (!attackClock && startTime) {
       const savedStartTime = parseInt(localStorage.getItem('attackClock'));
       milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
       setTimeLeft(milliseconds);
-      setClockValue(savedStartTime ? convertSecToDuration(convertMilliToSec(savedStartTime), clockOptions) : getClockInitTime());
+      setClockValue(convertSecToDuration(savedStartTime ? convertMilliToSec(savedStartTime) : getClockInitTime(), clockOptions));
     }
     if (isReset) {
       localStorage.removeItem('attackClock');

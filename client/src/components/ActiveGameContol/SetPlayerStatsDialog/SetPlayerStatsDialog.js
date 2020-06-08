@@ -141,8 +141,9 @@ export default function SetPlayerStatsDialog() {
     setPlayerStatsPending: isSaving,
     isSetPlayerStatsDialog,
     selectedPlayer,
-    activeGame
-  } = useSelector(state => state.games);
+    activeGameId,
+    status
+  } = useSelector(state => state.game);
 
   const [playerLocalStats, setPlayerLocalStats] = useState(null);
   const [isFoulsUpdate, setIsFoulsUpdate] = useState(false);
@@ -161,12 +162,12 @@ export default function SetPlayerStatsDialog() {
 
   useEffect(() => {
     if (selectedPlayer) {
-      const stats = selectedPlayer.getStats(activeGame.id);
+      const stats = selectedPlayer.getStats(activeGameId);
       const data = stats[selectedPlayer.getStatsDate()].data;
       setPlayerLocalStats(data);
       pointsToAdd = 0;
     }
-  }, [selectedPlayer, setPlayerLocalStats, activeGame.id]);
+  }, [selectedPlayer, setPlayerLocalStats, activeGameId]);
 
   const savePlayerStats = () => {
     let statsData = { ...playerLocalStats };
@@ -174,15 +175,15 @@ export default function SetPlayerStatsDialog() {
       statsData = {
         ...statsData, PtLocations: {
           ...statsData.PtLocations,
-          Q1: [...statsData.PtLocations.Q1, {
+          [status]: [...statsData.PtLocations[status], {
             x: xPos,
             y: yPos
           }]
         }
       }
     }
-    saveGameScore(activeGame.getId(), selectedPlayer.getTeamId(), pointsToAdd);
-    updateStats(activeGame.getId(), selectedPlayer.getId(), statsData);
+    saveGameScore(activeGameId, selectedPlayer.getTeamId(), pointsToAdd);
+    updateStats(activeGameId, selectedPlayer.getId(), statsData);
   }
 
   const initData = () => {

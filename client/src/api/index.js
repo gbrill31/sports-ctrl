@@ -1,6 +1,6 @@
 import { connectDB } from './dbApi';
 
-import { getAllGames, createNewGame, requestActiveGame, setGameScore } from './gamesApi';
+import { getAllGames, createNewGame, requestActiveGame, setGameScore, updateGameStatus } from './gamesApi';
 
 import { getAllVenues, saveNewVenue, deleteVenue } from './venuesApi';
 
@@ -24,5 +24,6 @@ export {
   getPlayersByTeamId,
   savePlayersToTeam,
   deletePlayer,
-  updatePlayerStats
+  updatePlayerStats,
+  updateGameStatus
 }

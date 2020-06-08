@@ -5,46 +5,37 @@ import { useHistory } from 'react-router-dom';
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
-import GameClocksControl from '../../components/ActiveGameContol/GameClocksControl/GameClocksControl';
+import GameClock from '../../components/ActiveGameContol/GameClocksControl/GameClock/GameClock';
+import AttackClock from '../../components/ActiveGameContol/GameClocksControl/AttackClock/AttackClock';
 import GameClocksMenu from '../../components/ActiveGameContol/GameClocksControl/GameClocksMenu';
 import SetPlayerStatsDialog from '../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog';
+import QuarterControl from '../../components/ActiveGameContol/QuarterControl/QuarterControl';
 
 import {
-  GridContainer
+  GridContainer, FlexContainer
 } from '../../styledElements';
 
 import {
   getActiveGame,
-  setGame,
-  setGameClockStart,
-  setAttackClockStart
+  setGame
 } from '../../actions';
-
-import {
-  convertMinToMilli,
-  convertSecToMilli
-} from '../../utils';
-
-/**
- * Need to move clocks settings to DB
- */
-const Q_TIME = 12; //Minutes
-const ATTACK_TIME = 24; //Seconds
 
 export default function GameManagement() {
   const dispatch = useDispatch();
   const history = useHistory();
 
   const isDBConnected = useSelector(state => state.db.isConnected);
-  const activeGame = useSelector(state => state.games.activeGame);
-  const isGameLoading = useSelector(state => state.games.activeGamePending);
-  const gameClockStartTime = useSelector(state => state.gameClock.startTime);
-  const attackClockStartTime = useSelector(state => state.attackClock.startTime);
+  const {
+    activeGamePending: isGameLoading,
+    activeGameId,
+    homeTeam,
+    awayTeam,
+    homePoints,
+    awayPoints
+  } = useSelector(state => state.game);
 
   const setActiveGame = useCallback((game) => dispatch(setGame(game)), [dispatch]);
-  const getCurrentGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
-  const setAttackStartClock = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
-  const setGameStartClock = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
+  const loadActiveGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
 
   useEffect(() => {
     const unlisten = history.listen((location) => {
@@ -59,43 +50,38 @@ export default function GameManagement() {
   }, [setActiveGame, history]);
 
   useEffect(() => {
-    if (!gameClockStartTime) {
-      setGameStartClock(convertMinToMilli(Q_TIME));
+    if (isDBConnected && !activeGameId) {
+      loadActiveGame();
     }
-    if (!attackClockStartTime) {
-      setAttackStartClock(convertSecToMilli(ATTACK_TIME));
-    }
-  }, [gameClockStartTime, attackClockStartTime, setGameStartClock, setAttackStartClock]);
-
-  useEffect(() => {
-    if (isDBConnected && !activeGame) {
-      getCurrentGame();
-    }
-  }, [getCurrentGame, activeGame, isDBConnected, setActiveGame]);
+  }, [loadActiveGame, activeGameId, isDBConnected, setActiveGame]);
 
   return (
     <>
       <ComponentLoader loading={isGameLoading}>
         {
-          !activeGame ? (
+          !activeGameId ? (
             <CreateGameForm />
           ) : (
               <>
                 <GameClocksMenu />
-                <GameClocksControl />
+                <FlexContainer justify="center" align="center">
+                  <QuarterControl />
+                  <GameClock />
+                  <AttackClock />
+                </FlexContainer>
                 <GridContainer columnsSpread="auto auto">
                   <TeamGameControl
                     teamLocation="home"
-                    team={activeGame.getHomeTeam()}
-                    points={activeGame.getHomePoints()}
-                    gameId={activeGame.id}
+                    team={homeTeam}
+                    points={homePoints}
+                    gameId={activeGameId}
                     borderRight
                   />
                   <TeamGameControl
                     teamLocation="away"
-                    team={activeGame.getAwayTeam()}
-                    points={activeGame.getAwayPoints()}
-                    gameId={activeGame.id}
+                    team={awayTeam}
+                    points={awayPoints}
+                    gameId={activeGameId}
                   />
                 </GridContainer>
                 <SetPlayerStatsDialog />
