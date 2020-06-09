@@ -85,7 +85,7 @@ export default function QuarterControl() {
             </FlexContainer>
           )
       }
-      <ComponentLoader loading={statusPending} size={60} padding="15">
+      <ComponentLoader loading={statusPending} size={60} padding="15" clearHeight>
         <QuarterContainer>
           {isSetStatus ? `Q${qNumber}` : status}
         </QuarterContainer>
