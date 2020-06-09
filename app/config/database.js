@@ -154,8 +154,16 @@ function getPlayersByTeamId(teamId, game) {
                         if (game) {
                             const updates = [];
                             players.forEach(player => {
-                                const gameStats = player.stats.find(stat => Object.keys(stat)[0].gameId === game.id);
-                                if (!gameStats) updates.push(setNewGamePlayerStats(player, game));
+                                if (player.stats.length > 1) {
+                                    const gameStats = player.stats
+                                        .find(g => g[Object.keys(g)].gameId && g[Object.keys(g)].gameId === game.id);
+                                    if (!gameStats) {
+                                        updates.push(setNewGamePlayerStats(player, game));
+                                    }
+                                } else {
+                                    updates.push(setNewGamePlayerStats(player, game));
+                                }
+
                             });
                             Promise.all(updates).then(() => {
                                 DB.select()
