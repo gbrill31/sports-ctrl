@@ -12,7 +12,7 @@ import {
 } from '../../../actions';
 
 const ItemContainer = styled.div`
-  width: 80%;
+  width: 100%;
   background-color: #fff;
   color: #333;
   text-transform: capitalize;

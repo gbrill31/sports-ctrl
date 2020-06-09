@@ -14,7 +14,7 @@ export default function Teams() {
   return (
     <>
       <MainTitle>Teams Management</MainTitle>
-      <GridContainer columnsSpread="auto auto">
+      <GridContainer columnsSpread="auto auto" noPadding>
         <TeamsList />
         <PlayersList />
       </GridContainer>

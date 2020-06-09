@@ -5,4 +5,5 @@ export default styled.div`
   grid-template-columns: ${props => props.columnsSpread || 'auto'};
   position: relative;
   width: ${props => props.fullWidth ? '100%' : ''};
+  padding: ${props => props.noPadding ? '' : '50px 15px 0 15px'};
 `;

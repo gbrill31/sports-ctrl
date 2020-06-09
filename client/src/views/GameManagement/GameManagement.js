@@ -5,14 +5,13 @@ import { useHistory } from 'react-router-dom';
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
 import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
-import GameClock from '../../components/ActiveGameContol/GameClocksControl/GameClock/GameClock';
-import AttackClock from '../../components/ActiveGameContol/GameClocksControl/AttackClock/AttackClock';
+
 import GameControlMenu from '../../components/ActiveGameContol/GameControlMenu';
+import GameStateControl from '../../components/ActiveGameContol/GameStateControl';
 import SetPlayerStatsDialog from '../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog';
-import QuarterControl from '../../components/ActiveGameContol/QuarterControl/QuarterControl';
 
 import {
-  GridContainer, FlexContainer
+  GridContainer
 } from '../../styledElements';
 
 import {
@@ -66,12 +65,8 @@ export default function GameManagement() {
           ) : (
               <>
                 <GameControlMenu />
-                <FlexContainer justify="center" align="center">
-                  <QuarterControl />
-                  <GameClock />
-                  <AttackClock />
-                </FlexContainer>
-                <GridContainer columnsSpread="auto auto">
+                <GridContainer columnsSpread="auto auto auto" noPadding>
+                  <GameStateControl />
                   <TeamGameControl
                     teamLocation="home"
                     team={homeTeam}
@@ -80,6 +75,7 @@ export default function GameManagement() {
                     gameId={activeGameId}
                     borderRight
                   />
+
                   <TeamGameControl
                     teamLocation="away"
                     team={awayTeam}

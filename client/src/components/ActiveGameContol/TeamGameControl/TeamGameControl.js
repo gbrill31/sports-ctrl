@@ -6,9 +6,13 @@ import {
   MainTitle, FlexContainer, ScrollableContainer
 } from '../../../styledElements';
 
+const TeamControlContainer = styled.div`
+  padding: 0 15px 0 0;
+`;
+
 const ScoreContainer = styled.div`
   color: #fff;
-  font-size: 5rem;
+  font-size: 3rem;
   font-weight: bold;
   margin: 0 10px;
   text-align: center;
@@ -25,18 +29,18 @@ const FoulsContainer = styled.div`
 export default function TeamGameControl({ teamLocation, team, borderRight, points, fouls, gameId }) {
 
   return (
-    <div>
+    <TeamControlContainer>
       <FlexContainer justify="center">
         <MainTitle soft uppercase>{teamLocation}</MainTitle>
       </FlexContainer>
-      <FoulsContainer danger={fouls > 3}>
-        {`Team Fouls: ${fouls}`}
-      </FoulsContainer>
       <MainTitle align="center" capitalize>{team.getName()}</MainTitle>
+      <FoulsContainer danger={fouls > 3}>
+        {`${fouls} Team Fouls`}
+      </FoulsContainer>
       <ScoreContainer>
-        {points}
+        {`Scored: ${points}`}
       </ScoreContainer>
-      <ScrollableContainer heightDiff={590} fullWidth>
+      <ScrollableContainer heightDiff={350} fullWidth>
         <FlexContainer column align="center" borderRight={borderRight}>
           {
             team.getPlayers()
@@ -46,6 +50,6 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
           }
         </FlexContainer>
       </ScrollableContainer>
-    </div>
+    </TeamControlContainer>
   )
 }

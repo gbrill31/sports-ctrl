@@ -46,7 +46,11 @@ export default function QuarterControl() {
   }
 
   return status && (
-    <FlexContainer column justify="center" align="center">
+    <FlexContainer
+      column
+      justify="flex-start"
+      align="center"
+    >
       {
         !isSetStatus ? (
           <Button
