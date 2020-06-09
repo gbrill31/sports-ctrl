@@ -5,13 +5,13 @@ import { dbConnected, dbError } from '../actions';
 import { connectDB } from '../api';
 
 function* handleDbConnection() {
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 7; i++) {
     try {
       yield call(connectDB);
       yield put(dbConnected());
       return;
     } catch (error) {
-      if (i < 4) {
+      if (i < 6) {
         yield delay(15000);
       } else {
         yield put(dbError(error));
