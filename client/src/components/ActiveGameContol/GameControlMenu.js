@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { faHistory, faHandPaper, faStopwatch, faClock, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faHistory, faHandPaper, faStopwatch, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import PromptDialog from '../PromptDialog/PromptDialog';
@@ -38,6 +38,7 @@ const MenuContainer = styled.div`
   transition: max-height 0.3s ease-in-out, max-width 0.3s ease-in-out;
   overflow: hidden;
   z-index: 999;
+  box-shadow: 3px 3px 10px #000;
 
    ${props => props.show && css`
     max-height: 500px;
@@ -254,10 +255,7 @@ export default function GameControlMenu() {
           onClick={toggleClocksMenu}
         >
           <ButtonIcon>
-            <FlexContainer padding="0" absolute left="58%" top="10%">
-              <FontAwesomeIcon icon={faCog} size="sm" />
-            </FlexContainer>
-            <FontAwesomeIcon icon={faClock} size="lg" />
+            <FontAwesomeIcon icon={faCog} size="lg" />
           </ButtonIcon>
         </Button>
         <MenuContainer show={isShowMenu}>

@@ -36,7 +36,7 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
       <ScoreContainer>
         {points}
       </ScoreContainer>
-      <ScrollableContainer heightDiff={420} fullWidth>
+      <ScrollableContainer heightDiff={590} fullWidth>
         <FlexContainer column align="center" borderRight={borderRight}>
           {
             team.getPlayers()

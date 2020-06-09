@@ -153,7 +153,10 @@ function getPlayersByTeamId(teamId, game) {
                     .then((players) => {
                         if (game) {
                             const updates = [];
-                            players.forEach(player => updates.push(setNewGamePlayerStats(player, game)));
+                            players.forEach(player => {
+                                const gameStats = player.stats.find(stat => Object.keys(stat)[0].gameId === game.id);
+                                if (!gameStats) updates.push(setNewGamePlayerStats(player, game));
+                            });
                             Promise.all(updates).then(() => {
                                 DB.select()
                                     .where('teamId', teamId)
@@ -311,8 +314,8 @@ const DB_EXPORTS = {
                     if (rows && rows.length) {
                         const game = rows[0];
                         Promise.all([
-                            getPlayersByTeamId(game.homeId),
-                            getPlayersByTeamId(game.awayId)
+                            getPlayersByTeamId(game.homeId, { id: game.id, name: `Against ${game.away}` }),
+                            getPlayersByTeamId(game.awayId, { id: game.id, name: `Against ${game.home}` })
                         ]).then((teamsData) => {
                             resolve(getGameObject(game, teamsData));
                         }, err => reject(err));

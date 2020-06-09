@@ -26,8 +26,10 @@ export default class Player {
     if (data.stats.length > 1) {
       this.lastGameStats = data.stats.sort((statA, statB) =>
         moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? -1 : 1)[0];
-      this.lastGameStatsDate = Object.keys(this.lastGameStats)[0];
+    } else {
+      this.lastGameStats = data.stats[0];
     }
+    this.lastGameStatsDate = Object.keys(this.lastGameStats)[0];
   }
 
   getId() {
@@ -40,13 +42,10 @@ export default class Player {
     return this.number;
   }
   getStats(id) {
-    const stats = this.stats;
-    if (stats.length > 1) {
-      if (!id) {
-        return this.lastGameStats;
-      }
-      return stats.filter(game => game[Object.keys(game)].gameId === id)[0];
+    if (!id) {
+      return this.lastGameStats;
     }
+    return this.stats.filter(game => game[Object.keys(game)].gameId === id)[0];
   }
   getStatsDate() {
     return this.lastGameStatsDate;
