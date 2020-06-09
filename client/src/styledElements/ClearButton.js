@@ -10,4 +10,5 @@ export default styled.button`
   color: ${props => props.color || '#fff'};
   padding: 5px;
   display: ${props => props.show ? 'inherit' : 'none'};
+  z-index: 99;
 `;

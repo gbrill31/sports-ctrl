@@ -21,27 +21,6 @@ import {
 } from '../../../actions';
 
 
-
-// const DeletePrompt = ({ selectedTeam, isDeleteTeam, setIsDeleteTeam, isDeleting }) => {
-//   const dispatch = useDispatch();
-
-
-
-//   return (
-//     <PromptDialog
-//       isOpen={isDeleteTeam}
-//       title="Delete Team"
-//       content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
-//       confirmText="Delete"
-//       handleClose={handleCancel}
-//       handleConfirm={deleteSelectedTeam}
-//       isPending={isDeleting}
-//       pendingTitle="Deleting..."
-//     />
-//   )
-// }
-
-
 export default function TeamsList() {
   const dispatch = useDispatch();
 
@@ -68,7 +47,7 @@ export default function TeamsList() {
   const openFilterTeams = () => setIsFilterTeams(true);
   const closeFilterTeams = () => setIsFilterTeams(false);
 
-  const clearFilterTeams = () => { filterTeamsInput.setValue('') };
+  const clearFilterTeams = () => filterTeamsInput.setValue('');
 
   const getFilteredTeams = () => {
     const value = filterTeamsInput.value.toLowerCase();

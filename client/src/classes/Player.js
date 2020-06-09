@@ -39,7 +39,7 @@ export default class Player {
     return this.name.toLowerCase();
   }
   getNumber() {
-    return this.number;
+    return this.number.toString();
   }
   getStats(id) {
     if (!id) {

@@ -23,8 +23,17 @@ export default class Team {
   getCity() {
     return this.city.toLowerCase();
   }
-  getPlayers() {
-    return this.players || [];
+  getPlayers(sortField, filterValue) {
+    let players = this.players;
+    if (sortField) {
+      players = players
+        .sort((playerA, playerB) => playerA[sortField] > playerB[sortField] ? 1 : -1);
+    }
+    if (filterValue !== '') {
+      players = players
+        .filter(player => player.getName().includes(filterValue) || player.getNumber().includes(filterValue));
+    }
+    return players || [];
   }
   updatePlayerStats(id, data) {
     const player = this.players.find(p => p.getId() === id);
