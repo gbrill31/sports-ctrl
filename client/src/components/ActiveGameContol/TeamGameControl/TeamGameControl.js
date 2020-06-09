@@ -70,7 +70,7 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
           </ClearButton>
         </FlexContainer>
       </FlexContainer>
-      <ScrollableContainer heightDiff={350} fullWidth>
+      <ScrollableContainer heightDiff={420} fullWidth>
         <FlexContainer column align="center" borderRight={borderRight}>
           {
             team.getPlayers('name', filterPlayersInput.value)
