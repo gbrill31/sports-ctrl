@@ -5,9 +5,9 @@ import {
   DialogActions, DialogTitle, DialogContent, Dialog
 } from '@material-ui/core';
 import { Button, ButtonIcon, FlexContainer } from '../../../styledElements';
-import { faPlus, faMinus, faUndo, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faMinus, faUndo, faArrowLeft, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import useFormInput from '../../../hooks/useFormInput';
+import PromptDialog from '../../PromptDialog/PromptDialog';
 
 import {
   setIsPlayerStatsDialog,
@@ -125,12 +125,20 @@ const CourtPositionMarker = styled.div`
   display: ${props => props.active ? 'inherit' : 'none'};
   width: 20px;
   height: 20px;
-  background-color: green;
+  background-color: ${props => props.theme.success.color};
   border-radius: 50%;
   transform: translate(-50%, -50%);
+
+  ${props => props.hoverActive && css`
+    &:hover{
+      background-color: ${props => props.theme.error.color};
+      border: 1px solid #444;
+      cursor: pointer;
+    }
+  `}
 `;
 
-let xPos, yPos, pointsToAdd = 0, foulsToAdd = 0;
+let xPos, yPos, pointsToAdd = 0, foulsToAdd = 0, pointToDelete;
 
 
 export default function SetPlayerStatsDialog() {
@@ -156,6 +164,8 @@ export default function SetPlayerStatsDialog() {
   const [isShowCourtMarker, setIsShowCourtMarker] = useState(false);
   const [isPointsSet, setIsPointsSet] = useState(false);
   const [pointsRegion, setPointsRegion] = useState(3);
+  const [isEditPoints, setIsEditPoints] = useState(false);
+  const [isEditPointsPrompt, setIsEditPointsPrompt] = useState(false);
 
   const clearSelectedPlayer = useCallback(() => dispatch(setGameSelectedPlayer(null)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(false)), [dispatch]);
@@ -168,10 +178,49 @@ export default function SetPlayerStatsDialog() {
       const stats = selectedPlayer.getStats(activeGameId);
       const data = stats[selectedPlayer.getStatsDate()].data;
       setPlayerLocalStats(data);
+      setIsEditPoints(false);
       pointsToAdd = 0;
       foulsToAdd = 0;
+      pointToDelete = null;
     }
   }, [selectedPlayer, setPlayerLocalStats, activeGameId]);
+
+  const enableEditPoints = () => setIsEditPoints(true);
+  const disableEditPoints = () => setIsEditPoints(false);
+
+  const openEditPointsDialog = (point) => () => {
+    pointToDelete = point;
+    setIsEditPointsPrompt(true);
+  }
+  const handleCancelPointsPrompt = () => setIsEditPointsPrompt(false);
+
+  const deletePointsConfirm = () => {
+    let statsData = { ...playerLocalStats };
+    const ptArray = [...statsData.PtLocations[status]];
+    ptArray.splice(pointToDelete.index, 1);
+    const is2Points = pointToDelete.pt === 2;
+    setIsPointsUpdate(true);
+    setIs2fgUpdate(is2Points);
+    setIs3fgUpdate(!is2Points);
+    statsData = {
+      ...statsData, PtLocations: {
+        ...statsData.PtLocations,
+        [status]: ptArray
+      },
+      PT: playerLocalStats.PT - pointToDelete.pt,
+      '2FG': is2Points ? playerLocalStats['2FG'] - 2 : playerLocalStats['2FG'],
+      '3FG': !is2Points ? playerLocalStats['3FG'] - 3 : playerLocalStats['3FG'],
+    }
+    pointsToAdd = -pointToDelete.pt;
+    setPlayerLocalStats(statsData);
+    disableEditPoints();
+    handleCancelPointsPrompt();
+    setTimeout(() => {
+      setIsPointsSet(false);
+      setIs2fgUpdate(false);
+      setIs3fgUpdate(false);
+    }, 350);
+  }
 
 
   const savePlayerStats = () => {
@@ -181,12 +230,14 @@ export default function SetPlayerStatsDialog() {
         ...statsData, PtLocations: {
           ...statsData.PtLocations,
           [status]: [...statsData.PtLocations[status], {
+            pt: pointsRegion,
             x: xPos,
             y: yPos
           }]
         }
       }
     }
+
     updateStats(selectedPlayer.getId(), statsData);
     saveGameScore(selectedPlayer.getTeamId(), pointsToAdd);
     saveTeamFouls(selectedPlayer.getTeamId(), foulsToAdd);
@@ -256,7 +307,7 @@ export default function SetPlayerStatsDialog() {
   }
 
   const handlePointsClick = (e) => {
-    if (!isPointsSet) {
+    if (!isPointsSet && !isEditPoints) {
       setIsShowCourtMarker(true);
       const rect = courtRegionRef.current.getBoundingClientRect();
       xPos = (e.pageX - rect.left) / rect.width * 100;
@@ -360,8 +411,37 @@ export default function SetPlayerStatsDialog() {
                             </FlexContainer>
                           </FlexContainer>
                           <StatsControlContainer>
-                            <FlexContainer column align="center" justify="center">
+                            <FlexContainer column align="center" justify="flex-start" fullWidth>
                               <FlexContainer align="center" justify="center" >
+                                <FlexContainer align="center" justify="center" column fullBorder>
+                                  <h3>Edit Points</h3>
+                                  <FlexContainer>
+                                    {
+                                      !isEditPoints ? (
+                                        <Button
+                                          onClick={enableEditPoints}
+                                          color="secondary"
+                                          disabled={isPointsSet}
+                                        >
+                                          Edit
+                                          <ButtonIcon spaceLeft>
+                                            <FontAwesomeIcon icon={faEdit} size="sm" />
+                                          </ButtonIcon>
+                                        </Button>
+                                      ) : (
+                                          <Button
+                                            onClick={disableEditPoints}
+                                            color="error"
+                                          >
+                                            Edit
+                                            <ButtonIcon spaceLeft>
+                                              <FontAwesomeIcon icon={faTimes} size="sm" />
+                                            </ButtonIcon>
+                                          </Button>
+                                        )
+                                    }
+                                  </FlexContainer>
+                                </FlexContainer>
                                 <FlexContainer align="center" justify="center" column fullBorder>
                                   <h3>Free Throws</h3>
                                   <FlexContainer>
@@ -377,6 +457,7 @@ export default function SetPlayerStatsDialog() {
                                     <Button
                                       onClick={decremnetFT}
                                       color="primary"
+                                      disabled={playerLocalStats.FT === 0}
                                     >
                                       Subtruct
                                     <ButtonIcon spaceLeft>
@@ -444,17 +525,36 @@ export default function SetPlayerStatsDialog() {
                                   onClick={handlePointsClick}
                                 >
                                   <img alt="basketball court" src={require('../../../img/court.png')} />
-                                  <StatsCourt2PointsRegion>
-                                    <div
-                                      id="2pt-region"
-                                      onMouseMove={checkCourtPosition}
-                                    />
-                                  </StatsCourt2PointsRegion>
-                                  <CourtPositionMarker
-                                    active={isShowCourtMarker}
-                                    ref={markerRef}
-                                  >
-                                  </CourtPositionMarker>
+                                  {
+                                    isEditPoints ? (
+                                      playerLocalStats.PtLocations[status].map((ptItem, index) => (
+                                        <CourtPositionMarker
+                                          active
+                                          hoverActive
+                                          key={ptItem.x + ptItem.y + index}
+                                          top={`${ptItem.y}%`}
+                                          left={`${ptItem.x}%`}
+                                          onClick={openEditPointsDialog({ ...ptItem, index })}
+                                        >
+                                        </CourtPositionMarker>
+                                      ))
+                                    ) : (
+                                        <>
+                                          <StatsCourt2PointsRegion>
+                                            <div
+                                              id="2pt-region"
+                                              onMouseMove={checkCourtPosition}
+                                            />
+                                          </StatsCourt2PointsRegion>
+                                          <CourtPositionMarker
+                                            active={isShowCourtMarker}
+                                            ref={markerRef}
+                                          >
+                                          </CourtPositionMarker>
+                                        </>
+                                      )
+                                  }
+
 
                                 </StatsCourtContainer>
                               </FlexContainer>
@@ -480,9 +580,21 @@ export default function SetPlayerStatsDialog() {
               </Button>
 
             </DialogActions>
-          </Dialog>
+          </Dialog >
         )
       }
-    </Fragment>
+      {
+        isEditPointsPrompt && (
+          <PromptDialog
+            isOpen={isEditPointsPrompt}
+            title="Delete Selected Points"
+            content="Are you sure you want to delete the selected points?"
+            confirmText="Delete"
+            handleClose={handleCancelPointsPrompt}
+            handleConfirm={deletePointsConfirm}
+          />
+        )
+      }
+    </Fragment >
   )
 }
