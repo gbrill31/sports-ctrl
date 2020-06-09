@@ -68,7 +68,7 @@ const GameItem = ({ game, goToActive }) => {
         <TeamScore winner={game.homePoints > game.awayPoints}>{game.homePoints}</TeamScore>
         <Title>VS</Title>
         <TeamScore winner={game.homePoints < game.awayPoints}>{game.awayPoints}</TeamScore>
-        <TeamName>{game.home}</TeamName>
+        <TeamName>{game.away}</TeamName>
         <Title>{game.venue}</Title>
         {
           game.active && (
