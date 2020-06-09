@@ -86,6 +86,7 @@ const StatsControlContainer = styled.div`
       font-size: 1rem;
       text-transform: uppercase;
       font-weight: 400;
+      align-self: center;
     }
 `;
 
@@ -359,7 +360,7 @@ export default function SetPlayerStatsDialog() {
                             </FlexContainer>
                           </FlexContainer>
                           <StatsControlContainer>
-                            <FlexContainer column align="center" fullWidth>
+                            <FlexContainer column align="center" justify="center">
                               <FlexContainer align="center" justify="center" >
                                 <FlexContainer align="center" justify="center" column fullBorder>
                                   <h3>Free Throws</h3>
@@ -410,7 +411,7 @@ export default function SetPlayerStatsDialog() {
                                   </FlexContainer>
                                 </FlexContainer>
                               </FlexContainer>
-                              <FlexContainer align="center" justify="center" column>
+                              <FlexContainer align="flex-start" justify="center" column>
                                 <h3>Points</h3>
                                 <FlexContainer align="flex-end" justify="center" fullWidth>
                                   <span style={{
