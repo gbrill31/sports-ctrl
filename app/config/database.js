@@ -208,9 +208,14 @@ function updateGameScore(gameId, teamId, points) {
                 const game = rows[0];
                 const isHomeTeam = game.homeId === teamId;
                 if (isHomeTeam) {
+                    const pointsUpdate = game.homePoints + points > 0 ? game.homePoints + points : 0;
                     DB('games')
-                        .where({ id: gameId }).returning(['id', 'homePoints', 'homeId'])
-                        .update({ homePoints: game.homePoints + points, 'updated_at': new Date() })
+                        .where({ id: gameId })
+                        .returning(['id', 'homePoints', 'homeId'])
+                        .update({
+                            homePoints: pointsUpdate,
+                            'updated_at': new Date()
+                        })
                         .then((teamScore) => {
                             resolve({
                                 teamId: teamScore[0].homeId,
@@ -219,9 +224,14 @@ function updateGameScore(gameId, teamId, points) {
                         })
                         .catch(err => reject(err));
                 } else {
+                    const pointsUpdate = game.awayPoints + points > 0 ? game.awayPoints + points : 0;
                     DB('games')
-                        .where({ id: gameId }).returning(['id', 'awayPoints', 'awayId'])
-                        .update({ awayPoints: game.awayPoints + points, 'updated_at': new Date() })
+                        .where({ id: gameId })
+                        .returning(['id', 'awayPoints', 'awayId'])
+                        .update({
+                            awayPoints: pointsUpdate,
+                            'updated_at': new Date()
+                        })
                         .then((teamScore) => {
                             resolve({
                                 teamId: teamScore[0].awayId,
@@ -483,9 +493,14 @@ const DB_EXPORTS = {
                     if (teamId) {
                         const isHomeTeam = game.homeId === teamId;
                         if (isHomeTeam) {
+                            const foulsUpdate = game.homeFouls + fouls >= 0 ? game.homeFouls + fouls : 0;
                             DB('games')
-                                .where({ id: gameId }).returning(['id', 'homeFouls', 'homeId'])
-                                .update({ homeFouls: game.homeFouls + fouls, 'updated_at': new Date() })
+                                .where({ id: gameId })
+                                .returning(['id', 'homeFouls', 'homeId'])
+                                .update({
+                                    homeFouls: foulsUpdate,
+                                    'updated_at': new Date()
+                                })
                                 .then((teamFouls) => {
                                     resolve({
                                         teamId: teamFouls[0].homeId,
@@ -494,9 +509,14 @@ const DB_EXPORTS = {
                                 })
                                 .catch(err => reject(err));
                         } else {
+                            const foulsUpdate = game.awayFouls + fouls >= 0 ? game.awayFouls + fouls : 0
                             DB('games')
-                                .where({ id: gameId }).returning(['id', 'awayFouls', 'awayId'])
-                                .update({ awayFouls: game.awayFouls + fouls, 'updated_at': new Date() })
+                                .where({ id: gameId })
+                                .returning(['id', 'awayFouls', 'awayId'])
+                                .update({
+                                    awayFouls: foulsUpdate,
+                                    'updated_at': new Date()
+                                })
                                 .then((teamFouls) => {
                                     resolve({
                                         teamId: teamFouls[0].awayId,
@@ -508,8 +528,11 @@ const DB_EXPORTS = {
                     } else {
                         DB('games')
                             .where({ id: gameId })
-                            // .returning(['id', 'awayFouls', 'homeFouls', 'awayId', 'homeId'])
-                            .update({ awayFouls: 0, homeFouls: 0, 'updated_at': new Date() })
+                            .update({
+                                awayFouls: 0,
+                                homeFouls: 0,
+                                'updated_at': new Date()
+                            })
                             .then(() => {
                                 resolve(gameId);
                             })

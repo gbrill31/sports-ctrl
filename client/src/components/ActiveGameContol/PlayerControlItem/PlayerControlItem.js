@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   FlexContainer
@@ -67,11 +67,19 @@ const ItemStat = styled.div`
   }
 `;
 
-export default function PlayerStatsItem({ player, gameId }) {
+export default function PlayerControlItem({ player, gameId }) {
   const dispatch = useDispatch();
+
+  const isSetStatsDialogOpen = useSelector(state => state.game.isSetPlayerStatsDialog);
 
   const setSelectedPlayer = useCallback((player) => dispatch(setGameSelectedPlayer(player)), [dispatch]);
   const openStatsDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(true)), [dispatch]);
+
+  useEffect(() => {
+    if (!isSetStatsDialogOpen) {
+      setSelectedPlayer(null);
+    }
+  }, [isSetStatsDialogOpen, setSelectedPlayer]);
 
   const openSetPlayerStats = player => () => {
     setSelectedPlayer(player);

@@ -172,6 +172,7 @@ export default function SetPlayerStatsDialog() {
     }
   }, [selectedPlayer, setPlayerLocalStats, activeGameId]);
 
+
   const savePlayerStats = () => {
     let statsData = { ...playerLocalStats };
     if (xPos && yPos) {

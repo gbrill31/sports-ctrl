@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import PlayerStatsItem from '../PlayerStatsItem/PlayerStatsItem';
+import PlayerControlItem from '../PlayerControlItem/PlayerControlItem';
 import {
   MainTitle, FlexContainer, ScrollableContainer
 } from '../../../styledElements';
@@ -41,7 +41,7 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
           {
             team.getPlayers()
               .map(player => (
-                <PlayerStatsItem key={player.getId()} player={player} gameId={gameId} />
+                <PlayerControlItem key={player.getId()} player={player} gameId={gameId} />
               ))
           }
         </FlexContainer>
