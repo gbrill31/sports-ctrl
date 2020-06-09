@@ -2,11 +2,11 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 
 import { GAMES } from '../constants';
 import {
-  setGames, gamesError, setGame, gameError, setNewPlayerStats, updatePlayerStatsError, updateGameScore,
+  setGames, gamesError, setGame, gameError, setNewPlayerStats, updatePlayerStatsError, setGameScore,
   setGameStatus, setTeamFouls
 } from '../actions';
 import {
-  getAllGames, createNewGame, requestActiveGame, updatePlayerStats, setGameScore, updateGameStatus,
+  getAllGames, createNewGame, requestActiveGame, updatePlayerStats, updateGameScore, updateGameStatus,
   updateTeamFouls
 } from '../api';
 
@@ -49,8 +49,8 @@ function* handleUpdatePlayerStats({ gameId, playerId, data }) {
 
 function* handleSetGameScore({ gameId, teamId, points }) {
   try {
-    const updatedScore = yield call(setGameScore, gameId, teamId, points);
-    yield put(updateGameScore(updatedScore.teamId, updatedScore.score));
+    const updatedScore = yield call(updateGameScore, gameId, teamId, points);
+    yield put(setGameScore(updatedScore.teamId, updatedScore.score));
   } catch (error) {
     yield put(updatePlayerStatsError(error));
   }

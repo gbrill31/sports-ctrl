@@ -26,7 +26,7 @@ export const requestActiveGame = async () => {
   return activeGame;
 }
 
-export const setGameScore = async (gameId, teamId, points) => {
+export const updateGameScore = async (gameId, teamId, points) => {
   const body = JSON.stringify({ gameId, teamId, points });
   const res = await fetch('/games/score', {
     method: 'POST',

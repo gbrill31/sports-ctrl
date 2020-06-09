@@ -13,7 +13,7 @@ import {
   setIsPlayerStatsDialog,
   setGameSelectedPlayer,
   updatePlayerStats,
-  setGameScore,
+  updateGameScore,
   updateTeamFouls
 } from '../../../actions';
 
@@ -158,8 +158,8 @@ export default function SetPlayerStatsDialog() {
 
   const clearSelectedPlayer = useCallback(() => dispatch(setGameSelectedPlayer(null)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(setIsPlayerStatsDialog(false)), [dispatch]);
-  const updateStats = useCallback((gameId, playerId, data) => dispatch(updatePlayerStats(gameId, playerId, data)), [dispatch]);
-  const saveGameScore = useCallback((teamId, points) => dispatch(setGameScore(activeGameId, teamId, points)), [dispatch, activeGameId]);
+  const updateStats = useCallback((playerId, data) => dispatch(updatePlayerStats(activeGameId, playerId, data)), [dispatch, activeGameId]);
+  const saveGameScore = useCallback((teamId, points) => dispatch(updateGameScore(activeGameId, teamId, points)), [dispatch, activeGameId]);
   const saveTeamFouls = useCallback((teamId, fouls) => dispatch(updateTeamFouls(activeGameId, teamId, fouls)), [dispatch, activeGameId]);
 
   useEffect(() => {
@@ -186,7 +186,7 @@ export default function SetPlayerStatsDialog() {
         }
       }
     }
-    updateStats(activeGameId, selectedPlayer.getId(), statsData);
+    updateStats(selectedPlayer.getId(), statsData);
     saveGameScore(selectedPlayer.getTeamId(), pointsToAdd);
     saveTeamFouls(selectedPlayer.getTeamId(), foulsToAdd);
   }
