@@ -64,7 +64,8 @@ const AppMainContent = styled.main`
 
 toast.configure({
   position: toast.POSITION.BOTTOM_LEFT,
-  autoClose: 7000
+  autoClose: 7000,
+  pauseOnFocusLoss: false
 });
 
 

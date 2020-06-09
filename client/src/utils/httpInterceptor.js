@@ -21,8 +21,9 @@ export default {
         const redirect = response.headers.get('redirectTo');
         const notification = JSON.parse(response.headers.get('notification'));
         if (redirect) history.push(redirect);
-
-        if (notification) toast[notification.type](notification.message);
+        if (notification) {
+          toast[notification.type](notification.message, notification.options);
+        }
 
         return response;
       },
