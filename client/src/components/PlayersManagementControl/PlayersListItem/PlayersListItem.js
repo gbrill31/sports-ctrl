@@ -4,10 +4,7 @@ import { faTrashAlt, faEdit, faSave, faTimesCircle } from '@fortawesome/free-sol
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FlexContainer, Button, ButtonIcon, Input } from '../../../styledElements';
 import useFormInput from '../../../hooks/useFormInput';
-import {
-  TableContainer, Table, TableBody, TableCell, TableHead,
-  TableRow, Paper
-} from '@material-ui/core';
+import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 import {
   savePlayersToTeam,
 } from '../../../api';
@@ -60,30 +57,6 @@ const ItemStats = styled.div`
     max-height: 500px;
   `}
 `;
-
-const statsHeaders = [
-  {
-    id: 1,
-    title: 'PT'
-  }
-  ,
-  {
-    id: 2,
-    title: '2FG'
-  },
-  {
-    id: 3,
-    title: '3FG'
-  },
-  {
-    id: 4,
-    title: 'FT'
-  },
-  {
-    id: 5,
-    title: 'FOULS'
-  }
-];
 
 export default function PlayersListItem({
   player, selectedPlayer, setSelectedPlayer, deletePlayerPrompt, updatePlayers
@@ -243,26 +216,7 @@ export default function PlayersListItem({
         <h4>Last Game</h4>
         <h3>{player.getPlayedAgainst()}</h3>
         <h4>Game Statistics</h4>
-        <TableContainer component={Paper}>
-          <Table size="small" aria-label="player stats table">
-            <TableHead>
-              <TableRow>
-                {
-                  statsHeaders.map(statHeader => <TableCell key={statHeader.id}>{statHeader.title}</TableCell>)
-                }
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell align="left">{player.getTotalPoints()}</TableCell>
-                <TableCell align="left">{player.get2FG()}</TableCell>
-                <TableCell align="left">{player.get3FG()}</TableCell>
-                <TableCell align="left">{player.getFT()}</TableCell>
-                <TableCell align="left">{player.getTotalFouls()}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <PlayerStatsDisplay stats={player.getStatsData()} />
       </ItemStats>
     </ItemContainer>
   )

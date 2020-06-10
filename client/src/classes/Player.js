@@ -45,7 +45,14 @@ export default class Player {
     if (!id) {
       return this.lastGameStats;
     }
-    return this.stats.filter(game => game[Object.keys(game)].gameId === id)[0];
+    return this.stats.find(game => game[Object.keys(game)].gameId === id);
+  }
+  getStatsData(id) {
+    if (!id) {
+      return this.lastGameStats[[this.getStatsDate()]].data;
+    }
+    return this.stats
+      .find(game => game[Object.keys(game)].gameId === id)[this.getStatsDate()].data;
   }
   getStatsDate() {
     return this.lastGameStatsDate;

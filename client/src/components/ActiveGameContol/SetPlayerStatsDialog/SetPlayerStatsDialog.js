@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useCallback, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   DialogActions, DialogTitle, DialogContent, Dialog
 } from '@material-ui/core';
@@ -8,6 +8,7 @@ import { Button, ButtonIcon, FlexContainer } from '../../../styledElements';
 import { faPlus, faMinus, faUndo, faArrowLeft, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PromptDialog from '../../PromptDialog/PromptDialog';
+import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 
 import {
   setIsPlayerStatsDialog,
@@ -16,17 +17,6 @@ import {
   updateGameScore,
   updateTeamFouls
 } from '../../../actions';
-
-
-const statChangeAnimation = keyframes`
-  from {
-    transform: scale(1);
-  }
-
-  to {
-    transform: scale(1.1);
-  }
-`;
 
 
 const DialogStatsContainer = styled.div`
@@ -48,27 +38,6 @@ const DialogStatsContainer = styled.div`
     font-weight: bold;
     margin-left: 15px;
   }
-`;
-
-const StatDisplay = styled.div`
-  color: ${props => props.color ? props.theme[props.color].color : props.theme.success.color};
-  font-size: 1rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-left: 20px;
-
-  h4{
-    margin: 0;
-    color: #777;
-    font-size: 1rem;
-    text-transform: uppercase;
-    font-weight: 400;
-    margin-left: 15px;
-  }
-
-  ${props => props.update && css`
-    animation: ${statChangeAnimation} 0.2s ease-in-out alternate 2;
-  `};
 `;
 
 const StatsControlContainer = styled.div`
@@ -156,11 +125,6 @@ export default function SetPlayerStatsDialog() {
   } = useSelector(state => state.game);
 
   const [playerLocalStats, setPlayerLocalStats] = useState(null);
-  const [isFoulsUpdate, setIsFoulsUpdate] = useState(false);
-  const [isFtUpdate, setIsFtUpdate] = useState(false);
-  const [isPointsUpdate, setIsPointsUpdate] = useState(false);
-  const [is2fgUpdate, setIs2fgUpdate] = useState(false);
-  const [is3fgUpdate, setIs3fgUpdate] = useState(false);
   const [isShowCourtMarker, setIsShowCourtMarker] = useState(false);
   const [isPointsSet, setIsPointsSet] = useState(false);
   const [pointsRegion, setPointsRegion] = useState(3);
@@ -199,9 +163,6 @@ export default function SetPlayerStatsDialog() {
     const ptArray = [...statsData.PtLocations[status]];
     ptArray.splice(pointToDelete.index, 1);
     const is2Points = pointToDelete.pt === 2;
-    setIsPointsUpdate(true);
-    setIs2fgUpdate(is2Points);
-    setIs3fgUpdate(!is2Points);
     statsData = {
       ...statsData, PtLocations: {
         ...statsData.PtLocations,
@@ -215,11 +176,6 @@ export default function SetPlayerStatsDialog() {
     setPlayerLocalStats(statsData);
     disableEditPoints();
     handleCancelPointsPrompt();
-    setTimeout(() => {
-      setIsPointsSet(false);
-      setIs2fgUpdate(false);
-      setIs3fgUpdate(false);
-    }, 350);
   }
 
 
@@ -255,48 +211,32 @@ export default function SetPlayerStatsDialog() {
 
   const incremnetFouls = () => {
     if (playerLocalStats.FOULS < 5) {
-      setIsFoulsUpdate(true);
       setPlayerLocalStats({ ...playerLocalStats, FOULS: playerLocalStats.FOULS + 1 });
       foulsToAdd += 1;
-      setTimeout(() => setIsFoulsUpdate(false), 350);
     }
   }
   const decremnetFouls = () => {
     if (playerLocalStats.FOULS > 0) {
-      setIsFoulsUpdate(true);
       setPlayerLocalStats({ ...playerLocalStats, FOULS: playerLocalStats.FOULS - 1 });
       foulsToAdd -= 1;
-      setTimeout(() => setIsFoulsUpdate(false), 350);
     }
   }
 
   const incremnetFT = () => {
-    setIsFtUpdate(true);
-    setIsPointsUpdate(true);
     setPlayerLocalStats({
       ...playerLocalStats,
       FT: playerLocalStats.FT + 1,
       PT: playerLocalStats.PT + 1
     });
     pointsToAdd += 1;
-    setTimeout(() => {
-      setIsFtUpdate(false);
-      setIsPointsUpdate(false);
-    }, 350);
   }
   const decremnetFT = () => {
-    setIsFtUpdate(true);
-    setIsPointsUpdate(true);
     setPlayerLocalStats({
       ...playerLocalStats,
       FT: playerLocalStats.FT - 1,
       PT: playerLocalStats.PT - 1
     });
     pointsToAdd -= 1;
-    setTimeout(() => {
-      setIsFtUpdate(false);
-      setIsPointsUpdate(false);
-    }, 350);
   }
 
   const handleKeyDown = (e) => {
@@ -316,9 +256,6 @@ export default function SetPlayerStatsDialog() {
       markerRef.current.style.left = `${xPos}%`;
       setIsPointsSet(true);
       const is2Points = pointsRegion === 2;
-      setIsPointsUpdate(true);
-      setIs2fgUpdate(is2Points);
-      setIs3fgUpdate(!is2Points);
       setPlayerLocalStats({
         ...playerLocalStats,
         PT: playerLocalStats.PT + pointsRegion,
@@ -326,20 +263,12 @@ export default function SetPlayerStatsDialog() {
         '3FG': !is2Points ? playerLocalStats['3FG'] + 3 : playerLocalStats['3FG']
       });
       pointsToAdd += pointsRegion;
-      setTimeout(() => {
-        setIsPointsUpdate(false);
-        setIs2fgUpdate(false);
-        setIs3fgUpdate(false);
-      }, 350);
     }
   }
 
   const undoPoints = () => {
     setIsShowCourtMarker(false);
     const is2Points = pointsRegion === 2;
-    setIsPointsUpdate(true);
-    setIs2fgUpdate(is2Points);
-    setIs3fgUpdate(!is2Points);
     xPos = null;
     yPos = null;
     setPlayerLocalStats({
@@ -350,11 +279,6 @@ export default function SetPlayerStatsDialog() {
     });
     pointsToAdd -= pointsRegion;
     setIsPointsSet(false);
-    setTimeout(() => {
-      setIsPointsSet(false);
-      setIs2fgUpdate(false);
-      setIs3fgUpdate(false);
-    }, 350);
   }
 
   const checkCourtPosition = (e) => {
@@ -388,28 +312,7 @@ export default function SetPlayerStatsDialog() {
                     {
                       playerLocalStats && (
                         <>
-                          <FlexContainer fullWidth padding="0" justify="center" align="center" bgColor="#eaeaea">
-                            <StatDisplay update={isPointsUpdate}>
-                              POINTS: {playerLocalStats.PT}
-                            </StatDisplay>
-                            <StatDisplay
-                              color={playerLocalStats.FOULS > 3 ? 'error' : 'primary'}
-                              update={isFoulsUpdate}
-                            >
-                              FOULS: {playerLocalStats.FOULS}
-                            </StatDisplay>
-                            <FlexContainer>
-                              <StatDisplay update={is2fgUpdate}>
-                                <h4>2FG: {playerLocalStats['2FG']}</h4>
-                              </StatDisplay>
-                              <StatDisplay update={is3fgUpdate}>
-                                <h4>3FG: {playerLocalStats['3FG']}</h4>
-                              </StatDisplay>
-                              <StatDisplay update={isFtUpdate}>
-                                <h4>FT: {playerLocalStats.FT}</h4>
-                              </StatDisplay>
-                            </FlexContainer>
-                          </FlexContainer>
+                          <PlayerStatsDisplay stats={playerLocalStats} />
                           <StatsControlContainer>
                             <FlexContainer column align="center" justify="flex-start" fullWidth>
                               <FlexContainer align="center" justify="center" >
