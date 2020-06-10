@@ -1,10 +1,6 @@
 const moment = require('moment');
 
-const connectionConfig = {
-    attempts: 3
-};
-
-let DB, connectionAttempts = 0, requests = [];
+let DB
 
 const config = {
     client: 'pg',
@@ -111,7 +107,7 @@ function createPlayersTable() {
     });
 }
 
-function getInitialPlayerStats(game) {
+function getPlayerStatsData(game) {
     const initialStats = {};
     initialStats[moment().format('YYYY-MM-DD')] = {
         gameId: game ? game.id : null,
@@ -138,48 +134,55 @@ function setNewGamePlayerStats(player, game) {
         .where('id', player.id)
         .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
         .update({
-            stats: JSON.stringify([...player.stats, ...getInitialPlayerStats(game)]),
+            stats: JSON.stringify([...player.stats, ...getPlayerStatsData(game)]),
             'updated_at': new Date()
         });
 }
 
+function addGameStatsToPlayers(players, game) {
+    const updates = [];
+    players.forEach(player => {
+        if (player.stats.length > 1) {
+            const gameStats = player.stats
+                .find(g => g[Object.keys(g)].gameId && g[Object.keys(g)].gameId === game.id);
+            if (!gameStats) {
+                updates.push(setNewGamePlayerStats(player, game));
+            }
+        } else {
+            updates.push(setNewGamePlayerStats(player, game));
+        }
+
+    });
+    return updates;
+}
+
 function getPlayersByTeamId(teamId, game) {
     return new Promise((resolve, reject) => {
-        DB.schema.hasTable('players').then((exists) => {
-            if (exists) {
-                DB.select()
-                    .where('teamId', teamId)
-                    .table('players')
-                    .then((players) => {
-                        if (game) {
-                            const updates = [];
-                            players.forEach(player => {
-                                if (player.stats.length > 1) {
-                                    const gameStats = player.stats
-                                        .find(g => g[Object.keys(g)].gameId && g[Object.keys(g)].gameId === game.id);
-                                    if (!gameStats) {
-                                        updates.push(setNewGamePlayerStats(player, game));
-                                    }
-                                } else {
-                                    updates.push(setNewGamePlayerStats(player, game));
-                                }
-
-                            });
-                            Promise.all(updates).then(() => {
-                                DB.select()
-                                    .where('teamId', teamId)
-                                    .table('players').then((updatedPlayers) => {
-                                        resolve(updatedPlayers);
-                                    }, err => reject(err));
-                            });
-                        } else {
-                            resolve(players);
-                        }
-                    }, err => reject(err));
-            } else {
-                resolve([]);
-            }
-        }, err => reject(err));
+        DB.schema.hasTable('players')
+            .then((exists) => {
+                if (exists) {
+                    DB.select()
+                        .where('teamId', teamId)
+                        .table('players')
+                        .then((players) => {
+                            if (game) {
+                                Promise.all(addGameStatsToPlayers(players, game)).then(() => {
+                                    DB.select()
+                                        .where('teamId', teamId)
+                                        .table('players').then((updatedPlayers) => {
+                                            resolve(updatedPlayers);
+                                        }, err => reject(err));
+                                });
+                            } else {
+                                resolve(players);
+                            }
+                        })
+                        .catch(err => reject(err));
+                } else {
+                    resolve([]);
+                }
+            })
+            .catch(err => reject(err));
     });
 }
 
@@ -209,6 +212,46 @@ function checkConnection() {
     });
 }
 
+function setHomeTeamScore(game, points) {
+    const pointsUpdate = game.homePoints + points > 0 ? game.homePoints + points : 0;
+    return new Promise((resolve, reject) => {
+        DB('games')
+            .where({ id: game.id })
+            .returning(['id', 'homePoints', 'homeId'])
+            .update({
+                homePoints: pointsUpdate,
+                'updated_at': new Date()
+            })
+            .then((teamScore) => {
+                resolve({
+                    teamId: teamScore[0].homeId,
+                    score: teamScore[0].homePoints
+                })
+            })
+            .catch(err => reject(err));
+    });
+}
+
+function setAwayTeamScore(game, points) {
+    const pointsUpdate = game.awayPoints + points > 0 ? game.awayPoints + points : 0;
+    return new Promise((resolve, reject) => {
+        DB('games')
+            .where({ id: game.id })
+            .returning(['id', 'awayPoints', 'awayId'])
+            .update({
+                awayPoints: pointsUpdate,
+                'updated_at': new Date()
+            })
+            .then((teamScore) => {
+                resolve({
+                    teamId: teamScore[0].awayId,
+                    score: teamScore[0].awayPoints
+                })
+            })
+            .catch(err => reject(err));
+    });
+}
+
 function updateGameScore(gameId, teamId, points) {
     return new Promise((resolve, reject) => {
         DB('games')
@@ -219,39 +262,82 @@ function updateGameScore(gameId, teamId, points) {
                 const game = rows[0];
                 const isHomeTeam = game.homeId === teamId;
                 if (isHomeTeam) {
-                    const pointsUpdate = game.homePoints + points > 0 ? game.homePoints + points : 0;
-                    DB('games')
-                        .where({ id: gameId })
-                        .returning(['id', 'homePoints', 'homeId'])
-                        .update({
-                            homePoints: pointsUpdate,
-                            'updated_at': new Date()
-                        })
-                        .then((teamScore) => {
-                            resolve({
-                                teamId: teamScore[0].homeId,
-                                score: teamScore[0].homePoints
-                            })
-                        })
+                    setHomeTeamScore(game, points)
+                        .then(teamScore => resolve(teamScore))
                         .catch(err => reject(err));
                 } else {
-                    const pointsUpdate = game.awayPoints + points > 0 ? game.awayPoints + points : 0;
-                    DB('games')
-                        .where({ id: gameId })
-                        .returning(['id', 'awayPoints', 'awayId'])
-                        .update({
-                            awayPoints: pointsUpdate,
-                            'updated_at': new Date()
-                        })
-                        .then((teamScore) => {
-                            resolve({
-                                teamId: teamScore[0].awayId,
-                                score: teamScore[0].awayPoints
-                            })
-                        })
+                    setAwayTeamScore(game, points)
+                        .then(teamScore => resolve(teamScore))
                         .catch(err => reject(err));
                 }
             });
+    });
+}
+
+function getUpdatedPlayerStats(player, gameId, stats) {
+    const statsToUpdate = player.stats.find(game => game[Object.keys(game)].gameId === gameId);
+    const updatedStats = { ...statsToUpdate[Object.keys(statsToUpdate)], data: stats };
+    return [
+        ...player.stats.filter(game => game[Object.keys(game)].gameId !== gameId),
+        {
+            [Object.keys(statsToUpdate)[0]]: updatedStats
+        }
+    ];
+}
+
+function resetTeamsFouls(game) {
+    return new Promise((resolve, reject) => {
+        DB('games')
+            .where({ id: game.id })
+            .update({
+                awayFouls: 0,
+                homeFouls: 0,
+                'updated_at': new Date()
+            })
+            .then(() => {
+                resolve(game.id);
+            })
+            .catch(err => reject(err));
+    });
+}
+
+function setHomeTeamFouls(game, fouls) {
+    return new Promise((resolve, reject) => {
+        const foulsUpdate = game.homeFouls + fouls >= 0 ? game.homeFouls + fouls : 0;
+        DB('games')
+            .where({ id: game.id })
+            .returning(['id', 'homeFouls', 'homeId'])
+            .update({
+                homeFouls: foulsUpdate,
+                'updated_at': new Date()
+            })
+            .then((teamFouls) => {
+                resolve({
+                    teamId: teamFouls[0].homeId,
+                    fouls: teamFouls[0].homeFouls
+                })
+            })
+            .catch(err => reject(err));
+    });
+}
+
+function setAwayTeamFouls(game, fouls) {
+    return new Promise((resolve, reject) => {
+        const foulsUpdate = game.awayFouls + fouls >= 0 ? game.awayFouls + fouls : 0
+        DB('games')
+            .where({ id: game.id })
+            .returning(['id', 'awayFouls', 'awayId'])
+            .update({
+                awayFouls: foulsUpdate,
+                'updated_at': new Date()
+            })
+            .then((teamFouls) => {
+                resolve({
+                    teamId: teamFouls[0].awayId,
+                    fouls: teamFouls[0].awayFouls
+                })
+            })
+            .catch(err => reject(err));
     });
 }
 
@@ -437,7 +523,7 @@ const DB_EXPORTS = {
 
     addPlayers: function (players) {
         players.forEach((player) => {
-            Object.assign(player, { stats: JSON.stringify(getInitialPlayerStats()) });
+            Object.assign(player, { stats: JSON.stringify(getPlayerStatsData()) });
         });
         return DB
             .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
@@ -464,20 +550,11 @@ const DB_EXPORTS = {
                 .asCallback((err, rows) => {
                     if (err) reject(err);
                     const player = rows[0];
-                    const statsToUpdate = player.stats.find(game => game[Object.keys(game)].gameId === gameId);
-                    const updatedStats = { ...statsToUpdate[Object.keys(statsToUpdate)], data: stats };
-                    const newStatsArray = [
-                        ...player.stats.filter(game => game[Object.keys(game)].gameId !== gameId),
-                        {
-                            [Object.keys(statsToUpdate)[0]]: updatedStats
-                        }
-                    ];
-
                     DB('players')
                         .where('id', playerId)
                         .returning(['id', 'stats', 'teamId'])
                         .update({
-                            stats: JSON.stringify(newStatsArray),
+                            stats: JSON.stringify(getUpdatedPlayerStats(player, gameId, stats)),
                             'updated_at': new Date()
                         })
                         .then((player) => {
@@ -504,49 +581,17 @@ const DB_EXPORTS = {
                     if (teamId) {
                         const isHomeTeam = game.homeId === teamId;
                         if (isHomeTeam) {
-                            const foulsUpdate = game.homeFouls + fouls >= 0 ? game.homeFouls + fouls : 0;
-                            DB('games')
-                                .where({ id: gameId })
-                                .returning(['id', 'homeFouls', 'homeId'])
-                                .update({
-                                    homeFouls: foulsUpdate,
-                                    'updated_at': new Date()
-                                })
-                                .then((teamFouls) => {
-                                    resolve({
-                                        teamId: teamFouls[0].homeId,
-                                        fouls: teamFouls[0].homeFouls
-                                    })
-                                })
+                            setHomeTeamFouls(game, fouls)
+                                .then(teamFouls => resolve(teamFouls))
                                 .catch(err => reject(err));
                         } else {
-                            const foulsUpdate = game.awayFouls + fouls >= 0 ? game.awayFouls + fouls : 0
-                            DB('games')
-                                .where({ id: gameId })
-                                .returning(['id', 'awayFouls', 'awayId'])
-                                .update({
-                                    awayFouls: foulsUpdate,
-                                    'updated_at': new Date()
-                                })
-                                .then((teamFouls) => {
-                                    resolve({
-                                        teamId: teamFouls[0].awayId,
-                                        fouls: teamFouls[0].awayFouls
-                                    })
-                                })
+                            setAwayTeamFouls(game, fouls)
+                                .then(teamFouls => resolve(teamFouls))
                                 .catch(err => reject(err));
                         }
                     } else {
-                        DB('games')
-                            .where({ id: gameId })
-                            .update({
-                                awayFouls: 0,
-                                homeFouls: 0,
-                                'updated_at': new Date()
-                            })
-                            .then(() => {
-                                resolve(gameId);
-                            })
+                        resetTeamsFouls(game)
+                            .then(id => resolve(id))
                             .catch(err => reject(err));
                     }
                 });
