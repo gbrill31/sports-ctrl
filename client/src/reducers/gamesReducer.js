@@ -4,6 +4,7 @@ import {
 
 const INTIAL_STATE = {
   items: [],
+  active: null,
   getAllGamesPending: false,
   getAllGamesError: null,
 }

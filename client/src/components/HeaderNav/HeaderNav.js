@@ -37,7 +37,7 @@ function HeaderNav() {
   const isDBConnected = useSelector(state => state.db.isConnected);
   const currentRoute = useSelector(state => state.routes.currentRoute);
 
-  const activeGameId = useSelector(state => state.game.activeGameId);
+  const activeGame = useSelector(state => state.games.active);
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
   const openEndGamePrompt = useCallback(() => dispatch(setEndGamePrompt(true)), [dispatch]);
@@ -79,7 +79,7 @@ function HeaderNav() {
               Manage Venues
             </Button>
             {
-              !activeGameId ? (
+              !activeGame ? (
                 <Button
                   justifyRight
                   color="primary"
@@ -105,7 +105,7 @@ function HeaderNav() {
               Home
             </Button>
               {
-                currentRoute === '/game' && activeGameId &&
+                currentRoute === '/game' && activeGame &&
                 (
                   <Button
                     justifyRight
