@@ -116,6 +116,8 @@ export default function SetPlayerStatsDialog() {
   const courtRegionRef = useRef(null);
   const markerRef = useRef(null);
 
+  const gameTime = localStorage.getItem('gameClock');
+
   const {
     setPlayerStatsPending: isSaving,
     isSetPlayerStatsDialog,
@@ -186,6 +188,7 @@ export default function SetPlayerStatsDialog() {
         ...statsData, PtLocations: {
           ...statsData.PtLocations,
           [status]: [...statsData.PtLocations[status], {
+            gameTime,
             pt: pointsRegion,
             x: xPos,
             y: yPos
