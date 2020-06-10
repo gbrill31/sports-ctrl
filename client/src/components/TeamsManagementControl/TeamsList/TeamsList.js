@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback, Fragment } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import useFormInput from '../../../hooks/useFormInput';
 import { faFilter, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  FlexContainer, Button, ButtonIcon, Input, ClearButton, ScrollableContainer,
+  FlexContainer, Button, ButtonIcon, ScrollableContainer,
   MainTitle
 } from '../../../styledElements';
 
@@ -12,6 +11,7 @@ import PromptDialog from '../../PromptDialog/PromptDialog';
 import NewTeamFormDialog from '../../../components/TeamsManagementControl/NewTeamFormDialog/NewTeamFormDialog';
 import TeamListItem from '../TeamListItem/TeamListItem';
 import ComponentLoader from '../../../components/ComponentLoader/ComponentLoader';
+import FilterListInput from '../../FilterListInput/FilterListInput';
 
 import {
   deleteTeam,
@@ -33,7 +33,7 @@ export default function TeamsList() {
     getTeamsPending: isTeamsLoading
   } = useSelector(state => state.teams);
 
-  const filterTeamsInput = useFormInput('');
+  const [filterValue, setFilterValue] = useState('');
   const [isFilterTeams, setIsFilterTeams] = useState(false);
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
 
@@ -47,10 +47,8 @@ export default function TeamsList() {
   const openFilterTeams = () => setIsFilterTeams(true);
   const closeFilterTeams = () => setIsFilterTeams(false);
 
-  const clearFilterTeams = () => filterTeamsInput.setValue('');
-
   const getFilteredTeams = () => {
-    const value = filterTeamsInput.value.toLowerCase();
+    const value = filterValue.toLowerCase();
     return isFilterTeams ? teams
       .filter(team => team.getName().includes(value) || team.getLeague().includes(value) || team.getCountry().includes(value)) : teams;
   }
@@ -119,27 +117,10 @@ export default function TeamsList() {
                         <FontAwesomeIcon icon={faTimes} size="sm" />
                       </ButtonIcon>
                     </Button>
-                    <FlexContainer align="center" fullWidth>
-                      <FlexContainer padding="0" width="85%">
-                        <Input
-                          type="text"
-                          placeholder="Name, League, Country"
-                          value={filterTeamsInput.value}
-                          onChange={filterTeamsInput.onChange}
-                          color="#fff"
-                          width="100%"
-                        />
-                        <ClearButton
-                          color="#fff"
-                          show={filterTeamsInput.value.length > 0}
-                          onClick={clearFilterTeams}
-                        >
-                          <ButtonIcon>
-                            <FontAwesomeIcon icon={faTimes} size="sm" />
-                          </ButtonIcon>
-                        </ClearButton>
-                      </FlexContainer>
-                    </FlexContainer>
+                    <FilterListInput
+                      onChange={setFilterValue}
+                      placeholder="Name, League, Country"
+                    />
                   </>
                 )
             }

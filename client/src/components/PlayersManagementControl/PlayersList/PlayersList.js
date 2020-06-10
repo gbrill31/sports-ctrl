@@ -1,10 +1,9 @@
 import React, { Fragment, useState, useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import useFormInput from '../../../hooks/useFormInput';
 import { faPlus, faFilter, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  FlexContainer, Button, ButtonIcon, Input, ClearButton, MainTitle,
+  FlexContainer, Button, ButtonIcon, MainTitle,
   ScrollableContainer
 } from '../../../styledElements';
 
@@ -12,6 +11,7 @@ import PlayersListItem from '../PlayersListItem/PlayersListItem';
 import PromptDialog from '../../PromptDialog/PromptDialog';
 import NewPlayerFormDialog from '../../../components/PlayersManagementControl/NewPlayerFormDialog/NewPlayerFormDialog';
 import ComponentLoader from '../../../components/ComponentLoader/ComponentLoader';
+import FilterListInput from '../../FilterListInput/FilterListInput';
 
 import {
   setSelectedPlayer,
@@ -38,7 +38,7 @@ export default function PlayersList() {
 
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isFilterPlayers, setIsFilterPlayers] = useState(false);
-  const filterPlayersInput = useFormInput('');
+  const [filterValue, setFilterValue] = useState('');
 
   const setSelected = useCallback((player) => dispatch(setSelectedPlayer(player)), [dispatch]);
   const savePlayersToTeam = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
@@ -69,10 +69,8 @@ export default function PlayersList() {
   const openFilterPlayers = () => setIsFilterPlayers(true);
   const closeFilterPlayers = () => setIsFilterPlayers(false);
 
-  const clearFilterPlayers = () => { filterPlayersInput.setValue('') };
-
   const getFilteredPlayers = () => {
-    const value = filterPlayersInput.value.toLowerCase();
+    const value = filterValue.toLowerCase();
     return isFilterPlayers ? players
       .filter(player => player.getName().includes(value) || player.getNumber().toString().includes(value)) : players;
   }
@@ -125,27 +123,10 @@ export default function PlayersList() {
                         <FontAwesomeIcon icon={faTimes} size="sm" />
                       </ButtonIcon>
                     </Button>
-                    <FlexContainer align="center" fullWidth>
-                      <FlexContainer padding="0" width="85%">
-                        <Input
-                          type="text"
-                          placeholder="Player Name, Number"
-                          value={filterPlayersInput.value}
-                          onChange={filterPlayersInput.onChange}
-                          color="#fff"
-                          width="100%"
-                        />
-                        <ClearButton
-                          color="#fff"
-                          show={filterPlayersInput.value.length > 0}
-                          onClick={clearFilterPlayers}
-                        >
-                          <ButtonIcon>
-                            <FontAwesomeIcon icon={faTimes} size="sm" />
-                          </ButtonIcon>
-                        </ClearButton>
-                      </FlexContainer>
-                    </FlexContainer>
+                    <FilterListInput
+                      onChange={setFilterValue}
+                      placeholder="Player Name, Number"
+                    />
                   </>
                 )
             }

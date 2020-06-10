@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { faTimes, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import useFormInput from '../../../hooks/useFormInput';
 import PlayerControlItem from '../PlayerControlItem/PlayerControlItem';
+import FilterListInput from '../../FilterListInput/FilterListInput';
 import {
-  MainTitle, FlexContainer, ScrollableContainer, Input, ClearButton,
-  ButtonIcon
+  MainTitle, FlexContainer, ScrollableContainer
 } from '../../../styledElements';
 
 const TeamControlContainer = styled.div`
@@ -31,10 +28,7 @@ const FoulsContainer = styled.div`
 `;
 
 export default function TeamGameControl({ teamLocation, team, borderRight, points, fouls, gameId }) {
-
-  const filterPlayersInput = useFormInput('');
-
-  const clearFilterPlayers = () => filterPlayersInput.setValue('');
+  const [filterValue, setFilterValue] = useState('');
 
   return (
     <TeamControlContainer>
@@ -48,32 +42,14 @@ export default function TeamGameControl({ teamLocation, team, borderRight, point
       <ScoreContainer>
         {`Scored: ${points}`}
       </ScoreContainer>
-      <FlexContainer justify="center" align="center" fullWidth>
-        <FontAwesomeIcon icon={faFilter} size="sm" color="#666" />
-        <FlexContainer padding="0" width="90%">
-          <Input
-            type="text"
-            placeholder="Type Name or Number"
-            value={filterPlayersInput.value}
-            onChange={filterPlayersInput.onChange}
-            color="#fff"
-            width="100%"
-          />
-          <ClearButton
-            color="#fff"
-            show={filterPlayersInput.value.length > 0}
-            onClick={clearFilterPlayers}
-          >
-            <ButtonIcon>
-              <FontAwesomeIcon icon={faTimes} size="sm" />
-            </ButtonIcon>
-          </ClearButton>
-        </FlexContainer>
-      </FlexContainer>
+      <FilterListInput
+        onChange={setFilterValue}
+        placeholder="Type Name or Number"
+      />
       <ScrollableContainer heightDiff={420} fullWidth>
         <FlexContainer column align="center" borderRight={borderRight}>
           {
-            team.getPlayers('name', filterPlayersInput.value)
+            team.getPlayers('name', filterValue)
               .map(player => (
                 <PlayerControlItem key={player.getId()} player={player} gameId={gameId} />
               ))
