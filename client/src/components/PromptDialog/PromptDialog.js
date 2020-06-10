@@ -22,7 +22,6 @@ const PromptDialog = ({
       aria-labelledby={title}
       onEscapeKeyDown={handleClose}
       onKeyPress={handleEnterConfirm}
-      fullWidth
       maxWidth="sm"
     >
       <DialogTitle id={title}>{title}</DialogTitle>

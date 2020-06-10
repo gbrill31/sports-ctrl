@@ -38,6 +38,7 @@ function HeaderNav() {
   const currentRoute = useSelector(state => state.routes.currentRoute);
 
   const activeGame = useSelector(state => state.games.active);
+  const activeGameId = useSelector(state => state.game.activeGameId);
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
   const openEndGamePrompt = useCallback(() => dispatch(setEndGamePrompt(true)), [dispatch]);
@@ -105,7 +106,7 @@ function HeaderNav() {
               Home
             </Button>
               {
-                currentRoute === '/game' && activeGame &&
+                currentRoute === '/game' && activeGameId &&
                 (
                   <Button
                     justifyRight
