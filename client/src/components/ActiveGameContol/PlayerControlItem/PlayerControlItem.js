@@ -31,13 +31,13 @@ const ItemContainer = styled.div`
   `}
 
   h2{
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: bold;
   }
   h3{
     margin: 0;
     color: #777;
-    font-size: 1rem;
+    font-size: 2rem;
     text-transform: uppercase;
     font-weight: bold;
     margin-left: 15px;
@@ -64,13 +64,13 @@ export default function PlayerControlItem({ player, gameId }) {
     }
   }, [isSetStatsDialogOpen, setSelectedPlayer]);
 
-  const openSetPlayerStats = player => () => {
+  const openSetPlayerStatsDialog = player => () => {
     setSelectedPlayer(player);
     openStatsDialog();
   }
 
   return (
-    <ItemContainer onClick={openSetPlayerStats(player)}>
+    <ItemContainer onClick={openSetPlayerStatsDialog(player)}>
 
       <FlexContainer justify="center" align="center" padding="0">
         <h2>

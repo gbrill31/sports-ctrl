@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
-import CreateGameForm from '../../components/ActiveGameContol/CreateGameForm/CreateGameForm';
+import CreateGameForm from '../../components/CreateGameForm/CreateGameForm';
 import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/TeamGameControl';
 
 import GameControlMenu from '../../components/ActiveGameContol/GameControlMenu';

@@ -2,15 +2,15 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { faBasketballBall } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AutoCompleteInput from '../../AutoCompleteInput/AutoCompleteInput';
-import { FlexContainer, MainTitle, Button, ButtonIcon } from '../../../styledElements';
+import AutoCompleteInput from '../AutoCompleteInput/AutoCompleteInput';
+import { FlexContainer, MainTitle, Button, ButtonIcon } from '../../styledElements';
 
 import {
   createNewGame,
   getAllTeams,
   getAllVenues,
   stopLoading
-} from '../../../actions';
+} from '../../actions';
 
 
 export default function CreateGameForm() {
@@ -70,6 +70,10 @@ export default function CreateGameForm() {
     createGame(game);
   }
 
+  const getTeamsSelectionList = (team) => {
+    return team ? teams.filter(t => t.getId() !== team.getId()) : teams;
+  }
+
   return (
     <>
       <MainTitle>Select Teams and Venue</MainTitle>
@@ -79,7 +83,7 @@ export default function CreateGameForm() {
           color="#fff"
           spaceLeft
           selectedValue={homeTeam ? homeTeam.getName() : ''}
-          options={teams}
+          options={getTeamsSelectionList(awayTeam)}
           getOptionLabel={option => option.name}
           placeholder="Select Home Team"
           onSelection={selecteHomeTeam}
@@ -91,7 +95,7 @@ export default function CreateGameForm() {
           color="#fff"
           spaceLeft
           selectedValue={awayTeam ? awayTeam.getName() : ''}
-          options={teams}
+          options={getTeamsSelectionList(homeTeam)}
           getOptionLabel={option => option.name}
           placeholder="Select Away Team"
           onSelection={selecteAwayTeam}

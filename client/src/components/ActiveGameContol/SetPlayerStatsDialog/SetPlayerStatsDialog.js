@@ -336,7 +336,7 @@ export default function SetPlayerStatsDialog() {
                                             onClick={disableEditPoints}
                                             color="error"
                                           >
-                                            Edit
+                                            Close
                                             <ButtonIcon spaceLeft>
                                               <FontAwesomeIcon icon={faTimes} size="sm" />
                                             </ButtonIcon>
