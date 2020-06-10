@@ -106,3 +106,17 @@ export const resetTeamFouls = (gameId) => ({
   type: GAMES.UPDATE_TEAM_FOULS,
   gameId
 });
+
+export const updateGameEnd = (gameId) => ({
+  type: GAMES.UPDATE_GAME_END,
+  gameId
+});
+
+export const setGameEnd = () => ({
+  type: GAMES.SET_GAME_END
+});
+
+export const setEndGamePrompt = isOpen => ({
+  type: GAMES.SET_GAME_END_PROMPT,
+  payload: isOpen
+});

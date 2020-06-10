@@ -596,9 +596,12 @@ const DB_EXPORTS = {
                     }
                 });
         });
+    },
+    endActiveGame: function (gameId) {
+        return DB('games')
+            .where({ id: gameId })
+            .update({ active: false, 'updated_at': new Date() });
     }
-
-
 }
 
 module.exports = DB_EXPORTS;

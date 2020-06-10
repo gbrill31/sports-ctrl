@@ -81,14 +81,25 @@ gameRouter.post('/teamfouls', function (req, res) {
         });
 });
 
-gameRouter.post('/updateteam', function (req, res) {
-    let team = req.body.team;
-    psqlDB.updateTeam(team).then((players) => {
-        res.json(players).status(200);
-    }, (err) => {
-        res.sendStatus(err.code || 500);
-    });
+gameRouter.post('/endgame', function (req, res) {
+    const { gameId } = req.body;
+    psqlDB.endActiveGame(gameId)
+        .then((data) => {
+            res.header('redirectTo', '/');
+            res.json(data).status(200);
+        }, (err) => {
+            res.sendStatus(err.code || 500);
+        });
 });
+
+// gameRouter.post('/updateteam', function (req, res) {
+//     let team = req.body.team;
+//     psqlDB.updateTeam(team).then((players) => {
+//         res.json(players).status(200);
+//     }, (err) => {
+//         res.sendStatus(err.code || 500);
+//     });
+// });
 
 
 module.exports = gameRouter;

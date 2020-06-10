@@ -3,11 +3,11 @@ import { takeEvery, call, put } from 'redux-saga/effects';
 import { GAMES } from '../constants';
 import {
   setGames, gamesError, setGame, gameError, setNewPlayerStats, updatePlayerStatsError, setGameScore,
-  setGameStatus, setTeamFouls
+  setGameStatus, setTeamFouls, setGameEnd
 } from '../actions';
 import {
   getAllGames, createNewGame, requestActiveGame, updatePlayerStats, updateGameScore, updateGameStatus,
-  updateTeamFouls
+  updateTeamFouls, updateEndGame
 } from '../api';
 
 function* handleGamesRequest() {
@@ -74,6 +74,15 @@ function* handleSetTeamFouls({ gameId, teamId, fouls }) {
   }
 }
 
+function* handleEndGame({ gameId }) {
+  try {
+    yield call(updateEndGame, gameId);
+    yield put(setGameEnd());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
 export default function* watchDbConnection() {
   yield takeEvery(GAMES.GET_ALL_PENDING, handleGamesRequest);
   yield takeEvery(GAMES.GAME_PENDING, handleNewGame);
@@ -82,4 +91,5 @@ export default function* watchDbConnection() {
   yield takeEvery(GAMES.SET_GAME_SCORE, handleSetGameScore);
   yield takeEvery(GAMES.UPDATE_GAME_STATUS, handleSetGameStatus);
   yield takeEvery(GAMES.UPDATE_TEAM_FOULS, handleSetTeamFouls);
+  yield takeEvery(GAMES.UPDATE_GAME_END, handleEndGame);
 }

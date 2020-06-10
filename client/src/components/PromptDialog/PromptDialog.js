@@ -32,10 +32,10 @@ const PromptDialog = ({
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="error" isSaving={isPending}>
+        <Button onClick={handleClose} color="error">
           Cancel
         </Button>
-        <Button onClick={handleConfirm} color="success">
+        <Button onClick={handleConfirm} color="success" saving={isPending}>
           {isPending ? (pendingTitle || 'Pending...') : (confirmText || 'OK')}
         </Button>
       </DialogActions>

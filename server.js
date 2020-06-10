@@ -28,7 +28,7 @@ app.use(logger('dev'));
 //================ ROUTES ========================//
 
 app.use("/connect", require('./app/routes/dbRoutes'));
-app.use("/games", require('./app/routes/gameDbRoutes'));
+app.use("/games", require('./app/routes/gamesRoutes'));
 app.use("/venues", require('./app/routes/venuesRoutes'));
 app.use("/teams", require('./app/routes/teamsRoutes'));
 app.use("/players", require('./app/routes/playersRoutes'));

@@ -24,7 +24,10 @@ import {
   updateGameStatus,
   setTeamFouls,
   updateTeamFouls,
-  resetTeamFouls
+  resetTeamFouls,
+  setEndGamePrompt,
+  updateGameEnd,
+  setGameEnd
 } from './gamesControlActions'
 
 import {
@@ -161,5 +164,8 @@ export {
   updateGameStatus,
   setTeamFouls,
   updateTeamFouls,
-  resetTeamFouls
+  resetTeamFouls,
+  setEndGamePrompt,
+  updateGameEnd,
+  setGameEnd
 }

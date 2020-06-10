@@ -68,3 +68,17 @@ export const updateTeamFouls = async (gameId, teamId, fouls) => {
   return newStatus;
 }
 
+export const updateEndGame = async (gameId) => {
+  const body = JSON.stringify({ gameId });
+  const res = await fetch('/games/endgame', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body
+  });
+  if (res.status >= 400) throw new Error('Cannot set game status');
+  const newStatus = await res.json();
+  return newStatus;
+}
+

@@ -9,6 +9,7 @@ import TeamGameControl from '../../components/ActiveGameContol/TeamGameControl/T
 import GameControlMenu from '../../components/ActiveGameContol/GameControlMenu';
 import GameStateControl from '../../components/ActiveGameContol/GameStateControl';
 import SetPlayerStatsDialog from '../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog';
+import PromptDialog from '../../components/PromptDialog/PromptDialog';
 
 import {
   GridContainer
@@ -16,7 +17,9 @@ import {
 
 import {
   getActiveGame,
-  setGame
+  setGame,
+  setEndGamePrompt,
+  updateGameEnd
 } from '../../actions';
 
 export default function GameManagement() {
@@ -32,11 +35,16 @@ export default function GameManagement() {
     homePoints,
     awayPoints,
     homeFouls,
-    awayFouls
+    awayFouls,
+    isEndGamePrompt,
+    isEndGamePending
   } = useSelector(state => state.game);
 
   const setActiveGame = useCallback((game) => dispatch(setGame(game)), [dispatch]);
   const loadActiveGame = useCallback(() => dispatch(getActiveGame()), [dispatch]);
+  const closeEndGamePrompt = useCallback(() => dispatch(setEndGamePrompt(false)), [dispatch]);
+
+  const endGame = useCallback(() => dispatch(updateGameEnd(activeGameId)), [dispatch, activeGameId]);
 
   useEffect(() => {
     const unlisten = history.listen((location) => {
@@ -90,6 +98,20 @@ export default function GameManagement() {
 
         }
       </ComponentLoader>
+      {
+        isEndGamePrompt && (
+          <PromptDialog
+            isOpen={isEndGamePrompt}
+            title="End Active Game"
+            content="Are you sure you want to end and close the current game?"
+            confirmText="End"
+            pendingTitle="Ending..."
+            handleClose={closeEndGamePrompt}
+            handleConfirm={endGame}
+            isPending={isEndGamePending}
+          />
+        )
+      }
     </>
   );
 };

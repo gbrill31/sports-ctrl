@@ -21,7 +21,9 @@ const INTIAL_STATE = {
   setPlayerStatsError: null,
   status: null,
   statusPending: false,
-  statusError: null
+  statusError: null,
+  isEndGamePrompt: false,
+  isEndGamePending: false,
 }
 
 const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
@@ -138,6 +140,22 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
         statusPending: false,
         statusError: null,
         status: action.payload
+      }
+    case GAMES.SET_GAME_END_PROMPT:
+      return {
+        ...state,
+        isEndGamePrompt: action.payload
+      }
+    case GAMES.UPDATE_GAME_END:
+      return {
+        ...state,
+        isEndGamePending: true
+      }
+    case GAMES.SET_GAME_END:
+      return {
+        ...state,
+        isEndGamePrompt: false,
+        isEndGamePending: false
       }
     default:
       return state;

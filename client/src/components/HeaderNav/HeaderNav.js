@@ -8,7 +8,8 @@ import { Button, ButtonIcon } from '../../styledElements';
 
 
 import {
-  connectToDB
+  connectToDB,
+  setEndGamePrompt
 } from '../../actions';
 
 const NavRootWrapper = styled.header`
@@ -36,9 +37,10 @@ function HeaderNav() {
   const isDBConnected = useSelector(state => state.db.isConnected);
   const currentRoute = useSelector(state => state.routes.currentRoute);
 
-  const isActiveGame = useSelector(state => state.games.active);
+  const activeGameId = useSelector(state => state.game.activeGameId);
 
   const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
+  const openEndGamePrompt = useCallback(() => dispatch(setEndGamePrompt(true)), [dispatch]);
 
   const goToRoute = (route) => () => history.push(route);
 
@@ -60,7 +62,6 @@ function HeaderNav() {
             </ButtonIcon>
           }
         </Button>
-        {/* {isConnecting && <CircularProgress size={24} className={classes.buttonProgress} />} */}
       </NavContentWrapper>
       {
         isDBConnected && (currentRoute === '/' ? (
@@ -78,7 +79,7 @@ function HeaderNav() {
               Manage Venues
             </Button>
             {
-              !isActiveGame ? (
+              !activeGameId ? (
                 <Button
                   justifyRight
                   color="primary"
@@ -93,16 +94,34 @@ function HeaderNav() {
             }
           </Fragment>
         ) : (
-            <Button
-              color="secondary"
-              onClick={goToRoute('/')}
-            >
-              <ButtonIcon spaceRight>
-                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              </ButtonIcon>
+            <>
+              <Button
+                color="secondary"
+                onClick={goToRoute('/')}
+              >
+                <ButtonIcon spaceRight>
+                  <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                </ButtonIcon>
               Home
             </Button>
+              {
+                currentRoute === '/game' && activeGameId &&
+                (
+                  <Button
+                    justifyRight
+                    color="error"
+                    onClick={openEndGamePrompt}
+                  >
+                    End Game
+                    <ButtonIcon spaceLeft>
+                      <FontAwesomeIcon icon={faCheck} size="sm" />
+                    </ButtonIcon>
+                  </Button>
+                )
+              }
+            </>
           )
+
         )
       }
     </NavRootWrapper>
