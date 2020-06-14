@@ -1,35 +1,15 @@
 import moment from 'moment';
 
-/**
-name: "player name",
-number: "jursey number",
-"team": "playing for team name",
-stats: [
-  {
-    "game date":{
-      "playedAgainst": "team name",
-      "data":{
-        "PT": "points in game",
-        "2FG": "number of 2 points shots scored",
-        "3FG": "number of 3 points shots scored",
-        "FT": "number of free throws shots scored",
-        "Fouls": "number of fouls made"
-      }
-    }
-  }
-]
- */
-
 export default class Player {
   constructor(data) {
     Object.assign(this, data);
     if (data.stats.length > 1) {
       this.lastGameStats = data.stats.sort((statA, statB) =>
-        moment(Object.keys(statA)[0]).isAfter(Object.keys(statB)[0]) ? -1 : 1)[0];
+        moment(statA.gameDate).isAfter(statB.gameDate) ? -1 : 1)[0];
     } else {
       this.lastGameStats = data.stats[0];
     }
-    this.lastGameStatsDate = Object.keys(this.lastGameStats)[0];
+    this.lastGameStatsDate = this.lastGameStats.gameDate;
   }
 
   getId() {
@@ -45,14 +25,14 @@ export default class Player {
     if (!id) {
       return this.lastGameStats;
     }
-    return this.stats.find(game => game[Object.keys(game)].gameId === id);
+    return this.stats.find(game => game.gameId === id);
   }
   getStatsData(id) {
     if (!id) {
-      return this.lastGameStats[[this.getStatsDate()]].data;
+      return this.lastGameStats.data;
     }
     return this.stats
-      .find(game => game[Object.keys(game)].gameId === id)[this.getStatsDate()].data;
+      .find(game => game.gameId === id).data;
   }
   getStatsDate() {
     return this.lastGameStatsDate;
@@ -62,22 +42,22 @@ export default class Player {
     return this;
   }
   getPlayedAgainst(id) {
-    return this.getStats(id)[this.getStatsDate()].playedAgainst;
+    return this.getStats(id).playedAgainst;
   }
   getTotalPoints(id) {
-    return this.getStats(id)[this.getStatsDate()].data.PT;
+    return this.getStats(id).data.PT;
   }
   get2FG(id) {
-    return this.getStats(id)[this.getStatsDate()].data['2FG'];
+    return this.getStats(id).data['2FG'];
   }
   get3FG(id) {
-    return this.getStats(id)[this.getStatsDate()].data['3FG'];
+    return this.getStats(id).data['3FG'];
   }
   getFT(id) {
-    return this.getStats(id)[this.getStatsDate()].data.FT;
+    return this.getStats(id).data.FT;
   }
   getTotalFouls(id) {
-    return this.getStats(id)[this.getStatsDate()].data.FOULS;
+    return this.getStats(id).data.FOULS;
   }
   getTeamId() {
     return this.teamId;

@@ -108,8 +108,8 @@ function createPlayersTable() {
 }
 
 function getPlayerStatsData(game) {
-    const initialStats = {};
-    initialStats[moment().format('YYYY-MM-DD')] = {
+    return [{
+        gameDate: moment().format('YYYY-MM-DD'),
         gameId: game ? game.id : null,
         playedAgainst: game ? game.name : 'No Games Played',
         data: {
@@ -125,8 +125,7 @@ function getPlayerStatsData(game) {
                 Q4: []
             }
         }
-    };
-    return [initialStats];
+    }];
 }
 
 function setNewGamePlayerStats(player, game) {
@@ -144,7 +143,7 @@ function addGameStatsToPlayers(players, game) {
     players.forEach(player => {
         if (player.stats.length > 1) {
             const gameStats = player.stats
-                .find(g => g[Object.keys(g)].gameId && g[Object.keys(g)].gameId === game.id);
+                .find(g => g.gameId && g.gameId === game.id);
             if (!gameStats) {
                 updates.push(setNewGamePlayerStats(player, game));
             }
@@ -275,13 +274,11 @@ function updateGameScore(gameId, teamId, points) {
 }
 
 function getUpdatedPlayerStats(player, gameId, stats) {
-    const statsToUpdate = player.stats.find(game => game[Object.keys(game)].gameId === gameId);
-    const updatedStats = { ...statsToUpdate[Object.keys(statsToUpdate)], data: stats };
+    const statsToUpdate = player.stats.find(game => game.gameId === gameId);
+    const updatedStats = { ...statsToUpdate, data: stats };
     return [
-        ...player.stats.filter(game => game[Object.keys(game)].gameId !== gameId),
-        {
-            [Object.keys(statsToUpdate)[0]]: updatedStats
-        }
+        ...player.stats.filter(game => game.gameId !== gameId),
+        updatedStats
     ];
 }
 
@@ -509,9 +506,11 @@ const DB_EXPORTS = {
         return new Promise((resolve, reject) => {
             DB.schema.hasTable('players').then((exists) => {
                 if (exists) {
-                    DB.select().table('players').then((players) => {
-                        resolve(players)
-                    }, err => reject(err));
+                    DB.select()
+                        .table('players')
+                        .then((players) => {
+                            resolve(players)
+                        }, err => reject(err));
                 } else {
                     resolve();
                 }

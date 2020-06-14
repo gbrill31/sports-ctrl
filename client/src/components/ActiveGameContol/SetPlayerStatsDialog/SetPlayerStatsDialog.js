@@ -141,9 +141,7 @@ export default function SetPlayerStatsDialog() {
 
   useEffect(() => {
     if (selectedPlayer) {
-      const stats = selectedPlayer.getStats(activeGameId);
-      const data = stats[selectedPlayer.getStatsDate()].data;
-      setPlayerLocalStats(data);
+      setPlayerLocalStats(selectedPlayer.getStats(activeGameId).data);
       setIsEditPoints(false);
       pointsToAdd = 0;
       foulsToAdd = 0;
