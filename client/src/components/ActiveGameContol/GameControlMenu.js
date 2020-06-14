@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { faHistory, faHandPaper, faStopwatch, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GlobalHotKeys } from 'react-hotkeys';
 
 import PromptDialog from '../PromptDialog/PromptDialog';
 import useFormInput from '../../hooks/useFormInput';
@@ -87,11 +88,16 @@ const ClocksSetMenu = styled.div`
   `}
 `;
 
+const keyMap = {
+  TOGGLE_CLOCKS_START: 'ctrl+s'
+}
+
 const attackClockOptions = {
   showMin: false,
   showSec: true,
   showMil: false
 }
+let isClocksRunning = false;
 
 export default function GameControlMenu() {
   const dispatch = useDispatch();
@@ -101,6 +107,7 @@ export default function GameControlMenu() {
   const [isFoulsResetPrompt, setIsFoulsResetPrompt] = useState(false);
   const [isShowSetGameClock, setIsShowSetGameClock] = useState(false);
   const [isShowSetAttackClock, setIsShowSetAttackClock] = useState(false);
+
 
   const menuRef = useRef(null);
   useOutsideMouseDown(menuRef, isShowMenu, () => {
@@ -119,6 +126,18 @@ export default function GameControlMenu() {
     isAttackClockRunning,
     startTime: attackClockStartTime
   } = useSelector(state => state.attackClock);
+
+  useEffect(() => {
+    if (isShowSetGameClock && isGameClockRunning) {
+      setIsShowSetGameClock(false);
+    }
+  }, [isShowSetGameClock, isGameClockRunning, setIsShowSetGameClock]);
+
+  useEffect(() => {
+    if (isShowSetAttackClock && isAttackClockRunning) {
+      setIsShowSetAttackClock(false);
+    }
+  }, [isShowSetAttackClock, isAttackClockRunning, setIsShowSetAttackClock]);
 
 
   const gameClockMinutes = useFormInput('');
@@ -224,22 +243,28 @@ export default function GameControlMenu() {
       if (isShowSetGameClock) setNewGameClockStart();
       if (isShowSetAttackClock) setNewAttackClockStart();
     }
+  };
+
+  const handleToggleClocksKey = (e) => {
+    e.preventDefault();
+    if (isClocksRunning) {
+      stopAllClocks();
+    } else {
+      startAllClocks();
+    }
+    isClocksRunning = !isClocksRunning;
   }
 
-  useEffect(() => {
-    if (isShowSetGameClock && isGameClockRunning) {
-      setIsShowSetGameClock(false);
-    }
-  }, [isShowSetGameClock, isGameClockRunning, setIsShowSetGameClock]);
-
-  useEffect(() => {
-    if (isShowSetAttackClock && isAttackClockRunning) {
-      setIsShowSetAttackClock(false);
-    }
-  }, [isShowSetAttackClock, isAttackClockRunning, setIsShowSetAttackClock]);
+  const hotKeysHandlers = {
+    TOGGLE_CLOCKS_START: handleToggleClocksKey
+  };
 
   return (
     <>
+      <GlobalHotKeys
+        keyMap={keyMap}
+        handlers={hotKeysHandlers}
+      />
       <FlexContainer
         padding="0"
         absolute

@@ -64,39 +64,42 @@ export default function GameManagement() {
     }
   }, [loadActiveGame, activeGameId, isDBConnected, setActiveGame]);
 
+
   return (
     <>
       <ComponentLoader loading={isGameLoading}>
-        {
-          !activeGameId ? (
-            <CreateGameForm />
-          ) : (
-              <>
-                <GameControlMenu />
-                <GridContainer columnsSpread="auto auto auto" noPadding>
-                  <GameStateControl />
-                  <TeamGameControl
-                    teamLocation="home"
-                    team={homeTeam}
-                    points={homePoints}
-                    fouls={homeFouls}
-                    gameId={activeGameId}
-                    borderRight
-                  />
+        <>
+          {
+            !activeGameId ? (
+              <CreateGameForm />
+            ) : (
+                <>
+                  <GameControlMenu />
+                  <GridContainer columnsSpread="auto auto auto" noPadding>
+                    <GameStateControl />
+                    <TeamGameControl
+                      teamLocation="home"
+                      team={homeTeam}
+                      points={homePoints}
+                      fouls={homeFouls}
+                      gameId={activeGameId}
+                      borderRight
+                    />
 
-                  <TeamGameControl
-                    teamLocation="away"
-                    team={awayTeam}
-                    points={awayPoints}
-                    fouls={awayFouls}
-                    gameId={activeGameId}
-                  />
-                </GridContainer>
-                <SetPlayerStatsDialog />
-              </>
-            )
+                    <TeamGameControl
+                      teamLocation="away"
+                      team={awayTeam}
+                      points={awayPoints}
+                      fouls={awayFouls}
+                      gameId={activeGameId}
+                    />
+                  </GridContainer>
+                  <SetPlayerStatsDialog />
+                </>
+              )
 
-        }
+          }
+        </>
       </ComponentLoader>
       {
         isEndGamePrompt && (
@@ -112,6 +115,7 @@ export default function GameManagement() {
           />
         )
       }
+
     </>
   );
 };
