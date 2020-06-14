@@ -63,13 +63,21 @@ export default function PlayersListItem({
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const selectPlayer = () => setSelectedPlayer(player);
+
 
   const playerName = useFormInput('');
   const playerNumber = useFormInput('');
 
   const isPlayerSelected = () => {
     return selectedPlayer && selectedPlayer.getId() === player.getId();
+  }
+
+  const selectPlayer = () => {
+    if (!isPlayerSelected()) {
+      setSelectedPlayer(player);
+    } else {
+      setSelectedPlayer(null);
+    }
   }
 
   const deleteItem = (e) => {

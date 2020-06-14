@@ -47,9 +47,7 @@ export default function PlayersList() {
 
   const deleteSelected = useCallback((id) => dispatch(deletePlayer(id)), [dispatch]);
 
-  const deleteSelectedPlayer = () => {
-    deleteSelected(selectedPlayer.getId());
-  }
+  const deleteSelectedPlayer = () => deleteSelected(selectedPlayer.getId());
 
 
   useEffect(() => {

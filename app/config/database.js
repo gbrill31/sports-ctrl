@@ -276,10 +276,7 @@ function updateGameScore(gameId, teamId, points) {
 function getUpdatedPlayerStats(player, gameId, stats) {
     const statsToUpdate = player.stats.find(game => game.gameId === gameId);
     const updatedStats = { ...statsToUpdate, data: stats };
-    return [
-        ...player.stats.filter(game => game.gameId !== gameId),
-        updatedStats
-    ];
+    return [...player.stats.filter(game => game.gameId !== gameId), updatedStats];
 }
 
 function resetTeamsFouls(game) {
