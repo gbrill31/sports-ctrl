@@ -1,11 +1,9 @@
-import moment from 'moment';
-
 export default class Player {
   constructor(data) {
     Object.assign(this, data);
     if (data.stats.length > 1) {
       this.lastGameStats = data.stats.sort((statA, statB) =>
-        moment(statA.gameDate).isAfter(statB.gameDate) ? -1 : 1)[0];
+        statA.gameId > statB.gameId ? -1 : 1)[0];
     } else {
       this.lastGameStats = data.stats[0];
     }
@@ -34,7 +32,7 @@ export default class Player {
     return this.stats
       .find(game => game.gameId === id).data;
   }
-  getStatsDate() {
+  getLastStatsDate() {
     return this.lastGameStatsDate;
   }
   updateStats(data) {
