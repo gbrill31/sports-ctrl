@@ -1,14 +1,21 @@
-import React, { Fragment, useState } from 'react';
-import styled, { css } from 'styled-components';
-import { faTrashAlt, faEdit, faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FlexContainer, Button, ButtonIcon, Input } from '../../../styledElements';
-import useFormInput from '../../../hooks/useFormInput';
-import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
+import React, { Fragment, useState } from "react";
+import styled, { css } from "styled-components";
 import {
-  savePlayersToTeam,
-} from '../../../api';
-
+  faTrashAlt,
+  faEdit,
+  faSave,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  FlexContainer,
+  Button,
+  ButtonIcon,
+  Input,
+} from "../../../styledElements";
+import useFormInput from "../../../hooks/useFormInput";
+import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
+import { savePlayersToTeam } from "../../../api";
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -20,19 +27,24 @@ const ItemContainer = styled.div`
   transition: box-shadow 0.1s ease;
   cursor: pointer;
 
-  &:hover{
-    box-shadow: ${props => !props.selected ? `0 2px 5px 1px ${props.theme.primary.hover} inset` : ''};
+  &:hover {
+    box-shadow: ${(props) =>
+      !props.selected
+        ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
+        : ""};
   }
 
-  ${props => props.selected && css`
-    box-shadow: 0 5px 8px 0px ${props => props.theme.success.color} inset;
-  `}
+  ${(props) =>
+    props.selected &&
+    css`
+      box-shadow: 0 5px 8px 0px ${(props) => props.theme.success.color} inset;
+    `}
 
-  h2{
+  h2 {
     font-size: 3rem;
     font-weight: bold;
   }
-  h3{
+  h3 {
     margin: 0;
     color: #777;
     font-size: 2rem;
@@ -40,7 +52,7 @@ const ItemContainer = styled.div`
     font-weight: 300;
     margin-left: 15px;
   }
-  h4{
+  h4 {
     color: #999;
     font-weight: 300;
     margin-left: 10px;
@@ -53,24 +65,29 @@ const ItemStats = styled.div`
   transition: max-height 0.5s ease-in-out;
   overflow: hidden;
 
-  ${props => (props.active || props.selected) && css`
-    max-height: 500px;
-  `}
+  ${(props) =>
+    (props.active || props.selected) &&
+    css`
+      max-height: 500px;
+    `}
 `;
 
 export default function PlayersListItem({
-  player, selectedPlayer, setSelectedPlayer, deletePlayerPrompt, updatePlayers
+  player,
+  selectedPlayer,
+  setSelectedPlayer,
+  deletePlayerPrompt,
+  updatePlayers,
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-
-  const playerName = useFormInput('');
-  const playerNumber = useFormInput('');
+  const playerName = useFormInput("");
+  const playerNumber = useFormInput("");
 
   const isPlayerSelected = () => {
     return selectedPlayer && selectedPlayer.getId() === player.getId();
-  }
+  };
 
   const selectPlayer = () => {
     if (!isPlayerSelected()) {
@@ -78,12 +95,12 @@ export default function PlayersListItem({
     } else {
       setSelectedPlayer(null);
     }
-  }
+  };
 
   const deleteItem = (e) => {
     e.nativeEvent.stopImmediatePropagation();
     deletePlayerPrompt(player);
-  }
+  };
 
   const cancelUpdatePlayer = () => {
     setIsEditPlayer(false);
@@ -96,14 +113,13 @@ export default function PlayersListItem({
       name: playerName.value,
       number: playerNumber.value,
       team: player.getTeamName(),
-      teamId: player.getTeamId()
-    })
-      .then((player) => {
-        updatePlayers(player);
-        setIsSaving(false);
-        // resetForm();
-        setIsEditPlayer(false);
-      });
+      teamId: player.getTeamId(),
+    }).then((player) => {
+      updatePlayers(player);
+      setIsSaving(false);
+      // resetForm();
+      setIsEditPlayer(false);
+    });
   };
 
   const editPlayer = () => {
@@ -113,113 +129,106 @@ export default function PlayersListItem({
   };
 
   return (
-    <ItemContainer
-      selected={isPlayerSelected()}
-      onClick={selectPlayer}
-    >
+    <ItemContainer selected={isPlayerSelected()} onClick={selectPlayer}>
       <FlexContainer align="baseline" padding="0">
-        {
-          isEditPlayer ? (
-            <FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>Name:</label>
-                <Input
-                  autoFocus
-                  required
-                  disabled={isSaving}
-                  ref={playerName.ref}
-                  error={!playerName.isValid}
-                  id="name"
-                  type="text"
-                  placeholder={`Enter Player Name${!playerName.isValid ? ' *' : ''}`}
-                  value={playerName.value}
-                  onChange={playerName.onChange}
-                  spaceLeft
-                />
-              </FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>Number:</label>
-                <Input
-                  required
-                  disabled={isSaving}
-                  ref={playerNumber.ref}
-                  error={!playerNumber.isValid}
-                  id="number"
-                  type="text"
-                  placeholder={`Enter Player Number${!playerNumber.isValid ? ' *' : ''}`}
-                  value={playerNumber.value}
-                  onChange={playerNumber.onChange}
-                  spaceLeft
-                />
-              </FlexContainer>
+        {isEditPlayer ? (
+          <FlexContainer>
+            <FlexContainer fullWidth justify="space-evenly" align="center">
+              <label style={{ width: "10px" }}>Name:</label>
+              <Input
+                autoFocus
+                required
+                disabled={isSaving}
+                ref={playerName.ref}
+                error={!playerName.isValid}
+                id="name"
+                type="text"
+                placeholder={`Enter Player Name${
+                  !playerName.isValid ? " *" : ""
+                }`}
+                value={playerName.value}
+                onChange={playerName.onChange}
+                spaceLeft
+              />
             </FlexContainer>
-          ) : (
-              <>
-                <h2>
-                  {player.getNumber()}
-                </h2>
-                <h3>
-                  {player.getName()}
-                </h3>
-              </>
-            )
-        }
+            <FlexContainer fullWidth justify="space-evenly" align="center">
+              <label style={{ width: "10px" }}>Number:</label>
+              <Input
+                required
+                disabled={isSaving}
+                ref={playerNumber.ref}
+                error={!playerNumber.isValid}
+                id="number"
+                type="text"
+                placeholder={`Enter Player Number${
+                  !playerNumber.isValid ? " *" : ""
+                }`}
+                value={playerNumber.value}
+                onChange={playerNumber.onChange}
+                spaceLeft
+              />
+            </FlexContainer>
+          </FlexContainer>
+        ) : (
+          <>
+            <h2>{player.getNumber()}</h2>
+            <h3>{player.getName()}</h3>
+          </>
+        )}
       </FlexContainer>
       <ItemStats active={isPlayerSelected()}>
-        <FlexContainer justify={isEditPlayer ? 'flex-end' : false}>
-          {
-            !isEditPlayer ? (
-              <Fragment>
-                <Button
-                  aria-label="edit player"
-                  color="primary"
-                  onClick={editPlayer}
-                  justifyRight
-                >
-                  Edit
-                  <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faEdit} size="sm" />
-                  </ButtonIcon>
-                </Button>
-                <Button
-                  aria-label="delete player"
-                  color="error"
-                  onClick={deleteItem}
-                >
-                  Delete
+        <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
+          {!isEditPlayer ? (
+            <Fragment>
+              <Button
+                aria-label="edit player"
+                color="primary"
+                onClick={editPlayer}
+                justifyRight
+              >
+                Edit
                 <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-                  </ButtonIcon>
-                </Button>
-              </Fragment>
-            ) : (
-                <Fragment>
-                  <Button
-                    aria-label="cencel edit player"
-                    color="error"
-                    disabled={isSaving}
-                    onClick={cancelUpdatePlayer}
-                  >
-                    Cancel
-                    <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                    </ButtonIcon>
-                  </Button>
-                  <Button
-                    aria-label="update team"
-                    color="success"
-                    onClick={savePlayer}
-                    disabled={isSaving}
-                    saving={isSaving}
-                  >
-                    {isSaving ? 'Saving...' : 'Save'}
-                    <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faSave} size="sm" />
-                    </ButtonIcon>
-                  </Button>
-                </Fragment>
-              )
-          }
+                  <FontAwesomeIcon icon={faEdit} size="sm" />
+                </ButtonIcon>
+              </Button>
+              <Button
+                aria-label="delete player"
+                color="error"
+                onClick={deleteItem}
+              >
+                Delete
+                <ButtonIcon spaceLeft>
+                  <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+                </ButtonIcon>
+              </Button>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Button
+                aria-label="cencel edit player"
+                color="error"
+                disabled={isSaving}
+                onClick={cancelUpdatePlayer}
+              >
+                Cancel
+                <ButtonIcon spaceLeft>
+                  <FontAwesomeIcon icon={faTimesCircle} size="sm" />
+                </ButtonIcon>
+              </Button>
+              <Button
+                aria-label="update team"
+                color="success"
+                onClick={savePlayer}
+                disabled={isSaving}
+                saving={isSaving}
+              >
+                {isSaving ? "Saving..." : "Save"}
+                <ButtonIcon spaceLeft>
+                  <FontAwesomeIcon icon={faSave} size="sm" />
+                </ButtonIcon>
+              </Button>
+            </Fragment>
+          )}
         </FlexContainer>
         <h4>Last Game</h4>
         <h3>{player.getPlayedAgainst()}</h3>
@@ -227,5 +236,5 @@ export default function PlayersListItem({
         <PlayerStatsDisplay stats={player.getStatsData()} />
       </ItemStats>
     </ItemContainer>
-  )
+  );
 }

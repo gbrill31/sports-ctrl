@@ -1,17 +1,20 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import styled, { css } from 'styled-components';
-import { useSelector, useDispatch } from 'react-redux';
-import { faHistory, faHandPaper, faStopwatch, faCog } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GlobalHotKeys } from 'react-hotkeys';
-
-import PromptDialog from '../PromptDialog/PromptDialog';
-import useFormInput from '../../hooks/useFormInput';
-import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
-
+import React, { useState, useCallback, useEffect, useRef } from "react";
+import styled, { css } from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 import {
-  FlexContainer, Button, ButtonIcon, Input
-} from '../../styledElements';
+  faHistory,
+  faHandPaper,
+  faStopwatch,
+  faCog,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { GlobalHotKeys } from "react-hotkeys";
+
+import PromptDialog from "../PromptDialog/PromptDialog";
+import useFormInput from "../../hooks/useFormInput";
+import useOutsideMouseDown from "../../hooks/useOutsideMouseDown";
+
+import { FlexContainer, Button, ButtonIcon, Input } from "../../styledElements";
 
 import {
   startGameClock,
@@ -22,16 +25,16 @@ import {
   resetAttackClock,
   setGameClockStart,
   setAttackClockStart,
-  resetTeamFouls
-} from '../../actions';
+  resetTeamFouls,
+} from "../../actions";
 
 import {
   convertSecToDuration,
   convertMinToMilli,
   convertMilliToMin,
   convertSecToMilli,
-  convertMilliToSec
-} from '../../utils';
+  convertMilliToSec,
+} from "../../utils";
 
 const MenuContainer = styled.div`
   max-height: 0;
@@ -41,17 +44,18 @@ const MenuContainer = styled.div`
   z-index: 999;
   box-shadow: 3px 3px 10px #000;
 
-   ${props => props.show && css`
-    max-height: 500px;
-    max-width: 500px;
-  `}
+  ${(props) =>
+    props.show &&
+    css`
+      max-height: 500px;
+      max-width: 500px;
+    `}
 `;
 
-const MenuSection = styled.div`  
+const MenuSection = styled.div`
   color: #fff;
-  
 
-  h3{
+  h3 {
     font-size: 1rem;
     box-sizing: border-box;
     width: 100%;
@@ -63,7 +67,7 @@ const MenuSection = styled.div`
     background: #444;
   }
 
-  h4{
+  h4 {
     font-size: 0.8rem;
     box-sizing: border-box;
     width: 100%;
@@ -83,20 +87,22 @@ const ClocksSetMenu = styled.div`
   background: #272727;
   width: 150px;
 
-  ${props => props.show && css`
-    max-height: 500px;
-  `}
+  ${(props) =>
+    props.show &&
+    css`
+      max-height: 500px;
+    `}
 `;
 
 const keyMap = {
-  TOGGLE_CLOCKS_START: 'ctrl+s'
-}
+  TOGGLE_CLOCKS_START: "ctrl+s",
+};
 
 const attackClockOptions = {
   showMin: false,
   showSec: true,
-  showMil: false
-}
+  showMil: false,
+};
 let isClocksRunning = false;
 
 export default function GameControlMenu() {
@@ -108,7 +114,6 @@ export default function GameControlMenu() {
   const [isShowSetGameClock, setIsShowSetGameClock] = useState(false);
   const [isShowSetAttackClock, setIsShowSetAttackClock] = useState(false);
 
-
   const menuRef = useRef(null);
   useOutsideMouseDown(menuRef, isShowMenu, () => {
     setIsShowMenu(false);
@@ -116,16 +121,14 @@ export default function GameControlMenu() {
     setIsShowSetGameClock(false);
   });
 
-  const activeGameId = useSelector(state => state.game.activeGameId);
+  const activeGameId = useSelector((state) => state.game.activeGameId);
 
-  const {
-    isGameClockRunning,
-    startTime: gameClockStartTime
-  } = useSelector(state => state.gameClock);
-  const {
-    isAttackClockRunning,
-    startTime: attackClockStartTime
-  } = useSelector(state => state.attackClock);
+  const { isGameClockRunning, startTime: gameClockStartTime } = useSelector(
+    (state) => state.gameClock
+  );
+  const { isAttackClockRunning, startTime: attackClockStartTime } = useSelector(
+    (state) => state.attackClock
+  );
 
   useEffect(() => {
     if (isShowSetGameClock && isGameClockRunning) {
@@ -139,26 +142,46 @@ export default function GameControlMenu() {
     }
   }, [isShowSetAttackClock, isAttackClockRunning, setIsShowSetAttackClock]);
 
+  const gameClockMinutes = useFormInput("");
+  const gameClockSeconds = useFormInput("");
+  const attackClockSeconds = useFormInput("");
 
-  const gameClockMinutes = useFormInput('');
-  const gameClockSeconds = useFormInput('');
-  const attackClockSeconds = useFormInput('');
+  const startClockGame = useCallback(() => dispatch(startGameClock()), [
+    dispatch,
+  ]);
+  const stopClockGame = useCallback(() => dispatch(stopGameClock()), [
+    dispatch,
+  ]);
+  const startClockAttack = useCallback(() => dispatch(startAttackClock()), [
+    dispatch,
+  ]);
+  const stopClockAttack = useCallback(() => dispatch(stopAttackClock()), [
+    dispatch,
+  ]);
+  const resetFouls = useCallback(() => dispatch(resetTeamFouls(activeGameId)), [
+    dispatch,
+    activeGameId,
+  ]);
 
+  const setAttackClockStartTime = useCallback(
+    (value) => dispatch(setAttackClockStart(value)),
+    [dispatch]
+  );
+  const setGameClockStartTime = useCallback(
+    (value) => dispatch(setGameClockStart(value)),
+    [dispatch]
+  );
 
-  const startClockGame = useCallback(() => dispatch(startGameClock()), [dispatch]);
-  const stopClockGame = useCallback(() => dispatch(stopGameClock()), [dispatch]);
-  const startClockAttack = useCallback(() => dispatch(startAttackClock()), [dispatch]);
-  const stopClockAttack = useCallback(() => dispatch(stopAttackClock()), [dispatch]);
-  const resetFouls = useCallback(() => dispatch(resetTeamFouls(activeGameId)), [dispatch, activeGameId]);
-
-  const setAttackClockStartTime = useCallback((value) => dispatch(setAttackClockStart(value)), [dispatch]);
-  const setGameClockStartTime = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
-
-  const getGameClockInitTime = () => convertSecToDuration(convertMilliToSec(gameClockStartTime));
-  const getAttackClockInitTime = () => convertSecToDuration(convertMilliToSec(attackClockStartTime), attackClockOptions);
+  const getGameClockInitTime = () =>
+    convertSecToDuration(convertMilliToSec(gameClockStartTime));
+  const getAttackClockInitTime = () =>
+    convertSecToDuration(
+      convertMilliToSec(attackClockStartTime),
+      attackClockOptions
+    );
 
   const resetClockGame = () => {
-    localStorage.removeItem('gameClock');
+    localStorage.removeItem("gameClock");
     dispatch(resetGameClock(getGameClockInitTime()));
   };
   const resetClockAttack = () => {
@@ -168,17 +191,17 @@ export default function GameControlMenu() {
   const startAllClocks = () => {
     startClockGame();
     startClockAttack();
-  }
+  };
   const stopAllClocks = () => {
     stopClockGame();
     stopClockAttack();
-  }
+  };
   const resetFoulsPrompt = () => setIsFoulsResetPrompt(true);
   const handleCancelFoulsPrompt = () => setIsFoulsResetPrompt(false);
   const resetFoulsConfirm = () => {
     resetFouls();
     handleCancelFoulsPrompt();
-  }
+  };
 
   const resetAllClocksPrompt = () => setIsClocksResetPrompt(true);
   const handleCancelClocksPrompt = () => setIsClocksResetPrompt(false);
@@ -186,60 +209,65 @@ export default function GameControlMenu() {
     resetClockGame();
     resetClockAttack();
     handleCancelClocksPrompt();
-  }
+  };
 
   const toggleClocksMenu = () => {
     setIsShowMenu(!isShowMenu);
-  }
+  };
 
   const getFormattedSeconds = (value) => {
     const numValue = parseInt(value);
     return numValue < 10 ? `0${numValue}` : `${numValue}`;
-  }
-
+  };
 
   const toggleSetGameClock = () => {
     if (!isShowSetGameClock) {
       const gameMinutes = convertMilliToMin(gameClockStartTime);
-      const gameSeconds = Math.floor(convertMilliToSec(gameClockStartTime) - (gameMinutes * 60));
+      const gameSeconds = Math.floor(
+        convertMilliToSec(gameClockStartTime) - gameMinutes * 60
+      );
       gameClockMinutes.setValue(gameMinutes);
       gameClockSeconds.setValue(getFormattedSeconds(gameSeconds));
     }
     if (isShowSetAttackClock) setIsShowSetAttackClock(false);
-    setIsShowSetGameClock(!isShowSetGameClock)
+    setIsShowSetGameClock(!isShowSetGameClock);
   };
   const toggleSetAttackClock = () => {
     if (!isShowSetAttackClock) {
-      attackClockSeconds.setValue(getFormattedSeconds(convertMilliToSec(attackClockStartTime)));
+      attackClockSeconds.setValue(
+        getFormattedSeconds(convertMilliToSec(attackClockStartTime))
+      );
     }
     if (isShowSetGameClock) setIsShowSetGameClock(false);
     setIsShowSetAttackClock(!isShowSetAttackClock);
-  }
+  };
 
   const setNewGameClockStart = () => {
-    const startTime = convertSecToMilli(parseInt(gameClockSeconds.value)) + convertMinToMilli(parseInt(gameClockMinutes.value));
+    const startTime =
+      convertSecToMilli(parseInt(gameClockSeconds.value)) +
+      convertMinToMilli(parseInt(gameClockMinutes.value));
     setGameClockStartTime(startTime);
-    localStorage.removeItem('gameClock');
-  }
+    localStorage.removeItem("gameClock");
+  };
 
   const handleGameClockSecondsChange = (e) => {
     const { value } = e.target;
     gameClockSeconds.setValue(getFormattedSeconds(value));
-  }
+  };
 
   const handleAttackClockChange = (e) => {
     const { value } = e.target;
     attackClockSeconds.setValue(getFormattedSeconds(value));
-  }
+  };
 
   const setNewAttackClockStart = () => {
     const startTime = convertSecToMilli(parseInt(attackClockSeconds.value));
     setAttackClockStartTime(startTime);
-    localStorage.removeItem('attackClock');
+    localStorage.removeItem("attackClock");
   };
 
   const handleInputKeyDown = (e) => {
-    if (e.keyCode === 13 || e.key === 'Enter') {
+    if (e.keyCode === 13 || e.key === "Enter") {
       if (isShowSetGameClock) setNewGameClockStart();
       if (isShowSetAttackClock) setNewAttackClockStart();
     }
@@ -253,24 +281,16 @@ export default function GameControlMenu() {
       startAllClocks();
     }
     isClocksRunning = !isClocksRunning;
-  }
+  };
 
   const hotKeysHandlers = {
-    TOGGLE_CLOCKS_START: handleToggleClocksKey
+    TOGGLE_CLOCKS_START: handleToggleClocksKey,
   };
 
   return (
     <>
-      <GlobalHotKeys
-        keyMap={keyMap}
-        handlers={hotKeysHandlers}
-      />
-      <FlexContainer
-        padding="0"
-        absolute
-        top="90px"
-        ref={menuRef}
-      >
+      <GlobalHotKeys keyMap={keyMap} handlers={hotKeysHandlers} />
+      <FlexContainer padding="0" absolute top="90px" ref={menuRef}>
         <Button
           noRaduis
           margin="0"
@@ -296,7 +316,7 @@ export default function GameControlMenu() {
                 onClick={startAllClocks}
               >
                 Start All Clocks
-                      <ButtonIcon spaceLeft>
+                <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faStopwatch} size="sm" />
                 </ButtonIcon>
               </Button>
@@ -308,7 +328,7 @@ export default function GameControlMenu() {
                 onClick={stopAllClocks}
               >
                 Stop All Clocks
-                      <ButtonIcon spaceLeft>
+                <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faHandPaper} size="sm" />
                 </ButtonIcon>
               </Button>
@@ -320,7 +340,7 @@ export default function GameControlMenu() {
                 onClick={resetAllClocksPrompt}
               >
                 Reset All Clocks
-                      <ButtonIcon spaceLeft>
+                <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faHistory} size="sm" />
                 </ButtonIcon>
               </Button>
@@ -335,7 +355,7 @@ export default function GameControlMenu() {
                 disabled={isGameClockRunning}
               >
                 Set Game Clock
-                      </Button>
+              </Button>
               <ClocksSetMenu show={isShowSetGameClock}>
                 <FlexContainer justify="space-between" align="center">
                   <Input
@@ -374,7 +394,7 @@ export default function GameControlMenu() {
                     onClick={setNewGameClockStart}
                   >
                     Set
-                          </Button>
+                  </Button>
                 </FlexContainer>
               </ClocksSetMenu>
             </FlexContainer>
@@ -388,7 +408,7 @@ export default function GameControlMenu() {
               disabled={isAttackClockRunning}
             >
               Set Attack Clock
-                      </Button>
+            </Button>
             <ClocksSetMenu show={isShowSetAttackClock}>
               <FlexContainer justify="center" align="center">
                 <Input
@@ -413,7 +433,7 @@ export default function GameControlMenu() {
                   onClick={setNewAttackClockStart}
                 >
                   Set
-                          </Button>
+                </Button>
               </FlexContainer>
             </ClocksSetMenu>
           </MenuSection>
@@ -434,30 +454,26 @@ export default function GameControlMenu() {
           </MenuSection>
         </MenuContainer>
       </FlexContainer>
-      {
-        isClocksResetPrompt && (
-          <PromptDialog
-            isOpen={isClocksResetPrompt}
-            title="Reset Game Clock"
-            content="Are you sure you want to reset the game clock?"
-            confirmText="Reset"
-            handleClose={handleCancelClocksPrompt}
-            handleConfirm={resetAllClocksConfirm}
-          />
-        )
-      }
-      {
-        isFoulsResetPrompt && (
-          <PromptDialog
-            isOpen={isFoulsResetPrompt}
-            title="Reset Teams Fouls"
-            content="Are you sure you want to reset teams fouls?"
-            confirmText="Reset"
-            handleClose={handleCancelFoulsPrompt}
-            handleConfirm={resetFoulsConfirm}
-          />
-        )
-      }
+      {isClocksResetPrompt && (
+        <PromptDialog
+          isOpen={isClocksResetPrompt}
+          title="Reset Game Clock"
+          content="Are you sure you want to reset the game clock?"
+          confirmText="Reset"
+          handleClose={handleCancelClocksPrompt}
+          handleConfirm={resetAllClocksConfirm}
+        />
+      )}
+      {isFoulsResetPrompt && (
+        <PromptDialog
+          isOpen={isFoulsResetPrompt}
+          title="Reset Teams Fouls"
+          content="Are you sure you want to reset teams fouls?"
+          confirmText="Reset"
+          handleClose={handleCancelFoulsPrompt}
+          handleConfirm={resetFoulsConfirm}
+        />
+      )}
     </>
-  )
+  );
 }
