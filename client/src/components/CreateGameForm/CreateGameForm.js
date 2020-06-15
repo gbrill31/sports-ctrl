@@ -10,8 +10,9 @@ import {
   ButtonIcon,
 } from "../../styledElements";
 import useVenues from "../../hooks/useVenues";
+import useTeams from "../../hooks/useTeams";
 
-import { createNewGame, getAllTeams, stopLoading } from "../../actions";
+import { createNewGame, stopLoading } from "../../actions";
 
 export default function CreateGameForm() {
   const dispatch = useDispatch();
@@ -29,11 +30,11 @@ export default function CreateGameForm() {
     isFetching: isVenuesFetching,
   } = useVenues(isDBConnected && !isGameLoading);
 
-  const { items: teams, getTeamsPending: isTeamsLoading } = useSelector(
-    (state) => state.teams
-  );
-
-  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
+  const {
+    status: teamsStatus,
+    data: teams,
+    isFetching: isTeamsFetching,
+  } = useTeams(isDBConnected && !isGameLoading);
 
   const stopCurrentGameLoading = useCallback(() => dispatch(stopLoading()), [
     dispatch,
@@ -44,10 +45,9 @@ export default function CreateGameForm() {
 
   useEffect(() => {
     if (isDBConnected && !isGameLoading) {
-      getTeams();
       stopCurrentGameLoading();
     }
-  }, [getTeams, isGameLoading, stopCurrentGameLoading, isDBConnected]);
+  }, [isGameLoading, stopCurrentGameLoading, isDBConnected]);
 
   const selectVanue = (venueId) => {
     setVenue(venues.find((v) => v.id === venueId));
@@ -89,7 +89,7 @@ export default function CreateGameForm() {
           getOptionLabel={(option) => option.name}
           placeholder="Select Home Team"
           onSelection={selecteHomeTeam}
-          loading={isTeamsLoading}
+          loading={teamsStatus === "loading" || isTeamsFetching}
         />
         <MainTitle>VS</MainTitle>
         <AutoCompleteInput
@@ -101,7 +101,7 @@ export default function CreateGameForm() {
           getOptionLabel={(option) => option.name}
           placeholder="Select Away Team"
           onSelection={selecteAwayTeam}
-          loading={isTeamsLoading}
+          loading={teamsStatus === "loading" || isTeamsFetching}
         />
         <MainTitle>AT</MainTitle>
         <AutoCompleteInput

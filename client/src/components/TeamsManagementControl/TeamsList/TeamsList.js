@@ -1,57 +1,68 @@
-import React, { useEffect, useState, useCallback, Fragment } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { faFilter, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState, useCallback, Fragment } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { CircularProgress } from "@material-ui/core";
 import {
-  FlexContainer, Button, ButtonIcon, ScrollableContainer,
-  MainTitle
-} from '../../../styledElements';
+  FlexContainer,
+  Button,
+  ButtonIcon,
+  ScrollableContainer,
+  MainTitle,
+} from "../../../styledElements";
 
-import PromptDialog from '../../PromptDialog/PromptDialog';
-import NewTeamFormDialog from '../../../components/TeamsManagementControl/NewTeamFormDialog/NewTeamFormDialog';
-import TeamListItem from '../TeamListItem/TeamListItem';
-import ComponentLoader from '../../../components/ComponentLoader/ComponentLoader';
-import FilterListInput from '../../FilterListInput/FilterListInput';
+import PromptDialog from "../../PromptDialog/PromptDialog";
+import NewTeamFormDialog from "../../../components/TeamsManagementControl/NewTeamFormDialog/NewTeamFormDialog";
+import TeamListItem from "../TeamListItem/TeamListItem";
+import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
+import FilterListInput from "../../FilterListInput/FilterListInput";
+import useTeams from "../../../hooks/useTeams";
+import useDeleteTeam from "../../../hooks/useDeleteTeam";
 
-import {
-  deleteTeam,
-  setSelectedTeam,
-  getAllTeams,
-  openNewTeamDialog
-} from '../../../actions';
-
+import { setSelectedTeam, openNewTeamDialog } from "../../../actions";
 
 export default function TeamsList() {
   const dispatch = useDispatch();
 
-  const isDBConnected = useSelector(state => state.db.isConnected);
+  const isDBConnected = useSelector((state) => state.db.isConnected);
 
-  const {
-    selected: selectedTeam,
-    teamDeletePending: isDeleting,
-    items: teams,
-    getTeamsPending: isTeamsLoading
-  } = useSelector(state => state.teams);
+  const { selected: selectedTeam, teamDeletePending: isDeleting } = useSelector(
+    (state) => state.teams
+  );
 
-  const [filterValue, setFilterValue] = useState('');
-  const [isFilterTeams, setIsFilterTeams] = useState(false);
+  const [filterValue, setFilterValue] = useState("");
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
 
-  const setSelected = useCallback((team) => { dispatch(setSelectedTeam(team)) }, [dispatch]);
-  const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
-  const openCreateTeam = useCallback(() => dispatch(openNewTeamDialog()), [dispatch]);
-  const deleteSelectedTeam = useCallback(() => dispatch(deleteTeam(selectedTeam.getId())), [dispatch, selectedTeam]);
+  const { status, data: teams, isFetching } = useTeams(isDBConnected);
 
-  const handleCancelPrompt = () => setIsDeleteTeamPrompt(false);
+  const setSelected = useCallback(
+    (team) => {
+      dispatch(setSelectedTeam(team));
+    },
+    [dispatch]
+  );
+  const openCreateTeamDialog = useCallback(
+    () => dispatch(openNewTeamDialog()),
+    [dispatch]
+  );
 
-  const openFilterTeams = () => setIsFilterTeams(true);
-  const closeFilterTeams = () => setIsFilterTeams(false);
+  const closeDeletePrompt = () => setIsDeleteTeamPrompt(false);
+
+  const deleteTeam = useDeleteTeam(closeDeletePrompt);
+
+  const deleteSelectedTeam = () => deleteTeam(selectedTeam.getId());
 
   const getFilteredTeams = () => {
     const value = filterValue.toLowerCase();
-    return isFilterTeams ? teams
-      .filter(team => team.getName().includes(value) || team.getLeague().includes(value) || team.getCountry().includes(value)) : teams;
-  }
+    return filterValue.value !== ""
+      ? teams.filter(
+          (team) =>
+            team.getName().includes(value) ||
+            team.getLeague().includes(value) ||
+            team.getCountry().includes(value)
+        )
+      : teams;
+  };
 
   const deleteTeamPrompt = (team) => {
     setSelected(team);
@@ -59,78 +70,44 @@ export default function TeamsList() {
   };
 
   useEffect(() => {
-    if (isDBConnected && !teams.length) {
-      getTeams();
-    }
-  }, [getTeams, isDBConnected, teams]);
-
-  useEffect(() => {
-    if (teams.length && !selectedTeam) {
+    if (teams?.length && !selectedTeam) {
       setSelected(teams[0]);
     }
   }, [teams, selectedTeam, setSelected]);
 
-
-  useEffect(() => {
-    if (!isDeleting) {
-      setIsDeleteTeamPrompt(false);
-    }
-  }, [isDeleting]);
-
-
   return (
     <Fragment>
-      <FlexContainer borderRight minWidth={isTeamsLoading ? '50vw' : false}>
-        <ComponentLoader loading={isTeamsLoading} size={100}>
+      <FlexContainer
+        borderRight
+        minWidth={status === "loading" ? "50vw" : false}
+      >
+        <ComponentLoader loading={status === "loading"} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>
-            <Button
-              color="generic"
-              onClick={openCreateTeam}
-            >
+            <Button color="generic" onClick={openCreateTeamDialog}>
               New Team
               <ButtonIcon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
               </ButtonIcon>
             </Button>
+            {isFetching && <CircularProgress size={25} color="inherit" />}
           </FlexContainer>
-          <FlexContainer>
-            {
-              !isFilterTeams ? (
-                <Button
-                  color="secondary"
-                  onClick={openFilterTeams}
-                >
-                  Filter
-                  <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faFilter} size="sm" />
-                  </ButtonIcon>
-                </Button>
-              ) : (
-                  <>
-                    <Button
-                      color="error"
-                      onClick={closeFilterTeams}
-                    >
-                      Close Filter
-                    <ButtonIcon spaceLeft>
-                        <FontAwesomeIcon icon={faTimes} size="sm" />
-                      </ButtonIcon>
-                    </Button>
-                    <FilterListInput
-                      onChange={setFilterValue}
-                      placeholder="Name, League, Country"
-                    />
-                  </>
-                )
-            }
+          <FlexContainer fullWidth padding="0">
+            {status === "success" && (
+              <FilterListInput
+                onChange={setFilterValue}
+                placeholder="Name, League, Country"
+              />
+            )}
           </FlexContainer>
           <ScrollableContainer padding="5px" heightDiff={400} fullWidth>
             <FlexContainer column fullWidth>
-              {
-                teams && getFilteredTeams()
-                  .sort((teamA, teamB) => teamA.name.toLowerCase() > teamB.name.toLowerCase() ? 1 : -1)
-                  .map(team => (
+              {teams &&
+                getFilteredTeams()
+                  .sort((teamA, teamB) =>
+                    teamA.name.toLowerCase() > teamB.name.toLowerCase() ? 1 : -1
+                  )
+                  .map((team) => (
                     <TeamListItem
                       key={team.id}
                       team={team}
@@ -138,27 +115,24 @@ export default function TeamsList() {
                       selectedTeam={selectedTeam}
                       deleteTeamPrompt={deleteTeamPrompt}
                     />
-                  ))
-              }
+                  ))}
             </FlexContainer>
           </ScrollableContainer>
         </ComponentLoader>
       </FlexContainer>
-      {
-        isDeleteTeamPrompt && (
-          <PromptDialog
-            isOpen={isDeleteTeamPrompt}
-            title="Delete Team"
-            content={`Are you sure you want to delete ${selectedTeam.getName()}?`}
-            confirmText="Delete"
-            handleClose={handleCancelPrompt}
-            handleConfirm={deleteSelectedTeam}
-            isPending={isDeleting}
-            pendingTitle="Deleting..."
-          />
-        )
-      }
+      <PromptDialog
+        isOpen={isDeleteTeamPrompt}
+        title="Delete Team"
+        content={`Are you sure you want to delete ${
+          selectedTeam?.getName() || ""
+        }?`}
+        confirmText="Delete"
+        handleClose={closeDeletePrompt}
+        handleConfirm={deleteSelectedTeam}
+        isPending={isDeleting}
+        pendingTitle="Deleting..."
+      />
       <NewTeamFormDialog />
     </Fragment>
-  )
-};
+  );
+}

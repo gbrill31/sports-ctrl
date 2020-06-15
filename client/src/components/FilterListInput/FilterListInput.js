@@ -1,29 +1,31 @@
-import React from 'react';
+import React from "react";
 
-import { faTimes, faFilter } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useFormInput from '../../hooks/useFormInput';
+import { faTimes, faFilter } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import useFormInput from "../../hooks/useFormInput";
 
 import {
-  FlexContainer, Input, ClearButton, ButtonIcon
-} from '../../styledElements';
+  FlexContainer,
+  Input,
+  ClearButton,
+  ButtonIcon,
+} from "../../styledElements";
 
 export default function FilterListInput({ onChange, placeholder }) {
-
-  const filterInput = useFormInput('');
+  const filterInput = useFormInput("");
 
   const clearInput = () => {
-    filterInput.setValue('');
-    onChange('');
-  }
+    filterInput.setValue("");
+    onChange("");
+  };
 
   const handleInputChange = (e) => {
     filterInput.onChange(e);
     onChange(e.target.value);
-  }
+  };
 
   return (
-    <FlexContainer justify="center" align="center" fullWidth>
+    <FlexContainer justify="center" align="center" fullWidth padding="0">
       <FontAwesomeIcon icon={faFilter} size="sm" color="#666" />
       <FlexContainer padding="0" width="90%">
         <Input
@@ -45,5 +47,5 @@ export default function FilterListInput({ onChange, placeholder }) {
         </ClearButton>
       </FlexContainer>
     </FlexContainer>
-  )
+  );
 }

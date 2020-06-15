@@ -27,16 +27,7 @@ import {
 } from "./gamesControlActions";
 
 import {
-  getAllTeams,
-  setTeams,
   setSelectedTeam,
-  teamsError,
-  saveNewTeam,
-  setNewTeam,
-  newTeamError,
-  deleteTeam,
-  clearDeletedTeam,
-  deleteTeamError,
   openNewTeamDialog,
   closeNewTeamDialog,
 } from "./teamsActions";
@@ -88,16 +79,7 @@ export {
   updateGameScore,
   gameError,
   stopLoading,
-  getAllTeams,
   setSelectedTeam,
-  setTeams,
-  teamsError,
-  saveNewTeam,
-  setNewTeam,
-  newTeamError,
-  deleteTeam,
-  clearDeletedTeam,
-  deleteTeamError,
   getAllPlayers,
   setPlayers,
   playersError,

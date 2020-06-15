@@ -61,6 +61,13 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    const { keyCode, key } = e;
+    if (keyCode === 13 || key === "Enter") {
+      createNewVenue();
+    }
+  };
+
   return (
     <>
       {isOpenDialog && (
@@ -89,6 +96,7 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                   }`}
                   value={venueName.value}
                   onChange={venueName.onChange}
+                  onKeyDown={handleKeyDown}
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -105,6 +113,7 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                   }`}
                   value={venueCountry.value}
                   onChange={venueCountry.onChange}
+                  onKeyDown={handleKeyDown}
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -121,6 +130,7 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                   }`}
                   value={venueCity.value}
                   onChange={venueCity.onChange}
+                  onKeyDown={handleKeyDown}
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
@@ -134,6 +144,7 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                   value={venueSeats.value}
                   onChange={venueSeats.onChange}
                   onFocus={venueSeats.select}
+                  onKeyDown={handleKeyDown}
                 />
               </FlexContainer>
             </FlexContainer>

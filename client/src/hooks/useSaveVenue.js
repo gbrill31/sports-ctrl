@@ -13,7 +13,10 @@ export default function useSaveVenue(cb) {
         const venues = venue.id
           ? [...oldVenues.filter((v) => v.id !== venue.id)]
           : [...oldVenues];
-        return [...venues, { ...venue, id: venue.id ? venue.id : shortid() }];
+        return [
+          ...venues,
+          { ...venue, id: venue.id ? venue.id : shortid.generate() },
+        ];
       });
 
       return previousValue;
