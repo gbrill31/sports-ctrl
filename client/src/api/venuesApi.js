@@ -1,34 +1,28 @@
+import axios from "axios";
+
 export const getAllVenues = async () => {
-  const res = await fetch('/venues/all');
-  if (res.status >= 400) throw new Error('No venues found');
-  const venues = await res.json();
-  return venues;
+  try {
+    const { data } = await axios.get("/venues/all");
+    return data;
+  } catch {
+    throw new Error("No venues found");
+  }
 };
 
 export const saveNewVenue = async (venue) => {
-  const body = JSON.stringify(venue);
-  const res = await fetch('/venues/save', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('New venue creation failed');
-  const newVenue = await res.json();
-  return newVenue;
+  try {
+    const { data } = await axios.post("/venues/save", venue);
+    return data;
+  } catch (err) {
+    throw new Error("New venue creation failed", err);
+  }
 };
 
 export const deleteVenue = async (id) => {
-  const body = JSON.stringify({ id });
-  const res = await fetch('/venues/delete', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('New venue creation failed');
-  const deletedVenue = await res.json();
-  return deletedVenue;
+  try {
+    const { data } = await axios.post("/venues/delete", { id });
+    return data;
+  } catch {
+    throw new Error("New venue creation failed");
+  }
 };

@@ -1,40 +1,29 @@
-import fetchIntercept from 'fetch-intercept';
-import { toast } from 'react-toastify';
+// import fetchIntercept from "fetch-intercept";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 let unregister;
 
 export default {
   initInterceptors(history) {
-    unregister = fetchIntercept.register({
-      request(url, config) {
-        // Modify the url or config here
-        return [url, config];
-      },
-
-      requestError(error) {
-        // Called when an error occured during another 'request' interceptor call
-        return Promise.reject(error);
-      },
-
-      response(response) {
-        // Modify the reponse object
-        const redirect = response.headers.get('redirectTo');
-        const notification = JSON.parse(response.headers.get('notification'));
-        if (redirect) history.push(redirect);
+    unregister = axios.interceptors.response.use(
+      (response) => {
+        const { redirectTo, notification } = response.headers;
+        if (redirectTo) history.push(redirectTo);
         if (notification) {
-          toast[notification.type](notification.message, notification.options);
+          const notificationData = JSON.parse(notification);
+          toast[notificationData.type](
+            notificationData.message,
+            notificationData.options
+          );
         }
-
         return response;
       },
-
-      responseError(error) {
-        // Handle an fetch error
-        return Promise.reject(error);
-      }
-    });
+      (err) => Promise.reject(err)
+    );
   },
   clearInterceptors() {
-    unregister();
-  }
+    axios.interceptors.response.eject(unregister);
+    // unregister();
+  },
 };

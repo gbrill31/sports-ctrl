@@ -1,8 +1,4 @@
-import {
-  dbError,
-  connectToDB,
-  dbConnected
-} from './dbActions';
+import { dbError, connectToDB, dbConnected } from "./dbActions";
 
 import {
   getAllGames,
@@ -27,22 +23,8 @@ import {
   resetTeamFouls,
   setEndGamePrompt,
   updateGameEnd,
-  setGameEnd
-} from './gamesControlActions'
-
-import {
-  getAllVenues,
-  setVenues,
-  venuesError,
-  saveNewVenue,
-  setNewVenue,
-  newVenueError,
-  deleteVenue,
-  clearDeletedVenue,
-  deleteVenueError,
-  openNewVenueDialog,
-  closeNewVenueDialog
-} from './venuesActions';
+  setGameEnd,
+} from "./gamesControlActions";
 
 import {
   getAllTeams,
@@ -56,8 +38,8 @@ import {
   clearDeletedTeam,
   deleteTeamError,
   openNewTeamDialog,
-  closeNewTeamDialog
-} from './teamsActions';
+  closeNewTeamDialog,
+} from "./teamsActions";
 
 import {
   getAllPlayers,
@@ -72,8 +54,8 @@ import {
   deletePlayerError,
   setSelectedPlayer,
   openNewPlayersDialog,
-  closeNewPlayersDialog
-} from './playersActions';
+  closeNewPlayersDialog,
+} from "./playersActions";
 
 import {
   startGameClock,
@@ -86,12 +68,10 @@ import {
   resetAttackClock,
   setAttackClock,
   setAttackClockStart,
-  setAttackClockTimeleft
-} from './clocksActions';
+  setAttackClockTimeleft,
+} from "./clocksActions";
 
-import {
-  setRouteName
-} from './routeActions';
+import { setRouteName } from "./routeActions";
 
 export {
   dbConnected,
@@ -108,15 +88,6 @@ export {
   updateGameScore,
   gameError,
   stopLoading,
-  getAllVenues,
-  setVenues,
-  venuesError,
-  saveNewVenue,
-  setNewVenue,
-  newVenueError,
-  deleteVenue,
-  clearDeletedVenue,
-  deleteVenueError,
   getAllTeams,
   setSelectedTeam,
   setTeams,
@@ -142,8 +113,6 @@ export {
   openNewTeamDialog,
   closeNewPlayersDialog,
   closeNewTeamDialog,
-  openNewVenueDialog,
-  closeNewVenueDialog,
   startGameClock,
   stopGameClock,
   resetGameClock,
@@ -167,5 +136,5 @@ export {
   resetTeamFouls,
   setEndGamePrompt,
   updateGameEnd,
-  setGameEnd
-}
+  setGameEnd,
+};

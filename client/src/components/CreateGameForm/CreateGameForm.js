@@ -1,17 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { faBasketballBall } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AutoCompleteInput from '../AutoCompleteInput/AutoCompleteInput';
-import { FlexContainer, MainTitle, Button, ButtonIcon } from '../../styledElements';
-
+import React, { useState, useEffect, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { faBasketballBall } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AutoCompleteInput from "../AutoCompleteInput/AutoCompleteInput";
 import {
-  createNewGame,
-  getAllTeams,
-  getAllVenues,
-  stopLoading
-} from '../../actions';
+  FlexContainer,
+  MainTitle,
+  Button,
+  ButtonIcon,
+} from "../../styledElements";
+import useVenues from "../../hooks/useVenues";
 
+import { createNewGame, getAllTeams, stopLoading } from "../../actions";
 
 export default function CreateGameForm() {
   const dispatch = useDispatch();
@@ -20,43 +20,45 @@ export default function CreateGameForm() {
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
 
-  const isDBConnected = useSelector(state => state.db.isConnected);
-  const isGameLoading = useSelector(state => state.games.activeGamePending);
+  const isDBConnected = useSelector((state) => state.db.isConnected);
+  const isGameLoading = useSelector((state) => state.games.activeGamePending);
 
   const {
-    items: venues,
-    getVenuesPending: isVenuesLoading
-  } = useSelector(state => state.venues);
+    status: venuesStatus,
+    data: venues,
+    isFetching: isVenuesFetching,
+  } = useVenues(isDBConnected && !isGameLoading);
 
-  const {
-    items: teams,
-    getTeamsPending: isTeamsLoading
-  } = useSelector(state => state.teams);
+  const { items: teams, getTeamsPending: isTeamsLoading } = useSelector(
+    (state) => state.teams
+  );
 
-  const getVenues = useCallback(() => dispatch(getAllVenues()), [dispatch]);
   const getTeams = useCallback(() => dispatch(getAllTeams()), [dispatch]);
 
-  const stopCurrentGameLoading = useCallback(() => dispatch(stopLoading()), [dispatch]);
-  const createGame = useCallback((game) => dispatch(createNewGame(game)), [dispatch]);
+  const stopCurrentGameLoading = useCallback(() => dispatch(stopLoading()), [
+    dispatch,
+  ]);
+  const createGame = useCallback((game) => dispatch(createNewGame(game)), [
+    dispatch,
+  ]);
 
   useEffect(() => {
     if (isDBConnected && !isGameLoading) {
-      getVenues();
       getTeams();
       stopCurrentGameLoading();
     }
-  }, [getVenues, getTeams, isGameLoading, stopCurrentGameLoading, isDBConnected]);
+  }, [getTeams, isGameLoading, stopCurrentGameLoading, isDBConnected]);
 
   const selectVanue = (venueId) => {
-    setVenue(venues.find(v => v.id === venueId));
-  }
+    setVenue(venues.find((v) => v.id === venueId));
+  };
 
   const selecteHomeTeam = (teamId) => {
-    setHomeTeam(teams.find(t => t.getId() === teamId));
-  }
+    setHomeTeam(teams.find((t) => t.getId() === teamId));
+  };
   const selecteAwayTeam = (teamId) => {
-    setAwayTeam(teams.find(t => t.getId() === teamId));
-  }
+    setAwayTeam(teams.find((t) => t.getId() === teamId));
+  };
 
   const startNewGame = () => {
     const game = {
@@ -65,14 +67,14 @@ export default function CreateGameForm() {
       away: awayTeam.getName(),
       awayId: awayTeam.getId(),
       venue: venue.name,
-      active: true
+      active: true,
     };
     createGame(game);
-  }
+  };
 
   const getTeamsSelectionList = (team) => {
-    return team ? teams.filter(t => t.getId() !== team.getId()) : teams;
-  }
+    return team ? teams.filter((t) => t.getId() !== team.getId()) : teams;
+  };
 
   return (
     <>
@@ -82,9 +84,9 @@ export default function CreateGameForm() {
           id="home"
           color="#fff"
           spaceLeft
-          selectedValue={homeTeam ? homeTeam.getName() : ''}
+          selectedValue={homeTeam ? homeTeam.getName() : ""}
           options={getTeamsSelectionList(awayTeam)}
-          getOptionLabel={option => option.name}
+          getOptionLabel={(option) => option.name}
           placeholder="Select Home Team"
           onSelection={selecteHomeTeam}
           loading={isTeamsLoading}
@@ -94,9 +96,9 @@ export default function CreateGameForm() {
           id="away"
           color="#fff"
           spaceLeft
-          selectedValue={awayTeam ? awayTeam.getName() : ''}
+          selectedValue={awayTeam ? awayTeam.getName() : ""}
           options={getTeamsSelectionList(homeTeam)}
-          getOptionLabel={option => option.name}
+          getOptionLabel={(option) => option.name}
           placeholder="Select Away Team"
           onSelection={selecteAwayTeam}
           loading={isTeamsLoading}
@@ -106,24 +108,20 @@ export default function CreateGameForm() {
           id="vanues"
           color="#fff"
           spaceLeft
-          selectedValue={venue ? venue.name : ''}
+          selectedValue={venue ? venue.name : ""}
           options={venues}
-          getOptionLabel={option => option.name}
+          getOptionLabel={(option) => option.name}
           placeholder="Select Vanue"
           onSelection={selectVanue}
-          loading={isVenuesLoading}
+          loading={venuesStatus === "loading" || isVenuesFetching}
         />
-        <Button
-          color="success"
-          onClick={startNewGame}
-          saving={isGameLoading}
-        >
-          {isGameLoading ? 'Starting...' : 'Start Game'}
+        <Button color="success" onClick={startNewGame} saving={isGameLoading}>
+          {isGameLoading ? "Starting..." : "Start Game"}
           <ButtonIcon spaceLeft>
             <FontAwesomeIcon icon={faBasketballBall} size="sm" />
           </ButtonIcon>
         </Button>
       </FlexContainer>
     </>
-  )
+  );
 }
