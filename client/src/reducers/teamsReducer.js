@@ -3,10 +3,6 @@ import { TEAMS } from "../constants";
 
 const INTIAL_STATE = {
   selected: null,
-  teamSavePending: false,
-  teamSaveError: null,
-  teamDeletePending: false,
-  teamDeleteError: null,
   newTeamDialog: false,
 };
 
