@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import {
   faTrashAlt,
@@ -14,8 +14,8 @@ import {
   Input,
 } from "../../../styledElements";
 import useFormInput from "../../../hooks/useFormInput";
+import useSavePlayers from "../../../hooks/useSavePlayers";
 import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
-import { savePlayersToTeam } from "../../../api";
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -77,10 +77,8 @@ export default function PlayersListItem({
   selectedPlayer,
   setSelectedPlayer,
   deletePlayerPrompt,
-  updatePlayers,
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   const playerName = useFormInput("");
   const playerNumber = useFormInput("");
@@ -93,36 +91,36 @@ export default function PlayersListItem({
     if (!isPlayerSelected()) {
       setSelectedPlayer(player);
     } else {
+      setIsEditPlayer(false);
       setSelectedPlayer(null);
     }
   };
 
   const deleteItem = (e) => {
-    e.nativeEvent.stopImmediatePropagation();
-    deletePlayerPrompt(player);
+    e.stopPropagation();
+    deletePlayerPrompt();
   };
 
-  const cancelUpdatePlayer = () => {
+  const cancelEditPlayer = (e) => {
+    e.stopPropagation();
     setIsEditPlayer(false);
   };
 
-  const savePlayer = () => {
-    setIsSaving(true);
+  const savePlayersToTeam = useSavePlayers(() => setIsEditPlayer(false));
+
+  const savePlayer = (e) => {
+    e.stopPropagation();
     savePlayersToTeam({
       id: player.getId(),
       name: playerName.value,
       number: playerNumber.value,
       team: player.getTeamName(),
       teamId: player.getTeamId(),
-    }).then((player) => {
-      updatePlayers(player);
-      setIsSaving(false);
-      // resetForm();
-      setIsEditPlayer(false);
     });
   };
 
-  const editPlayer = () => {
+  const editPlayer = (e) => {
+    e.stopPropagation();
     playerName.setValue(player.getName());
     playerNumber.setValue(player.getNumber());
     setIsEditPlayer(true);
@@ -138,7 +136,6 @@ export default function PlayersListItem({
               <Input
                 autoFocus
                 required
-                disabled={isSaving}
                 ref={playerName.ref}
                 error={!playerName.isValid}
                 id="name"
@@ -148,6 +145,7 @@ export default function PlayersListItem({
                 }`}
                 value={playerName.value}
                 onChange={playerName.onChange}
+                onClick={playerName.onFocus}
                 spaceLeft
               />
             </FlexContainer>
@@ -155,7 +153,6 @@ export default function PlayersListItem({
               <label style={{ width: "10px" }}>Number:</label>
               <Input
                 required
-                disabled={isSaving}
                 ref={playerNumber.ref}
                 error={!playerNumber.isValid}
                 id="number"
@@ -165,6 +162,7 @@ export default function PlayersListItem({
                 }`}
                 value={playerNumber.value}
                 onChange={playerNumber.onChange}
+                onClick={playerNumber.onFocus}
                 spaceLeft
               />
             </FlexContainer>
@@ -179,7 +177,7 @@ export default function PlayersListItem({
       <ItemStats active={isPlayerSelected()}>
         <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
           {!isEditPlayer ? (
-            <Fragment>
+            <>
               <Button
                 aria-label="edit player"
                 color="primary"
@@ -201,14 +199,13 @@ export default function PlayersListItem({
                   <FontAwesomeIcon icon={faTrashAlt} size="sm" />
                 </ButtonIcon>
               </Button>
-            </Fragment>
+            </>
           ) : (
-            <Fragment>
+            <>
               <Button
                 aria-label="cencel edit player"
                 color="error"
-                disabled={isSaving}
-                onClick={cancelUpdatePlayer}
+                onClick={cancelEditPlayer}
               >
                 Cancel
                 <ButtonIcon spaceLeft>
@@ -219,21 +216,23 @@ export default function PlayersListItem({
                 aria-label="update team"
                 color="success"
                 onClick={savePlayer}
-                disabled={isSaving}
-                saving={isSaving}
               >
-                {isSaving ? "Saving..." : "Save"}
+                Save
                 <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faSave} size="sm" />
                 </ButtonIcon>
               </Button>
-            </Fragment>
+            </>
           )}
         </FlexContainer>
-        <h4>Last Game</h4>
-        <h3>{player.getPlayedAgainst()}</h3>
-        <h4>Game Statistics</h4>
-        <PlayerStatsDisplay stats={player.getStatsData()} />
+        {player.stats && (
+          <>
+            <h4>Last Game</h4>
+            <h3>{player.getPlayedAgainst()}</h3>
+            <h4>Game Statistics</h4>
+            <PlayerStatsDisplay stats={player.getStatsData()} />
+          </>
+        )}
       </ItemStats>
     </ItemContainer>
   );

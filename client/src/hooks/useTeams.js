@@ -12,7 +12,7 @@ export default function useTeams(isAllowed) {
     }
   );
   if (status === "success" && data) {
-    teams = data.map((t) => new Team(t));
+    teams = data.map((team) => new Team(team));
   }
   return { status, data: teams, error, isFetching };
 }

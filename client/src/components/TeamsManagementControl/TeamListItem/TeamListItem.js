@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import useFormInput from "../../../hooks/useFormInput";
 import useSaveTeam from "../../../hooks/useSaveTeam";
@@ -60,7 +60,7 @@ const ItemContainer = styled.div`
 const ItemActions = styled.div`
   height: auto;
   max-height: 0;
-  transition: max-height 0.2s ease-in-out;
+  transition: max-height 0.4s ease-in-out;
   overflow: hidden;
 
   ${(props) =>
@@ -79,7 +79,8 @@ export default function TeamListItem({
   const [isEditTeam, setIsEditTeam] = useState(false);
 
   const selectTeam = () => {
-    if (selectedTeam.getId() !== team.getId()) setSelectedTeam(team);
+    if (!selectedTeam || selectedTeam.getId() !== team.getId())
+      setSelectedTeam(team);
   };
 
   const teamName = useFormInput(team.getName());
@@ -95,7 +96,7 @@ export default function TeamListItem({
 
   const deleteItem = (e) => {
     e.nativeEvent.stopImmediatePropagation();
-    deleteTeamPrompt(team);
+    deleteTeamPrompt();
   };
   const cancelEditTeam = () => {
     setIsEditTeam(false);
@@ -124,7 +125,7 @@ export default function TeamListItem({
   };
 
   return (
-    <Fragment>
+    <>
       <ItemContainer selected={isTeamSelected()} onClick={selectTeam}>
         <FlexContainer align="baseline">
           {isEditTeam ? (
@@ -205,7 +206,7 @@ export default function TeamListItem({
         <ItemActions active={isTeamSelected()}>
           <FlexContainer justify={isEditTeam ? "flex-end" : false}>
             {!isEditTeam ? (
-              <Fragment>
+              <>
                 <Button
                   aria-label="edit team"
                   color="primary"
@@ -227,9 +228,9 @@ export default function TeamListItem({
                     <FontAwesomeIcon icon={faTrashAlt} size="sm" />
                   </ButtonIcon>
                 </Button>
-              </Fragment>
+              </>
             ) : (
-              <Fragment>
+              <>
                 <Button
                   aria-label="cencel edit team"
                   color="error"
@@ -250,11 +251,11 @@ export default function TeamListItem({
                     <FontAwesomeIcon icon={faSave} size="sm" />
                   </ButtonIcon>
                 </Button>
-              </Fragment>
+              </>
             )}
           </FlexContainer>
         </ItemActions>
       </ItemContainer>
-    </Fragment>
+    </>
   );
 }

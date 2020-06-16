@@ -11,7 +11,7 @@ import {
   ButtonIcon,
 } from "../../styledElements";
 
-export default function FilterListInput({ onChange, placeholder }) {
+const FilterListInput = ({ onChange, placeholder }) => {
   const filterInput = useFormInput("");
 
   const clearInput = () => {
@@ -48,4 +48,6 @@ export default function FilterListInput({ onChange, placeholder }) {
       </FlexContainer>
     </FlexContainer>
   );
-}
+};
+
+export default React.memo(FilterListInput);

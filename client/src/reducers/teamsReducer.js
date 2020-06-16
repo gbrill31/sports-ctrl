@@ -1,5 +1,5 @@
 import { TEAMS } from "../constants";
-import Team from "../classes/Team";
+// import Team from "../classes/Team";
 
 const INTIAL_STATE = {
   selected: null,
@@ -25,7 +25,7 @@ const teamsReducer = (state = INTIAL_STATE, action = {}) => {
     case TEAMS.SET_SELECTED:
       return {
         ...state,
-        selected: new Team(action.payload),
+        selected: action.payload,
       };
     default:
       return state;

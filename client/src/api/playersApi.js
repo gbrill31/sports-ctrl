@@ -1,55 +1,50 @@
+import axios from "axios";
+
 export const getAllPlayers = async () => {
-  const res = await fetch('/players/all');
-  if (res.status >= 400) throw new Error('No players found');
-  const players = await res.json();
-  return players;
+  try {
+    const { data } = await axios.get("/players/all");
+    return data;
+  } catch {
+    throw new Error("No players found");
+  }
 };
 
-export const getPlayersByTeamId = async (id) => {
-  const res = await fetch(`/players/team?id=${id}`);
-  if (res.status >= 400) throw new Error('No players found');
-  const players = await res.json();
-  return players;
+export const getPlayersByTeamId = async (key, id) => {
+  try {
+    const { data } = await axios.get(`/players/team?id=${id}`);
+    return data;
+  } catch {
+    throw new Error("No players found");
+  }
 };
 
 export const savePlayersToTeam = async (players) => {
-  const body = JSON.stringify(players);
-  const res = await fetch('/players/save', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('New players creation failed');
-  const newPlayers = await res.json();
-  return newPlayers;
+  try {
+    const { data } = await axios.post("/players/save", players);
+    return data;
+  } catch {
+    throw new Error("New players creation failed");
+  }
 };
 
 export const deletePlayer = async (id) => {
-  const body = JSON.stringify({ id });
-  const res = await fetch('/players/delete', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('Player deletion failed');
-  const deletedPlayer = await res.json();
-  return deletedPlayer;
+  try {
+    const { data } = await axios.post("/players/delete", { id });
+    return data;
+  } catch {
+    throw new Error("Player deletion failed");
+  }
 };
 
 export const updatePlayerStats = async (gameId, playerId, stats) => {
-  const body = JSON.stringify({ gameId, playerId, stats });
-  const res = await fetch('/players/statsupdate', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('Player stats update failed');
-  const updatedStats = await res.json();
-  return updatedStats;
+  try {
+    const { data } = await axios.post("/players/statsupdate", {
+      gameId,
+      playerId,
+      stats,
+    });
+    return data;
+  } catch {
+    throw new Error("Player stats update failed");
+  }
 };

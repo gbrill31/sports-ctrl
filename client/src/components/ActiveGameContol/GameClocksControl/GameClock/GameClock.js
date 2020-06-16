@@ -1,30 +1,32 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import styled from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
+import { FlexContainer, Button, ButtonIcon } from "../../../../styledElements";
 import {
-  FlexContainer, Button, ButtonIcon
-} from '../../../../styledElements';
-import { faHistory, faHandPaper, faStopwatch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+  faHistory,
+  faHandPaper,
+  faStopwatch,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import PromptDialog from '../../../PromptDialog/PromptDialog';
+import PromptDialog from "../../../PromptDialog/PromptDialog";
 
-import clock from '../../../../workers/clock';
+import clock from "../../../../workers/clock";
 import {
   WebWorker,
   convertSecToDuration,
   convertMilliToSec,
-  convertMinToMilli
-} from '../../../../utils';
+  convertMinToMilli,
+} from "../../../../utils";
 
 import {
   startGameClock,
   stopGameClock,
   setGameClock,
   resetGameClock,
-  setGameClockStart
-} from '../../../../actions';
+  setGameClockStart,
+} from "../../../../actions";
 
 const Clock = styled.div`
   font-family: Led2;
@@ -34,10 +36,10 @@ const Clock = styled.div`
   height: 50px;
   padding: 15px;
   background-color: #000;
-  border: 2px solid ${props => props.theme.secondary.color};
-  color: ${props => props.theme.generic.color};
+  border: 2px solid ${(props) => props.theme.secondary.color};
+  color: ${(props) => props.theme.generic.color};
 
-  span{
+  span {
     position: absolute;
     left: 28px;
     top: 20px;
@@ -46,43 +48,59 @@ const Clock = styled.div`
 `;
 
 const Q_TIME = 12;
-let milliseconds;
-const webWorker = new WebWorker();
 
 export default function GameClock() {
   const dispatch = useDispatch();
+  const milliseconds = useRef();
+  const webWorker = useRef(new WebWorker());
 
   const [isResetPrompt, setIsResetPrompt] = useState(false);
   const {
     isGameClockRunning: isClockRunning,
     gameClockValue: gameClock,
     startTime,
-    isReset
-  } = useSelector(state => state.gameClock);
+    isReset,
+  } = useSelector((state) => state.gameClock);
 
-  const setClockValue = useCallback((value) => dispatch(setGameClock(value)), [dispatch]);
+  const setClockValue = useCallback((value) => dispatch(setGameClock(value)), [
+    dispatch,
+  ]);
   const startClock = useCallback(() => dispatch(startGameClock()), [dispatch]);
   const stopClock = useCallback(() => dispatch(stopGameClock()), [dispatch]);
-  const setGameStartClock = useCallback((value) => dispatch(setGameClockStart(value)), [dispatch]);
+  const setGameStartClock = useCallback(
+    (value) => dispatch(setGameClockStart(value)),
+    [dispatch]
+  );
 
-  const resetMilliseconds = useCallback(() => milliseconds = startTime, [startTime]);
+  const resetMilliseconds = useCallback(
+    () => (milliseconds.current = startTime),
+    [startTime]
+  );
 
-  const resetClock = useCallback((value) => {
-    resetMilliseconds();
-    localStorage.removeItem('gameClock');
-    dispatch(resetGameClock(value));
-  }, [dispatch, resetMilliseconds]);
+  const resetClock = useCallback(
+    (value) => {
+      resetMilliseconds();
+      localStorage.removeItem("gameClock");
+      dispatch(resetGameClock(value));
+    },
+    [dispatch, resetMilliseconds]
+  );
 
-  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [startTime]);
+  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [
+    startTime,
+  ]);
 
-  const setClock = useCallback((e) => {
-    milliseconds = e.data.timeLeft;
-    setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft)));
-    localStorage.setItem('gameClock', e.data.timeLeft);
-    if (milliseconds === 0) {
-      stopClock();
-    }
-  }, [setClockValue, stopClock]);
+  const setClock = useCallback(
+    (e) => {
+      milliseconds.current = e.data.timeLeft;
+      setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft)));
+      localStorage.setItem("gameClock", e.data.timeLeft);
+      if (milliseconds.current === 0) {
+        stopClock();
+      }
+    },
+    [setClockValue, stopClock]
+  );
 
   useEffect(() => {
     if (!startTime) {
@@ -92,68 +110,81 @@ export default function GameClock() {
 
   useEffect(() => {
     if (!gameClock && startTime) {
-      const savedStartTime = parseInt(localStorage.getItem('gameClock'));
-      milliseconds = !savedStartTime ? resetMilliseconds() : savedStartTime;
-      setClockValue(convertSecToDuration(savedStartTime ? convertMilliToSec(savedStartTime) : getClockInitTime()));
+      const savedStartTime = parseInt(localStorage.getItem("gameClock"));
+      milliseconds.current = !savedStartTime
+        ? resetMilliseconds()
+        : savedStartTime;
+      setClockValue(
+        convertSecToDuration(
+          savedStartTime
+            ? convertMilliToSec(savedStartTime)
+            : getClockInitTime()
+        )
+      );
     }
     if (isReset) {
-      localStorage.removeItem('gameClock');
+      localStorage.removeItem("gameClock");
       resetMilliseconds();
       setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
     }
-  }, [gameClock, setClockValue, getClockInitTime, startTime, resetMilliseconds, isReset]);
+  }, [
+    gameClock,
+    setClockValue,
+    getClockInitTime,
+    startTime,
+    resetMilliseconds,
+    isReset,
+  ]);
 
   useEffect(() => {
+    const webWrokerInstance = webWorker.current;
     if (isClockRunning) {
-      if (milliseconds === 0) resetMilliseconds();
+      if (milliseconds.current === 0) resetMilliseconds();
       const worker = {
         file: clock,
-        initialData: milliseconds
-      }
+        initialData: milliseconds.current,
+      };
 
-      webWorker.start(worker, setClock);
+      webWrokerInstance.start(worker, setClock);
     }
     return () => {
-      webWorker.stop();
-    }
+      webWrokerInstance.stop();
+    };
   }, [isClockRunning, resetClock, setClock, resetMilliseconds]);
 
   const openResetPrompot = () => {
-    if (milliseconds === 0 && !isClockRunning) {
+    if (milliseconds.current === 0 && !isClockRunning) {
       resetClock();
     } else {
       setIsResetPrompt(true);
     }
-  }
+  };
   const handleCancelPrompt = () => setIsResetPrompt(false);
 
   const resetClockConfirm = () => {
     stopClock();
     resetClock(getClockInitTime());
     handleCancelPrompt();
-  }
-
+  };
 
   return (
     <FlexContainer column>
       <FlexContainer justify="space-evenly" fullWidth>
-        {
-          !isClockRunning ? (
-            <Button onClick={startClock} color="success">
-              Start Clock
-              <ButtonIcon spaceLeft>
-                <FontAwesomeIcon icon={faStopwatch} size="sm" />
-              </ButtonIcon>
-            </Button>
-          ) : (
-              <Button onClick={stopClock} color="error">
-                Stop Clock
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faHandPaper} size="sm" />
-                </ButtonIcon>
-              </Button>
-            )
-        }
+        {!isClockRunning ? (
+          <Button onClick={startClock} color="success">
+            Start Clock
+            <ButtonIcon spaceLeft>
+              <FontAwesomeIcon icon={faStopwatch} size="sm" />
+            </ButtonIcon>
+          </Button>
+        ) : (
+          <Button onClick={stopClock} color="error">
+            Stop Clock
+            <ButtonIcon spaceLeft>
+              <FontAwesomeIcon icon={faHandPaper} size="sm" />
+            </ButtonIcon>
+          </Button>
+        )}
         <Button onClick={openResetPrompot} color="secondary">
           Reset Clock
           <ButtonIcon spaceLeft>
@@ -166,18 +197,16 @@ export default function GameClock() {
           <span>{gameClock}</span>
         </Clock>
       </FlexContainer>
-      {
-        isResetPrompt && (
-          <PromptDialog
-            isOpen={isResetPrompt}
-            title="Reset Game Clock"
-            content="Are you sure you want to reset the game clock?"
-            confirmText="Reset"
-            handleClose={handleCancelPrompt}
-            handleConfirm={resetClockConfirm}
-          />
-        )
-      }
+      {isResetPrompt && (
+        <PromptDialog
+          isOpen={isResetPrompt}
+          title="Reset Game Clock"
+          content="Are you sure you want to reset the game clock?"
+          confirmText="Reset"
+          handleClose={handleCancelPrompt}
+          handleConfirm={resetClockConfirm}
+        />
+      )}
     </FlexContainer>
-  )
+  );
 }

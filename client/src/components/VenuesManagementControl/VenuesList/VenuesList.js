@@ -77,16 +77,15 @@ export default function VenuesList() {
           </FlexContainer>
         </ScrollableContainer>
       </ComponentLoader>
-      {isDeleteVenuePrompt && (
-        <PromptDialog
-          isOpen={isDeleteVenuePrompt}
-          title="Delete Vanue"
-          content={`Are you sure you want to delete ${selectedVenue.name}`}
-          confirmText="Delete"
-          handleClose={closeDeleteVenuePrompt}
-          handleConfirm={deleteVenue}
-        />
-      )}
+
+      <PromptDialog
+        isOpen={isDeleteVenuePrompt}
+        title="Delete Vanue"
+        content={`Are you sure you want to delete ${selectedVenue?.name}`}
+        confirmText="Delete"
+        handleClose={closeDeleteVenuePrompt}
+        handleConfirm={deleteVenue}
+      />
       <NewVenueFormDialog
         closeDialog={closeNewVenueDialog}
         isOpenDialog={isNewVenueDialog}

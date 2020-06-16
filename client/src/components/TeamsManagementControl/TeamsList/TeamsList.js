@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, Fragment } from "react";
+import React, { useState, useCallback, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -25,15 +25,12 @@ export default function TeamsList() {
   const dispatch = useDispatch();
 
   const isDBConnected = useSelector((state) => state.db.isConnected);
+  const { status, data: teams, isFetching } = useTeams(isDBConnected);
 
-  const { selected: selectedTeam, teamDeletePending: isDeleting } = useSelector(
-    (state) => state.teams
-  );
+  const { selected: selectedTeam } = useSelector((state) => state.teams);
 
   const [filterValue, setFilterValue] = useState("");
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
-
-  const { status, data: teams, isFetching } = useTeams(isDBConnected);
 
   const setSelected = useCallback(
     (team) => {
@@ -54,7 +51,7 @@ export default function TeamsList() {
 
   const getFilteredTeams = () => {
     const value = filterValue.toLowerCase();
-    return filterValue.value !== ""
+    return value !== ""
       ? teams.filter(
           (team) =>
             team.getName().includes(value) ||
@@ -64,16 +61,16 @@ export default function TeamsList() {
       : teams;
   };
 
-  const deleteTeamPrompt = (team) => {
-    setSelected(team);
+  const deleteTeamPrompt = () => {
     setIsDeleteTeamPrompt(true);
   };
 
-  useEffect(() => {
-    if (teams?.length && !selectedTeam) {
-      setSelected(teams[0]);
-    }
-  }, [teams, selectedTeam, setSelected]);
+  // Select first team
+  // useEffect(() => {
+  //   if (teams?.length && !selectedTeam) {
+  //     setSelected(teams[0]);
+  //   }
+  // }, [teams, selectedTeam, setSelected]);
 
   return (
     <Fragment>
@@ -109,7 +106,7 @@ export default function TeamsList() {
                   )
                   .map((team) => (
                     <TeamListItem
-                      key={team.id}
+                      key={team.getId()}
                       team={team}
                       setSelectedTeam={setSelected}
                       selectedTeam={selectedTeam}
@@ -129,8 +126,6 @@ export default function TeamsList() {
         confirmText="Delete"
         handleClose={closeDeletePrompt}
         handleConfirm={deleteSelectedTeam}
-        isPending={isDeleting}
-        pendingTitle="Deleting..."
       />
       <NewTeamFormDialog />
     </Fragment>
