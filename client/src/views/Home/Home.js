@@ -1,32 +1,31 @@
-import React, { useEffect, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useEffect, useCallback } from "react";
+import { useDispatch } from "react-redux";
 
-import GamesList from '../../components/GamesList/GamesList';
+import GamesList from "../../components/GamesList/GamesList";
+import useDb from "../../hooks/useDb";
 
-import {
-  getAllGames
-} from '../../actions';
-
+import { getAllGames } from "../../actions";
 
 function Home() {
   const dispatch = useDispatch();
 
-  const isDBConnected = useSelector(state => state.db.isConnected);
+  const { status: dbStatus } = useDb();
 
-  const getAllPlayedGames = useCallback(() => dispatch(getAllGames()), [dispatch]);
+  const getAllPlayedGames = useCallback(() => dispatch(getAllGames()), [
+    dispatch,
+  ]);
 
   useEffect(() => {
-    if (isDBConnected) {
+    if (dbStatus === "success") {
       getAllPlayedGames();
     }
-  }, [isDBConnected, getAllPlayedGames]);
-
+  }, [dbStatus, getAllPlayedGames]);
 
   return (
     <>
       <GamesList />
     </>
   );
-};
+}
 
 export default Home;

@@ -11,6 +11,7 @@ import {
 } from "../../styledElements";
 import useVenues from "../../hooks/useVenues";
 import useTeams from "../../hooks/useTeams";
+import useDb from "../../hooks/useDb";
 
 import { createNewGame, stopLoading } from "../../actions";
 
@@ -21,20 +22,20 @@ export default function CreateGameForm() {
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
 
-  const isDBConnected = useSelector((state) => state.db.isConnected);
+  const { status: dbStatus } = useDb();
   const isGameLoading = useSelector((state) => state.games.activeGamePending);
 
   const {
     status: venuesStatus,
     data: venues,
     isFetching: isVenuesFetching,
-  } = useVenues(isDBConnected && !isGameLoading);
+  } = useVenues(dbStatus === "success" && !isGameLoading);
 
   const {
     status: teamsStatus,
     data: teams,
     isFetching: isTeamsFetching,
-  } = useTeams(isDBConnected && !isGameLoading);
+  } = useTeams(dbStatus === "success" && !isGameLoading);
 
   const stopCurrentGameLoading = useCallback(() => dispatch(stopLoading()), [
     dispatch,
@@ -44,10 +45,10 @@ export default function CreateGameForm() {
   ]);
 
   useEffect(() => {
-    if (isDBConnected && !isGameLoading) {
+    if (dbStatus === "success" && !isGameLoading) {
       stopCurrentGameLoading();
     }
-  }, [isGameLoading, stopCurrentGameLoading, isDBConnected]);
+  }, [isGameLoading, stopCurrentGameLoading, dbStatus]);
 
   const selectVanue = (venueId) => {
     setVenue(venues.find((v) => v.id === venueId));

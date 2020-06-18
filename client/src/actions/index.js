@@ -1,5 +1,3 @@
-import { dbError, connectToDB, dbConnected } from "./dbActions";
-
 import {
   getAllGames,
   gamesError,
@@ -55,9 +53,6 @@ import {
 import { setRouteName } from "./routeActions";
 
 export {
-  dbConnected,
-  dbError,
-  connectToDB,
   getAllGames,
   gamesError,
   getActiveGame,

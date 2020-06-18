@@ -24,6 +24,5 @@ export default {
   },
   clearInterceptors() {
     axios.interceptors.response.eject(unregister);
-    // unregister();
   },
 };

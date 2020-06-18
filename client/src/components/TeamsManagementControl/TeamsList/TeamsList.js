@@ -16,6 +16,7 @@ import NewTeamFormDialog from "../../../components/TeamsManagementControl/NewTea
 import TeamListItem from "../TeamListItem/TeamListItem";
 import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
 import FilterListInput from "../../FilterListInput/FilterListInput";
+import useDb from "../../../hooks/useDb";
 import useTeams from "../../../hooks/useTeams";
 import useDeleteTeam from "../../../hooks/useDeleteTeam";
 
@@ -24,8 +25,8 @@ import { setSelectedTeam, openNewTeamDialog } from "../../../actions";
 export default function TeamsList() {
   const dispatch = useDispatch();
 
-  const isDBConnected = useSelector((state) => state.db.isConnected);
-  const { status, data: teams, isFetching } = useTeams(isDBConnected);
+  const { status: dbStatus } = useDb();
+  const { status, data: teams, isFetching } = useTeams(dbStatus === "success");
 
   const { selected: selectedTeam } = useSelector((state) => state.teams);
 

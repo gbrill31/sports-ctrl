@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CircularProgress } from "@material-ui/core";
@@ -18,6 +17,7 @@ import {
 
 import useVenues from "../../../hooks/useVenues";
 import useDeleteVenue from "../../../hooks/useDeleteVenue";
+import useDb from "../../../hooks/useDb";
 
 export default function VenuesList() {
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
@@ -25,7 +25,7 @@ export default function VenuesList() {
 
   const [selectedVenue, setSelectedVenue] = useState(null);
 
-  const isDBConnected = useSelector((state) => state.db.isConnected);
+  const { status: dbStatus } = useDb();
 
   const openNewVenueDialog = () => setIsNewVenueDialog(true);
   const closeNewVenueDialog = () => setIsNewVenueDialog(false);
@@ -38,7 +38,9 @@ export default function VenuesList() {
     deleteSelectedVenue(selectedVenue.id);
   };
 
-  const { status, data: venues, isFetching } = useVenues(isDBConnected);
+  const { status, data: venues, isFetching } = useVenues(
+    dbStatus === "success"
+  );
 
   const openDeleteVenuePrompt = (venue) => () => {
     setSelectedVenue(venue);
