@@ -56,10 +56,10 @@ playersRouter.post("/save", function (req, res) {
           "notification",
           JSON.stringify({
             type: "error",
-            message: "Could Not Add Players",
+            message: "Save Failed, Could Not Add Players to DB",
           })
         );
-        res.sendStatus(500);
+        res.sendStatus(404);
       }
     );
   } else {
@@ -74,7 +74,7 @@ playersRouter.post("/save", function (req, res) {
         );
         res.json(data[0]).status(200);
       },
-      (err) => {
+      () => {
         res.header(
           "notification",
           JSON.stringify({
@@ -82,7 +82,7 @@ playersRouter.post("/save", function (req, res) {
             message: "Could Not Update Players",
           })
         );
-        res.sendStatus(500);
+        res.sendStatus(404);
       }
     );
   }
@@ -101,7 +101,7 @@ playersRouter.post("/delete", function (req, res) {
       );
       res.json(id).status(200);
     },
-    (err) => {
+    () => {
       res.header(
         "notification",
         JSON.stringify({
@@ -109,7 +109,7 @@ playersRouter.post("/delete", function (req, res) {
           message: "Could Not Delete Player",
         })
       );
-      res.sendStatus(400);
+      res.sendStatus(404);
     }
   );
 });
@@ -120,7 +120,7 @@ playersRouter.post("/statsupdate", function (req, res) {
     (newStats) => {
       res.json(newStats).status(200);
     },
-    (err) => {
+    () => {
       res.header(
         "notification",
         JSON.stringify({
@@ -128,7 +128,7 @@ playersRouter.post("/statsupdate", function (req, res) {
           message: "Could Not Update Player Stats",
         })
       );
-      res.sendStatus(400);
+      res.sendStatus(404);
     }
   );
 });

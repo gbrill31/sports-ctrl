@@ -4,9 +4,7 @@ import { connectDB } from "../api";
 export default function useTeams() {
   return useQuery("db", connectDB, {
     refetchOnWindowFocus: false,
+    retry: 5,
+    retryDelay: 15000,
   });
-  // if (status === "success" && data) {
-  //   teams = data.map((team) => new Team(team));
-  // }
-  // return { status, data: teams, error, isFetching };
 }

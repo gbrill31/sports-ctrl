@@ -1,6 +1,7 @@
 import React, { useCallback, Fragment } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
+import { CircularProgress } from "@material-ui/core";
 import {
   faCheck,
   faDatabase,
@@ -34,21 +35,37 @@ function HeaderNav() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { status } = useDb();
+  const { status: dbStatus, failureCount, refetch, error: dbError } = useDb();
 
   const currentRoute = useSelector((state) => state.routes.currentRoute);
 
   const activeGame = useSelector((state) => state.games.active);
   const activeGameId = useSelector((state) => state.game.activeGameId);
 
-  const isDbConnected = () => status === "success";
-  const isDbConnecting = () => status === "loading";
+  const isDbConnected = () => dbStatus === "success";
+  const isDbConnecting = () => dbStatus === "loading";
 
-  // const connectDB = useCallback(() => dispatch(connectToDB()), [dispatch]);
   const openEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(true)),
     [dispatch]
   );
+
+  const getConnectBtnColor = () => {
+    return !dbError || isDbConnecting()
+      ? isDbConnected()
+        ? "success"
+        : "secondary"
+      : "error";
+  };
+  const getConnectBtnText = () => {
+    return isDbConnecting()
+      ? `Connecting, Attempts ${failureCount}`
+      : isDbConnected()
+      ? "DB Connected"
+      : !dbError
+      ? "Connect to Database"
+      : "Connection Failed, Click To try Again";
+  };
 
   const goToRoute = (route) => () => history.push(route);
 
@@ -56,20 +73,18 @@ function HeaderNav() {
     <NavRootWrapper>
       <NavContentWrapper>
         <Button
-          color={isDbConnected() ? "success" : "primary"}
-          disabled={isDbConnecting()}
-          // onClick={connectDB}
+          color={getConnectBtnColor()}
+          // disabled={isDbConnecting()}
+          onClick={refetch}
           // isSaving={isDbConnecting()}
         >
-          {isDbConnecting()
-            ? "Connecting..."
-            : isDbConnected()
-            ? "DB Connected"
-            : "Connect to Database"}
+          {getConnectBtnText()}
           {
             <ButtonIcon spaceLeft>
               {isDbConnected() ? (
                 <FontAwesomeIcon icon={faCheck} size="sm" />
+              ) : isDbConnecting() ? (
+                <CircularProgress size={12} color="inherit" />
               ) : (
                 <FontAwesomeIcon icon={faDatabase} size="sm" />
               )}

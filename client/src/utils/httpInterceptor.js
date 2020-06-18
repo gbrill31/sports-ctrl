@@ -2,27 +2,33 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 
-let unregister;
+let unregisterResponse;
+
+function handleResponseHeaders({ redirectTo, notification }, history) {
+  if (redirectTo && history) history.push(redirectTo);
+  if (notification) {
+    const notificationData = JSON.parse(notification);
+    toast[notificationData.type](
+      notificationData.message,
+      notificationData.options
+    );
+  }
+}
 
 export default {
   initInterceptors(history) {
-    unregister = axios.interceptors.response.use(
+    unregisterResponse = axios.interceptors.response.use(
       (response) => {
-        const { redirectTo, notification } = response.headers;
-        if (redirectTo) history.push(redirectTo);
-        if (notification) {
-          const notificationData = JSON.parse(notification);
-          toast[notificationData.type](
-            notificationData.message,
-            notificationData.options
-          );
-        }
+        handleResponseHeaders(response.headers, history);
         return response;
       },
-      (err) => Promise.reject(err)
+      (err) => {
+        handleResponseHeaders(err.response.headers);
+        return Promise.reject(err);
+      }
     );
   },
   clearInterceptors() {
-    axios.interceptors.response.eject(unregister);
+    axios.interceptors.response.eject(unregisterResponse);
   },
 };

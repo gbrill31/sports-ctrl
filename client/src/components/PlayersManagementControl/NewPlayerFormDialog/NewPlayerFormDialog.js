@@ -32,7 +32,6 @@ export default function NewPlayerFormDialog() {
     newPlayersDialog: isNewPlayersDialog,
   } = useSelector((state) => state.players);
 
-  // const saveNewPlayers = useCallback((players) => dispatch(savePlayers(players)), [dispatch]);
   const closeDialog = useCallback(() => dispatch(closeNewPlayersDialog()), [
     dispatch,
   ]);
