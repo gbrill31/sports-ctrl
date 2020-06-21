@@ -20,7 +20,7 @@ import useDb from "../../../hooks/useDb";
 import useTeams from "../../../hooks/useTeams";
 import useDeleteTeam from "../../../hooks/useDeleteTeam";
 
-import { setSelectedTeam, openNewTeamDialog } from "../../../actions";
+import { setSelectedTeam } from "../../../actions";
 
 export default function TeamsList() {
   const dispatch = useDispatch();
@@ -32,6 +32,7 @@ export default function TeamsList() {
 
   const [filterValue, setFilterValue] = useState("");
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
+  const [isNewTeamDialog, setIsNewTeamDialog] = useState(false);
 
   const setSelected = useCallback(
     (team) => {
@@ -39,10 +40,9 @@ export default function TeamsList() {
     },
     [dispatch]
   );
-  const openCreateTeamDialog = useCallback(
-    () => dispatch(openNewTeamDialog()),
-    [dispatch]
-  );
+
+  const openCreateTeamDialog = () => setIsNewTeamDialog(true);
+  const closeCreateTeamDialog = () => setIsNewTeamDialog(false);
 
   const closeDeletePrompt = () => setIsDeleteTeamPrompt(false);
 
@@ -66,7 +66,7 @@ export default function TeamsList() {
     setIsDeleteTeamPrompt(true);
   };
 
-  // Select first team
+  // Auto-Select first team in list
   // useEffect(() => {
   //   if (teams?.length && !selectedTeam) {
   //     setSelected(teams[0]);
@@ -88,7 +88,9 @@ export default function TeamsList() {
                 <FontAwesomeIcon icon={faPlus} size="sm" />
               </ButtonIcon>
             </Button>
-            {isFetching && <CircularProgress size={25} color="inherit" />}
+            {isFetching && (
+              <CircularProgress size={25} style={{ color: "#fff" }} />
+            )}
           </FlexContainer>
           <FlexContainer fullWidth padding="0">
             {status === "success" && (
@@ -128,7 +130,10 @@ export default function TeamsList() {
         handleClose={closeDeletePrompt}
         handleConfirm={deleteSelectedTeam}
       />
-      <NewTeamFormDialog />
+      <NewTeamFormDialog
+        isOpenDialog={isNewTeamDialog}
+        closeDialog={closeCreateTeamDialog}
+      />
     </Fragment>
   );
 }

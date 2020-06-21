@@ -82,7 +82,9 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
           <DialogContent>
             <FlexContainer column justify="center" alig="center">
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Name</label>
+                <label style={{ width: "10px" }} htmlFor="name">
+                  Name
+                </label>
                 <Input
                   required
                   autoFocus
@@ -100,7 +102,9 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Country</label>
+                <label style={{ width: "10px" }} htmlFor="country">
+                  Country
+                </label>
                 <Input
                   required
                   onBlur={venueCountry.onChange}
@@ -117,7 +121,9 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>City</label>
+                <label style={{ width: "10px" }} htmlFor="city">
+                  City
+                </label>
                 <Input
                   required
                   onBlur={venueCity.onChange}
@@ -134,7 +140,9 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Seats</label>
+                <label style={{ width: "10px" }} htmlFor="seats">
+                  Seats
+                </label>
                 <Input
                   id="seats"
                   type="number"

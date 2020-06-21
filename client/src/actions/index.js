@@ -24,17 +24,9 @@ import {
   setGameEnd,
 } from "./gamesControlActions";
 
-import {
-  setSelectedTeam,
-  openNewTeamDialog,
-  closeNewTeamDialog,
-} from "./teamsActions";
+import { setSelectedTeam } from "./teamsActions";
 
-import {
-  setSelectedPlayer,
-  openNewPlayersDialog,
-  closeNewPlayersDialog,
-} from "./playersActions";
+import { setSelectedPlayer } from "./playersActions";
 
 import {
   startGameClock,
@@ -66,10 +58,6 @@ export {
   stopLoading,
   setSelectedTeam,
   setSelectedPlayer,
-  openNewPlayersDialog,
-  openNewTeamDialog,
-  closeNewPlayersDialog,
-  closeNewTeamDialog,
   startGameClock,
   stopGameClock,
   resetGameClock,

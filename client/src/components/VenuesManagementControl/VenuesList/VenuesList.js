@@ -60,7 +60,9 @@ export default function VenuesList() {
               </ButtonIcon>
             </Button>
           </FlexContainer>
-          {isFetching && <CircularProgress size={25} color="inherit" />}
+          {isFetching && (
+            <CircularProgress size={25} style={{ color: "#fff" }} />
+          )}
         </FlexContainer>
         <ScrollableContainer padding="0" heightDiff={267}>
           <FlexContainer>

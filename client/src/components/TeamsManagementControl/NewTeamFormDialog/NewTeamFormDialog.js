@@ -1,33 +1,19 @@
-import React, { useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import {
   DialogActions,
   DialogTitle,
   DialogContent,
   Dialog,
-  CircularProgress,
 } from "@material-ui/core";
 import { Button, Input, FlexContainer } from "../../../styledElements";
 import useFormInput from "../../../hooks/useFormInput";
 import useSaveTeam from "../../../hooks/useSaveTeam";
 
-import { closeNewTeamDialog } from "../../../actions";
-
-export default function NewTeamFormDialog() {
-  const dispatch = useDispatch();
-
+export default function NewTeamFormDialog({ isOpenDialog, closeDialog }) {
   const teamName = useFormInput("");
   const teamLeague = useFormInput("");
   const teamCountry = useFormInput("");
   const teamCity = useFormInput("");
-
-  const { teamSavePending: isSaving, newTeamDialog: isNewTeam } = useSelector(
-    (state) => state.teams
-  );
-
-  const closeDialog = useCallback(() => dispatch(closeNewTeamDialog()), [
-    dispatch,
-  ]);
 
   const resetForm = () => {
     teamName.setValue("");
@@ -84,9 +70,9 @@ export default function NewTeamFormDialog() {
 
   return (
     <>
-      {isNewTeam && (
+      {isOpenDialog && (
         <Dialog
-          open={isNewTeam}
+          open={isOpenDialog}
           aria-labelledby="new team"
           onEscapeKeyDown={cancelNewTeam}
           fullWidth
@@ -96,7 +82,9 @@ export default function NewTeamFormDialog() {
           <DialogContent>
             <FlexContainer column justify="center" align="center">
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Name</label>
+                <label style={{ width: "10px" }} htmlFor="name">
+                  Name
+                </label>
                 <Input
                   required
                   autoFocus
@@ -114,7 +102,9 @@ export default function NewTeamFormDialog() {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>League Name</label>
+                <label style={{ width: "10px" }} htmlFor="league">
+                  League Name
+                </label>
                 <Input
                   required
                   onBlur={teamLeague.onChange}
@@ -131,7 +121,9 @@ export default function NewTeamFormDialog() {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Country</label>
+                <label style={{ width: "10px" }} htmlFor="country">
+                  Country
+                </label>
                 <Input
                   required
                   onBlur={teamCountry.onChange}
@@ -148,7 +140,9 @@ export default function NewTeamFormDialog() {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>City</label>
+                <label style={{ width: "10px" }} htmlFor="city">
+                  City
+                </label>
                 <Input
                   required
                   onBlur={teamCity.onChange}
@@ -173,7 +167,6 @@ export default function NewTeamFormDialog() {
             <Button onClick={createNewTeam} color="success">
               Create
             </Button>
-            {isSaving && <CircularProgress size={24} />}
           </DialogActions>
         </Dialog>
       )}

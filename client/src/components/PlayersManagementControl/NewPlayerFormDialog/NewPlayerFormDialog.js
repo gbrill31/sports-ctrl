@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useCallback, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { Fragment, useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   DialogActions,
   DialogTitle,
@@ -17,31 +17,19 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFormInput from "../../../hooks/useFormInput";
 import useSavePlayers from "../../../hooks/useSavePlayers";
 
-import { closeNewPlayersDialog } from "../../../actions";
-
-export default function NewPlayerFormDialog() {
-  const dispatch = useDispatch();
-
+export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
   const [players, setPlayers] = useState([]);
   const playerName = useFormInput("");
   const playerNumber = useFormInput("");
 
   const selectedTeam = useSelector((state) => state.teams.selected);
-  const {
-    playerSavePending: isSaving,
-    newPlayersDialog: isNewPlayersDialog,
-  } = useSelector((state) => state.players);
-
-  const closeDialog = useCallback(() => dispatch(closeNewPlayersDialog()), [
-    dispatch,
-  ]);
   const saveNewPlayers = useSavePlayers(closeDialog);
 
   useEffect(() => {
-    if (!isNewPlayersDialog && players.length) {
+    if (!isOpenDialog && players.length) {
       setPlayers([]);
     }
-  }, [players, isNewPlayersDialog]);
+  }, [players, isOpenDialog]);
 
   const resetForm = () => {
     playerName.setValue("");
@@ -107,9 +95,9 @@ export default function NewPlayerFormDialog() {
 
   return (
     <Fragment>
-      {isNewPlayersDialog && (
+      {isOpenDialog && (
         <Dialog
-          open={isNewPlayersDialog}
+          open={isOpenDialog}
           aria-labelledby="add players"
           onEscapeKeyDown={cancelNewPlayer}
           fullWidth
@@ -119,7 +107,9 @@ export default function NewPlayerFormDialog() {
           <DialogContent>
             <FlexContainer column justify="center" align="center">
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Name</label>
+                <label style={{ width: "10px" }} htmlFor="name">
+                  Name
+                </label>
                 <Input
                   required
                   autoFocus
@@ -137,13 +127,15 @@ export default function NewPlayerFormDialog() {
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Number</label>
+                <label style={{ width: "10px" }} htmlFor="number">
+                  Number
+                </label>
                 <Input
                   required
                   onBlur={playerNumber.onChange}
                   error={!playerNumber.isValid}
                   ref={playerNumber.ref}
-                  id="league"
+                  id="number"
                   type="text"
                   placeholder={`Enter Player Number${
                     !playerNumber.isValid ? " *" : ""
@@ -185,10 +177,9 @@ export default function NewPlayerFormDialog() {
             <Button
               onClick={savePlayersToTeam}
               color="success"
-              disabled={players.length === 0 || isSaving}
-              saving={isSaving}
+              disabled={players.length === 0}
             >
-              {isSaving ? "Saving..." : "Add Players"}
+              Save
             </Button>
           </DialogActions>
         </Dialog>

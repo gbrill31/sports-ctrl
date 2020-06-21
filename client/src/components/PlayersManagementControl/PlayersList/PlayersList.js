@@ -19,12 +19,10 @@ import FilterListInput from "../../FilterListInput/FilterListInput";
 import usePlayers from "../../../hooks/usePlayers";
 import useDeletePlayer from "../../../hooks/useDeletePlayer";
 
-import { setSelectedPlayer, openNewPlayersDialog } from "../../../actions";
+import { setSelectedPlayer } from "../../../actions";
 
 export default function PlayersList() {
   const dispatch = useDispatch();
-
-  const handleCancelPrompt = () => setIsDeletePlayer(false);
 
   const selectedTeam = useSelector((state) => state.teams.selected);
 
@@ -35,16 +33,18 @@ export default function PlayersList() {
   const { selected: selectedPlayer } = useSelector((state) => state.players);
 
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
+  const [isAddPlayersDialog, setIsAddPlayersDialog] = useState(false);
   const [filterValue, setFilterValue] = useState("");
+
+  const handleCancelPrompt = () => setIsDeletePlayer(false);
 
   const setSelected = useCallback(
     (player) => dispatch(setSelectedPlayer(player)),
     [dispatch]
   );
 
-  const openAddPlayers = useCallback(() => dispatch(openNewPlayersDialog()), [
-    dispatch,
-  ]);
+  const openAddPlayersDialog = () => setIsAddPlayersDialog(true);
+  const closeAddPlayersDialog = () => setIsAddPlayersDialog(false);
 
   const deleteSelected = useDeletePlayer(handleCancelPrompt);
 
@@ -76,14 +76,16 @@ export default function PlayersList() {
               {selectedTeam ? `${selectedTeam.getName()} Players` : ""}
             </MainTitle>
             {selectedTeam && (
-              <Button color="success" onClick={openAddPlayers}>
+              <Button color="success" onClick={openAddPlayersDialog}>
                 Add Players
                 <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faPlus} size="sm" />
                 </ButtonIcon>
               </Button>
             )}
-            {isFetching && <CircularProgress size={25} color="inherit" />}
+            {isFetching && (
+              <CircularProgress size={25} style={{ color: "#fff" }} />
+            )}
           </FlexContainer>
           <FlexContainer fullWidth padding="0">
             {players?.length > 0 && (
@@ -126,7 +128,10 @@ export default function PlayersList() {
         handleClose={handleCancelPrompt}
         handleConfirm={deleteSelectedPlayer}
       />
-      <NewPlayerFormDialog />
+      <NewPlayerFormDialog
+        isOpenDialog={isAddPlayersDialog}
+        closeDialog={closeAddPlayersDialog}
+      />
     </>
   );
 }
