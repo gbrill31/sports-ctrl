@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import { connectDB } from "../api";
 
-export default function useTeams() {
+export default function useDb() {
   return useQuery("db", connectDB, {
     refetchOnWindowFocus: false,
     retry: 5,

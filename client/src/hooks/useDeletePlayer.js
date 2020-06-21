@@ -1,7 +1,7 @@
 import { useMutation, queryCache } from "react-query";
 import { deletePlayer } from "../api";
 
-export default function useSaveTeam(cb) {
+export default function useDeletePlayer(cb) {
   const [savePlayers] = useMutation((playerId) => deletePlayer(playerId), {
     onMutate: (playerId) => {
       queryCache.cancelQueries("players");

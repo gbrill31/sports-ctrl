@@ -11,25 +11,19 @@ import GameStateControl from "../../components/ActiveGameContol/GameStateControl
 import SetPlayerStatsDialog from "../../components/ActiveGameContol/SetPlayerStatsDialog/SetPlayerStatsDialog";
 import PromptDialog from "../../components/PromptDialog/PromptDialog";
 import useDb from "../../hooks/useDb";
+import useActiveGame from "../../hooks/useActiveGame";
 
 import { GridContainer } from "../../styledElements";
 
-import {
-  getActiveGame,
-  setGame,
-  setEndGamePrompt,
-  updateGameEnd,
-} from "../../actions";
+import { setGame, setEndGamePrompt, updateGameEnd } from "../../actions";
 
 export default function GameManagement() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { status: dbStatus } = useDb();
-
   const {
-    activeGamePending: isGameLoading,
-    activeGameId,
+    // activeGamePending: isGameLoading,
+    // activeGameId,
     homeTeam,
     awayTeam,
     homePoints,
@@ -40,21 +34,37 @@ export default function GameManagement() {
     isEndGamePending,
   } = useSelector((state) => state.game);
 
+  const { status: dbStatus } = useDb();
+
+  const {
+    status: activeGameStatus,
+    data: activeGame,
+    isFetching: isActiveGameFetching,
+  } = useActiveGame(dbStatus === "success");
+
+  const isGameLoading = () => {
+    return activeGameStatus === "loading" || isActiveGameFetching;
+  };
+
   const setActiveGame = useCallback((game) => dispatch(setGame(game)), [
     dispatch,
   ]);
-  const loadActiveGame = useCallback(() => dispatch(getActiveGame()), [
-    dispatch,
-  ]);
+
   const closeEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(false)),
     [dispatch]
   );
 
-  const endGame = useCallback(() => dispatch(updateGameEnd(activeGameId)), [
+  const endGame = useCallback(() => dispatch(updateGameEnd(activeGame?.id)), [
     dispatch,
-    activeGameId,
+    activeGame,
   ]);
+
+  useEffect(() => {
+    if (activeGame) {
+      setActiveGame(activeGame);
+    }
+  }, [activeGame, setActiveGame]);
 
   useEffect(() => {
     const unlisten = history.listen((location) => {
@@ -68,57 +78,52 @@ export default function GameManagement() {
     };
   }, [setActiveGame, history]);
 
-  useEffect(() => {
-    if (dbStatus === "success" && !activeGameId) {
-      loadActiveGame();
-    }
-  }, [loadActiveGame, activeGameId, dbStatus, setActiveGame]);
-
   return (
     <>
-      <ComponentLoader loading={isGameLoading}>
+      <ComponentLoader loading={isGameLoading()}>
         <>
-          {!activeGameId ? (
+          {!activeGame && !homeTeam && !awayTeam ? (
             <CreateGameForm />
           ) : (
             <>
               <GameControlMenu />
               <GridContainer columnsSpread="auto auto auto" noPadding>
                 <GameStateControl />
-                <TeamGameControl
-                  teamLocation="home"
-                  team={homeTeam}
-                  points={homePoints}
-                  fouls={homeFouls}
-                  gameId={activeGameId}
-                  borderRight
-                />
-
-                <TeamGameControl
-                  teamLocation="away"
-                  team={awayTeam}
-                  points={awayPoints}
-                  fouls={awayFouls}
-                  gameId={activeGameId}
-                />
+                {homeTeam && (
+                  <TeamGameControl
+                    teamLocation="home"
+                    team={homeTeam}
+                    points={homePoints}
+                    fouls={homeFouls}
+                    gameId={activeGame?.id}
+                    borderRight
+                  />
+                )}
+                {awayTeam && (
+                  <TeamGameControl
+                    teamLocation="away"
+                    team={awayTeam}
+                    points={awayPoints}
+                    fouls={awayFouls}
+                    gameId={activeGame?.id}
+                  />
+                )}
               </GridContainer>
               <SetPlayerStatsDialog />
             </>
           )}
         </>
       </ComponentLoader>
-      {isEndGamePrompt && (
-        <PromptDialog
-          isOpen={isEndGamePrompt}
-          title="End Active Game"
-          content="Are you sure you want to end and close the current game?"
-          confirmText="End"
-          pendingTitle="Ending..."
-          handleClose={closeEndGamePrompt}
-          handleConfirm={endGame}
-          isPending={isEndGamePending}
-        />
-      )}
+      <PromptDialog
+        isOpen={isEndGamePrompt}
+        title="End Active Game"
+        content="Are you sure you want to end and close the current game?"
+        confirmText="End"
+        pendingTitle="Ending..."
+        handleClose={closeEndGamePrompt}
+        handleConfirm={endGame}
+        isPending={isEndGamePending}
+      />
     </>
   );
 }

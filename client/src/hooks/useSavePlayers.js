@@ -2,7 +2,7 @@ import { useMutation, queryCache } from "react-query";
 import shortid from "shortid";
 import { savePlayersToTeam } from "../api";
 
-export default function useSaveTeam(cb) {
+export default function useSavePlayers(cb) {
   const [savePlayers] = useMutation((players) => savePlayersToTeam(players), {
     onMutate: (players) => {
       queryCache.cancelQueries("players");

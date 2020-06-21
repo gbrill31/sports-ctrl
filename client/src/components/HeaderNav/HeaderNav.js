@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
 import { Button, ButtonIcon } from "../../styledElements";
 import useDb from "../../hooks/useDb";
+import useActiveGame from "../../hooks/useActiveGame";
 
 import { setEndGamePrompt } from "../../actions";
 
@@ -36,11 +37,11 @@ function HeaderNav() {
   const dispatch = useDispatch();
 
   const { status: dbStatus, failureCount, refetch, error: dbError } = useDb();
+  const { status: activeGameStatus, data: activeGame } = useActiveGame(
+    dbStatus === "success"
+  );
 
   const currentRoute = useSelector((state) => state.routes.currentRoute);
-
-  const activeGame = useSelector((state) => state.games.active);
-  const activeGameId = useSelector((state) => state.game.activeGameId);
 
   const isDbConnected = () => dbStatus === "success";
   const isDbConnecting = () => dbStatus === "loading";
@@ -101,7 +102,7 @@ function HeaderNav() {
             <Button color="primary" onClick={goToRoute("/venues")}>
               Manage Venues
             </Button>
-            {!activeGame ? (
+            {!activeGame && activeGameStatus === "success" ? (
               <Button justifyRight color="primary" onClick={goToRoute("/game")}>
                 Start A New Game
                 <ButtonIcon spaceLeft>
@@ -118,7 +119,7 @@ function HeaderNav() {
               </ButtonIcon>
               Home
             </Button>
-            {currentRoute === "/game" && activeGameId && (
+            {currentRoute === "/game" && activeGame && (
               <Button justifyRight color="error" onClick={openEndGamePrompt}>
                 End Game
                 <ButtonIcon spaceLeft>

@@ -2,7 +2,7 @@ import { useQuery } from "react-query";
 import { getPlayersByTeamId } from "../api";
 import Player from "../classes/Player";
 
-export default function useTeams(teamId) {
+export default function usePlayers(teamId) {
   let players;
   const { status, data, error, isFetching } = useQuery(
     teamId && ["players", teamId],

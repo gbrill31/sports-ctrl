@@ -1,14 +1,28 @@
-import { takeEvery, call, put } from 'redux-saga/effects';
+import { takeEvery, call, put } from "redux-saga/effects";
 
-import { GAMES } from '../constants';
+import { GAMES } from "../constants";
 import {
-  setGames, gamesError, setGame, gameError, setNewPlayerStats, updatePlayerStatsError, setGameScore,
-  setGameStatus, setTeamFouls, setGameEnd
-} from '../actions';
+  setGames,
+  gamesError,
+  setGame,
+  gameError,
+  setNewPlayerStats,
+  updatePlayerStatsError,
+  setGameScore,
+  setGameStatus,
+  setTeamFouls,
+  setGameEnd,
+} from "../actions";
 import {
-  getAllGames, createNewGame, requestActiveGame, updatePlayerStats, updateGameScore, updateGameStatus,
-  updateTeamFouls, updateEndGame
-} from '../api';
+  getAllGames,
+  createNewGame,
+  getActiveGame,
+  updatePlayerStats,
+  updateGameScore,
+  updateGameStatus,
+  updateTeamFouls,
+  updateEndGame,
+} from "../api";
 
 function* handleGamesRequest() {
   try {
@@ -30,18 +44,23 @@ function* handleNewGame({ game }) {
 
 function* handleActiveGameRequest() {
   try {
-    const activeGame = yield call(requestActiveGame);
+    const activeGame = yield call(getActiveGame);
     yield put(setGame(activeGame));
   } catch (error) {
     yield put(gameError(error));
   }
 }
 
-
 function* handleUpdatePlayerStats({ gameId, playerId, data }) {
   try {
     const updatedPlayer = yield call(updatePlayerStats, gameId, playerId, data);
-    yield put(setNewPlayerStats(updatedPlayer.id, updatedPlayer.teamId, updatedPlayer.stats));
+    yield put(
+      setNewPlayerStats(
+        updatedPlayer.id,
+        updatedPlayer.teamId,
+        updatedPlayer.stats
+      )
+    );
   } catch (error) {
     yield put(updatePlayerStatsError(error));
   }

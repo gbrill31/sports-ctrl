@@ -10,7 +10,7 @@ export const createNewGame = async (game) => {
   return data;
 };
 
-export const requestActiveGame = async () => {
+export const getActiveGame = async () => {
   const { data } = await axios.get("/games/active");
   return data;
 };
