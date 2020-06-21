@@ -1,84 +1,46 @@
+import axios from "axios";
+
 export const getAllGames = async () => {
-  const res = await fetch('/games/all');
-  if (res.status >= 400) throw new Error('No games found');
-  const games = await res.json();
-  return games;
-}
+  const { data } = await axios.get("/games/all");
+  return data;
+};
 
 export const createNewGame = async (game) => {
-  const body = JSON.stringify(game);
-  const res = await fetch('/games/create', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('New game creation failed');
-  const newGame = await res.json();
-  return newGame;
+  const { data } = await axios.post("/games/create", game);
+  return data;
 };
 
 export const requestActiveGame = async () => {
-  const res = await fetch('/games/active');
-  if (res.status >= 400) throw new Error('Cannot Load Active Game');
-  const activeGame = await res.json();
-  return activeGame;
-}
+  const { data } = await axios.get("/games/active");
+  return data;
+};
 
 export const updateGameScore = async (gameId, teamId, points) => {
-  const body = JSON.stringify({ gameId, teamId, points });
-  const res = await fetch('/games/score', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
+  const { data } = await axios.post("/games/score", {
+    gameId,
+    teamId,
+    points,
   });
-  if (res.status >= 400) throw new Error('Cannot set score in game');
-  const activeGame = await res.json();
-  return activeGame;
-}
+  return data;
+};
 
 export const updateGameStatus = async (gameId, status) => {
-  const body = JSON.stringify({ gameId, status });
-  const res = await fetch('/games/status', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
-  });
-  if (res.status >= 400) throw new Error('Cannot set game status');
-  const newStatus = await res.json();
-  return newStatus;
-}
+  const { data } = await axios.post("/games/status", { gameId, status });
+  return data;
+};
 
 export const updateTeamFouls = async (gameId, teamId, fouls) => {
-  const body = JSON.stringify({ gameId, teamId, fouls });
-  const res = await fetch('/games/teamfouls', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
+  const { data } = await axios.post("/games/teamfouls", {
+    gameId,
+    teamId,
+    fouls,
   });
-  if (res.status >= 400) throw new Error('Cannot set game status');
-  const newStatus = await res.json();
-  return newStatus;
-}
+  return data;
+};
 
 export const updateEndGame = async (gameId) => {
-  const body = JSON.stringify({ gameId });
-  const res = await fetch('/games/endgame', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body
+  const { data } = await axios.post("/games/endgame", {
+    gameId,
   });
-  if (res.status >= 400) throw new Error('Cannot set game status');
-  const newStatus = await res.json();
-  return newStatus;
-}
-
+  return data;
+};

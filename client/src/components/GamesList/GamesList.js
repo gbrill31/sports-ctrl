@@ -1,45 +1,49 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
-import { MainTitle, ScrollableContainer } from '../../styledElements';
+import { MainTitle, ScrollableContainer } from "../../styledElements";
 
-import ComponentLoader from '../../components/ComponentLoader/ComponentLoader';
-import GameItem from '../GameItem/GameItem';
-
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader";
+import GameItem from "../GameItem/GameItem";
+import useGames from "../../hooks/useGames";
+import useDb from "../../hooks/useDb";
 
 export default function GamesList() {
   const history = useHistory();
 
-  const {
-    items: games,
-    getAllGamesPending: gamesLoading,
-    active: activeGame
-  } = useSelector(state => state.games);
+  const [activeGame, setActiveGame] = useState(null);
 
+  const { status: dbStatus } = useDb();
+  const { status, data: games, isFetching } = useGames(dbStatus === "success");
+
+  useEffect(() => {
+    if (games?.length) {
+      const active = games.find((game) => game.active);
+      setActiveGame(active);
+    }
+  }, [games]);
+
+  const isGamesLoading = () => status === "loading" || isFetching;
 
   const goToActiveGame = () => {
-    history.push('/game');
-  }
+    history.push("/game");
+  };
 
   return (
     <>
-      <ComponentLoader loading={gamesLoading}>
-        {
-          activeGame && activeGame.id && (
-            <>
-              <MainTitle>Active Game</MainTitle>
-              <GameItem goToActive={goToActiveGame} game={activeGame} />
-            </>
-          )
-        }
+      <ComponentLoader loading={isGamesLoading()}>
+        {activeGame && activeGame.id && (
+          <>
+            <MainTitle>Active Game</MainTitle>
+            <GameItem goToActive={goToActiveGame} game={activeGame} />
+          </>
+        )}
         <MainTitle>Games Played</MainTitle>
         <ScrollableContainer fullWidth heightDiff={activeGame ? 345 : 170}>
-          {
-            games && games
-              .filter(game => !game.active)
-              .map(game => <GameItem key={game.id} game={game} />)
-          }
+          {games &&
+            games
+              .filter((game) => !game.active)
+              .map((game) => <GameItem key={game.id} game={game} />)}
         </ScrollableContainer>
       </ComponentLoader>
     </>
