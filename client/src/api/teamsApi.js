@@ -5,6 +5,11 @@ export const getAllTeams = async () => {
   return data;
 };
 
+export const getTeamById = async (key, id) => {
+  const { data } = await axios.get(`/teams/team?id=${id}`);
+  return data;
+};
+
 export const saveNewTeam = async (team) => {
   const { data } = await axios.post("/teams/save", team);
   return data;

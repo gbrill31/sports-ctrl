@@ -1,9 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
 
 import ComponentLoader from "../../components/ComponentLoader/ComponentLoader";
-import CreateGameForm from "../../components/CreateGameForm/CreateGameForm";
 import TeamGameControl from "../../components/ActiveGameContol/TeamGameControl/TeamGameControl";
 
 import GameControlMenu from "../../components/ActiveGameContol/GameControlMenu";
@@ -19,11 +17,8 @@ import { setGame, setEndGamePrompt, updateGameEnd } from "../../actions";
 
 export default function GameManagement() {
   const dispatch = useDispatch();
-  const history = useHistory();
 
   const {
-    // activeGamePending: isGameLoading,
-    // activeGameId,
     homeTeam,
     awayTeam,
     homePoints,
@@ -66,48 +61,30 @@ export default function GameManagement() {
     }
   }, [activeGame, setActiveGame]);
 
-  useEffect(() => {
-    const unlisten = history.listen((location) => {
-      if (location.pathName !== "/game") {
-        setActiveGame(null);
-      }
-    });
-
-    return () => {
-      unlisten();
-    };
-  }, [setActiveGame, history]);
-
   return (
     <>
       <ComponentLoader loading={isGameLoading()}>
         <>
-          {!activeGame && !homeTeam && !awayTeam ? (
-            <CreateGameForm />
-          ) : (
+          {activeGame && (
             <>
               <GameControlMenu />
               <GridContainer columnsSpread="auto auto auto" noPadding>
                 <GameStateControl />
-                {homeTeam && (
-                  <TeamGameControl
-                    teamLocation="home"
-                    team={homeTeam}
-                    points={homePoints}
-                    fouls={homeFouls}
-                    gameId={activeGame?.id}
-                    borderRight
-                  />
-                )}
-                {awayTeam && (
-                  <TeamGameControl
-                    teamLocation="away"
-                    team={awayTeam}
-                    points={awayPoints}
-                    fouls={awayFouls}
-                    gameId={activeGame?.id}
-                  />
-                )}
+                <TeamGameControl
+                  teamLocation="home"
+                  team={homeTeam}
+                  points={homePoints}
+                  fouls={homeFouls}
+                  gameId={activeGame?.id}
+                  borderRight
+                />
+                <TeamGameControl
+                  teamLocation="away"
+                  team={awayTeam}
+                  points={awayPoints}
+                  fouls={awayFouls}
+                  gameId={activeGame?.id}
+                />
               </GridContainer>
               <SetPlayerStatsDialog />
             </>

@@ -2,10 +2,10 @@ import { useQuery } from "react-query";
 import { getPlayersByTeamId } from "../api";
 import Player from "../classes/Player";
 
-export default function usePlayers(teamId) {
+export default function usePlayers(isLoad, teamId) {
   let players;
   const { status, data, error, isFetching } = useQuery(
-    teamId && ["players", teamId],
+    isLoad && [`players-${teamId}`, teamId],
     getPlayersByTeamId,
     {
       refetchOnWindowFocus: false,

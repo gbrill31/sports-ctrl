@@ -4,8 +4,8 @@ import { toast } from "react-toastify";
 
 let unregisterResponse;
 
-function handleResponseHeaders({ redirectTo, notification }, history) {
-  if (redirectTo && history) history.push(redirectTo);
+function handleResponseHeaders({ redirectto, notification }, history) {
+  if (redirectto && history) history.push(redirectto);
   if (notification) {
     const notificationData = JSON.parse(notification);
     toast[notificationData.type](

@@ -12,7 +12,7 @@ import {
 
 import { getAllVenues, saveNewVenue, deleteVenue } from "./venuesApi";
 
-import { getAllTeams, saveNewTeam, deleteTeam } from "./teamsApi";
+import { getAllTeams, saveNewTeam, deleteTeam, getTeamById } from "./teamsApi";
 
 import {
   getAllPlayers,
@@ -32,6 +32,7 @@ export {
   saveNewVenue,
   deleteVenue,
   getAllTeams,
+  getTeamById,
   saveNewTeam,
   deleteTeam,
   getAllPlayers,

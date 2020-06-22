@@ -9,6 +9,7 @@ import Venues from "./views/VenuesManagement/VenuesManagement";
 import Teams from "./views/TeamsManagement/TeamsManagement";
 import GameManagement from "./views/GameManagement/GameManagement";
 import HeaderNav from "./components/HeaderNav/HeaderNav";
+import CreateGameForm from "./components/CreateGameForm/CreateGameForm";
 
 import "react-toastify/dist/ReactToastify.min.css";
 
@@ -134,6 +135,7 @@ function App() {
             <Route exact path="/" render={() => <Home />} />
             <Route exact path="/venues" render={() => <Venues />} />
             <Route exact path="/teams" render={() => <Teams />} />
+            <Route exact path="/creategame" render={() => <CreateGameForm />} />
             <Route exact path="/game" render={() => <GameManagement />} />
           </Switch>
         </AppMainContent>

@@ -19,6 +19,25 @@ teamsRouter.get("/all", (req, res) => {
   );
 });
 
+teamsRouter.get("/team", (req, res) => {
+  const { id } = req.query;
+  psqlDB.getTeamById(id).then(
+    (team) => {
+      res.json(team[0]).status(200);
+    },
+    (err) => {
+      res.header(
+        "notification",
+        JSON.stringify({
+          type: "error",
+          message: "Could Not Load Team",
+        })
+      );
+      res.status(404).json(err);
+    }
+  );
+});
+
 teamsRouter.post("/save", function (req, res) {
   const { id, name, league, country, city } = req.body;
   if (!id) {

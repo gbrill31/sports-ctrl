@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import PlayerControlItem from "../PlayerControlItem/PlayerControlItem";
 import FilterListInput from "../../FilterListInput/FilterListInput";
+
 import {
   MainTitle,
   FlexContainer,
@@ -40,34 +41,37 @@ export default function TeamGameControl({
   const [filterValue, setFilterValue] = useState("");
 
   return (
-    <TeamControlContainer>
-      <FlexContainer justify="center">
-        <MainTitle soft uppercase>
-          {teamLocation}
-        </MainTitle>
-      </FlexContainer>
-      <MainTitle align="center" capitalize>
-        {team.getName()}
-      </MainTitle>
-      <FoulsContainer danger={fouls > 3}>
-        {`${fouls} Team Fouls`}
-      </FoulsContainer>
-      <ScoreContainer>{`Scored: ${points}`}</ScoreContainer>
-      <FilterListInput
-        onChange={setFilterValue}
-        placeholder="Type Name or Number"
-      />
-      <ScrollableContainer heightDiff={420} fullWidth>
-        <FlexContainer column align="center" borderRight={borderRight}>
-          {team.getPlayers("name", filterValue).map((player) => (
-            <PlayerControlItem
-              key={player.getId()}
-              player={player}
-              gameId={gameId}
-            />
-          ))}
+    team && (
+      <TeamControlContainer>
+        <FlexContainer column justify="center" align="center">
+          <MainTitle soft uppercase>
+            {teamLocation}
+          </MainTitle>
+          <ScoreContainer>{`${points}pt`}</ScoreContainer>
         </FlexContainer>
-      </ScrollableContainer>
-    </TeamControlContainer>
+        <MainTitle align="center" capitalize>
+          {team.getName()}
+        </MainTitle>
+        <FoulsContainer danger={fouls > 3}>
+          {`Team Fouls: ${fouls}`}
+        </FoulsContainer>
+
+        <FilterListInput
+          onChange={setFilterValue}
+          placeholder="Type Name or Number"
+        />
+        <ScrollableContainer heightDiff={420} fullWidth>
+          <FlexContainer column align="center" borderRight={borderRight}>
+            {team.getPlayers("name", filterValue).map((player) => (
+              <PlayerControlItem
+                key={player.getId()}
+                player={player}
+                gameId={gameId}
+              />
+            ))}
+          </FlexContainer>
+        </ScrollableContainer>
+      </TeamControlContainer>
+    )
   );
 }

@@ -575,6 +575,9 @@ const DB_EXPORTS = {
       );
     });
   },
+  getTeamById: function (id) {
+    return DB.select().table("teams").where("id", id);
+  },
 
   createTeam: function (name, league, country, city) {
     return DB.returning(["id", "name", "league", "country", "city"])

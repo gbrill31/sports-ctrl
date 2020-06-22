@@ -1,4 +1,4 @@
-import React, { useCallback, Fragment } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import { CircularProgress } from "@material-ui/core";
@@ -37,11 +37,19 @@ function HeaderNav() {
   const dispatch = useDispatch();
 
   const { status: dbStatus, failureCount, refetch, error: dbError } = useDb();
-  const { status: activeGameStatus, data: activeGame } = useActiveGame(
-    dbStatus === "success"
-  );
+  const {
+    status: activeGameStatus,
+    data: activeGame,
+    refetch: fetchActiveGame,
+  } = useActiveGame(dbStatus === "success");
 
   const currentRoute = useSelector((state) => state.routes.currentRoute);
+
+  useEffect(() => {
+    if (currentRoute === "/") {
+      fetchActiveGame();
+    }
+  }, [currentRoute, fetchActiveGame]);
 
   const isDbConnected = () => dbStatus === "success";
   const isDbConnecting = () => dbStatus === "loading";
@@ -95,7 +103,7 @@ function HeaderNav() {
       </NavContentWrapper>
       {isDbConnected() &&
         (currentRoute === "/" ? (
-          <Fragment>
+          <>
             <Button color="primary" onClick={goToRoute("/teams")}>
               Manage Teams
             </Button>
@@ -103,14 +111,18 @@ function HeaderNav() {
               Manage Venues
             </Button>
             {!activeGame && activeGameStatus === "success" ? (
-              <Button justifyRight color="primary" onClick={goToRoute("/game")}>
+              <Button
+                justifyRight
+                color="primary"
+                onClick={goToRoute("/creategame")}
+              >
                 Start A New Game
                 <ButtonIcon spaceLeft>
                   <FontAwesomeIcon icon={faPlus} size="sm" />
                 </ButtonIcon>
               </Button>
             ) : null}
-          </Fragment>
+          </>
         ) : (
           <>
             <Button color="secondary" onClick={goToRoute("/")}>
