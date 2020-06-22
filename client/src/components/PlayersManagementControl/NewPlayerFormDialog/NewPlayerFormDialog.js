@@ -1,11 +1,5 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-  Dialog,
-} from "@material-ui/core";
 import {
   Button,
   ButtonIcon,
@@ -16,6 +10,7 @@ import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFormInput from "../../../hooks/useFormInput";
 import useSavePlayers from "../../../hooks/useSavePlayers";
+import ModalDialog from "../../ModalDialog/ModalDialog";
 
 export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
   const [players, setPlayers] = useState([]);
@@ -56,7 +51,8 @@ export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
   };
 
   const savePlayersToTeam = () => {
-    saveNewPlayers(players);
+    validateAllInputs();
+    if (isSaveValid()) saveNewPlayers(players);
   };
 
   const addPlayer = () => {
@@ -78,13 +74,6 @@ export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
     }
   };
 
-  const handleKeyDown = (e) => {
-    const { keyCode, key } = e;
-    if (keyCode === 13 || key === "Enter") {
-      addPlayer();
-    }
-  };
-
   const removePlayer = (player) => () => {
     setPlayers(
       players.filter(
@@ -93,97 +82,85 @@ export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
     );
   };
 
+  const handleKeyDown = (e) => {
+    const { keyCode, key } = e;
+    if (keyCode === 13 || key === "Enter") {
+      addPlayer();
+    }
+  };
+
   return (
-    <Fragment>
-      {isOpenDialog && (
-        <Dialog
-          open={isOpenDialog}
-          aria-labelledby="add players"
-          onEscapeKeyDown={cancelNewPlayer}
-          fullWidth
-          maxWidth="sm"
-        >
-          <DialogTitle>Add players to team</DialogTitle>
-          <DialogContent>
-            <FlexContainer column justify="center" align="center">
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }} htmlFor="name">
-                  Name
-                </label>
-                <Input
-                  required
-                  autoFocus
-                  onBlur={playerName.onChange}
-                  error={!playerName.isValid}
-                  ref={playerName.ref}
-                  id="name"
-                  type="text"
-                  placeholder={`Enter Player Name${
-                    !playerName.isValid ? " *" : ""
-                  }`}
-                  value={playerName.value}
-                  onChange={playerName.onChange}
-                  onKeyDown={handleKeyDown}
-                />
-              </FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }} htmlFor="number">
-                  Number
-                </label>
-                <Input
-                  required
-                  onBlur={playerNumber.onChange}
-                  error={!playerNumber.isValid}
-                  ref={playerNumber.ref}
-                  id="number"
-                  type="text"
-                  placeholder={`Enter Player Number${
-                    !playerNumber.isValid ? " *" : ""
-                  }`}
-                  value={playerNumber.value}
-                  onChange={playerNumber.onChange}
-                  onKeyDown={handleKeyDown}
-                />
-              </FlexContainer>
-            </FlexContainer>
-            <FlexContainer justify="center">
-              <Button onClick={addPlayer} color="primary">
-                Add
+    <>
+      <ModalDialog
+        isOpen={isOpenDialog}
+        title="Add players to team"
+        handleConfirm={savePlayersToTeam}
+        handleCancel={cancelNewPlayer}
+        label="add players"
+        confirmBtnDisabled={players.length === 0}
+        isEnterKeyDown={false}
+      >
+        <FlexContainer column justify="center" align="center">
+          <FlexContainer fullWidth justify="space-evenly" align="center">
+            <label style={{ width: "10px" }}>Name</label>
+            <Input
+              required
+              autoFocus
+              onBlur={playerName.onChange}
+              error={!playerName.isValid}
+              ref={playerName.ref}
+              id="name"
+              type="text"
+              placeholder={`Enter Player Name${
+                !playerName.isValid ? " *" : ""
+              }`}
+              value={playerName.value}
+              onChange={playerName.onChange}
+              onKeyDown={handleKeyDown}
+            />
+          </FlexContainer>
+          <FlexContainer fullWidth justify="space-evenly" align="center">
+            <label style={{ width: "10px" }}>Number</label>
+            <Input
+              required
+              onBlur={playerNumber.onChange}
+              error={!playerNumber.isValid}
+              ref={playerNumber.ref}
+              id="league"
+              type="text"
+              placeholder={`Enter Player Number${
+                !playerNumber.isValid ? " *" : ""
+              }`}
+              value={playerNumber.value}
+              onChange={playerNumber.onChange}
+              onKeyDown={handleKeyDown}
+            />
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer justify="center">
+          <Button onClick={addPlayer} color="primary">
+            Add
+            <ButtonIcon spaceLeft>
+              <FontAwesomeIcon icon={faPlus} size="sm" />
+            </ButtonIcon>
+          </Button>
+        </FlexContainer>
+        <FlexContainer>
+          {players &&
+            players.map((player) => (
+              <Button
+                color="generic"
+                key={`${player.name}${player.number}`}
+                onClick={removePlayer(player)}
+              >
+                {`${player.number} ${player.name}`}
                 <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faPlus} size="sm" />
+                  <FontAwesomeIcon icon={faTimes} size="sm" />
                 </ButtonIcon>
               </Button>
-            </FlexContainer>
-            <FlexContainer>
-              {players &&
-                players.map((player) => (
-                  <Button
-                    color="generic"
-                    key={`${player.name}${player.number}`}
-                    onClick={removePlayer(player)}
-                  >
-                    {`${player.number} ${player.name}`}
-                    <ButtonIcon spaceLeft>
-                      <FontAwesomeIcon icon={faTimes} size="sm" />
-                    </ButtonIcon>
-                  </Button>
-                ))}
-            </FlexContainer>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={cancelNewPlayer} color="error">
-              Cancel
-            </Button>
-            <Button
-              onClick={savePlayersToTeam}
-              color="success"
-              disabled={players.length === 0}
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </Fragment>
+            ))}
+        </FlexContainer>
+      </ModalDialog>
+    </>
   );
 }
