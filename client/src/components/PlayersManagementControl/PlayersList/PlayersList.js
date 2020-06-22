@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CircularProgress } from "@material-ui/core";
@@ -19,29 +19,22 @@ import FilterListInput from "../../FilterListInput/FilterListInput";
 import usePlayers from "../../../hooks/usePlayers";
 import useDeletePlayer from "../../../hooks/useDeletePlayer";
 
-import { setSelectedPlayer } from "../../../actions";
-
 export default function PlayersList() {
-  const dispatch = useDispatch();
-
   const selectedTeam = useSelector((state) => state.teams.selected);
 
   const { status, data: players, isFetching } = usePlayers(
+    selectedTeam,
     selectedTeam?.getId()
   );
-
-  const { selected: selectedPlayer } = useSelector((state) => state.players);
 
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isAddPlayersDialog, setIsAddPlayersDialog] = useState(false);
   const [filterValue, setFilterValue] = useState("");
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const handleCancelPrompt = () => setIsDeletePlayer(false);
 
-  const setSelected = useCallback(
-    (player) => dispatch(setSelectedPlayer(player)),
-    [dispatch]
-  );
+  const setSelected = (player) => setSelectedPlayer(player);
 
   const openAddPlayersDialog = () => setIsAddPlayersDialog(true);
   const closeAddPlayersDialog = () => setIsAddPlayersDialog(false);

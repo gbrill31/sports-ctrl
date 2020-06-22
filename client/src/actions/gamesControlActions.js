@@ -25,7 +25,7 @@ export const createNewGame = (game) => ({
 
 export const setGame = (game) => {
   return {
-    type: GAMES.GAME_SUCCESS,
+    type: GAMES.SET_GAME,
     payload: game,
   };
 };

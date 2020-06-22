@@ -1,13 +1,8 @@
 import {
-  getAllGames,
-  gamesError,
-  setGames,
   createNewGame,
   setGame,
   setGameScore,
   updateGameScore,
-  gameError,
-  getActiveGame,
   stopLoading,
   setIsPlayerStatsDialog,
   updatePlayerStats,
@@ -26,8 +21,6 @@ import {
 
 import { setSelectedTeam } from "./teamsActions";
 
-import { setSelectedPlayer } from "./playersActions";
-
 import {
   startGameClock,
   stopGameClock,
@@ -45,19 +38,13 @@ import {
 import { setRouteName } from "./routeActions";
 
 export {
-  getAllGames,
-  gamesError,
-  getActiveGame,
-  setGames,
   setRouteName,
   createNewGame,
   setGame,
   setGameScore,
   updateGameScore,
-  gameError,
   stopLoading,
   setSelectedTeam,
-  setSelectedPlayer,
   startGameClock,
   stopGameClock,
   resetGameClock,
