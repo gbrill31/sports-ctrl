@@ -51,8 +51,7 @@ export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
   };
 
   const savePlayersToTeam = () => {
-    validateAllInputs();
-    if (isSaveValid()) saveNewPlayers(players);
+    saveNewPlayers(players);
   };
 
   const addPlayer = () => {

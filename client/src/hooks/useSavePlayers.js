@@ -5,11 +5,11 @@ import { savePlayersToTeam } from "../api";
 export default function useSavePlayers(cb) {
   const [savePlayers] = useMutation((players) => savePlayersToTeam(players), {
     onMutate: (players) => {
-      queryCache.cancelQueries("players");
+      const queryKey = `players-${players[0].teamId}`;
+      queryCache.cancelQueries(queryKey);
+      const previousValue = queryCache.getQueryData(queryKey);
 
-      const previousValue = queryCache.getQueryData("players");
-
-      queryCache.setQueryData("players", (oldPlayers) => {
+      queryCache.setQueryData(queryKey, (oldPlayers) => {
         if (Array.isArray(players)) {
           const playersToAdd = players.map((player) => {
             return { ...player, id: player.id || shortid.generate() };
@@ -21,12 +21,15 @@ export default function useSavePlayers(cb) {
 
       return previousValue;
     },
-    onError: (err, variables, previousValue) =>
-      queryCache.setQueryData("players", previousValue),
+    onError: (err, variables, previousValue) => {
+      queryCache.setQueryData(`players-${variables[0].teamId}`, previousValue);
+    },
     onSuccess: () => {
       if (cb) cb();
     },
-    onSettled: () => queryCache.refetchQueries("players"),
+    onSettled: (data, err, variables) => {
+      queryCache.refetchQueries(`players-${variables[0].teamId}`);
+    },
   });
 
   return savePlayers;

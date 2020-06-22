@@ -41,7 +41,7 @@ export default function PlayersList() {
 
   const deleteSelected = useDeletePlayer(handleCancelPrompt);
 
-  const deleteSelectedPlayer = () => deleteSelected(selectedPlayer.getId());
+  const deleteSelectedPlayer = () => deleteSelected(selectedPlayer);
 
   const getFilteredPlayers = () => {
     const value = filterValue.toLowerCase();
