@@ -3,6 +3,7 @@ import { GAMES } from "../constants";
 import Team from "../classes/Team";
 
 const INTIAL_STATE = {
+  id: null,
   homeTeam: null,
   awayTeam: null,
   homePoints: null,
@@ -25,6 +26,7 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
   switch (action.type) {
     case GAMES.SET_GAME:
       const {
+        id: gameId,
         home,
         away,
         homePoints,
@@ -35,6 +37,7 @@ const activeGameReducer = (state = INTIAL_STATE, action = {}) => {
       } = action.payload;
       return {
         ...state,
+        id: gameId,
         homeTeam: new Team(home),
         awayTeam: new Team(away),
         homePoints,

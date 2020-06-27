@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import PropTypes from "prop-types";
 import {
   FlexContainer,
   Input,
@@ -38,7 +39,7 @@ const OptionItem = styled.div`
   }
 `;
 
-export default function AutoCompleteInput({
+function AutoCompleteInput({
   id,
   color,
   spaceLeft,
@@ -149,3 +150,17 @@ export default function AutoCompleteInput({
     </FlexContainer>
   );
 }
+
+AutoCompleteInput.propTypes = {
+  id: PropTypes.string,
+  color: PropTypes.string,
+  spaceLeft: PropTypes.bool,
+  placeholder: PropTypes.string,
+  options: PropTypes.array,
+  getOptionLabel: PropTypes.func,
+  onSelection: PropTypes.func,
+  selectedValue: PropTypes.string,
+  loading: PropTypes.bool,
+};
+
+export default React.memo(AutoCompleteInput);

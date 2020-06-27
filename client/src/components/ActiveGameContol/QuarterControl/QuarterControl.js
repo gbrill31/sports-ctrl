@@ -1,15 +1,13 @@
-import React, { useState, useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import styled from 'styled-components';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import ComponentLoader from '../../ComponentLoader/ComponentLoader';
-import { FlexContainer, Button, ButtonIcon } from '../../../styledElements';
+import ComponentLoader from "../../ComponentLoader/ComponentLoader";
+import { FlexContainer, Button, ButtonIcon } from "../../../styledElements";
 
-import {
-  updateGameStatus
-} from '../../../actions';
+import { updateGameStatus } from "../../../actions";
 
 const QuarterContainer = styled.div`
   color: #fff;
@@ -23,18 +21,19 @@ export default function QuarterControl() {
 
   const [isSetStatus, setIsSetStatus] = useState(false);
   const [qNumber, setQNumber] = useState(null);
-  const {
-    activeGameId,
-    status,
-    statusPending
-  } = useSelector(state => state.game);
+  const { id: activeGameId, status, statusPending } = useSelector(
+    (state) => state.game
+  );
 
-  const saveGameStatus = useCallback((status) => dispatch(updateGameStatus(activeGameId, status)), [dispatch, activeGameId]);
+  const saveGameStatus = useCallback(
+    (status) => dispatch(updateGameStatus(activeGameId, status)),
+    [dispatch, activeGameId]
+  );
 
   const openSetStatus = () => {
     setQNumber(parseInt(status[1]));
     setIsSetStatus(true);
-  }
+  };
   const closeSetStatus = () => setIsSetStatus(false);
 
   const nextQ = () => setQNumber(qNumber < 4 ? qNumber + 1 : qNumber);
@@ -43,72 +42,52 @@ export default function QuarterControl() {
   const setStatus = () => {
     saveGameStatus(`Q${qNumber}`);
     closeSetStatus();
-  }
+  };
 
-  return status && (
-    <FlexContainer
-      column
-      justify="flex-start"
-      align="center"
-    >
-      {
-        !isSetStatus ? (
-          <Button
-            color="menu"
-            onClick={openSetStatus}
-          >
+  return (
+    status && (
+      <FlexContainer column justify="flex-start" align="center">
+        {!isSetStatus ? (
+          <Button color="menu" onClick={openSetStatus}>
             Set Status
           </Button>
         ) : (
-            <FlexContainer>
-              <Button
-                color="error"
-                onClick={previousQ}
-                disabled={qNumber === 1}
-              >
-                Q
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faMinus} size="sm" />
-                </ButtonIcon>
-              </Button>
-              <Button
-                color="secondary"
-                onClick={nextQ}
-                disabled={qNumber === 4}
-              >
-                Q
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faPlus} size="sm" />
-                </ButtonIcon>
-              </Button>
-
-            </FlexContainer>
-          )
-      }
-      <ComponentLoader loading={statusPending} size={60} padding="15" clearHeight>
-        <QuarterContainer>
-          {isSetStatus ? `Q${qNumber}` : status}
-        </QuarterContainer>
-      </ComponentLoader>
-      {
-        isSetStatus && (
           <FlexContainer>
-            <Button
-              color="error"
-              onClick={closeSetStatus}
-            >
-              Cancel
-          </Button>
-            <Button
-              color="success"
-              onClick={setStatus}
-            >
-              Set
-          </Button>
+            <Button color="error" onClick={previousQ} disabled={qNumber === 1}>
+              Q
+              <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faMinus} size="sm" />
+              </ButtonIcon>
+            </Button>
+            <Button color="secondary" onClick={nextQ} disabled={qNumber === 4}>
+              Q
+              <ButtonIcon spaceLeft>
+                <FontAwesomeIcon icon={faPlus} size="sm" />
+              </ButtonIcon>
+            </Button>
           </FlexContainer>
-        )
-      }
-
-    </FlexContainer>
-  )
+        )}
+        <ComponentLoader
+          loading={statusPending}
+          size={60}
+          padding="15"
+          clearHeight
+        >
+          <QuarterContainer>
+            {isSetStatus ? `Q${qNumber}` : status}
+          </QuarterContainer>
+        </ComponentLoader>
+        {isSetStatus && (
+          <FlexContainer>
+            <Button color="error" onClick={closeSetStatus}>
+              Cancel
+            </Button>
+            <Button color="success" onClick={setStatus}>
+              Set
+            </Button>
+          </FlexContainer>
+        )}
+      </FlexContainer>
+    )
+  );
 }

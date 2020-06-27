@@ -32,7 +32,8 @@ export default class Player {
     if (!id) {
       return this.lastGameStats.data;
     }
-    return this.stats.find((game) => game.gameId === id).data;
+    const foundStats = this.stats.find((game) => game.gameId === id);
+    return foundStats ? foundStats.data : {};
   }
   getLastStatsDate() {
     return this.lastGameStatsDate;

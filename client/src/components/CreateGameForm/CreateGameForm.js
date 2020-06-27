@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
 import { faBasketballBall } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoCompleteInput from "../AutoCompleteInput/AutoCompleteInput";
@@ -12,43 +11,38 @@ import {
 import useVenues from "../../hooks/useVenues";
 import useTeams from "../../hooks/useTeams";
 import useDb from "../../hooks/useDb";
-
-import { createNewGame, stopLoading } from "../../actions";
+import useActiveGame from "../../hooks/useActiveGame";
+import useCreateGame from "../../hooks/useCreateGame";
 
 export default function CreateGameForm() {
-  const dispatch = useDispatch();
-
   const [homeTeam, setHomeTeam] = useState(null);
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
 
   const { status: dbStatus } = useDb();
-  const isGameLoading = useSelector((state) => state.games.activeGamePending);
+
+  const {
+    status: activeGameStatus,
+    // data: activeGame,
+    isFetching: isActiveGameFetching,
+  } = useActiveGame(dbStatus === "success");
+
+  const isGameLoading = () =>
+    activeGameStatus === "loading" || isActiveGameFetching;
 
   const {
     status: venuesStatus,
     data: venues,
     isFetching: isVenuesFetching,
-  } = useVenues(dbStatus === "success" && !isGameLoading);
+  } = useVenues(dbStatus === "success");
 
   const {
     status: teamsStatus,
     data: teams,
     isFetching: isTeamsFetching,
-  } = useTeams(dbStatus === "success" && !isGameLoading);
+  } = useTeams(dbStatus === "success");
 
-  const stopCurrentGameLoading = useCallback(() => dispatch(stopLoading()), [
-    dispatch,
-  ]);
-  const createGame = useCallback((game) => dispatch(createNewGame(game)), [
-    dispatch,
-  ]);
-
-  useEffect(() => {
-    if (dbStatus === "success" && !isGameLoading) {
-      stopCurrentGameLoading();
-    }
-  }, [isGameLoading, stopCurrentGameLoading, dbStatus]);
+  const createGame = useCreateGame();
 
   const selectVanue = (venueId) => {
     setVenue(venues.find((v) => v.id === venueId));
@@ -116,8 +110,8 @@ export default function CreateGameForm() {
           onSelection={selectVanue}
           loading={venuesStatus === "loading" || isVenuesFetching}
         />
-        <Button color="success" onClick={startNewGame} saving={isGameLoading}>
-          {isGameLoading ? "Starting..." : "Start Game"}
+        <Button color="success" onClick={startNewGame} saving={isGameLoading()}>
+          {isGameLoading() ? "Starting..." : "Start Game"}
           <ButtonIcon spaceLeft>
             <FontAwesomeIcon icon={faBasketballBall} size="sm" />
           </ButtonIcon>

@@ -1,9 +1,7 @@
 import {
-  createNewGame,
   setGame,
   setGameScore,
   updateGameScore,
-  stopLoading,
   setIsPlayerStatsDialog,
   updatePlayerStats,
   updatePlayerStatsError,
@@ -39,11 +37,9 @@ import { setRouteName } from "./routeActions";
 
 export {
   setRouteName,
-  createNewGame,
   setGame,
   setGameScore,
   updateGameScore,
-  stopLoading,
   setSelectedTeam,
   startGameClock,
   stopGameClock,

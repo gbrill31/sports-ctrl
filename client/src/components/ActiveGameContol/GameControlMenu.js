@@ -121,7 +121,7 @@ export default function GameControlMenu() {
     setIsShowSetGameClock(false);
   });
 
-  const activeGameId = useSelector((state) => state.game.activeGameId);
+  const activeGameId = useSelector((state) => state.game.id);
 
   const { isGameClockRunning, startTime: gameClockStartTime } = useSelector(
     (state) => state.gameClock

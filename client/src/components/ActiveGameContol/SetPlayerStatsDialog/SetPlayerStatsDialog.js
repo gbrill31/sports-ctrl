@@ -130,7 +130,7 @@ export default function SetPlayerStatsDialog() {
     setPlayerStatsPending: isSaving,
     isSetPlayerStatsDialog,
     selectedPlayer,
-    activeGameId,
+    id: activeGameId,
     status,
   } = useSelector((state) => state.game);
 

@@ -286,7 +286,7 @@ function updateGameScore(gameId, teamId, points) {
     DB("games")
       .where({ id: gameId })
       .asCallback((err, rows) => {
-        if (err) reject(err);
+        if (err) return reject(err);
 
         const game = rows[0];
         const isHomeTeam = game.homeId === teamId;
