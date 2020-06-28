@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import useFormInput from "../../../hooks/useFormInput";
 import useSaveTeam from "../../../hooks/useSaveTeam";
@@ -70,7 +71,7 @@ const ItemActions = styled.div`
     `}
 `;
 
-export default function TeamListItem({
+function TeamListItem({
   team,
   deleteTeamPrompt,
   selectedTeam,
@@ -259,3 +260,12 @@ export default function TeamListItem({
     </>
   );
 }
+
+TeamListItem.propTypes = {
+  team: PropTypes.object.isRequired,
+  deleteTeamPrompt: PropTypes.func.isRequired,
+  selectedTeam: PropTypes.object,
+  setSelectedTeam: PropTypes.func,
+};
+
+export default React.memo(TeamListItem);

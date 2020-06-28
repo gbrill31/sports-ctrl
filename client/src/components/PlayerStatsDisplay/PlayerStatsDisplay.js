@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
+import styled, { keyframes, css } from "styled-components";
 
-import { FlexContainer } from '../../styledElements';
+import { FlexContainer } from "../../styledElements";
 
 const statChangeAnimation = keyframes`
   from {
@@ -14,13 +15,14 @@ const statChangeAnimation = keyframes`
 `;
 
 const StatDisplay = styled.div`
-  color: ${props => props.color ? props.theme[props.color].color : props.theme.success.color};
+  color: ${(props) =>
+    props.color ? props.theme[props.color].color : props.theme.success.color};
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
   margin-left: 20px;
 
-  h4{
+  h4 {
     margin: 0;
     color: #777;
     font-size: 1rem;
@@ -29,13 +31,14 @@ const StatDisplay = styled.div`
     margin-left: 15px;
   }
 
-  ${props => props.update && css`
-    animation: ${statChangeAnimation} 0.2s ease-in-out alternate 2;
-  `};
+  ${(props) =>
+    props.update &&
+    css`
+      animation: ${statChangeAnimation} 0.2s ease-in-out alternate 2;
+    `};
 `;
 
-export default function PlayerStatsDisplay({ stats }) {
-
+function PlayerStatsDisplay({ stats }) {
   const isFirstRun = useRef(true);
 
   const [isFoulsUpdate, setIsFoulsUpdate] = useState(false);
@@ -44,8 +47,8 @@ export default function PlayerStatsDisplay({ stats }) {
   const [is2fgUpdate, setIs2fgUpdate] = useState(false);
   const [is3fgUpdate, setIs3fgUpdate] = useState(false);
 
-  const twoPointsFG = stats['2FG'];
-  const threePointsFG = stats['3FG'];
+  const twoPointsFG = stats["2FG"];
+  const threePointsFG = stats["3FG"];
 
   useEffect(() => {
     if (!isFirstRun.current) {
@@ -90,27 +93,36 @@ export default function PlayerStatsDisplay({ stats }) {
   });
 
   return (
-    <FlexContainer fullWidth padding="5px" justify="center" align="center" bgColor="#eaeaea">
-      <StatDisplay update={isPointsUpdate}>
-        POINTS: {stats.PT}
-      </StatDisplay>
+    <FlexContainer
+      fullWidth
+      padding="5px"
+      justify="center"
+      align="center"
+      bgColor="#eaeaea"
+    >
+      <StatDisplay update={isPointsUpdate}>POINTS: {stats.PT}</StatDisplay>
       <StatDisplay
-        color={stats.FOULS > 3 ? 'error' : 'primary'}
+        color={stats.FOULS > 3 ? "error" : "primary"}
         update={isFoulsUpdate}
       >
         FOULS: {stats.FOULS}
       </StatDisplay>
       <FlexContainer>
         <StatDisplay update={is2fgUpdate}>
-          <h4>2FG: {stats['2FG']}</h4>
+          <h4>2FG: {stats["2FG"]}</h4>
         </StatDisplay>
         <StatDisplay update={is3fgUpdate}>
-          <h4>3FG: {stats['3FG']}</h4>
+          <h4>3FG: {stats["3FG"]}</h4>
         </StatDisplay>
         <StatDisplay update={isFtUpdate}>
           <h4>FT: {stats.FT}</h4>
         </StatDisplay>
       </FlexContainer>
     </FlexContainer>
-  )
+  );
 }
+PlayerStatsDisplay.propTypes = {
+  stats: PropTypes.object.isRequired,
+};
+
+export default React.memo(PlayerStatsDisplay);

@@ -4,7 +4,7 @@ import useFormInput from "../../../hooks/useFormInput";
 import useSaveTeam from "../../../hooks/useSaveTeam";
 import ModalDialog from "../../ModalDialog/ModalDialog";
 
-export default function NewTeamFormDialog({ isOpenDialog, closeDialog }) {
+function NewTeamFormDialog({ isOpenDialog, closeDialog }) {
   const teamName = useFormInput("");
   const teamLeague = useFormInput("");
   const teamCountry = useFormInput("");
@@ -132,3 +132,5 @@ export default function NewTeamFormDialog({ isOpenDialog, closeDialog }) {
     </>
   );
 }
+
+export default React.memo(NewTeamFormDialog);

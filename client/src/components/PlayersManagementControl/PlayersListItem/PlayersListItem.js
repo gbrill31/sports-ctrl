@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import {
   faTrashAlt,
@@ -72,7 +73,7 @@ const ItemStats = styled.div`
     `}
 `;
 
-export default function PlayersListItem({
+function PlayersListItem({
   player,
   selectedPlayer,
   setSelectedPlayer,
@@ -237,3 +238,12 @@ export default function PlayersListItem({
     </ItemContainer>
   );
 }
+
+PlayersListItem.propTypes = {
+  player: PropTypes.object.isRequired,
+  selectedPlayer: PropTypes.object,
+  setSelectedPlayer: PropTypes.func,
+  deletePlayerPrompt: PropTypes.func,
+};
+
+export default React.memo(PlayersListItem);

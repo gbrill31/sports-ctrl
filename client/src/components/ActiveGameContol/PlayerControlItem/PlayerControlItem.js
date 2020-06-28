@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
 
 import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
@@ -53,7 +54,7 @@ const ItemContainer = styled.div`
   }
 `;
 
-export default function PlayerControlItem({ player, gameId }) {
+function PlayerControlItem({ player, gameId }) {
   const dispatch = useDispatch();
 
   const isSetStatsDialogOpen = useSelector(
@@ -93,3 +94,10 @@ export default function PlayerControlItem({ player, gameId }) {
     )
   );
 }
+
+PlayerControlItem.propTypes = {
+  player: PropTypes.object,
+  gameId: PropTypes.number,
+};
+
+export default React.memo(PlayerControlItem);

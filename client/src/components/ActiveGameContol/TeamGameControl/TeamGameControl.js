@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 
 import PlayerControlItem from "../PlayerControlItem/PlayerControlItem";
 import FilterListInput from "../../FilterListInput/FilterListInput";
@@ -30,7 +31,7 @@ const FoulsContainer = styled.div`
   text-align: center;
 `;
 
-export default function TeamGameControl({
+function TeamGameControl({
   teamLocation,
   team,
   borderRight,
@@ -75,3 +76,14 @@ export default function TeamGameControl({
     )
   );
 }
+
+TeamGameControl.propTypes = {
+  teamLocation: PropTypes.string,
+  team: PropTypes.object,
+  borderRight: PropTypes.bool,
+  points: PropTypes.number,
+  fouls: PropTypes.number,
+  gameId: PropTypes.number.isRequired,
+};
+
+export default React.memo(TeamGameControl);

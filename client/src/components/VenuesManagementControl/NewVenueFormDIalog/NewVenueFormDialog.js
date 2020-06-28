@@ -5,7 +5,7 @@ import useFormInput from "../../../hooks/useFormInput";
 import useSaveVenue from "../../../hooks/useSaveVenue";
 import ModalDialog from "../../ModalDialog/ModalDialog";
 
-export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
+function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
   const venueName = useFormInput("");
   const venueCountry = useFormInput("");
   const venueCity = useFormInput("");
@@ -128,3 +128,5 @@ export default function NewVenueFormDialog({ isOpenDialog, closeDialog }) {
     </>
   );
 }
+
+export default React.memo(NewVenueFormDialog);

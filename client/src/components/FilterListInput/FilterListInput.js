@@ -1,5 +1,5 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import { faTimes, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFormInput from "../../hooks/useFormInput";
@@ -30,7 +30,7 @@ const FilterListInput = ({ onChange, placeholder }) => {
       <FlexContainer padding="0" width="90%">
         <Input
           type="text"
-          placeholder={placeholder}
+          placeholder={placeholder || "Type here to filter the list"}
           value={filterInput.value}
           onChange={handleInputChange}
           color="#fff"
@@ -48,6 +48,11 @@ const FilterListInput = ({ onChange, placeholder }) => {
       </FlexContainer>
     </FlexContainer>
   );
+};
+
+FilterListInput.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
 };
 
 export default React.memo(FilterListInput);

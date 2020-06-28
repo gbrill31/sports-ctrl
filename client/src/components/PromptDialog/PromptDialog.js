@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   DialogActions,
   DialogContentText,
@@ -50,4 +51,15 @@ const PromptDialog = ({
   );
 };
 
-export default PromptDialog;
+PromptDialog.propTypes = {
+  isOpen: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  handleConfirm: PropTypes.func.isRequired,
+  title: PropTypes.string.isRequired,
+  content: PropTypes.string.isRequired,
+  confirmText: PropTypes.string,
+  isPending: PropTypes.bool,
+  pendingTitle: PropTypes.string,
+};
+
+export default React.memo(PromptDialog);

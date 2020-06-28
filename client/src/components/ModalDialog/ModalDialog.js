@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   DialogActions,
   DialogTitle,
@@ -7,7 +8,7 @@ import {
 } from "@material-ui/core";
 import { Button } from "../../styledElements";
 
-export default function ModalDialog({
+function ModalDialog({
   children,
   isOpen,
   title,
@@ -57,3 +58,22 @@ export default function ModalDialog({
     )
   );
 }
+
+ModalDialog.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.element,
+    PropTypes.arrayOf(PropTypes.element),
+  ]).isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  title: PropTypes.string.isRequired,
+  handleConfirm: PropTypes.func.isRequired,
+  handleCancel: PropTypes.func.isRequired,
+  confirmText: PropTypes.string,
+  label: PropTypes.string,
+  saving: PropTypes.bool,
+  confirmBtnDisabled: PropTypes.bool,
+  isEnterKeyDown: PropTypes.bool,
+  onOpen: PropTypes.func,
+};
+
+export default React.memo(ModalDialog);

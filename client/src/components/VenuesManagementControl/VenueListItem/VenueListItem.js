@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import {
   Card,
   CardContent,
@@ -52,7 +53,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function VenueListItem({ venue, deleteVenuePrompt }) {
+function VenueListItem({ venue, deleteVenuePrompt }) {
   const classes = useStyles();
   const [isEditVenue, setIsEditVenue] = useState(false);
 
@@ -231,3 +232,10 @@ export default function VenueListItem({ venue, deleteVenuePrompt }) {
     </Card>
   );
 }
+
+VenueListItem.propTypes = {
+  venue: PropTypes.object.isRequired,
+  deleteVenuePrompt: PropTypes.func,
+};
+
+export default React.memo(VenueListItem);

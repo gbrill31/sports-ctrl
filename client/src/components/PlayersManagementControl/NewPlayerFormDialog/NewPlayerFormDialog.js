@@ -12,7 +12,7 @@ import useFormInput from "../../../hooks/useFormInput";
 import useSavePlayers from "../../../hooks/useSavePlayers";
 import ModalDialog from "../../ModalDialog/ModalDialog";
 
-export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
+function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
   const [players, setPlayers] = useState([]);
   const playerName = useFormInput("");
   const playerNumber = useFormInput("");
@@ -163,3 +163,5 @@ export default function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
     </>
   );
 }
+
+export default React.memo(NewPlayerFormDialog);
