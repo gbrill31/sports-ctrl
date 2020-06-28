@@ -36,7 +36,7 @@ export const updatePlayerStats = (gameId, playerId, data) => {
     data,
   };
 };
-export const setNewPlayerStats = (id, teamId, stats) => ({
+export const setPlayerStats = (id, teamId, stats) => ({
   type: GAMES.SET_PLAYER_STATS_SUCCESS,
   payload: { id, teamId, stats },
 });

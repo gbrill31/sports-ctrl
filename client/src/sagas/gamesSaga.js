@@ -2,7 +2,7 @@ import { takeEvery, call, put } from "redux-saga/effects";
 
 import { GAMES } from "../constants";
 import {
-  setNewPlayerStats,
+  setPlayerStats,
   // updatePlayerStatsError,
   setGameScore,
   setGameStatus,
@@ -21,7 +21,7 @@ function* handleUpdatePlayerStats({ gameId, playerId, data }) {
   try {
     const updatedPlayer = yield call(updatePlayerStats, gameId, playerId, data);
     yield put(
-      setNewPlayerStats(
+      setPlayerStats(
         updatedPlayer.id,
         updatedPlayer.teamId,
         updatedPlayer.stats
