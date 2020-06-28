@@ -83,6 +83,19 @@ const AppGlobalStyle = createGlobalStyle`
 	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: ${(props) => props.theme.scrollBar.thumb};
 }
+
+.Toastify__toast--info {
+  background-color: ${(props) => props.theme.generic.color};
+}
+.Toastify__toast--success {
+  background-color: ${(props) => props.theme.success.color};
+}
+.Toastify__toast--warning {
+  background-color: ${(props) => props.theme.secondary.color};
+}
+.Toastify__toast--error {
+  background-color: ${(props) => props.theme.error.color};
+}
 `;
 
 const AppContainer = styled.div`
