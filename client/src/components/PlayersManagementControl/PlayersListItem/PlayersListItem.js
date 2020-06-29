@@ -1,12 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import {
-  faTrashAlt,
-  faEdit,
-  faSave,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   FlexContainer,
@@ -17,15 +12,18 @@ import {
 import useFormInput from "../../../hooks/useFormInput";
 import useSavePlayers from "../../../hooks/useSavePlayers";
 import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
+import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
 
 const ItemContainer = styled.div`
   width: 90%;
   background-color: #fff;
+  border-radius: 0 15px 15px 0;
   color: #333;
   text-transform: capitalize;
   padding: 15px;
   margin-bottom: 15px;
   transition: box-shadow 0.1s ease;
+  overflow: hidden;
   cursor: pointer;
 
   &:hover {
@@ -38,12 +36,13 @@ const ItemContainer = styled.div`
   ${(props) =>
     props.selected &&
     css`
-      box-shadow: 0 5px 8px 0px ${(props) => props.theme.success.color} inset;
+      box-shadow: 0 5px 8px 0px ${(props) => props.theme.secondary.color} inset;
     `}
 
   h2 {
     font-size: 3rem;
     font-weight: bold;
+    margin: 0;
   }
   h3 {
     margin: 0;
@@ -54,9 +53,9 @@ const ItemContainer = styled.div`
     margin-left: 15px;
   }
   h4 {
+    margin: 8px 0 8px 10px;
     color: #999;
     font-weight: 300;
-    margin-left: 10px;
   }
 `;
 
@@ -97,7 +96,7 @@ function PlayersListItem({
     }
   };
 
-  const deleteItem = (e) => {
+  const deletePlayer = (e) => {
     e.stopPropagation();
     deletePlayerPrompt();
   };
@@ -129,6 +128,11 @@ function PlayersListItem({
 
   return (
     <ItemContainer selected={isPlayerSelected()} onClick={selectPlayer}>
+      <ItemActionsMenu
+        editItem={editPlayer}
+        deleteItem={deletePlayer}
+        isItemSelected={isPlayerSelected()}
+      />
       <FlexContainer align="baseline" padding="0">
         {isEditPlayer ? (
           <FlexContainer>
@@ -177,31 +181,7 @@ function PlayersListItem({
       </FlexContainer>
       <ItemStats active={isPlayerSelected()}>
         <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
-          {!isEditPlayer ? (
-            <>
-              <Button
-                aria-label="edit player"
-                color="primary"
-                onClick={editPlayer}
-                justifyRight
-              >
-                Edit
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faEdit} size="sm" />
-                </ButtonIcon>
-              </Button>
-              <Button
-                aria-label="delete player"
-                color="error"
-                onClick={deleteItem}
-              >
-                Delete
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-                </ButtonIcon>
-              </Button>
-            </>
-          ) : (
+          {isEditPlayer && (
             <>
               <Button
                 aria-label="cencel edit player"

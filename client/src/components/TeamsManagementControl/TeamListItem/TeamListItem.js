@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
-import useFormInput from "../../../hooks/useFormInput";
-import useSaveTeam from "../../../hooks/useSaveTeam";
-import {
-  faTrashAlt,
-  faEdit,
-  faSave,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   FlexContainer,
@@ -16,16 +9,20 @@ import {
   ButtonIcon,
   Input,
 } from "../../../styledElements";
+import useFormInput from "../../../hooks/useFormInput";
+import useSaveTeam from "../../../hooks/useSaveTeam";
+import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
 
 const ItemContainer = styled.div`
   width: 90%;
-  border-radius: 15px;
+  border-radius: 0 15px 15px 0;
   background-color: #fff;
   color: #333;
   text-transform: capitalize;
   padding: 0 15px;
   margin-bottom: 15px;
   transition: box-shadow 0.1s ease;
+  overflow: hidden;
   cursor: pointer;
 
   &:hover {
@@ -38,7 +35,7 @@ const ItemContainer = styled.div`
   ${(props) =>
     props.selected &&
     css`
-      box-shadow: 0 5px 8px 0px ${(props) => props.theme.success.color} inset;
+      box-shadow: 0 5px 8px 0px ${(props) => props.theme.secondary.color} inset;
     `}
 
   h2 {
@@ -58,7 +55,7 @@ const ItemContainer = styled.div`
   }
 `;
 
-const ItemActions = styled.div`
+const ItemEditActions = styled.div`
   height: auto;
   max-height: 0;
   transition: max-height 0.4s ease-in-out;
@@ -89,14 +86,18 @@ function TeamListItem({
   const teamCountry = useFormInput(team.getCountry());
   const teamCity = useFormInput(team.getCity());
 
-  useEffect(() => {
-    if (selectedTeam && selectedTeam.getId() !== team.getId()) {
-      setIsEditTeam(false);
-    }
+  const isTeamSelected = useCallback(() => {
+    return selectedTeam && selectedTeam.getId() === team.getId();
   }, [selectedTeam, team]);
 
-  const deleteItem = (e) => {
-    e.nativeEvent.stopImmediatePropagation();
+  useEffect(() => {
+    if (selectedTeam && !isTeamSelected()) {
+      setIsEditTeam(false);
+    }
+  }, [selectedTeam, team, isTeamSelected]);
+
+  const deleteTeam = (e) => {
+    e.stopPropagation();
     deleteTeamPrompt();
   };
   const cancelEditTeam = () => {
@@ -105,7 +106,8 @@ function TeamListItem({
 
   const saveTeam = useSaveTeam(cancelEditTeam);
 
-  const editTeam = () => {
+  const editTeam = (e) => {
+    e.stopPropagation();
     teamName.setValue(team.getName());
     teamLeague.setValue(team.getLeague());
     setIsEditTeam(true);
@@ -121,13 +123,14 @@ function TeamListItem({
     });
   };
 
-  const isTeamSelected = () => {
-    return selectedTeam && selectedTeam.getId() === team.getId();
-  };
-
   return (
     <>
       <ItemContainer selected={isTeamSelected()} onClick={selectTeam}>
+        <ItemActionsMenu
+          editItem={editTeam}
+          deleteItem={deleteTeam}
+          isItemSelected={isTeamSelected()}
+        />
         <FlexContainer align="baseline">
           {isEditTeam ? (
             <FlexContainer>
@@ -204,33 +207,9 @@ function TeamListItem({
             </>
           )}
         </FlexContainer>
-        <ItemActions active={isTeamSelected()}>
+        <ItemEditActions active={isEditTeam}>
           <FlexContainer justify={isEditTeam ? "flex-end" : false}>
-            {!isEditTeam ? (
-              <>
-                <Button
-                  aria-label="edit team"
-                  color="primary"
-                  onClick={editTeam}
-                  justifyRight
-                >
-                  Edit
-                  <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faEdit} size="sm" />
-                  </ButtonIcon>
-                </Button>
-                <Button
-                  aria-label="delete team"
-                  color="error"
-                  onClick={deleteItem}
-                >
-                  Delete
-                  <ButtonIcon spaceLeft>
-                    <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-                  </ButtonIcon>
-                </Button>
-              </>
-            ) : (
+            {isEditTeam && (
               <>
                 <Button
                   aria-label="cencel edit team"
@@ -255,7 +234,7 @@ function TeamListItem({
               </>
             )}
           </FlexContainer>
-        </ItemActions>
+        </ItemEditActions>
       </ItemContainer>
     </>
   );

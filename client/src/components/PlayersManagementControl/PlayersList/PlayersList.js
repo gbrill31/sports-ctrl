@@ -88,7 +88,7 @@ export default function PlayersList() {
               />
             )}
           </FlexContainer>
-          <ScrollableContainer padding="5px" heightDiff={400} fullWidth>
+          <ScrollableContainer padding="5px" heightDiff={325} fullWidth>
             <FlexContainer column fullWidth>
               {players && players.length > 0 ? (
                 getFilteredPlayers()
@@ -115,8 +115,8 @@ export default function PlayersList() {
       </FlexContainer>
       <PromptDialog
         isOpen={isDeletePlayer}
-        title="Delete Team"
-        content={`Are you sure you want to delete ${selectedPlayer?.getName()}?`}
+        title="Delete Player"
+        content={`Are you sure you want to delete "${selectedPlayer?.getName()}"?`}
         confirmText="Delete"
         handleClose={handleCancelPrompt}
         handleConfirm={deleteSelectedPlayer}

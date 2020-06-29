@@ -100,7 +100,7 @@ export default function TeamsList() {
               />
             )}
           </FlexContainer>
-          <ScrollableContainer padding="5px" heightDiff={400} fullWidth>
+          <ScrollableContainer padding="5px" heightDiff={325} fullWidth>
             <FlexContainer column fullWidth>
               {teams &&
                 getFilteredTeams()
@@ -123,9 +123,9 @@ export default function TeamsList() {
       <PromptDialog
         isOpen={isDeleteTeamPrompt}
         title="Delete Team"
-        content={`Are you sure you want to delete ${
+        content={`Are you sure you want to delete "${
           selectedTeam?.getName() || ""
-        }?`}
+        }"?`}
         confirmText="Delete"
         handleClose={closeDeletePrompt}
         handleConfirm={deleteSelectedTeam}
