@@ -106,8 +106,8 @@ const AppContainer = styled.div`
 `;
 
 const AppMainContent = styled.main`
-  padding-top: 100px;
-  height: calc(100vh - 100px);
+  padding-top: 70px;
+  height: calc(100vh - 70px);
 `;
 
 toast.configure({

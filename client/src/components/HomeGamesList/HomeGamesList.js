@@ -39,7 +39,7 @@ export default function HomeGamesList() {
           </>
         )}
         <MainTitle>Games Played</MainTitle>
-        <ScrollableContainer fullWidth heightDiff={activeGame ? 345 : 170}>
+        <ScrollableContainer fullWidth heightDiff={activeGame ? 292 : 137}>
           {games &&
             games
               .filter((game) => !game.active)

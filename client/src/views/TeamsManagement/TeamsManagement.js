@@ -1,16 +1,10 @@
-import React from 'react';
-import {
-  MainTitle, GridContainer
-} from '../../styledElements';
+import React from "react";
+import { MainTitle, GridContainer } from "../../styledElements";
 
-import TeamsList from '../../components/TeamsManagementControl/TeamsList/TeamsList';
-import PlayersList from '../../components/PlayersManagementControl/PlayersList/PlayersList';
-
-
+import TeamsList from "../../components/TeamsManagementControl/TeamsManagementList/TeamsManagementList";
+import PlayersList from "../../components/PlayersManagementControl/PlayersList/PlayersList";
 
 export default function Teams() {
-
-
   return (
     <>
       <MainTitle>Teams Management</MainTitle>
@@ -19,5 +13,5 @@ export default function Teams() {
         <PlayersList />
       </GridContainer>
     </>
-  )
+  );
 }

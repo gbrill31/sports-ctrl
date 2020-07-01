@@ -12,9 +12,9 @@ import {
 } from "../../../styledElements";
 
 import PromptDialog from "../../PromptDialog/PromptDialog";
-import NewTeamFormDialog from "../../../components/TeamsManagementControl/NewTeamFormDialog/NewTeamFormDialog";
-import TeamListItem from "../TeamListItem/TeamListItem";
-import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
+import NewTeamFormDialog from "../NewTeamFormDialog/NewTeamFormDialog";
+import TeamManagementListItem from "../TeamManagementListItem/TeamManagementListItem";
+import ComponentLoader from "../../ComponentLoader/ComponentLoader";
 import FilterListInput from "../../FilterListInput/FilterListInput";
 import useDb from "../../../hooks/useDb";
 import useTeams from "../../../hooks/useTeams";
@@ -22,7 +22,7 @@ import useDeleteTeam from "../../../hooks/useDeleteTeam";
 
 import { setSelectedTeam } from "../../../actions";
 
-export default function TeamsList() {
+export default function ManagementTeamsList() {
   const dispatch = useDispatch();
 
   const { status: dbStatus } = useDb();
@@ -100,7 +100,7 @@ export default function TeamsList() {
               />
             )}
           </FlexContainer>
-          <ScrollableContainer padding="5px" heightDiff={325} fullWidth>
+          <ScrollableContainer padding="5px" heightDiff={350} fullWidth>
             <FlexContainer column fullWidth>
               {teams &&
                 getFilteredTeams()
@@ -108,7 +108,7 @@ export default function TeamsList() {
                     teamA.name.toLowerCase() > teamB.name.toLowerCase() ? 1 : -1
                   )
                   .map((team) => (
-                    <TeamListItem
+                    <TeamManagementListItem
                       key={team.getId()}
                       team={team}
                       setSelectedTeam={setSelected}

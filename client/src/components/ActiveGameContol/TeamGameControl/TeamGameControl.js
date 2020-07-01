@@ -12,7 +12,7 @@ import {
 } from "../../../styledElements";
 
 const TeamControlContainer = styled.div`
-  padding: 0 15px 0 0;
+  /* padding: 0 15px 0 0; */
 `;
 
 const ScoreContainer = styled.div`
@@ -61,7 +61,7 @@ function TeamGameControl({
           onChange={setFilterValue}
           placeholder="Type Name or Number"
         />
-        <ScrollableContainer heightDiff={400} fullWidth>
+        <ScrollableContainer heightDiff={370} fullWidth>
           <FlexContainer column align="center" borderRight={borderRight}>
             {team.getPlayers("name", filterValue).map((player) => (
               <PlayerControlItem

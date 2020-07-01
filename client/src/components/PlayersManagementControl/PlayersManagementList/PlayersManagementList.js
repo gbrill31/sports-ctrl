@@ -88,7 +88,7 @@ export default function PlayersManagementList() {
               />
             )}
           </FlexContainer>
-          <ScrollableContainer padding="5px" heightDiff={325} fullWidth>
+          <ScrollableContainer padding="5px" heightDiff={350} fullWidth>
             <FlexContainer column fullWidth>
               {players && players.length > 0 ? (
                 getFilteredPlayers()

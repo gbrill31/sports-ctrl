@@ -63,7 +63,7 @@ const ItemEditActions = styled.div`
     `}
 `;
 
-function TeamListItem({
+function TeamManagementListItem({
   team,
   deleteTeamPrompt,
   selectedTeam,
@@ -237,11 +237,11 @@ function TeamListItem({
   );
 }
 
-TeamListItem.propTypes = {
+TeamManagementListItem.propTypes = {
   team: PropTypes.object.isRequired,
   deleteTeamPrompt: PropTypes.func.isRequired,
   selectedTeam: PropTypes.object,
   setSelectedTeam: PropTypes.func,
 };
 
-export default React.memo(TeamListItem);
+export default React.memo(TeamManagementListItem);
