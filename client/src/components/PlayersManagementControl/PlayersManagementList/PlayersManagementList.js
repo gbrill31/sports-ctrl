@@ -13,13 +13,13 @@ import {
 
 import PlayersListItem from "../PlayersListItem/PlayersListItem";
 import PromptDialog from "../../PromptDialog/PromptDialog";
-import NewPlayerFormDialog from "../../../components/PlayersManagementControl/NewPlayerFormDialog/NewPlayerFormDialog";
-import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
+import NewPlayerFormDialog from "../NewPlayerFormDialog/NewPlayerFormDialog";
+import ComponentLoader from "../../ComponentLoader/ComponentLoader";
 import FilterListInput from "../../FilterListInput/FilterListInput";
 import usePlayers from "../../../hooks/usePlayers";
 import useDeletePlayer from "../../../hooks/useDeletePlayer";
 
-export default function PlayersList() {
+export default function PlayersManagementList() {
   const selectedTeam = useSelector((state) => state.teams.selected);
 
   const { status, data: players, isFetching } = usePlayers(

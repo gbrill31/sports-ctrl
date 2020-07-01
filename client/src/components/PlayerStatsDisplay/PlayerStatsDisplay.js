@@ -20,7 +20,7 @@ const StatDisplay = styled.div`
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
-  margin-left: 20px;
+  /* margin-right: 20px; */
 
   h4 {
     margin: 0;
@@ -28,7 +28,7 @@ const StatDisplay = styled.div`
     font-size: 1rem;
     text-transform: uppercase;
     font-weight: 400;
-    margin-left: 15px;
+    /* margin-left: 15px; */
   }
 
   ${(props) =>
@@ -100,14 +100,21 @@ function PlayerStatsDisplay({ stats }) {
       align="center"
       bgColor="#eaeaea"
     >
-      <StatDisplay update={isPointsUpdate}>POINTS: {stats.PT}</StatDisplay>
-      <StatDisplay
-        color={stats.FOULS > 3 ? "error" : "primary"}
-        update={isFoulsUpdate}
+      <FlexContainer justify="space-evenly" width="60%">
+        <StatDisplay update={isPointsUpdate}>POINTS: {stats.PT}</StatDisplay>
+        <StatDisplay
+          color={stats.FOULS > 3 ? "error" : "primary"}
+          update={isFoulsUpdate}
+        >
+          FOULS: {stats.FOULS}
+        </StatDisplay>
+      </FlexContainer>
+      <FlexContainer
+        width="60%"
+        justify="space-evenly"
+        align="center"
+        padding="0"
       >
-        FOULS: {stats.FOULS}
-      </StatDisplay>
-      <FlexContainer justify="center" align="center" padding="0">
         <StatDisplay update={is2fgUpdate}>
           <h4>2FG: {stats["2FG"]}</h4>
         </StatDisplay>

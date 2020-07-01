@@ -57,7 +57,7 @@ const ActiveIcon = styled.div`
   animation: ${iconLoop} 0.5s alternate infinite;
 `;
 
-const GameItem = ({ game, goToActive }) => {
+const HomeGameListItem = ({ game, goToActive }) => {
   return (
     <ItemWrapper onClick={game.active ? goToActive : null} active={game.active}>
       <FlexContainer
@@ -86,9 +86,9 @@ const GameItem = ({ game, goToActive }) => {
   );
 };
 
-GameItem.propTypes = {
+HomeGameListItem.propTypes = {
   game: PropTypes.object.isRequired,
   goToActive: PropTypes.func,
 };
 
-export default React.memo(GameItem);
+export default React.memo(HomeGameListItem);

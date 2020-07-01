@@ -48,7 +48,7 @@ const ItemContainer = styled.div`
     margin: 0;
     color: #999;
     font-weight: 300;
-    margin-left: 10px;
+    /* margin-left: 10px; */
   }
 `;
 
@@ -65,7 +65,7 @@ const ShadowBox = styled.div`
   }
 `;
 
-function PlayerControlItem({ player, gameId, roundLeft }) {
+function PlayerGameControlItem({ player, gameId, roundLeft }) {
   const dispatch = useDispatch();
 
   const isSetStatsDialogOpen = useSelector(
@@ -110,10 +110,10 @@ function PlayerControlItem({ player, gameId, roundLeft }) {
   );
 }
 
-PlayerControlItem.propTypes = {
+PlayerGameControlItem.propTypes = {
   player: PropTypes.object,
   gameId: PropTypes.number,
   roundLeft: PropTypes.bool,
 };
 
-export default React.memo(PlayerControlItem);
+export default React.memo(PlayerGameControlItem);

@@ -1,11 +1,11 @@
 import React from "react";
 
-import GamesList from "../../components/GamesList/GamesList";
+import HomeGamesList from "../../components/HomeGamesList/HomeGamesList";
 
 function Home() {
   return (
     <>
-      <GamesList />
+      <HomeGamesList />
     </>
   );
 }

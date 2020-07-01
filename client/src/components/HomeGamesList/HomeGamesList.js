@@ -3,12 +3,12 @@ import { useHistory } from "react-router-dom";
 
 import { MainTitle, ScrollableContainer } from "../../styledElements";
 
-import ComponentLoader from "../../components/ComponentLoader/ComponentLoader";
-import GameItem from "../GameItem/GameItem";
+import ComponentLoader from "../ComponentLoader/ComponentLoader";
+import HomeGameListItem from "../HomeGameListItem/HomeGameListItem";
 import useGames from "../../hooks/useGames";
 import useDb from "../../hooks/useDb";
 
-export default function GamesList() {
+export default function HomeGamesList() {
   const history = useHistory();
 
   const [activeGame, setActiveGame] = useState(null);
@@ -35,7 +35,7 @@ export default function GamesList() {
         {activeGame && activeGame.id && (
           <>
             <MainTitle>Active Game</MainTitle>
-            <GameItem goToActive={goToActiveGame} game={activeGame} />
+            <HomeGameListItem goToActive={goToActiveGame} game={activeGame} />
           </>
         )}
         <MainTitle>Games Played</MainTitle>
@@ -43,7 +43,7 @@ export default function GamesList() {
           {games &&
             games
               .filter((game) => !game.active)
-              .map((game) => <GameItem key={game.id} game={game} />)}
+              .map((game) => <HomeGameListItem key={game.id} game={game} />)}
         </ScrollableContainer>
       </ComponentLoader>
     </>

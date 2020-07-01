@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import PlayerControlItem from "../PlayerControlItem/PlayerControlItem";
+import PlayerControlItem from "../PlayerGameControlItem/PlayerGameControlItem";
 import FilterListInput from "../../FilterListInput/FilterListInput";
 
 import {
