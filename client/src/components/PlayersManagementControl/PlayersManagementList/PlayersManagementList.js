@@ -11,7 +11,7 @@ import {
   ScrollableContainer,
 } from "../../../styledElements";
 
-import PlayersListItem from "../PlayersListItem/PlayersListItem";
+import PlayersManagementListItem from "../PlayersManagementListItem/PlayersManagementListItem";
 import PromptDialog from "../../PromptDialog/PromptDialog";
 import NewPlayerFormDialog from "../NewPlayerFormDialog/NewPlayerFormDialog";
 import ComponentLoader from "../../ComponentLoader/ComponentLoader";
@@ -98,7 +98,7 @@ export default function PlayersManagementList() {
                       : -1
                   )
                   .map((player) => (
-                    <PlayersListItem
+                    <PlayersManagementListItem
                       key={player.getId()}
                       player={player}
                       selectedPlayer={selectedPlayer}

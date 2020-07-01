@@ -67,7 +67,7 @@ const ItemStats = styled.div`
     `}
 `;
 
-function PlayersListItem({
+function PlayersManagementListItem({
   player,
   selectedPlayer,
   setSelectedPlayer,
@@ -215,11 +215,11 @@ function PlayersListItem({
   );
 }
 
-PlayersListItem.propTypes = {
+PlayersManagementListItem.propTypes = {
   player: PropTypes.object.isRequired,
   selectedPlayer: PropTypes.object,
   setSelectedPlayer: PropTypes.func,
   deletePlayerPrompt: PropTypes.func,
 };
 
-export default React.memo(PlayersListItem);
+export default React.memo(PlayersManagementListItem);

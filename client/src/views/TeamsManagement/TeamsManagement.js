@@ -1,16 +1,16 @@
 import React from "react";
 import { MainTitle, GridContainer } from "../../styledElements";
 
-import TeamsList from "../../components/TeamsManagementControl/TeamsManagementList/TeamsManagementList";
-import PlayersList from "../../components/PlayersManagementControl/PlayersList/PlayersList";
+import TeamsManagementControl from "../../components/TeamsManagementControl/TeamsManagementList/TeamsManagementList";
+import PlayersManagementList from "../../components/PlayersManagementControl/PlayersManagementList/PlayersManagementList";
 
 export default function Teams() {
   return (
     <>
       <MainTitle>Teams Management</MainTitle>
       <GridContainer columnsSpread="auto auto" noPadding>
-        <TeamsList />
-        <PlayersList />
+        <TeamsManagementControl />
+        <PlayersManagementList />
       </GridContainer>
     </>
   );
