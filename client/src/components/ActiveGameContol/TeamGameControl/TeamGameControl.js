@@ -61,13 +61,14 @@ function TeamGameControl({
           onChange={setFilterValue}
           placeholder="Type Name or Number"
         />
-        <ScrollableContainer heightDiff={420} fullWidth>
+        <ScrollableContainer heightDiff={400} fullWidth>
           <FlexContainer column align="center" borderRight={borderRight}>
             {team.getPlayers("name", filterValue).map((player) => (
               <PlayerControlItem
                 key={player.getId()}
                 player={player}
                 gameId={gameId}
+                roundLeft={teamLocation === "home"}
               />
             ))}
           </FlexContainer>

@@ -15,18 +15,15 @@ import {
 const ItemContainer = styled.div`
   width: 100%;
   background-color: #fff;
+  border-radius: ${(props) =>
+    props.roundLeft ? "15px 0 0 15px" : "0 15px 15px 0"};
   color: #333;
   text-transform: capitalize;
   margin-bottom: 15px;
   transition: box-shadow 0.1s ease;
   cursor: pointer;
-
-  &:hover {
-    box-shadow: ${(props) =>
-      !props.selected
-        ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
-        : ""};
-  }
+  overflow: hidden;
+  position: relative;
 
   ${(props) =>
     props.selected &&
@@ -35,6 +32,7 @@ const ItemContainer = styled.div`
     `}
 
   h2 {
+    margin: 5px;
     font-size: 3rem;
     font-weight: bold;
   }
@@ -54,7 +52,20 @@ const ItemContainer = styled.div`
   }
 `;
 
-function PlayerControlItem({ player, gameId }) {
+const ShadowBox = styled.div`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+
+  &:hover {
+    box-shadow: ${(props) =>
+      `0 2px 5px 1px ${props.theme.primary.hover} inset`};
+  }
+`;
+
+function PlayerControlItem({ player, gameId, roundLeft }) {
   const dispatch = useDispatch();
 
   const isSetStatsDialogOpen = useSelector(
@@ -84,12 +95,16 @@ function PlayerControlItem({ player, gameId }) {
   return (
     player &&
     gameId && (
-      <ItemContainer onClick={openSetPlayerStatsDialog(player)}>
+      <ItemContainer
+        onClick={openSetPlayerStatsDialog(player)}
+        roundLeft={roundLeft}
+      >
         <FlexContainer justify="center" align="center" padding="0">
           <h2>{player.getNumber()}</h2>
           <h3>{player.getName()}</h3>
           <PlayerStatsDisplay stats={player.getStatsData(gameId)} />
         </FlexContainer>
+        <ShadowBox />
       </ItemContainer>
     )
   );
@@ -98,6 +113,7 @@ function PlayerControlItem({ player, gameId }) {
 PlayerControlItem.propTypes = {
   player: PropTypes.object,
   gameId: PropTypes.number,
+  roundLeft: PropTypes.bool,
 };
 
 export default React.memo(PlayerControlItem);

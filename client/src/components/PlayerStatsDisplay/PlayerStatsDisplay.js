@@ -107,7 +107,7 @@ function PlayerStatsDisplay({ stats }) {
       >
         FOULS: {stats.FOULS}
       </StatDisplay>
-      <FlexContainer>
+      <FlexContainer justify="center" align="center" padding="0">
         <StatDisplay update={is2fgUpdate}>
           <h4>2FG: {stats["2FG"]}</h4>
         </StatDisplay>

@@ -73,6 +73,7 @@ function ItemActionsMenu({ editItem, deleteItem, isShow, overrideClick }) {
             aria-label="open team actions"
             color="#333"
             show
+            animate
             onClick={openActions}
           >
             <Icon>
