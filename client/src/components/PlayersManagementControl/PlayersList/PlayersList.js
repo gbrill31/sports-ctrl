@@ -6,7 +6,7 @@ import { CircularProgress } from "@material-ui/core";
 import {
   FlexContainer,
   Button,
-  ButtonIcon,
+  Icon,
   MainTitle,
   ScrollableContainer,
 } from "../../../styledElements";
@@ -71,9 +71,9 @@ export default function PlayersList() {
             {selectedTeam && (
               <Button color="success" onClick={openAddPlayersDialog}>
                 Add Players
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faPlus} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
             )}
             {isFetching && (

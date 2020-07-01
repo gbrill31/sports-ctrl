@@ -1,60 +1,74 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import {
-  Card,
-  CardContent,
-  CardActions,
-  Typography,
-  IconButton,
-  TextField,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import styled, { css } from "styled-components";
+
 import useFormInput from "../../../hooks/useFormInput";
 import useSaveVenue from "../../../hooks/useSaveVenue";
-import {
-  faTrashAlt,
-  faEdit,
-  faSave,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
+import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 275,
-    minHeight: 300,
-    margin: 15,
-    position: "relative",
-  },
-  bullet: {
-    display: "inline-block",
-    margin: "0 2px",
-    transform: "scale(0.8)",
-  },
-  venue: {
-    textTransform: "capitalize",
-  },
-  title: {
-    fontSize: 14,
-    textTransform: "capitalize",
-  },
-  pos: {
-    marginBottom: 12,
-    textTransform: "capitalize",
-  },
-  actions: {
-    position: "absolute",
-    width: "95%",
-    bottom: "5px",
-    left: 0,
-  },
-  actionRight: {
-    marginLeft: "auto",
-  },
-});
+const ItemContainer = styled.div`
+  width: 25%;
+  min-width: 350px;
+  min-height: 120px;
+  background-color: #fff;
+  border-radius: 0 15px 15px 0;
+  color: #333;
+  text-transform: capitalize;
+  padding: 15px;
+  margin: 0 0 15px 15px;
+  transition: box-shadow 0.1s ease;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
 
-function VenueListItem({ venue, deleteVenuePrompt }) {
-  const classes = useStyles();
+  &:hover {
+    box-shadow: ${(props) =>
+      !props.selected
+        ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
+        : ""};
+  }
+
+  ${(props) =>
+    props.selected &&
+    css`
+      box-shadow: 0 5px 8px 0px ${(props) => props.theme.secondary.color} inset;
+    `}
+
+  h2 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  h3 {
+    margin: 0;
+    color: #777;
+    font-size: 2rem;
+    text-transform: uppercase;
+    font-weight: 300;
+  }
+  h4 {
+    margin: 8px 0 8px 10px;
+    color: #999;
+    font-weight: 300;
+  }
+`;
+
+const VenueInfoSection = styled.div`
+  position: absolute;
+  bottom: ${(props) => (props.selected ? "3px" : "-50px")};
+  left: 7px;
+  transition: bottom 0.2s ease-in-out;
+`;
+
+function VenueListItem({
+  venue,
+  deleteVenuePrompt,
+  selectedVenue,
+  setSelectedVenue,
+}) {
   const [isEditVenue, setIsEditVenue] = useState(false);
 
   const venueName = useFormInput(venue.name);
@@ -62,8 +76,18 @@ function VenueListItem({ venue, deleteVenuePrompt }) {
   const venueCity = useFormInput(venue.city);
   const [venueSeats, setVenueSeats] = useState(venue.seats);
 
+  const selectVenue = () => {
+    setSelectedVenue(venue);
+  };
+
+  const isVenueSelected = () => selectedVenue?.id === venue.id;
+
   const editVenue = () => {
     setIsEditVenue(true);
+  };
+
+  const deleteVenue = () => {
+    deleteVenuePrompt();
   };
 
   const cancelEditVenue = () => {
@@ -85,157 +109,117 @@ function VenueListItem({ venue, deleteVenuePrompt }) {
   const onVenueSeatsChange = (e) => setVenueSeats(e.target.value);
 
   return (
-    <Card className={classes.root} key={venue.id}>
-      <CardContent>
-        <Typography className={classes.venue} variant="h5" component="h2">
-          {isEditVenue ? (
-            <TextField
-              autoFocus
-              required
-              // disabled={isSaving}
-              inputProps={{
-                ref: venueName.ref,
-              }}
-              error={!venueName.isValid}
-              helperText={venueName.errorMessage}
-              margin="dense"
-              id="name"
-              label="Name"
-              type="text"
-              placeholder="Venue Name"
-              value={venueName.value}
-              onChange={venueName.onChange}
-            />
-          ) : (
-            venue.name
-          )}
-        </Typography>
-        <Typography
-          className={classes.title}
-          component="h4"
-          color="textSecondary"
-        >
-          {isEditVenue ? (
-            <TextField
-              margin="dense"
-              required
-              // disabled={isSaving}
-              inputProps={{
-                ref: venueCity.ref,
-              }}
-              error={!venueCity.isValid}
-              helperText={venueCity.errorMessage}
-              id="city"
-              label="City"
-              type="text"
-              placeholder="Venue City"
-              value={venueCity.value}
-              onChange={venueCity.onChange}
-            />
-          ) : (
-            venue.city
-          )}
-        </Typography>
-        <Typography
-          className={classes.pos}
-          component="h3"
-          color="textSecondary"
-          gutterBottom
-        >
-          {isEditVenue ? (
-            <TextField
-              margin="dense"
-              required
-              // disabled={isSaving}
-              inputProps={{
-                ref: venueCountry.ref,
-              }}
-              error={!venueCountry.isValid}
-              helperText={venueCountry.errorMessage}
-              id="country"
-              label="Country"
-              type="text"
-              placeholder="Venue Country"
-              value={venueCountry.value}
-              onChange={venueCountry.onChange}
-            />
-          ) : (
-            venue.country
-          )}
-        </Typography>
-        {isEditVenue ? (
-          <TextField
-            margin="dense"
-            // disabled={isSaving}
-            id="seats"
-            label="Seats"
-            type="number"
-            inputProps={{
-              min: 0,
-            }}
-            placeholder="Venue Seats"
-            value={venueSeats}
-            onChange={onVenueSeatsChange}
-          />
-        ) : (
-          <Typography
-            variant="body2"
-            component="p"
-            style={{ maxWidth: "fit-content" }}
+    <ItemContainer onClick={selectVenue} selected={isVenueSelected()}>
+      <ItemActionsMenu
+        editItem={editVenue}
+        deleteItem={deleteVenue}
+        isShow={isVenueSelected() && !isEditVenue}
+      />
+      {isEditVenue ? (
+        <>
+          <FlexContainer fullWidth padding="0">
+            <FlexContainer fullWidth justify="space-around" align="center">
+              <label style={{ width: "10px" }}>Name:</label>
+              <Input
+                autoFocus
+                required
+                ref={venueName.ref}
+                id="name"
+                label="Name"
+                type="text"
+                placeholder="Venue Name"
+                value={venueName.value}
+                onChange={venueName.onChange}
+              />
+            </FlexContainer>
+            <FlexContainer fullWidth justify="space-around" align="center">
+              <label style={{ width: "10px" }}>City:</label>
+              <Input
+                required
+                ref={venueCity.ref}
+                id="city"
+                label="City"
+                type="text"
+                placeholder="Venue City"
+                value={venueCity.value}
+                onChange={venueCity.onChange}
+              />
+            </FlexContainer>
+            <FlexContainer fullWidth justify="space-around" align="center">
+              <label style={{ width: "10px" }}>Country:</label>
+              <Input
+                required
+                ref={venueCountry.ref}
+                id="country"
+                label="Country"
+                type="text"
+                placeholder="Venue Country"
+                value={venueCountry.value}
+                onChange={venueCountry.onChange}
+              />
+            </FlexContainer>
+            <FlexContainer fullWidth justify="space-around" align="center">
+              <label style={{ width: "10px" }}>Seats:</label>
+              <Input
+                id="seats"
+                label="Seats"
+                type="number"
+                min="0"
+                placeholder="Venue Seats"
+                value={venueSeats}
+                onChange={onVenueSeatsChange}
+              />
+            </FlexContainer>
+          </FlexContainer>
+        </>
+      ) : (
+        <>
+          <h2>{venue.name}</h2>
+          <FlexContainer align="baseline" padding="0">
+            <h3>{venue.city}</h3>
+            <h4>{venue.country}</h4>
+          </FlexContainer>
+          <VenueInfoSection selected={isVenueSelected()}>
+            <FlexContainer align="center" justify="center" padding="0">
+              <h4>{` host up to ${venue.seats} fans`}</h4>
+            </FlexContainer>
+          </VenueInfoSection>
+        </>
+      )}
+
+      {isEditVenue && (
+        <FlexContainer justify={isEditVenue ? "flex-end" : false}>
+          <Button
+            aria-label="cancel update venue"
+            color="error"
+            onClick={cancelEditVenue}
           >
-            <span className={classes.venue}>{venue.name}</span>
-            {` arena can host up to ${venue.seats} fans`}
-          </Typography>
-        )}
-      </CardContent>
-      <CardActions disableSpacing className={classes.actions}>
-        {!isEditVenue && (
-          <IconButton
-            aria-label="delete venue"
-            color="secondary"
-            onClick={deleteVenuePrompt(venue)}
-          >
-            <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-          </IconButton>
-        )}
-        {isEditVenue ? (
-          <>
-            <IconButton
-              aria-label="update venue"
-              color="secondary"
-              // disabled={isSaving}
-              onClick={cancelEditVenue}
-            >
+            Cancel
+            <Icon spaceLeft>
               <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-            </IconButton>
-            <div className={classes.actionRight}>
-              <IconButton
-                aria-label="update venue"
-                color="primary"
-                onClick={updateVenue}
-              >
-                <FontAwesomeIcon icon={faSave} size="sm" />
-              </IconButton>
-            </div>
-          </>
-        ) : (
-          <IconButton
-            className={classes.actionRight}
-            aria-label="edit venue"
-            color="primary"
-            onClick={editVenue}
+            </Icon>
+          </Button>
+          <Button
+            aria-label="update venue"
+            color="success"
+            onClick={updateVenue}
           >
-            <FontAwesomeIcon icon={faEdit} size="sm" />
-          </IconButton>
-        )}
-      </CardActions>
-    </Card>
+            Save
+            <Icon spaceLeft>
+              <FontAwesomeIcon icon={faSave} size="sm" />
+            </Icon>
+          </Button>
+        </FlexContainer>
+      )}
+    </ItemContainer>
   );
 }
 
 VenueListItem.propTypes = {
   venue: PropTypes.object.isRequired,
   deleteVenuePrompt: PropTypes.func,
+  selectedVenue: PropTypes.object,
+  setSelectedVenue: PropTypes.func,
 };
 
 export default React.memo(VenueListItem);

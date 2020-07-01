@@ -1,11 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import {
-  FlexContainer,
-  Input,
-  ButtonIcon,
-  ClearButton,
-} from "../../styledElements";
+import { FlexContainer, Input, Icon, IconButton } from "../../styledElements";
 import styled from "styled-components";
 import shortid from "shortid";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -120,15 +115,15 @@ function AutoCompleteInput({
           disabled={loading}
         />
         {
-          <ClearButton
+          <IconButton
             color={color}
             show={selection.value.length > 0}
             onClick={clearSelectionInput}
           >
-            <ButtonIcon>
+            <Icon>
               <FontAwesomeIcon icon={faTimes} size="sm" />
-            </ButtonIcon>
-          </ClearButton>
+            </Icon>
+          </IconButton>
         }
       </FlexContainer>
 

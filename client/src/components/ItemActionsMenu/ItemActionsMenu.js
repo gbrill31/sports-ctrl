@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import {
   faTrashAlt,
   faEdit,
@@ -8,7 +8,7 @@ import {
   faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FlexContainer, ButtonIcon, ClearButton } from "../../styledElements";
+import { FlexContainer, Icon, IconButton } from "../../styledElements";
 
 const MenuContainer = styled.div`
   width: 65px;
@@ -21,58 +21,53 @@ const MenuContainer = styled.div`
 
 const MenuItems = styled.div`
   position: absolute;
-  /* padding-top: 10px; */
   background-color: ${(props) => props.theme.secondary.color};
   height: 100%;
   width: 50%;
   top: 0;
-  opacity: 0;
-  right: -50px;
+  opacity: ${(props) => (props.active ? "1" : "1")};
+  right: ${(props) => (props.active ? "-1px" : "-70px")};
   border-radius: 0 10px;
   z-index: 99;
   transition: right 0.2s ease-in-out, opacity 0.2s linear;
-
-  ${(props) =>
-    props.open &&
-    css`
-      opacity: 1;
-      right: -1px;
-    `}
 `;
 
-function ItemActionsMenu({ editItem, deleteItem, isItemSelected }) {
-  const [isOpenActions, setIsOpenActios] = useState(false);
+function ItemActionsMenu({ editItem, deleteItem, isShow, overrideClick }) {
+  const [isOpen, setIsOpen] = useState(false);
 
   const openActions = (e) => {
     e.stopPropagation();
-    setIsOpenActios(true);
+    setIsOpen(true);
   };
   const closeActions = (e) => {
     e.stopPropagation();
-    setIsOpenActios(false);
+    setIsOpen(false);
   };
 
   const openEditItem = (e) => {
-    setIsOpenActios(false);
+    closeActions(e);
     editItem(e);
   };
 
   const openDeleteItem = (e) => {
-    setIsOpenActios(false);
+    // closeActions(e);
     deleteItem(e);
   };
 
   useEffect(() => {
-    if (!isItemSelected && isOpenActions) {
-      setIsOpenActios(false);
+    if (!isShow && isOpen) {
+      setIsOpen(false);
     }
-  }, [isItemSelected, isOpenActions]);
+    if (overrideClick) {
+      setIsOpen(isShow);
+    }
+  }, [isShow, isOpen, overrideClick]);
 
   return (
     <>
       <FlexContainer column justify="center" align="center" padding="0">
-        {!isOpenActions && isItemSelected && (
-          <ClearButton
+        {!isOpen && isShow && !overrideClick && (
+          <IconButton
             top="7px"
             right="-10px"
             aria-label="open team actions"
@@ -80,26 +75,27 @@ function ItemActionsMenu({ editItem, deleteItem, isItemSelected }) {
             show
             onClick={openActions}
           >
-            <ButtonIcon>
+            <Icon>
               <FontAwesomeIcon icon={faBars} size="1x" />
-            </ButtonIcon>
-          </ClearButton>
+            </Icon>
+          </IconButton>
         )}
         <MenuContainer>
-          <MenuItems open={isOpenActions}>
+          <MenuItems active={isOpen}>
             <FlexContainer column padding="0" justify="center" align="center">
-              <ClearButton
+              <IconButton
+                style={{ display: !overrideClick ? "" : "none" }}
                 relative
                 aria-label="close team actions"
                 color="#999"
                 show
                 onClick={closeActions}
               >
-                <ButtonIcon>
+                <Icon>
                   <FontAwesomeIcon icon={faTimes} size="sm" />
-                </ButtonIcon>
-              </ClearButton>
-              <ClearButton
+                </Icon>
+              </IconButton>
+              <IconButton
                 relative
                 aria-label="edit team"
                 color="#fff"
@@ -107,21 +103,21 @@ function ItemActionsMenu({ editItem, deleteItem, isItemSelected }) {
                 style={{ transform: "translateX(1px)" }}
                 onClick={openEditItem}
               >
-                <ButtonIcon>
+                <Icon>
                   <FontAwesomeIcon icon={faEdit} size="1x" />
-                </ButtonIcon>
-              </ClearButton>
-              <ClearButton
+                </Icon>
+              </IconButton>
+              <IconButton
                 relative
                 aria-label="delete team"
                 color="error"
                 show
                 onClick={openDeleteItem}
               >
-                <ButtonIcon>
+                <Icon>
                   <FontAwesomeIcon icon={faTrashAlt} size="1x" />
-                </ButtonIcon>
-              </ClearButton>
+                </Icon>
+              </IconButton>
             </FlexContainer>
           </MenuItems>
         </MenuContainer>
@@ -133,7 +129,8 @@ function ItemActionsMenu({ editItem, deleteItem, isItemSelected }) {
 ItemActionsMenu.propTypes = {
   editItem: PropTypes.func,
   deleteItem: PropTypes.func,
-  isItemSelected: PropTypes.bool,
+  isShow: PropTypes.bool,
+  overrideClick: PropTypes.bool,
 };
 
 export default React.memo(ItemActionsMenu);

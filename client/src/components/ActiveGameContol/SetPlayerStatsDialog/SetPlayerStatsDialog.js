@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled, { css } from "styled-components";
-import { Button, ButtonIcon, FlexContainer } from "../../../styledElements";
+import { Button, Icon, FlexContainer } from "../../../styledElements";
 import {
   faPlus,
   faMinus,
@@ -368,16 +368,16 @@ export default function SetPlayerStatsDialog() {
                                 disabled={isPointsSet}
                               >
                                 Edit
-                                <ButtonIcon spaceLeft>
+                                <Icon spaceLeft>
                                   <FontAwesomeIcon icon={faEdit} size="sm" />
-                                </ButtonIcon>
+                                </Icon>
                               </Button>
                             ) : (
                               <Button onClick={disableEditPoints} color="error">
                                 Close
-                                <ButtonIcon spaceLeft>
+                                <Icon spaceLeft>
                                   <FontAwesomeIcon icon={faTimes} size="sm" />
-                                </ButtonIcon>
+                                </Icon>
                               </Button>
                             )}
                           </FlexContainer>
@@ -392,9 +392,9 @@ export default function SetPlayerStatsDialog() {
                           <FlexContainer>
                             <Button onClick={incremnetFT} color="success">
                               Add
-                              <ButtonIcon spaceLeft>
+                              <Icon spaceLeft>
                                 <FontAwesomeIcon icon={faPlus} size="sm" />
-                              </ButtonIcon>
+                              </Icon>
                             </Button>
                             <Button
                               onClick={decremnetFT}
@@ -402,9 +402,9 @@ export default function SetPlayerStatsDialog() {
                               disabled={playerLocalStats.FT === 0}
                             >
                               Subtruct
-                              <ButtonIcon spaceLeft>
+                              <Icon spaceLeft>
                                 <FontAwesomeIcon icon={faMinus} size="sm" />
-                              </ButtonIcon>
+                              </Icon>
                             </Button>
                           </FlexContainer>
                         </FlexContainer>
@@ -422,9 +422,9 @@ export default function SetPlayerStatsDialog() {
                               disabled={playerLocalStats.FOULS === 5}
                             >
                               Fouls
-                              <ButtonIcon spaceLeft>
+                              <Icon spaceLeft>
                                 <FontAwesomeIcon icon={faPlus} size="sm" />
-                              </ButtonIcon>
+                              </Icon>
                             </Button>
                             <Button
                               onClick={decremnetFouls}
@@ -432,9 +432,9 @@ export default function SetPlayerStatsDialog() {
                               disabled={playerLocalStats.FOULS === 0}
                             >
                               Fouls
-                              <ButtonIcon spaceLeft>
+                              <Icon spaceLeft>
                                 <FontAwesomeIcon icon={faMinus} size="sm" />
-                              </ButtonIcon>
+                              </Icon>
                             </Button>
                           </FlexContainer>
                         </FlexContainer>
@@ -464,9 +464,9 @@ export default function SetPlayerStatsDialog() {
                           {isPointsSet && (
                             <Button color="error" onClick={undoPoints}>
                               Undo
-                              <ButtonIcon spaceLeft>
+                              <Icon spaceLeft>
                                 <FontAwesomeIcon icon={faUndo} size="sm" />
-                              </ButtonIcon>
+                              </Icon>
                             </Button>
                           )}
                         </FlexContainer>

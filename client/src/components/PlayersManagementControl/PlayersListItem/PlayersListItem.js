@@ -3,12 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  FlexContainer,
-  Button,
-  ButtonIcon,
-  Input,
-} from "../../../styledElements";
+import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
 import useFormInput from "../../../hooks/useFormInput";
 import useSavePlayers from "../../../hooks/useSavePlayers";
 import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
@@ -62,7 +57,7 @@ const ItemContainer = styled.div`
 const ItemStats = styled.div`
   height: auto;
   max-height: 0;
-  transition: max-height 0.5s ease-in-out;
+  transition: max-height 0.3s ease-in-out;
   overflow: hidden;
 
   ${(props) =>
@@ -96,14 +91,15 @@ function PlayersListItem({
     }
   };
 
-  const deletePlayer = (e) => {
-    e.stopPropagation();
-    deletePlayerPrompt();
-  };
-
   const cancelEditPlayer = (e) => {
     e.stopPropagation();
     setIsEditPlayer(false);
+  };
+
+  const deletePlayer = (e) => {
+    e.stopPropagation();
+    if (isEditPlayer) cancelEditPlayer();
+    deletePlayerPrompt();
   };
 
   const savePlayersToTeam = useSavePlayers(() => setIsEditPlayer(false));
@@ -131,7 +127,7 @@ function PlayersListItem({
       <ItemActionsMenu
         editItem={editPlayer}
         deleteItem={deletePlayer}
-        isItemSelected={isPlayerSelected()}
+        isShow={isPlayerSelected() && !isEditPlayer}
       />
       <FlexContainer align="baseline" padding="0">
         {isEditPlayer ? (
@@ -179,33 +175,33 @@ function PlayersListItem({
           </>
         )}
       </FlexContainer>
-      <ItemStats active={isPlayerSelected()}>
-        <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
-          {isEditPlayer && (
-            <>
-              <Button
-                aria-label="cencel edit player"
-                color="error"
-                onClick={cancelEditPlayer}
-              >
-                Cancel
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                </ButtonIcon>
-              </Button>
-              <Button
-                aria-label="update team"
-                color="success"
-                onClick={savePlayer}
-              >
-                Save
-                <ButtonIcon spaceLeft>
-                  <FontAwesomeIcon icon={faSave} size="sm" />
-                </ButtonIcon>
-              </Button>
-            </>
-          )}
-        </FlexContainer>
+      <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
+        {isEditPlayer && (
+          <>
+            <Button
+              aria-label="cencel edit player"
+              color="error"
+              onClick={cancelEditPlayer}
+            >
+              Cancel
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faTimesCircle} size="sm" />
+              </Icon>
+            </Button>
+            <Button
+              aria-label="update team"
+              color="success"
+              onClick={savePlayer}
+            >
+              Save
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faSave} size="sm" />
+              </Icon>
+            </Button>
+          </>
+        )}
+      </FlexContainer>
+      <ItemStats active={isPlayerSelected() && !isEditPlayer}>
         {player.stats && (
           <>
             <h4>Last Game</h4>

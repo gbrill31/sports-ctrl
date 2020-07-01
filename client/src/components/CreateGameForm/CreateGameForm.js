@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { faBasketballBall } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AutoCompleteInput from "../AutoCompleteInput/AutoCompleteInput";
-import {
-  FlexContainer,
-  MainTitle,
-  Button,
-  ButtonIcon,
-} from "../../styledElements";
+import { FlexContainer, MainTitle, Button, Icon } from "../../styledElements";
 import useVenues from "../../hooks/useVenues";
 import useTeams from "../../hooks/useTeams";
 import useDb from "../../hooks/useDb";
@@ -112,9 +107,9 @@ export default function CreateGameForm() {
         />
         <Button color="success" onClick={startNewGame} saving={isGameLoading()}>
           {isGameLoading() ? "Starting..." : "Start Game"}
-          <ButtonIcon spaceLeft>
+          <Icon spaceLeft>
             <FontAwesomeIcon icon={faBasketballBall} size="sm" />
-          </ButtonIcon>
+          </Icon>
         </Button>
       </FlexContainer>
     </>

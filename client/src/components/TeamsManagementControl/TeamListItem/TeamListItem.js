@@ -3,12 +3,7 @@ import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  FlexContainer,
-  Button,
-  ButtonIcon,
-  Input,
-} from "../../../styledElements";
+import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
 import useFormInput from "../../../hooks/useFormInput";
 import useSaveTeam from "../../../hooks/useSaveTeam";
 import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
@@ -96,12 +91,14 @@ function TeamListItem({
     }
   }, [selectedTeam, team, isTeamSelected]);
 
-  const deleteTeam = (e) => {
-    e.stopPropagation();
-    deleteTeamPrompt();
-  };
   const cancelEditTeam = () => {
     setIsEditTeam(false);
+  };
+
+  const deleteTeam = (e) => {
+    if (e) e.stopPropagation();
+    if (isEditTeam) cancelEditTeam();
+    deleteTeamPrompt();
   };
 
   const saveTeam = useSaveTeam(cancelEditTeam);
@@ -129,7 +126,7 @@ function TeamListItem({
         <ItemActionsMenu
           editItem={editTeam}
           deleteItem={deleteTeam}
-          isItemSelected={isTeamSelected()}
+          isShow={isTeamSelected() && !isEditTeam}
         />
         <FlexContainer align="baseline">
           {isEditTeam ? (
@@ -217,9 +214,9 @@ function TeamListItem({
                   onClick={cancelEditTeam}
                 >
                   Cancel
-                  <ButtonIcon spaceLeft>
+                  <Icon spaceLeft>
                     <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                  </ButtonIcon>
+                  </Icon>
                 </Button>
                 <Button
                   aria-label="update team"
@@ -227,9 +224,9 @@ function TeamListItem({
                   onClick={updateTeam}
                 >
                   Save
-                  <ButtonIcon spaceLeft>
+                  <Icon spaceLeft>
                     <FontAwesomeIcon icon={faSave} size="sm" />
-                  </ButtonIcon>
+                  </Icon>
                 </Button>
               </>
             )}

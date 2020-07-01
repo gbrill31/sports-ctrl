@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import {
-  Button,
-  ButtonIcon,
-  Input,
-  FlexContainer,
-} from "../../../styledElements";
+import { Button, Icon, Input, FlexContainer } from "../../../styledElements";
 import { faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFormInput from "../../../hooks/useFormInput";
@@ -139,9 +134,9 @@ function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
         <FlexContainer justify="center">
           <Button onClick={addPlayer} color="primary">
             Add
-            <ButtonIcon spaceLeft>
+            <Icon spaceLeft>
               <FontAwesomeIcon icon={faPlus} size="sm" />
-            </ButtonIcon>
+            </Icon>
           </Button>
         </FlexContainer>
         <FlexContainer>
@@ -153,9 +148,9 @@ function NewPlayerFormDialog({ isOpenDialog, closeDialog }) {
                 onClick={removePlayer(player)}
               >
                 {`${player.number} ${player.name}`}
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faTimes} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
             ))}
         </FlexContainer>

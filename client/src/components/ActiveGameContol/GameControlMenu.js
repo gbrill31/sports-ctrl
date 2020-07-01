@@ -14,7 +14,7 @@ import PromptDialog from "../PromptDialog/PromptDialog";
 import useFormInput from "../../hooks/useFormInput";
 import useOutsideMouseDown from "../../hooks/useOutsideMouseDown";
 
-import { FlexContainer, Button, ButtonIcon, Input } from "../../styledElements";
+import { FlexContainer, Button, Icon, Input } from "../../styledElements";
 
 import {
   startGameClock,
@@ -299,9 +299,9 @@ export default function GameControlMenu() {
           active={isShowMenu}
           onClick={toggleClocksMenu}
         >
-          <ButtonIcon>
+          <Icon>
             <FontAwesomeIcon icon={faCog} size="lg" />
-          </ButtonIcon>
+          </Icon>
         </Button>
         <MenuContainer show={isShowMenu}>
           <MenuSection>
@@ -316,9 +316,9 @@ export default function GameControlMenu() {
                 onClick={startAllClocks}
               >
                 Start All Clocks
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faStopwatch} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
               <Button
                 noRaduis
@@ -328,9 +328,9 @@ export default function GameControlMenu() {
                 onClick={stopAllClocks}
               >
                 Stop All Clocks
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faHandPaper} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
               <Button
                 noRaduis
@@ -340,9 +340,9 @@ export default function GameControlMenu() {
                 onClick={resetAllClocksPrompt}
               >
                 Reset All Clocks
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faHistory} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
               <h4>Setup</h4>
               <Button
@@ -447,9 +447,9 @@ export default function GameControlMenu() {
               onClick={resetFoulsPrompt}
             >
               Reset Teams Fouls
-              <ButtonIcon spaceLeft>
+              <Icon spaceLeft>
                 <FontAwesomeIcon icon={faHistory} size="sm" />
-              </ButtonIcon>
+              </Icon>
             </Button>
           </MenuSection>
         </MenuContainer>

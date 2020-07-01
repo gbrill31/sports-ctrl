@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CircularProgress } from "@material-ui/core";
 
 import PromptDialog from "../../PromptDialog/PromptDialog";
+import FilterListInput from "../../FilterListInput/FilterListInput";
 import VenueListItem from "../VenueListItem/VenueListItem";
 import ComponentLoader from "../../ComponentLoader/ComponentLoader";
 import NewVenueFormDialog from "../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog";
@@ -12,16 +13,17 @@ import {
   ScrollableContainer,
   Button,
   MainTitle,
-  ButtonIcon,
+  Icon,
 } from "../../../styledElements";
 
 import useVenues from "../../../hooks/useVenues";
 import useDeleteVenue from "../../../hooks/useDeleteVenue";
 import useDb from "../../../hooks/useDb";
 
-export default function VenuesList() {
+function VenuesList() {
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
   const [isNewVenueDialog, setIsNewVenueDialog] = useState(false);
+  const [filterValue, setFilterValue] = useState("");
 
   const [selectedVenue, setSelectedVenue] = useState(null);
 
@@ -42,9 +44,20 @@ export default function VenuesList() {
     dbStatus === "success"
   );
 
-  const openDeleteVenuePrompt = (venue) => () => {
-    setSelectedVenue(venue);
+  const openDeleteVenuePrompt = () => {
     setIsDeleteVenuePrompt(true);
+  };
+
+  const getFilteredVenues = () => {
+    const value = filterValue.toLowerCase();
+    return value !== ""
+      ? venues.filter(
+          (venue) =>
+            venue.name.toLowerCase().includes(value) ||
+            venue.country.toLowerCase().includes(value) ||
+            venue.city.toLowerCase().includes(value)
+        )
+      : venues;
   };
 
   return (
@@ -55,19 +68,28 @@ export default function VenuesList() {
           <FlexContainer>
             <Button color="generic" onClick={openNewVenueDialog}>
               New Venue
-              <ButtonIcon spaceLeft>
+              <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
-              </ButtonIcon>
+              </Icon>
             </Button>
           </FlexContainer>
           {isFetching && (
             <CircularProgress size={25} style={{ color: "#fff" }} />
           )}
         </FlexContainer>
+        <FlexContainer fullWidth padding="0">
+          {venues?.length > 0 && (
+            <FilterListInput
+              onChange={setFilterValue}
+              placeholder="Venue Name, Country, City"
+              width="65%"
+            />
+          )}
+        </FlexContainer>
         <ScrollableContainer padding="0" heightDiff={267}>
           <FlexContainer>
             {venues &&
-              venues
+              getFilteredVenues()
                 .sort((venueA, venueB) =>
                   venueA.name.toLowerCase() > venueB.name.toLowerCase() ? 1 : -1
                 )
@@ -76,6 +98,9 @@ export default function VenuesList() {
                     key={venue.id}
                     venue={venue}
                     deleteVenuePrompt={openDeleteVenuePrompt}
+                    isDeleteVenue={isDeleteVenuePrompt}
+                    selectedVenue={selectedVenue}
+                    setSelectedVenue={setSelectedVenue}
                   />
                 ))}
           </FlexContainer>
@@ -97,3 +122,5 @@ export default function VenuesList() {
     </>
   );
 }
+
+export default VenuesList;

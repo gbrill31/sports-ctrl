@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
-import { FlexContainer, Button, ButtonIcon } from "../../../../styledElements";
+import { FlexContainer, Button, Icon } from "../../../../styledElements";
 import {
   faHistory,
   faHandPaper,
@@ -173,23 +173,23 @@ export default function GameClock() {
         {!isClockRunning ? (
           <Button onClick={startClock} color="success">
             Start Clock
-            <ButtonIcon spaceLeft>
+            <Icon spaceLeft>
               <FontAwesomeIcon icon={faStopwatch} size="sm" />
-            </ButtonIcon>
+            </Icon>
           </Button>
         ) : (
           <Button onClick={stopClock} color="error">
             Stop Clock
-            <ButtonIcon spaceLeft>
+            <Icon spaceLeft>
               <FontAwesomeIcon icon={faHandPaper} size="sm" />
-            </ButtonIcon>
+            </Icon>
           </Button>
         )}
         <Button onClick={openResetPrompot} color="secondary">
           Reset Clock
-          <ButtonIcon spaceLeft>
+          <Icon spaceLeft>
             <FontAwesomeIcon icon={faHistory} size="sm" />
-          </ButtonIcon>
+          </Icon>
         </Button>
       </FlexContainer>
       <FlexContainer justify="center" fullWidth>

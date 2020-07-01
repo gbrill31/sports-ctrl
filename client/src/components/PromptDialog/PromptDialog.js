@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { Button } from "../../styledElements";
 
-const PromptDialog = ({
+function PromptDialog({
   isOpen,
   handleClose,
   handleConfirm,
@@ -18,7 +18,7 @@ const PromptDialog = ({
   confirmText,
   isPending,
   pendingTitle,
-}) => {
+}) {
   const handleEnterConfirm = (e) => {
     if (e.keyCode === 13 || e.key === "Enter") {
       handleConfirm();
@@ -49,7 +49,7 @@ const PromptDialog = ({
       </Dialog>
     )
   );
-};
+}
 
 PromptDialog.propTypes = {
   isOpen: PropTypes.bool,

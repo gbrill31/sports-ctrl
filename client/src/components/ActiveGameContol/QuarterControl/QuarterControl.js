@@ -5,7 +5,7 @@ import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import { FlexContainer, Button, ButtonIcon } from "../../../styledElements";
+import { FlexContainer, Button, Icon } from "../../../styledElements";
 
 import { updateGameStatus } from "../../../actions";
 
@@ -55,15 +55,15 @@ export default function QuarterControl() {
           <FlexContainer>
             <Button color="error" onClick={previousQ} disabled={qNumber === 1}>
               Q
-              <ButtonIcon spaceLeft>
+              <Icon spaceLeft>
                 <FontAwesomeIcon icon={faMinus} size="sm" />
-              </ButtonIcon>
+              </Icon>
             </Button>
             <Button color="secondary" onClick={nextQ} disabled={qNumber === 4}>
               Q
-              <ButtonIcon spaceLeft>
+              <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
-              </ButtonIcon>
+              </Icon>
             </Button>
           </FlexContainer>
         )}

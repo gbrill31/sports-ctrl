@@ -6,7 +6,7 @@ import { CircularProgress } from "@material-ui/core";
 import {
   FlexContainer,
   Button,
-  ButtonIcon,
+  Icon,
   ScrollableContainer,
   MainTitle,
 } from "../../../styledElements";
@@ -82,11 +82,11 @@ export default function TeamsList() {
         <ComponentLoader loading={status === "loading"} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>
-            <Button color="generic" onClick={openCreateTeamDialog}>
+            <Button color="success" onClick={openCreateTeamDialog}>
               New Team
-              <ButtonIcon spaceLeft>
+              <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
-              </ButtonIcon>
+              </Icon>
             </Button>
             {isFetching && (
               <CircularProgress size={25} style={{ color: "#fff" }} />

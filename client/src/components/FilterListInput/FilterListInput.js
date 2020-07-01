@@ -4,14 +4,9 @@ import { faTimes, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import useFormInput from "../../hooks/useFormInput";
 
-import {
-  FlexContainer,
-  Input,
-  ClearButton,
-  ButtonIcon,
-} from "../../styledElements";
+import { FlexContainer, Input, IconButton, Icon } from "../../styledElements";
 
-const FilterListInput = ({ onChange, placeholder }) => {
+const FilterListInput = ({ onChange, placeholder, width }) => {
   const filterInput = useFormInput("");
 
   const clearInput = () => {
@@ -25,7 +20,13 @@ const FilterListInput = ({ onChange, placeholder }) => {
   };
 
   return (
-    <FlexContainer justify="center" align="center" fullWidth padding="0">
+    <FlexContainer
+      justify="center"
+      align="center"
+      fullWidth={!width}
+      width={width}
+      padding="0"
+    >
       <FontAwesomeIcon icon={faFilter} size="sm" color="#666" />
       <FlexContainer padding="0" width="90%">
         <Input
@@ -36,15 +37,15 @@ const FilterListInput = ({ onChange, placeholder }) => {
           color="#fff"
           width="100%"
         />
-        <ClearButton
+        <IconButton
           color="#fff"
           show={filterInput.value.length > 0}
           onClick={clearInput}
         >
-          <ButtonIcon>
+          <Icon>
             <FontAwesomeIcon icon={faTimes} size="sm" />
-          </ButtonIcon>
-        </ClearButton>
+          </Icon>
+        </IconButton>
       </FlexContainer>
     </FlexContainer>
   );
@@ -53,6 +54,7 @@ const FilterListInput = ({ onChange, placeholder }) => {
 FilterListInput.propTypes = {
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
+  width: PropTypes.string,
 };
 
 export default React.memo(FilterListInput);

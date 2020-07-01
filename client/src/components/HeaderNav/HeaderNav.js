@@ -10,7 +10,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useHistory } from "react-router-dom";
-import { Button, ButtonIcon } from "../../styledElements";
+import { Button, Icon } from "../../styledElements";
 import useDb from "../../hooks/useDb";
 import useActiveGame from "../../hooks/useActiveGame";
 
@@ -89,7 +89,7 @@ function HeaderNav() {
         >
           {getConnectBtnText()}
           {
-            <ButtonIcon spaceLeft>
+            <Icon spaceLeft>
               {isDbConnected() ? (
                 <FontAwesomeIcon icon={faCheck} size="sm" />
               ) : isDbConnecting() ? (
@@ -97,7 +97,7 @@ function HeaderNav() {
               ) : (
                 <FontAwesomeIcon icon={faDatabase} size="sm" />
               )}
-            </ButtonIcon>
+            </Icon>
           }
         </Button>
       </NavContentWrapper>
@@ -117,26 +117,26 @@ function HeaderNav() {
                 onClick={goToRoute("/creategame")}
               >
                 Start A New Game
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faPlus} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
             ) : null}
           </>
         ) : (
           <>
             <Button color="secondary" onClick={goToRoute("/")}>
-              <ButtonIcon spaceRight>
+              <Icon spaceRight>
                 <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              </ButtonIcon>
+              </Icon>
               Home
             </Button>
             {currentRoute === "/game" && activeGame && (
               <Button justifyRight color="error" onClick={openEndGamePrompt}>
                 End Game
-                <ButtonIcon spaceLeft>
+                <Icon spaceLeft>
                   <FontAwesomeIcon icon={faCheck} size="sm" />
-                </ButtonIcon>
+                </Icon>
               </Button>
             )}
           </>
