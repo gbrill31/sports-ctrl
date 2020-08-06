@@ -1,8 +1,11 @@
 // import fetchIntercept from "fetch-intercept";
-import axios from "axios";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
-let unregisterResponse;
+let unregisterRequest, unregisterResponse;
+
+const baseURL =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
 function handleResponseHeaders({ redirectto, notification }, history) {
   if (redirectto && history) history.push(redirectto);
@@ -17,6 +20,15 @@ function handleResponseHeaders({ redirectto, notification }, history) {
 
 export default {
   initInterceptors(history) {
+    unregisterRequest = axios.interceptors.request.use(
+      (config) => {
+        return { ...config, url: `${baseURL}${config.url}` };
+        // return config;
+      },
+      (err) => {
+        return Promise.reject(err);
+      }
+    );
     unregisterResponse = axios.interceptors.response.use(
       (response) => {
         handleResponseHeaders(response.headers, history);
@@ -30,5 +42,6 @@ export default {
   },
   clearInterceptors() {
     axios.interceptors.response.eject(unregisterResponse);
+    axios.interceptors.request.eject(unregisterRequest);
   },
 };

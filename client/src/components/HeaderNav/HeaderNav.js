@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import styled from "styled-components";
-import { CircularProgress } from "@material-ui/core";
+import React, { useCallback, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { CircularProgress } from '@material-ui/core';
 import {
   faCheck,
   faDatabase,
   faPlus,
   faChevronLeft,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useHistory } from "react-router-dom";
-import { Button, Icon } from "../../styledElements";
-import useDb from "../../hooks/useDb";
-import useActiveGame from "../../hooks/useActiveGame";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useHistory } from 'react-router-dom';
+import { Button, Icon } from '../../styledElements';
+import useDb from '../../hooks/useDb';
+import useActiveGame from '../../hooks/useActiveGame';
 
-import { setEndGamePrompt } from "../../actions";
+import { setEndGamePrompt } from '../../actions';
 
 const NavRootWrapper = styled.header`
   display: flex;
@@ -36,23 +36,23 @@ function HeaderNav() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const currentRoute = useSelector((state) => state.routes.currentRoute);
+
   const { status: dbStatus, failureCount, refetch, error: dbError } = useDb();
   const {
     status: activeGameStatus,
     data: activeGame,
     refetch: fetchActiveGame,
-  } = useActiveGame(dbStatus === "success");
-
-  const currentRoute = useSelector((state) => state.routes.currentRoute);
+  } = useActiveGame(dbStatus === 'success');
 
   useEffect(() => {
-    if (currentRoute === "/") {
+    if (currentRoute === '/') {
       fetchActiveGame();
     }
   }, [currentRoute, fetchActiveGame]);
 
-  const isDbConnected = () => dbStatus === "success";
-  const isDbConnecting = () => dbStatus === "loading";
+  const isDbConnected = () => dbStatus === 'success';
+  const isDbConnecting = () => dbStatus === 'loading';
 
   const openEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(true)),
@@ -62,18 +62,18 @@ function HeaderNav() {
   const getConnectBtnColor = () => {
     return !dbError || isDbConnecting()
       ? isDbConnected()
-        ? "success"
-        : "secondary"
-      : "error";
+        ? 'success'
+        : 'secondary'
+      : 'error';
   };
   const getConnectBtnText = () => {
     return isDbConnecting()
       ? `Connecting, Attempts ${failureCount}`
       : isDbConnected()
-      ? "DB Connected"
+      ? 'DB Connected'
       : !dbError
-      ? "Connect to Database"
-      : "Connection Failed, Click To try Again";
+      ? 'Connect to Database'
+      : 'Connection Failed, Click To try Again';
   };
 
   const goToRoute = (route) => () => history.push(route);
@@ -102,19 +102,19 @@ function HeaderNav() {
         </Button>
       </NavContentWrapper>
       {isDbConnected() &&
-        (currentRoute === "/" ? (
+        (currentRoute === '/' ? (
           <>
-            <Button color="primary" onClick={goToRoute("/teams")}>
+            <Button color="primary" onClick={goToRoute('/teams')}>
               Manage Teams
             </Button>
-            <Button color="primary" onClick={goToRoute("/venues")}>
+            <Button color="primary" onClick={goToRoute('/venues')}>
               Manage Venues
             </Button>
-            {!activeGame && activeGameStatus === "success" ? (
+            {!activeGame && activeGameStatus === 'success' ? (
               <Button
                 justifyRight
                 color="primary"
-                onClick={goToRoute("/creategame")}
+                onClick={goToRoute('/creategame')}
               >
                 Start A New Game
                 <Icon spaceLeft>
@@ -125,13 +125,13 @@ function HeaderNav() {
           </>
         ) : (
           <>
-            <Button color="secondary" onClick={goToRoute("/")}>
+            <Button color="secondary" onClick={goToRoute('/')}>
               <Icon spaceRight>
                 <FontAwesomeIcon icon={faChevronLeft} size="sm" />
               </Icon>
               Home
             </Button>
-            {currentRoute === "/game" && activeGame && (
+            {currentRoute === '/game' && activeGame && (
               <Button justifyRight color="error" onClick={openEndGamePrompt}>
                 End Game
                 <Icon spaceLeft>

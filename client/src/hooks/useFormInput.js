@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef } from 'react';
 
 function useFormInput(initialValue) {
   const ref = useRef(null);
   const [value, setValue] = useState(initialValue);
   const [isValid, setIsValid] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   function select(e) {
     e ? e.target.select() : ref.current.select();
