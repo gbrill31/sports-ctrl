@@ -23,7 +23,6 @@ export default {
     unregisterRequest = axios.interceptors.request.use(
       (config) => {
         return { ...config, url: `${baseURL}${config.url}` };
-        // return config;
       },
       (err) => {
         return Promise.reject(err);
