@@ -1,22 +1,22 @@
-import axios from "axios";
+import axios from 'axios';
 
 export const getAllGames = async () => {
-  const { data } = await axios.get("/games/all");
+  const { data } = await axios.get('/api/games/all');
   return data;
 };
 
 export const createNewGame = async (game) => {
-  const { data } = await axios.post("/games/create", game);
+  const { data } = await axios.post('/api/games/create', game);
   return data;
 };
 
 export const getActiveGame = async () => {
-  const { data } = await axios.get("/games/active");
+  const { data } = await axios.get('/api/games/active');
   return data;
 };
 
 export const updateGameScore = async (gameId, teamId, points) => {
-  const { data } = await axios.post("/games/score", {
+  const { data } = await axios.post('/api/games/score', {
     gameId,
     teamId,
     points,
@@ -25,12 +25,12 @@ export const updateGameScore = async (gameId, teamId, points) => {
 };
 
 export const updateGameStatus = async (gameId, status) => {
-  const { data } = await axios.post("/games/status", { gameId, status });
+  const { data } = await axios.post('/api/games/status', { gameId, status });
   return data;
 };
 
 export const updateTeamFouls = async (gameId, teamId, fouls) => {
-  const { data } = await axios.post("/games/teamfouls", {
+  const { data } = await axios.post('/api/games/teamfouls', {
     gameId,
     teamId,
     fouls,
@@ -39,7 +39,7 @@ export const updateTeamFouls = async (gameId, teamId, fouls) => {
 };
 
 export const updateEndGame = async (gameId) => {
-  const { data } = await axios.post("/games/endgame", {
+  const { data } = await axios.post('/api/games/endgame', {
     gameId,
   });
   return data;

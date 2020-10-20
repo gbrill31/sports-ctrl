@@ -1,54 +1,54 @@
-import React, { useEffect, useCallback } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
-import { HttpInterceptors } from "./utils";
-import Home from "./views/Home/Home";
-import Venues from "./views/VenuesManagement/VenuesManagement";
-import Teams from "./views/TeamsManagement/TeamsManagement";
-import GameManagement from "./views/GameManagement/GameManagement";
-import HeaderNav from "./components/HeaderNav/HeaderNav";
-import CreateGameForm from "./components/CreateGameForm/CreateGameForm";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { HttpInterceptors } from './utils';
+import Home from './views/Home/Home';
 
-import "react-toastify/dist/ReactToastify.min.css";
+import HeaderNav from './components/HeaderNav/HeaderNav';
+import RegisterAdmin from './views/RegisterAdmin/RegisterAdmin';
+import UserLogin from './views/UserLogin/UserLogin';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
-import { setRouteName } from "./actions";
+import 'react-toastify/dist/ReactToastify.min.css';
+
+import { setRouteName, verifyLogin } from './actions';
 
 const theme = {
   primary: {
-    color: "#272932",
-    hover: "#575C70",
+    color: '#272932',
+    hover: '#575C70',
   },
   secondary: {
-    color: "#173753",
-    hover: "#1F4A70",
+    color: '#173753',
+    hover: '#1F4A70',
   },
   error: {
-    color: "#DF2935",
-    hover: "#F92533",
+    color: '#DF2935',
+    hover: '#F92533',
   },
   success: {
-    color: "#0B9647",
-    hover: "#0DC45C",
+    color: '#0B9647',
+    hover: '#0DC45C',
   },
   generic: {
-    color: "#ED9B40",
-    hover: "#FFB056",
+    color: '#ED9B40',
+    hover: '#FFB056',
   },
   menu: {
-    color: "#7c7d7d",
-    hover: "#E6EAEB",
+    color: '#7c7d7d',
+    hover: '#E6EAEB',
   },
   scrollBar: {
-    bg: "#575C70",
-    thumb: "#E6EAEB",
+    bg: '#575C70',
+    thumb: '#E6EAEB',
   },
   disabled: {
-    bgColor: "#555",
-    color: "#888",
+    bgColor: '#555',
+    color: '#888',
   },
-  font: "Roboto, sans-serif",
+  font: 'Roboto, sans-serif',
 };
 
 const AppGlobalStyle = createGlobalStyle`
@@ -120,39 +120,62 @@ function App() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const [isSetInterceptors, setIsSetInterceptors] = useState(false);
+  const { isLoggedIn, isLoggedInCheck } = useSelector((state) => state.auth);
+
   const setCurrentRoute = useCallback(
     (route) => dispatch(setRouteName(route)),
     [dispatch]
   );
 
+  const checkUserLogin = useCallback(() => dispatch(verifyLogin()), [dispatch]);
+
   useEffect(() => {
     HttpInterceptors.initInterceptors(history);
     setCurrentRoute(history.location.pathname);
+    checkUserLogin();
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);
+      checkUserLogin();
     });
+    setIsSetInterceptors(true);
 
     return () => {
       HttpInterceptors.clearInterceptors();
       unlisten();
     };
-  }, [history, setCurrentRoute]);
+  }, [history, setCurrentRoute, checkUserLogin]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const route =
+        history.location.pathname !== '/userlogin'
+          ? history.location.pathname
+          : '/';
+      history.push(route);
+    }
+  }, [isLoggedIn, history]);
 
   return (
     <ThemeProvider theme={theme}>
       <AppGlobalStyle />
-      <AppContainer>
-        <HeaderNav />
-        <AppMainContent>
-          <Switch>
-            <Route exact path="/" render={() => <Home />} />
-            <Route exact path="/venues" render={() => <Venues />} />
-            <Route exact path="/teams" render={() => <Teams />} />
-            <Route exact path="/creategame" render={() => <CreateGameForm />} />
-            <Route exact path="/game" render={() => <GameManagement />} />
-          </Switch>
-        </AppMainContent>
-      </AppContainer>
+      {isSetInterceptors && isLoggedInCheck && (
+        <AppContainer>
+          <HeaderNav />
+          <AppMainContent>
+            <Switch>
+              <Route
+                exact
+                path="/registeruser"
+                render={() => <RegisterAdmin />}
+              />
+              <Route exact path="/userlogin" render={() => <UserLogin />} />
+
+              <PrivateRoute path="/" component={Home} />
+            </Switch>
+          </AppMainContent>
+        </AppContainer>
+      )}
     </ThemeProvider>
   );
 }

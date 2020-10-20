@@ -1,9 +1,18 @@
 const express = require('express');
 const path = require('path');
-// const favicon = require('serve-favicon');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
+// const session = require('express-session');
+const dotenv = require('dotenv');
+const passport = require('passport');
+const cors = require('cors');
+
+const DB = require('./app/config/database');
+
+require('./app/config/passport')(passport);
+
+dotenv.config();
 
 const app = express();
 
@@ -11,17 +20,30 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(compression());
-// uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'src/assets', 'logo.png')));
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-// app.use(session({
-//     secret: "sportsControl.io", //TODO change
-//     resave: true,
-//     saveUninitialized: false
-// }));
+
+app.use(cors());
+
+// const pg = require('pg');
+// const pgSession = require('connect-pg-simple')(session);
+
+// const pgPool = new pg.Pool({
+//   database: 'sportscontrol',
+// });
+// app.use(
+//   session({
+//     saveUninitialized: true,
+//     store: new pgSession({
+//       pool: pgPool,
+//     }),
+//     secret: process.env.COOKIE_SECRET,
+//     resave: false,
+//     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
+//   })
+// );
 
 app.use(logger('dev'));
 
@@ -42,15 +64,45 @@ app.use(function (req, res, next) {
   next();
 });
 
-//================ ROUTES ========================//
+DB.connect().then(
+  (message) => {
+    console.log('DB Connected');
+  },
+  () => {
+    console.error('Unable to connect to DB');
+  }
+);
 
+app.use(passport.initialize());
+app.use(passport.session());
+
+require('./app/config/middleware')(app, passport);
+
+//================ ROUTES ========================//
+app.use('/', require('./app/routes/authRoutes'));
 app.use('/connect', require('./app/routes/dbRoutes'));
-app.use('/games', require('./app/routes/gamesRoutes'));
-app.use('/venues', require('./app/routes/venuesRoutes'));
-app.use('/teams', require('./app/routes/teamsRoutes'));
-app.use('/players', require('./app/routes/playersRoutes'));
+app.use('/api', require('./app/routes/apiRoutes')(passport));
+app.use('/api/games', require('./app/routes/gamesRoutes'));
+app.use('/api/venues', require('./app/routes/venuesRoutes'));
+app.use('/api/teams', require('./app/routes/teamsRoutes'));
+app.use('/api/players', require('./app/routes/playersRoutes'));
 //The vue router should be last
 app.use('/', require('./app/routes/routes'));
+
+app.use(function (req, res, next) {
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
+});
+
+app.use((err, req, res, next) => {
+  console.error(err.message, err.stack);
+  res.status(err.status || 500).json({
+    message: err.message,
+    error: {},
+  });
+  next();
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`App is listening on port ${PORT}`));

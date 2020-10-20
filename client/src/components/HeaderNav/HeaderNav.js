@@ -7,6 +7,7 @@ import {
   faDatabase,
   faPlus,
   faChevronLeft,
+  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
@@ -14,7 +15,7 @@ import { Button, Icon } from '../../styledElements';
 import useDb from '../../hooks/useDb';
 import useActiveGame from '../../hooks/useActiveGame';
 
-import { setEndGamePrompt } from '../../actions';
+import { setEndGamePrompt, userLogout } from '../../actions';
 
 const NavRootWrapper = styled.header`
   display: flex;
@@ -38,12 +39,19 @@ function HeaderNav() {
 
   const currentRoute = useSelector((state) => state.routes.currentRoute);
 
-  const { status: dbStatus, failureCount, refetch, error: dbError } = useDb();
+  const { isLoggedIn } = useSelector((state) => state.auth);
+
+  const {
+    status: dbStatus,
+    failureCount,
+    refetch: connectDb,
+    error: dbError,
+  } = useDb();
   const {
     status: activeGameStatus,
     data: activeGame,
     refetch: fetchActiveGame,
-  } = useActiveGame(dbStatus === 'success');
+  } = useActiveGame(dbStatus === 'success' && isLoggedIn);
 
   useEffect(() => {
     if (currentRoute === '/') {
@@ -53,6 +61,8 @@ function HeaderNav() {
 
   const isDbConnected = () => dbStatus === 'success';
   const isDbConnecting = () => dbStatus === 'loading';
+
+  const logout = useCallback(() => dispatch(userLogout()), [dispatch]);
 
   const openEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(true)),
@@ -84,7 +94,7 @@ function HeaderNav() {
         <Button
           color={getConnectBtnColor()}
           // disabled={isDbConnecting()}
-          onClick={refetch}
+          onClick={connectDb}
           // isSaving={isDbConnecting()}
         >
           {getConnectBtnText()}
@@ -102,6 +112,7 @@ function HeaderNav() {
         </Button>
       </NavContentWrapper>
       {isDbConnected() &&
+        isLoggedIn &&
         (currentRoute === '/' ? (
           <>
             <Button color="primary" onClick={goToRoute('/teams')}>
@@ -110,6 +121,7 @@ function HeaderNav() {
             <Button color="primary" onClick={goToRoute('/venues')}>
               Manage Venues
             </Button>
+
             {!activeGame && activeGameStatus === 'success' ? (
               <Button
                 justifyRight
@@ -122,6 +134,14 @@ function HeaderNav() {
                 </Icon>
               </Button>
             ) : null}
+            {currentRoute !== '/game' && isLoggedIn && (
+              <Button justifyRight color="error" onClick={logout}>
+                Logout
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faSignOutAlt} size="sm" />
+                </Icon>
+              </Button>
+            )}
           </>
         ) : (
           <>
@@ -131,6 +151,7 @@ function HeaderNav() {
               </Icon>
               Home
             </Button>
+
             {currentRoute === '/game' && activeGame && (
               <Button justifyRight color="error" onClick={openEndGamePrompt}>
                 End Game

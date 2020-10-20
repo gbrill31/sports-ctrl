@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
-import { MainTitle, ScrollableContainer } from "../../styledElements";
+import { MainTitle, ScrollableContainer } from '../../styledElements';
 
-import ComponentLoader from "../ComponentLoader/ComponentLoader";
-import HomeGameListItem from "../HomeGameListItem/HomeGameListItem";
-import useGames from "../../hooks/useGames";
-import useDb from "../../hooks/useDb";
+import ComponentLoader from '../ComponentLoader/ComponentLoader';
+import HomeGameListItem from '../HomeGameListItem/HomeGameListItem';
+import useGames from '../../hooks/useGames';
+import useDb from '../../hooks/useDb';
 
 export default function HomeGamesList() {
   const history = useHistory();
@@ -14,7 +14,7 @@ export default function HomeGamesList() {
   const [activeGame, setActiveGame] = useState(null);
 
   const { status: dbStatus } = useDb();
-  const { status, data: games, isFetching } = useGames(dbStatus === "success");
+  const { status, data: games, isFetching } = useGames(dbStatus === 'success');
 
   useEffect(() => {
     if (games?.length) {
@@ -23,10 +23,10 @@ export default function HomeGamesList() {
     }
   }, [games]);
 
-  const isGamesLoading = () => status === "loading" || isFetching;
+  const isGamesLoading = () => status === 'loading' || isFetching;
 
   const goToActiveGame = () => {
-    history.push("/game");
+    history.push('/game');
   };
 
   return (

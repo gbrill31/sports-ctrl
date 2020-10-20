@@ -1,22 +1,13 @@
-const dbRouter = require("express").Router();
-const DB = require("../config/database");
+const dbRouter = require('express').Router();
+const DB = require('../config/database');
 
 let dbConnectionFailed = false;
 
-dbRouter.get("/", function (req, res) {
+dbRouter.get('/', function (req, res) {
   DB.checkConnection().then(
     (message) => {
       if (dbConnectionFailed) {
-        res.header(
-          "notification",
-          JSON.stringify({
-            type: "success",
-            message: "Database connected !",
-            options: {
-              autoClose: 5000,
-            },
-          })
-        );
+        res.alertSuccess('Database connected !');
         dbConnectionFailed = false;
       }
       res.json(message || {}).status(200);

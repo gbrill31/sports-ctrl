@@ -15,9 +15,9 @@ import {
   setEndGamePrompt,
   updateGameEnd,
   setGameEnd,
-} from "./gamesControlActions";
+} from './gamesControlActions';
 
-import { setSelectedTeam } from "./teamsActions";
+import { setSelectedTeam } from './teamsActions';
 
 import {
   startGameClock,
@@ -31,9 +31,17 @@ import {
   setAttackClock,
   setAttackClockStart,
   setAttackClockTimeleft,
-} from "./clocksActions";
+} from './clocksActions';
 
-import { setRouteName } from "./routeActions";
+import { setRouteName } from './routeActions';
+
+import {
+  userLogin,
+  setLoggedIn,
+  userLogout,
+  setLoggedOut,
+  verifyLogin,
+} from './authActions';
 
 export {
   setRouteName,
@@ -65,4 +73,9 @@ export {
   setEndGamePrompt,
   updateGameEnd,
   setGameEnd,
+  userLogin,
+  setLoggedIn,
+  userLogout,
+  setLoggedOut,
+  verifyLogin,
 };

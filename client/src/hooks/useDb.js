@@ -1,8 +1,8 @@
-import { useQuery } from "react-query";
-import { connectDB } from "../api";
+import { useQuery } from 'react-query';
+import { connectDB } from '../api';
 
 export default function useDb() {
-  return useQuery("db", connectDB, {
+  return useQuery('dbConnection', connectDB, {
     refetchOnWindowFocus: false,
     retry: 5,
     retryDelay: 15000,

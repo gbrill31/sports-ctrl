@@ -4,11 +4,13 @@ import { toast } from 'react-toastify';
 
 let unregisterRequest, unregisterResponse;
 
-const baseURL =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
+// const baseURL =
+//   process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
 
 function handleResponseHeaders({ redirectto, notification }, history) {
-  if (redirectto && history) history.push(redirectto);
+  if (redirectto && history) {
+    history.push(redirectto);
+  }
   if (notification) {
     const notificationData = JSON.parse(notification);
     toast[notificationData.type](
@@ -22,7 +24,10 @@ export default {
   initInterceptors(history) {
     unregisterRequest = axios.interceptors.request.use(
       (config) => {
-        return { ...config, url: `${baseURL}${config.url}` };
+        const token = localStorage.getItem('token');
+        config.headers.common['Authorization'] = token;
+        // return { ...config, url: `${baseURL}${config.url}` };
+        return config;
       },
       (err) => {
         return Promise.reject(err);

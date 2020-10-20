@@ -1,8 +1,9 @@
-import { useQuery } from "react-query";
-import { getAllGames } from "../api";
+import { useQuery } from 'react-query';
+import { getAllGames } from '../api';
 
 export default function useGames(isAllowed) {
-  return useQuery(isAllowed && "games", getAllGames, {
+  return useQuery(isAllowed && 'all-games', getAllGames, {
     refetchOnWindowFocus: false,
+    retry: false,
   });
 }
