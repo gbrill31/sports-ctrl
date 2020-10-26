@@ -9,6 +9,7 @@ module.exports = function (passport) {
       { session: false },
       (err, user, info) => {
         if (user) {
+          req.user = user;
           return next();
         }
 

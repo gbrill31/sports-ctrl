@@ -146,15 +146,19 @@ function App() {
     };
   }, [history, setCurrentRoute, checkUserLogin]);
 
+  const isInPrivateRoute = useCallback(
+    () =>
+      history.location.pathname !== '/userlogin' ||
+      history.location.pathname !== '/usersignup',
+    [history]
+  );
+
   useEffect(() => {
     if (isLoggedIn) {
-      const route =
-        history.location.pathname !== '/userlogin'
-          ? history.location.pathname
-          : '/';
+      const route = isInPrivateRoute() ? history.location.pathname : '/';
       history.push(route);
     }
-  }, [isLoggedIn, history]);
+  }, [isLoggedIn, history, isInPrivateRoute]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -166,7 +170,7 @@ function App() {
             <Switch>
               <Route
                 exact
-                path="/registeruser"
+                path="/usersignup"
                 render={() => <RegisterAdmin />}
               />
               <Route exact path="/userlogin" render={() => <UserLogin />} />
