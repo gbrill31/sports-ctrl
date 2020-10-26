@@ -1,20 +1,20 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import styled, { css } from "styled-components";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import styled, { css } from 'styled-components';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   faHistory,
   faHandPaper,
   faStopwatch,
   faCog,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { GlobalHotKeys } from "react-hotkeys";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GlobalHotKeys } from 'react-hotkeys';
 
-import PromptDialog from "../PromptDialog/PromptDialog";
-import useFormInput from "../../hooks/useFormInput";
-import useOutsideMouseDown from "../../hooks/useOutsideMouseDown";
+import PromptDialog from '../PromptDialog/PromptDialog';
+import useFormInput from '../../hooks/useFormInput';
+import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
 
-import { FlexContainer, Button, Icon, Input } from "../../styledElements";
+import { FlexContainer, Button, Icon, Input } from '../../styledElements';
 
 import {
   startGameClock,
@@ -26,7 +26,7 @@ import {
   setGameClockStart,
   setAttackClockStart,
   resetTeamFouls,
-} from "../../actions";
+} from '../../actions';
 
 import {
   convertSecToDuration,
@@ -34,7 +34,7 @@ import {
   convertMilliToMin,
   convertSecToMilli,
   convertMilliToSec,
-} from "../../utils";
+} from '../../utils';
 
 const MenuContainer = styled.div`
   max-height: 0;
@@ -95,7 +95,7 @@ const ClocksSetMenu = styled.div`
 `;
 
 const keyMap = {
-  TOGGLE_CLOCKS_START: "ctrl+s",
+  TOGGLE_CLOCKS_START: 'ctrl+s',
 };
 
 const attackClockOptions = {
@@ -115,6 +115,7 @@ export default function GameControlMenu() {
   const [isShowSetAttackClock, setIsShowSetAttackClock] = useState(false);
 
   const menuRef = useRef(null);
+
   useOutsideMouseDown(menuRef, isShowMenu, () => {
     setIsShowMenu(false);
     setIsShowSetAttackClock(false);
@@ -142,9 +143,9 @@ export default function GameControlMenu() {
     }
   }, [isShowSetAttackClock, isAttackClockRunning, setIsShowSetAttackClock]);
 
-  const gameClockMinutes = useFormInput("");
-  const gameClockSeconds = useFormInput("");
-  const attackClockSeconds = useFormInput("");
+  const gameClockMinutes = useFormInput('');
+  const gameClockSeconds = useFormInput('');
+  const attackClockSeconds = useFormInput('');
 
   const startClockGame = useCallback(() => dispatch(startGameClock()), [
     dispatch,
@@ -181,7 +182,7 @@ export default function GameControlMenu() {
     );
 
   const resetClockGame = () => {
-    localStorage.removeItem("gameClock");
+    localStorage.removeItem('gameClock');
     dispatch(resetGameClock(getGameClockInitTime()));
   };
   const resetClockAttack = () => {
@@ -247,7 +248,7 @@ export default function GameControlMenu() {
       convertSecToMilli(parseInt(gameClockSeconds.value)) +
       convertMinToMilli(parseInt(gameClockMinutes.value));
     setGameClockStartTime(startTime);
-    localStorage.removeItem("gameClock");
+    localStorage.removeItem('gameClock');
   };
 
   const handleGameClockSecondsChange = (e) => {
@@ -263,11 +264,11 @@ export default function GameControlMenu() {
   const setNewAttackClockStart = () => {
     const startTime = convertSecToMilli(parseInt(attackClockSeconds.value));
     setAttackClockStartTime(startTime);
-    localStorage.removeItem("attackClock");
+    localStorage.removeItem('attackClock');
   };
 
   const handleInputKeyDown = (e) => {
-    if (e.keyCode === 13 || e.key === "Enter") {
+    if (e.keyCode === 13 || e.key === 'Enter') {
       if (isShowSetGameClock) setNewGameClockStart();
       if (isShowSetAttackClock) setNewAttackClockStart();
     }

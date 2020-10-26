@@ -7,7 +7,6 @@ import {
   faDatabase,
   faPlus,
   faChevronLeft,
-  faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
@@ -15,7 +14,7 @@ import { Button, Icon } from '../../styledElements';
 import useDb from '../../hooks/useDb';
 import useActiveGame from '../../hooks/useActiveGame';
 
-import { setEndGamePrompt, userLogout } from '../../actions';
+import { setEndGamePrompt } from '../../actions';
 import UserMenu from '../UserMenu/UserMenu';
 
 const NavRootWrapper = styled.header`
@@ -57,8 +56,6 @@ function HeaderNav() {
 
   const isDbConnected = () => dbStatus === 'success';
   const isDbConnecting = () => dbStatus === 'loading';
-
-  const logout = useCallback(() => dispatch(userLogout()), [dispatch]);
 
   const openEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(true)),
@@ -110,13 +107,6 @@ function HeaderNav() {
         isLoggedIn &&
         (currentRoute === '/' ? (
           <>
-            <Button color="primary" onClick={goToRoute('/teams')}>
-              Manage Teams
-            </Button>
-            <Button color="primary" onClick={goToRoute('/venues')}>
-              Manage Venues
-            </Button>
-
             {!activeGame && activeGameStatus === 'success' ? (
               <Button
                 justifyRight
@@ -129,14 +119,6 @@ function HeaderNav() {
                 </Icon>
               </Button>
             ) : null}
-            {currentRoute !== '/game' && isLoggedIn && (
-              <Button justifyRight color="error" onClick={logout}>
-                Logout
-                <Icon spaceLeft>
-                  <FontAwesomeIcon icon={faSignOutAlt} size="sm" />
-                </Icon>
-              </Button>
-            )}
           </>
         ) : (
           <>
