@@ -7,7 +7,7 @@ import { HttpInterceptors } from './utils';
 import Home from './views/Home/Home';
 
 import HeaderNav from './components/HeaderNav/HeaderNav';
-import RegisterAdmin from './views/RegisterAdmin/RegisterAdmin';
+import RegisterUser from './views/RegisterUser/RegisterUser';
 import UserLogin from './views/UserLogin/UserLogin';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
@@ -168,11 +168,7 @@ function App() {
           <HeaderNav />
           <AppMainContent>
             <Switch>
-              <Route
-                exact
-                path="/usersignup"
-                render={() => <RegisterAdmin />}
-              />
+              <Route exact path="/usersignup" render={() => <RegisterUser />} />
               <Route exact path="/userlogin" render={() => <UserLogin />} />
 
               <PrivateRoute path="/" component={Home} />

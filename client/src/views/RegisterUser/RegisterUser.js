@@ -26,7 +26,7 @@ const FormError = styled.div`
   margin: 0;
 `;
 
-export default function RegisterAdmin() {
+export default function RegisterUser() {
   const history = useHistory();
 
   const {
