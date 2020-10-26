@@ -7,36 +7,42 @@ const jwtUtils = require('../utils/jwt');
 authRouter.post('/register', (req, res) => {
   const { name, email, password } = req.body;
 
-  psqlDB.findUser(email).then((user) => {
-    if (!user) {
-      const { salt, hash } = passwordsUtils.generatePassword(password);
+  psqlDB
+    .findUser(email)
+    .then((user) => {
+      if (!user) {
+        const { salt, hash } = passwordsUtils.generatePassword(password);
 
-      const user = {
-        name,
-        email,
-        salt,
-        hash,
-        admin: null,
-        type: 'admin',
-        firstLogin: false,
-      };
+        const user = {
+          name,
+          email,
+          salt,
+          hash,
+          admin: null,
+          type: 'admin',
+          firstLogin: false,
+        };
 
-      psqlDB
-        .createUser(user)
-        .then(() => {
-          res.alertSuccess('User registered successfuly');
-          res.redirectTo('/login');
-          res.status(200).json({});
-        })
-        .catch((err) => {
-          res.alertError('Db error, cannot create user');
-          res.sendStatus(err.code || 503);
-        });
-    } else {
-      res.alertError('Cannot create user, user already exists');
-      res.sendStatus(403);
-    }
-  });
+        psqlDB
+          .createUser(user)
+          .then(() => {
+            res.alertSuccess('User registered successfuly');
+            res.redirectTo('/login');
+            res.status(200).json({});
+          })
+          .catch((err) => {
+            res.alertError('Db error, cannot create user');
+            res.sendStatus(err.code || 503);
+          });
+      } else {
+        res.alertError('Cannot create user, user already exists');
+        res.sendStatus(403);
+      }
+    })
+    .catch((err) => {
+      res.alertError('Db error, cannot create user');
+      res.sendStatus(err.code || 503);
+    });
 });
 
 // passport.authenticate('local', (err, user, info) => {
@@ -67,7 +73,7 @@ authRouter.post('/login', (req, res, next) => {
       !user ||
       !passwordsUtils.validatePassword(password, user.hash, user.salt)
     ) {
-      res.alertError('Try again, Username or Pawwsord are incorrect');
+      res.alertError('Try again, Username or Password are incorrect');
       return res.sendStatus(401);
     }
     const { token, expires } = jwtUtils.issueJwt(user.id);
@@ -81,6 +87,7 @@ authRouter.post('/login', (req, res, next) => {
 });
 
 authRouter.get('/logout', (req, res) => {
+  res.redirectTo('/login');
   res.sendStatus(200);
 });
 

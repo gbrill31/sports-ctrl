@@ -1,7 +1,21 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import { AUTH } from '../constants';
-import { setLoggedIn, setLoggedOut } from '../actions';
-import { loginUser, logoutUser, verifyLogin } from '../api';
+import {
+  setLoggedIn,
+  setLoggedOut,
+  userSignupSuccess,
+  setLoggedInError,
+} from '../actions';
+import { loginUser, logoutUser, verifyLogin, registerUser } from '../api';
+
+function* handleUserSignup({ name, email, password }) {
+  try {
+    yield call(registerUser, name, email, password);
+    yield put(userSignupSuccess());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
 
 function* handleUserLogin({ email, password }) {
   try {
@@ -14,7 +28,7 @@ function* handleUserLogin({ email, password }) {
     yield localStorage.setItem('expires', expires);
     yield put(setLoggedIn(loggedInUser));
   } catch (error) {
-    // yield put(updatePlayerStatsError(error));
+    yield put(setLoggedInError(error));
   }
 }
 
@@ -40,6 +54,7 @@ function* handleVerifyLogin() {
 }
 
 export default function* watchAuth() {
+  yield takeEvery(AUTH.ON_USER_SIGNUP, handleUserSignup);
   yield takeEvery(AUTH.ON_USER_LOGIN, handleUserLogin);
   yield takeEvery(AUTH.ON_USER_LOGOUT, handleUserLogout);
   yield takeEvery(AUTH.ON_USER_VERIFY_LOGIN, handleVerifyLogin);

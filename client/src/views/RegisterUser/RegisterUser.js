@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory } from 'react-router-dom';
 import {
@@ -10,7 +10,8 @@ import {
 } from '../../styledElements';
 import styled from 'styled-components';
 
-import { registerUser } from '../../api';
+import { userSignup } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 const FormContainer = styled.form`
   label {
@@ -28,6 +29,9 @@ const FormError = styled.div`
 
 export default function RegisterUser() {
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const { signupPending } = useSelector((state) => state.auth);
 
   const {
     register,
@@ -35,21 +39,18 @@ export default function RegisterUser() {
     errors,
     setError,
     clearErrors,
-    reset,
+    // reset,
   } = useForm({
     mode: 'all',
   });
   const [password, setPassword] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
+
+  const registerUser = useCallback((data) => dispatch(userSignup(data)), [
+    dispatch,
+  ]);
+
   const onSubmit = async (data) => {
-    setIsSaving(true);
-    try {
-      const user = await registerUser(data);
-      if (user) setIsSaving(false);
-    } catch (err) {
-      reset();
-      setIsSaving(false);
-    }
+    registerUser(data);
   };
 
   const goToRoute = (route) => () => history.push(route);
@@ -86,7 +87,7 @@ export default function RegisterUser() {
             name="name"
             id="name"
             type="text"
-            placeholder="First name"
+            placeholder="Full name"
             error={errors.name}
             ref={register({ required: true })}
             color="#fff"
@@ -157,7 +158,7 @@ export default function RegisterUser() {
           <Button
             type="submit"
             color="success"
-            saving={isSaving}
+            saving={signupPending}
             width="80%"
             margin="40px 0 5px 0"
           >

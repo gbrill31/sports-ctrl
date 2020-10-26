@@ -16,6 +16,7 @@ import useDb from '../../hooks/useDb';
 import useActiveGame from '../../hooks/useActiveGame';
 
 import { setEndGamePrompt, userLogout } from '../../actions';
+import UserMenu from '../UserMenu/UserMenu';
 
 const NavRootWrapper = styled.header`
   display: flex;
@@ -24,13 +25,8 @@ const NavRootWrapper = styled.header`
   width: 100%;
   top: 0;
   background-color: #c17a2b;
-  padding: 5px;
+  padding: 10px;
   z-index: 999;
-`;
-
-const NavContentWrapper = styled.div`
-  position: relative;
-  margin: 10px;
 `;
 
 function HeaderNav() {
@@ -90,27 +86,26 @@ function HeaderNav() {
 
   return (
     <NavRootWrapper>
-      <NavContentWrapper>
-        <Button
-          color={getConnectBtnColor()}
-          // disabled={isDbConnecting()}
-          onClick={connectDb}
-          // isSaving={isDbConnecting()}
-        >
-          {getConnectBtnText()}
-          {
-            <Icon spaceLeft>
-              {isDbConnected() ? (
-                <FontAwesomeIcon icon={faCheck} size="sm" />
-              ) : isDbConnecting() ? (
-                <CircularProgress size={12} color="inherit" />
-              ) : (
-                <FontAwesomeIcon icon={faDatabase} size="sm" />
-              )}
-            </Icon>
-          }
-        </Button>
-      </NavContentWrapper>
+      <UserMenu />
+      <Button
+        color={getConnectBtnColor()}
+        // disabled={isDbConnecting()}
+        onClick={connectDb}
+        // isSaving={isDbConnecting()}
+      >
+        {getConnectBtnText()}
+        {
+          <Icon spaceLeft>
+            {isDbConnected() ? (
+              <FontAwesomeIcon icon={faCheck} size="sm" />
+            ) : isDbConnecting() ? (
+              <CircularProgress size={12} color="inherit" />
+            ) : (
+              <FontAwesomeIcon icon={faDatabase} size="sm" />
+            )}
+          </Icon>
+        }
+      </Button>
       {isDbConnected() &&
         isLoggedIn &&
         (currentRoute === '/' ? (

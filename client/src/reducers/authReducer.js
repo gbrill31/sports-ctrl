@@ -2,16 +2,24 @@ import { AUTH } from '../constants';
 
 const INITIAL_STATE = {
   user: null,
+  signupPending: false,
   isLoggedIn: false,
   isLoggedInCheck: false,
   loginPending: false,
   logoutPending: false,
+  signupError: null,
   loginError: null,
   logoutError: null,
 };
 
 const routesReucer = (state = INITIAL_STATE, action = {}) => {
   switch (action.type) {
+    case AUTH.ON_USER_SIGNUP:
+      return { ...state, signupPending: true };
+    case AUTH.ON_USER_SIGNUP_SUCCESS:
+      return { ...state, signupPending: false };
+    case AUTH.ON_USER_SIGNUP_FAILED:
+      return { ...state, signupPending: false, signupError: action.payload };
     case AUTH.ON_USER_LOGIN:
       return { ...state, loginPending: true };
     case AUTH.ON_USER_LOGIN_SUCCESS:
@@ -28,6 +36,7 @@ const routesReucer = (state = INITIAL_STATE, action = {}) => {
         ...state,
         loginPending: false,
         user: null,
+        isLoggedInCheck: true,
         isLoggedIn: false,
         loginError: action.payload,
       };

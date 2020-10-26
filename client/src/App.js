@@ -146,19 +146,19 @@ function App() {
     };
   }, [history, setCurrentRoute, checkUserLogin]);
 
-  const isInPrivateRoute = useCallback(
+  const isPrivateRoute = useCallback(
     () =>
-      history.location.pathname !== '/userlogin' ||
+      history.location.pathname !== '/userlogin' &&
       history.location.pathname !== '/usersignup',
     [history]
   );
 
   useEffect(() => {
     if (isLoggedIn) {
-      const route = isInPrivateRoute() ? history.location.pathname : '/';
+      const route = isPrivateRoute() ? history.location.pathname : '/';
       history.push(route);
     }
-  }, [isLoggedIn, history, isInPrivateRoute]);
+  }, [isLoggedIn, history, isPrivateRoute]);
 
   return (
     <ThemeProvider theme={theme}>

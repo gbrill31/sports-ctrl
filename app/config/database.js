@@ -413,7 +413,6 @@ const DB_EXPORTS = {
     return DB.insert({ ...user }, [
       'name',
       'email',
-      'isAdmin',
       'admin',
       'type',
       'firstLogin',
@@ -434,7 +433,9 @@ const DB_EXPORTS = {
                 (user) => {
                   resolve(user[0]);
                 },
-                (err) => reject(err)
+                (err) => {
+                  reject(err);
+                }
               );
           } else {
             resolve();

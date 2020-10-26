@@ -36,8 +36,11 @@ import {
 import { setRouteName } from './routeActions';
 
 import {
+  userSignup,
+  userSignupSuccess,
   userLogin,
   setLoggedIn,
+  setLoggedInError,
   userLogout,
   setLoggedOut,
   verifyLogin,
@@ -73,8 +76,11 @@ export {
   setEndGamePrompt,
   updateGameEnd,
   setGameEnd,
+  userSignup,
+  userSignupSuccess,
   userLogin,
   setLoggedIn,
+  setLoggedInError,
   userLogout,
   setLoggedOut,
   verifyLogin,

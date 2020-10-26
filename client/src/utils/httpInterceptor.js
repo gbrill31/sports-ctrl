@@ -4,9 +4,6 @@ import { toast } from 'react-toastify';
 
 let unregisterRequest, unregisterResponse;
 
-// const baseURL =
-//   process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
-
 function handleResponseHeaders({ redirectto, notification }, history) {
   if (redirectto && history) {
     history.push(redirectto);
@@ -26,7 +23,6 @@ export default {
       (config) => {
         const token = localStorage.getItem('token');
         config.headers.common['Authorization'] = token;
-        // return { ...config, url: `${baseURL}${config.url}` };
         return config;
       },
       (err) => {
