@@ -1,36 +1,37 @@
-import React, { useState, useCallback, Fragment } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CircularProgress } from "@material-ui/core";
+import React, { useState, useCallback, Fragment } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CircularProgress } from '@material-ui/core';
 import {
   FlexContainer,
   Button,
   Icon,
   ScrollableContainer,
   MainTitle,
-} from "../../../styledElements";
+} from '../../../styledElements';
 
-import PromptDialog from "../../PromptDialog/PromptDialog";
-import NewTeamFormDialog from "../NewTeamFormDialog/NewTeamFormDialog";
-import TeamManagementListItem from "../TeamManagementListItem/TeamManagementListItem";
-import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import FilterListInput from "../../FilterListInput/FilterListInput";
-import useDb from "../../../hooks/useDb";
-import useTeams from "../../../hooks/useTeams";
-import useDeleteTeam from "../../../hooks/useDeleteTeam";
+import PromptDialog from '../../PromptDialog/PromptDialog';
+import NewTeamFormDialog from '../NewTeamFormDialog/NewTeamFormDialog';
+import TeamManagementListItem from '../TeamManagementListItem/TeamManagementListItem';
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import FilterListInput from '../../FilterListInput/FilterListInput';
+import useDb from '../../../hooks/useDb';
+import useTeams from '../../../hooks/useTeams';
+import useDeleteTeam from '../../../hooks/useDeleteTeam';
 
-import { setSelectedTeam } from "../../../actions";
+import { setSelectedTeam } from '../../../actions';
 
 export default function ManagementTeamsList() {
   const dispatch = useDispatch();
 
   const { status: dbStatus } = useDb();
-  const { status, data: teams, isFetching } = useTeams(dbStatus === "success");
+
+  const { status, data: teams, isFetching } = useTeams(dbStatus === 'success');
 
   const { selected: selectedTeam } = useSelector((state) => state.teams);
 
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
   const [isNewTeamDialog, setIsNewTeamDialog] = useState(false);
 
@@ -52,7 +53,7 @@ export default function ManagementTeamsList() {
 
   const getFilteredTeams = () => {
     const value = filterValue.toLowerCase();
-    return value !== ""
+    return value !== ''
       ? teams.filter(
           (team) =>
             team.getName().includes(value) ||
@@ -77,9 +78,9 @@ export default function ManagementTeamsList() {
     <Fragment>
       <FlexContainer
         borderRight
-        minWidth={status === "loading" ? "50vw" : false}
+        minWidth={status === 'loading' ? '50vw' : false}
       >
-        <ComponentLoader loading={status === "loading"} size={100}>
+        <ComponentLoader loading={status === 'loading'} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>
             <Button color="success" onClick={openCreateTeamDialog}>
@@ -89,11 +90,11 @@ export default function ManagementTeamsList() {
               </Icon>
             </Button>
             {isFetching && (
-              <CircularProgress size={25} style={{ color: "#fff" }} />
+              <CircularProgress size={25} style={{ color: '#fff' }} />
             )}
           </FlexContainer>
           <FlexContainer fullWidth padding="0">
-            {status === "success" && (
+            {status === 'success' && (
               <FilterListInput
                 onChange={setFilterValue}
                 placeholder="Name, League, Country"
@@ -124,7 +125,7 @@ export default function ManagementTeamsList() {
         isOpen={isDeleteTeamPrompt}
         title="Delete Team"
         content={`Are you sure you want to delete "${
-          selectedTeam?.getName() || ""
+          selectedTeam?.getName() || ''
         }"?`}
         confirmText="Delete"
         handleClose={closeDeletePrompt}

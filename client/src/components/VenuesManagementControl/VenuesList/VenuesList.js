@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CircularProgress } from "@material-ui/core";
+import React, { useState } from 'react';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CircularProgress } from '@material-ui/core';
 
-import PromptDialog from "../../PromptDialog/PromptDialog";
-import FilterListInput from "../../FilterListInput/FilterListInput";
-import VenueListItem from "../VenueListItem/VenueListItem";
-import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import NewVenueFormDialog from "../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog";
+import PromptDialog from '../../PromptDialog/PromptDialog';
+import FilterListInput from '../../FilterListInput/FilterListInput';
+import VenueListItem from '../VenueListItem/VenueListItem';
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import NewVenueFormDialog from '../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog';
 import {
   FlexContainer,
   ScrollableContainer,
   Button,
   MainTitle,
   Icon,
-} from "../../../styledElements";
+} from '../../../styledElements';
 
-import useVenues from "../../../hooks/useVenues";
-import useDeleteVenue from "../../../hooks/useDeleteVenue";
-import useDb from "../../../hooks/useDb";
+import useVenues from '../../../hooks/useVenues';
+import useDeleteVenue from '../../../hooks/useDeleteVenue';
+import useDb from '../../../hooks/useDb';
 
 function VenuesList() {
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
   const [isNewVenueDialog, setIsNewVenueDialog] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
 
   const [selectedVenue, setSelectedVenue] = useState(null);
 
@@ -41,7 +41,7 @@ function VenuesList() {
   };
 
   const { status, data: venues, isFetching } = useVenues(
-    dbStatus === "success"
+    dbStatus === 'success'
   );
 
   const openDeleteVenuePrompt = () => {
@@ -50,7 +50,7 @@ function VenuesList() {
 
   const getFilteredVenues = () => {
     const value = filterValue.toLowerCase();
-    return value !== ""
+    return value !== ''
       ? venues.filter(
           (venue) =>
             venue.name.toLowerCase().includes(value) ||
@@ -62,7 +62,7 @@ function VenuesList() {
 
   return (
     <>
-      <ComponentLoader loading={status === "loading"}>
+      <ComponentLoader loading={status === 'loading'}>
         <FlexContainer fullWidth align="center">
           <MainTitle>Venues</MainTitle>
           <FlexContainer>
@@ -74,7 +74,7 @@ function VenuesList() {
             </Button>
           </FlexContainer>
           {isFetching && (
-            <CircularProgress size={25} style={{ color: "#fff" }} />
+            <CircularProgress size={25} style={{ color: '#fff' }} />
           )}
         </FlexContainer>
         <FlexContainer fullWidth padding="0">

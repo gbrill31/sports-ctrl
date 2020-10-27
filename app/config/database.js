@@ -629,13 +629,14 @@ const DB_EXPORTS = {
     return DB('venues').where('id', id).del();
   },
 
-  getAllVenues: function () {
+  getAllVenues: function (userId) {
     return new Promise((resolve, reject) => {
       DB.schema.hasTable('venues').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table('venues')
+              .from('venues')
+              .where('ownerId', Number(userId))
               .then(
                 (venues) => {
                   resolve(venues);
@@ -651,13 +652,14 @@ const DB_EXPORTS = {
     });
   },
 
-  getAllTeams: function () {
+  getAllTeams: function (userId) {
     return new Promise((resolve, reject) => {
       DB.schema.hasTable('teams').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table('teams')
+              .from('teams')
+              .where('ownerId', Number(userId))
               .then(
                 (teams) => {
                   resolve(teams);

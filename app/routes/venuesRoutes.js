@@ -2,7 +2,8 @@ const venuesRouter = require('express').Router();
 const psqlDB = require('../config/database');
 
 venuesRouter.get('/all', (req, res) => {
-  psqlDB.getAllVenues().then(
+  const userId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
+  psqlDB.getAllVenues(userId).then(
     (venues) => {
       res.json(venues).status(200);
     },
