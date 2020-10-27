@@ -50,8 +50,7 @@ function createGamesTable() {
         DB.schema
           .createTable('games', (table) => {
             table.increments();
-            table.string('operatorId');
-            table.string('operatorName');
+            table.integer('ownerId');
             table.integer('homeId');
             table.string('home');
             table.integer('homePoints');
@@ -85,7 +84,7 @@ function createVenuesTable() {
         DB.schema
           .createTable('venues', (table) => {
             table.increments();
-            table.string('owner');
+            table.integer('ownerId');
             table.string('name');
             table.string('country');
             table.string('city');
@@ -112,7 +111,7 @@ function createTeamsTable() {
         DB.schema
           .createTable('teams', (table) => {
             table.increments();
-            table.string('owner');
+            table.integer('ownerId');
             table.string('name');
             table.string('league');
             table.string('country');
@@ -139,7 +138,7 @@ function createPlayersTable() {
         DB.schema
           .createTable('players', (table) => {
             table.increments();
-            table.string('owner');
+            table.integer('ownerId');
             table.string('name');
             table.integer('number');
             table.string('team');
@@ -495,7 +494,7 @@ const DB_EXPORTS = {
     });
   },
 
-  createGame: function (home, homeId, away, awayId, venue, active) {
+  createGame: function (operatorId, home, homeId, away, awayId, venue, active) {
     return new Promise((resolve, reject) => {
       DB.returning([
         'id',
@@ -511,6 +510,7 @@ const DB_EXPORTS = {
         'status',
       ])
         .insert({
+          operatorId,
           home,
           homeId,
           homePoints: 0,
@@ -583,18 +583,21 @@ const DB_EXPORTS = {
 
   updateGameScore,
 
-  getAllGames: function () {
+  getAllGames: function (ownerId) {
     return new Promise((resolve, reject) => {
       DB.schema.hasTable('games').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table('games')
+              .from('games')
+              .where('ownerId', Number(ownerId))
               .then(
                 (games) => {
                   resolve(games);
                 },
-                (err) => reject(err)
+                (err) => {
+                  reject(err);
+                }
               );
           } else {
             resolve();

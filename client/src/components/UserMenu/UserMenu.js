@@ -24,7 +24,6 @@ const UserMenuWrapper = styled.div`
 
 const UserInfoWrapper = styled.div`
   cursor: pointer;
-  width: 76%;
   padding: 5px 20px;
 
   background-color: ${(props) =>
@@ -45,7 +44,7 @@ const DropdownMenu = styled.div`
   position: absolute;
   overflow: hidden;
   left: 5px;
-  width: 100%;
+  width: 120px;
   background-color: #fff;
   box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 

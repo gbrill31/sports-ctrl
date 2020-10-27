@@ -33,7 +33,7 @@ export default function UserLogin() {
     errors,
     // reset,
   } = useForm({
-    mode: 'all',
+    mode: 'onChange',
   });
   const dispatch = useDispatch();
   const history = useHistory();

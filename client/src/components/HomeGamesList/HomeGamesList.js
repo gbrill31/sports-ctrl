@@ -7,14 +7,20 @@ import ComponentLoader from '../ComponentLoader/ComponentLoader';
 import HomeGameListItem from '../HomeGameListItem/HomeGameListItem';
 import useGames from '../../hooks/useGames';
 import useDb from '../../hooks/useDb';
+import { useSelector } from 'react-redux';
 
 export default function HomeGamesList() {
   const history = useHistory();
 
   const [activeGame, setActiveGame] = useState(null);
 
+  const { user } = useSelector((state) => state.auth);
+
   const { status: dbStatus } = useDb();
-  const { status, data: games, isFetching } = useGames(dbStatus === 'success');
+  const { status, data: games, isFetching } = useGames(
+    dbStatus === 'success',
+    user.id
+  );
 
   useEffect(() => {
     if (games?.length) {

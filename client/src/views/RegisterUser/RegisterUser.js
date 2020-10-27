@@ -41,7 +41,7 @@ export default function RegisterUser() {
     clearErrors,
     // reset,
   } = useForm({
-    mode: 'all',
+    mode: 'onChnage',
   });
   const [password, setPassword] = useState('');
 

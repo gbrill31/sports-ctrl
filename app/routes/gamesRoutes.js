@@ -2,7 +2,8 @@ const gameRouter = require('express').Router();
 const psqlDB = require('../config/database');
 
 gameRouter.get('/all', (req, res) => {
-  psqlDB.getAllGames().then(
+  const { userId } = req.query;
+  psqlDB.getAllGames(userId).then(
     (games) => {
       res.json(games).status(200);
     },

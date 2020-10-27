@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-export const getAllGames = async () => {
-  const { data } = await axios.get('/api/games/all');
+export const getAllGames = async (key, userId) => {
+  const { data } = await axios.get(`/api/games/all?userId=${userId}`);
   return data;
 };
 

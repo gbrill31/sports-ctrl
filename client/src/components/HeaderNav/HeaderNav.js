@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import styled from 'styled-components';
-import { CircularProgress } from '@material-ui/core';
+// import { CircularProgress } from '@material-ui/core';
 import {
   faCheck,
-  faDatabase,
+  // faDatabase,
   faPlus,
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons';
@@ -38,9 +38,9 @@ function HeaderNav() {
 
   const {
     status: dbStatus,
-    failureCount,
-    refetch: connectDb,
-    error: dbError,
+    // failureCount,
+    // refetch: connectDb,
+    // error: dbError,
   } = useDb();
   const {
     status: activeGameStatus,
@@ -55,36 +55,36 @@ function HeaderNav() {
   }, [currentRoute, fetchActiveGame]);
 
   const isDbConnected = () => dbStatus === 'success';
-  const isDbConnecting = () => dbStatus === 'loading';
+  // const isDbConnecting = () => dbStatus === 'loading';
 
   const openEndGamePrompt = useCallback(
     () => dispatch(setEndGamePrompt(true)),
     [dispatch]
   );
 
-  const getConnectBtnColor = () => {
-    return !dbError || isDbConnecting()
-      ? isDbConnected()
-        ? 'success'
-        : 'secondary'
-      : 'error';
-  };
-  const getConnectBtnText = () => {
-    return isDbConnecting()
-      ? `Connecting, Attempts ${failureCount}`
-      : isDbConnected()
-      ? 'DB Connected'
-      : !dbError
-      ? 'Connect to Database'
-      : 'Connection Failed, Click To try Again';
-  };
+  // const getConnectBtnColor = () => {
+  //   return !dbError || isDbConnecting()
+  //     ? isDbConnected()
+  //       ? 'success'
+  //       : 'secondary'
+  //     : 'error';
+  // };
+  // const getConnectBtnText = () => {
+  //   return isDbConnecting()
+  //     ? `Connecting, Attempts ${failureCount}`
+  //     : isDbConnected()
+  //     ? 'DB Connected'
+  //     : !dbError
+  //     ? 'Connect to Database'
+  //     : 'Connection Failed, Click To try Again';
+  // };
 
   const goToRoute = (route) => () => history.push(route);
 
   return (
     <NavRootWrapper>
       <UserMenu />
-      <Button
+      {/* <Button
         color={getConnectBtnColor()}
         // disabled={isDbConnecting()}
         onClick={connectDb}
@@ -102,17 +102,13 @@ function HeaderNav() {
             )}
           </Icon>
         }
-      </Button>
+      </Button> */}
       {isDbConnected() &&
         isLoggedIn &&
         (currentRoute === '/' ? (
           <>
             {!activeGame && activeGameStatus === 'success' ? (
-              <Button
-                justifyRight
-                color="primary"
-                onClick={goToRoute('/creategame')}
-              >
+              <Button color="success" onClick={goToRoute('/creategame')}>
                 Start A New Game
                 <Icon spaceLeft>
                   <FontAwesomeIcon icon={faPlus} size="sm" />
