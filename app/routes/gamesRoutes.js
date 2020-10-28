@@ -2,8 +2,8 @@ const gameRouter = require('express').Router();
 const psqlDB = require('../config/database');
 
 gameRouter.get('/all', (req, res) => {
-  const userId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
-  psqlDB.getAllGames(userId).then(
+  const ownerId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
+  psqlDB.getAllGames(ownerId).then(
     (games) => {
       res.json(games).status(200);
     },
@@ -16,20 +16,24 @@ gameRouter.get('/all', (req, res) => {
 
 gameRouter.post('/create', function (req, res) {
   const { home, homeId, away, awayId, venue, active } = req.body;
-  psqlDB.createGame(home, homeId, away, awayId, venue, active).then(
-    (game) => {
-      res.redirectTo('/game');
-      res.json(game).status(200);
-    },
-    (err) => {
-      res.alertError('Could Not Create A New Game');
-      res.sendStatus(err.code || 500);
-    }
-  );
+  const ownerId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
+  psqlDB
+    .createGame(ownerId, req.user.id, home, homeId, away, awayId, venue, active)
+    .then(
+      (game) => {
+        res.redirectTo('/game');
+        res.json(game).status(200);
+      },
+      (err) => {
+        res.alertError('Could Not Create A New Game');
+        res.sendStatus(err.code || 500);
+      }
+    );
 });
 
 gameRouter.get('/active', function (req, res) {
-  psqlDB.getActiveGame().then(
+  const ownerId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
+  psqlDB.getActiveGame(ownerId).then(
     (game) => {
       res.json(game).status(200);
     },

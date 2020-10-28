@@ -22,6 +22,7 @@ const NavRootWrapper = styled.header`
   align-items: center;
   position: fixed;
   width: 100%;
+  min-height: 50px;
   top: 0;
   background-color: #c17a2b;
   padding: 10px;

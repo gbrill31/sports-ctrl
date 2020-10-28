@@ -44,6 +44,8 @@ import {
   userLogout,
   setLoggedOut,
   verifyLogin,
+  openLogoutPrompt,
+  closeLogoutPrompt,
 } from './authActions';
 
 export {
@@ -84,4 +86,6 @@ export {
   userLogout,
   setLoggedOut,
   verifyLogin,
+  openLogoutPrompt,
+  closeLogoutPrompt,
 };

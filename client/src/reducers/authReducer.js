@@ -10,6 +10,7 @@ const INITIAL_STATE = {
   signupError: null,
   loginError: null,
   logoutError: null,
+  isLogoutPrompt: false,
 };
 
 const routesReucer = (state = INITIAL_STATE, action = {}) => {
@@ -57,6 +58,16 @@ const routesReucer = (state = INITIAL_STATE, action = {}) => {
         logoutPending: false,
         isLoggedInCheck: false,
         logoutError: action.payload,
+      };
+    case AUTH.ON_USER_LOGOUT_PROMPT_OPEN:
+      return {
+        ...state,
+        isLogoutPrompt: true,
+      };
+    case AUTH.ON_USER_LOGOUT_PROMPT_CLOSE:
+      return {
+        ...state,
+        isLogoutPrompt: false,
       };
     default:
       return state;

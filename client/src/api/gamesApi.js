@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const getAllGames = async (key, userId) => {
-  const { data } = await axios.get(`/api/games/all?userId=${userId}`);
+  const { data } = await axios.get('/api/games/all');
   return data;
 };
 

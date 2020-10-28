@@ -1,5 +1,5 @@
 import { Switch, Route } from 'react-router-dom';
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import Venues from '../VenuesManagement/VenuesManagement';
 import Teams from '../TeamsManagement/TeamsManagement';
@@ -7,8 +7,24 @@ import GameManagement from '../GameManagement/GameManagement';
 import CreateGameForm from '../../components/CreateGameForm/CreateGameForm';
 
 import HomeGamesList from '../../components/HomeGamesList/HomeGamesList';
+import PromptDialog from '../../components/PromptDialog/PromptDialog';
+import { closeLogoutPrompt, userLogout } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Home() {
+  const dispatch = useDispatch();
+  const { logoutPending, isLogoutPrompt } = useSelector((state) => state.auth);
+
+  const logout = useCallback(() => dispatch(userLogout()), [dispatch]);
+  const logoutPromptClose = useCallback(() => dispatch(closeLogoutPrompt()), [
+    dispatch,
+  ]);
+
+  const handleConfirmLogout = () => {
+    logout();
+    logoutPromptClose();
+  };
+
   return (
     <>
       <Switch>
@@ -18,6 +34,16 @@ function Home() {
         <Route exact path="/creategame" render={() => <CreateGameForm />} />
         <Route exact path="/game" render={() => <GameManagement />} />
       </Switch>
+      <PromptDialog
+        isOpen={isLogoutPrompt}
+        title="User Logout"
+        content="Are you sure you want to logout?"
+        confirmText="Logout"
+        pendingTitle="Loging out..."
+        handleClose={logoutPromptClose}
+        handleConfirm={handleConfirmLogout}
+        isPending={logoutPending}
+      />
     </>
   );
 }

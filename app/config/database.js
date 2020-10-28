@@ -51,6 +51,7 @@ function createGamesTable() {
           .createTable('games', (table) => {
             table.increments();
             table.integer('ownerId');
+            table.integer('operatorId');
             table.integer('homeId');
             table.string('home');
             table.integer('homePoints');
@@ -494,7 +495,16 @@ const DB_EXPORTS = {
     });
   },
 
-  createGame: function (operatorId, home, homeId, away, awayId, venue, active) {
+  createGame: function (
+    ownerId,
+    operatorId,
+    home,
+    homeId,
+    away,
+    awayId,
+    venue,
+    active
+  ) {
     return new Promise((resolve, reject) => {
       DB.returning([
         'id',
@@ -510,6 +520,7 @@ const DB_EXPORTS = {
         'status',
       ])
         .insert({
+          ownerId,
           operatorId,
           home,
           homeId,
@@ -526,7 +537,7 @@ const DB_EXPORTS = {
         .into('games')
         .asCallback(function (err, rows) {
           if (err) reject(err);
-          if (rows.length) {
+          if (rows && rows.length) {
             const game = rows[0];
             Promise.all([
               getPlayersByTeamId(game.homeId, {
@@ -550,11 +561,11 @@ const DB_EXPORTS = {
     });
   },
 
-  getActiveGame: function () {
+  getActiveGame: function (ownerId) {
     return new Promise((resolve, reject) => {
       DB.select()
         .from('games')
-        .where('active', true)
+        .where({ active: true, ownerId })
         .asCallback(function (err, rows) {
           if (err) reject(err);
           if (rows && rows.length) {
@@ -590,7 +601,7 @@ const DB_EXPORTS = {
           if (exists) {
             DB.select()
               .from('games')
-              .where('ownerId', Number(ownerId))
+              .where('ownerId', ownerId)
               .then(
                 (games) => {
                   resolve(games);
@@ -629,14 +640,14 @@ const DB_EXPORTS = {
     return DB('venues').where('id', id).del();
   },
 
-  getAllVenues: function (userId) {
+  getAllVenues: function (ownerId) {
     return new Promise((resolve, reject) => {
       DB.schema.hasTable('venues').then(
         (exists) => {
           if (exists) {
             DB.select()
               .from('venues')
-              .where('ownerId', Number(userId))
+              .where('ownerId', ownerId)
               .then(
                 (venues) => {
                   resolve(venues);
@@ -652,14 +663,14 @@ const DB_EXPORTS = {
     });
   },
 
-  getAllTeams: function (userId) {
+  getAllTeams: function (ownerId) {
     return new Promise((resolve, reject) => {
       DB.schema.hasTable('teams').then(
         (exists) => {
           if (exists) {
             DB.select()
               .from('teams')
-              .where('ownerId', Number(userId))
+              .where('ownerId', ownerId)
               .then(
                 (teams) => {
                   resolve(teams);

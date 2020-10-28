@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { FlexContainer, Input, Icon, IconButton } from "../../styledElements";
-import styled from "styled-components";
-import shortid from "shortid";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFormInput from "../../hooks/useFormInput";
-import useOutsideMouseDown from "../../hooks/useOutsideMouseDown";
+import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { FlexContainer, Input, Icon, IconButton } from '../../styledElements';
+import styled from 'styled-components';
+import shortid from 'shortid';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useFormInput from '../../hooks/useFormInput';
+import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
 
 const OptionsContainer = styled.div`
   position: absolute;
@@ -14,6 +14,7 @@ const OptionsContainer = styled.div`
   display: flex;
   flex-flow: column;
   width: inherit;
+  z-index: 999;
 `;
 
 const OptionItem = styled.div`
@@ -47,12 +48,12 @@ function AutoCompleteInput({
 }) {
   const [isOptionsExpanded, setIsOptionsExpanded] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const selection = useFormInput(selectedValue || "");
+  const selection = useFormInput(selectedValue || '');
   const ref = useRef(null);
   const elementRef = useRef(null);
 
   useEffect(() => {
-    if (selectedValue !== "") {
+    if (selectedValue !== '') {
       selection.setValue(selectedValue);
     }
   }, [selection, selectedValue]);
@@ -77,15 +78,15 @@ function AutoCompleteInput({
 
   const handleInputChange = (e) => {
     selection.onChange(e);
-    if (selection.value !== "" && !isOptionsExpanded) {
+    if (selection.value !== '' && !isOptionsExpanded) {
       setIsOptionsExpanded(true);
     }
   };
 
   const clearSelectionInput = () => {
     handleFocus();
-    onSelection("");
-    selection.setValue("");
+    onSelection('');
+    selection.setValue('');
   };
 
   const getFilteredOptions = () => {

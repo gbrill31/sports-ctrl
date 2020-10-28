@@ -13,6 +13,7 @@ export default styled.div`
   padding: ${(props) => props.padding || '10px'};
   overflow: ${(props) => (props.innerScroll ? 'auto' : '')};
   border-right: ${(props) => (props.borderRight ? '1px solid #777' : '')};
+  border-bottom: ${(props) => (props.borderBottom ? '1px solid #777' : '')};
   border: ${(props) => (props.fullBorder ? '1px solid #777' : '')};
   background: ${(props) => props.bgColor || ''};
 

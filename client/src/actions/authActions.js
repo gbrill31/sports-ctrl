@@ -38,3 +38,10 @@ export const setLoggedOut = () => ({
 export const verifyLogin = () => ({
   type: AUTH.ON_USER_VERIFY_LOGIN,
 });
+
+export const openLogoutPrompt = () => ({
+  type: AUTH.ON_USER_LOGOUT_PROMPT_OPEN,
+});
+export const closeLogoutPrompt = () => ({
+  type: AUTH.ON_USER_LOGOUT_PROMPT_CLOSE,
+});

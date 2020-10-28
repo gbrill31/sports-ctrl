@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { userLogout } from '../../actions';
+import { openLogoutPrompt } from '../../actions';
 import { Icon, Link } from '../../styledElements';
 import { useHistory } from 'react-router-dom';
 
@@ -24,10 +24,19 @@ const UserMenuWrapper = styled.div`
 
 const UserInfoWrapper = styled.div`
   cursor: pointer;
-  padding: 5px 20px;
+  padding: 10px 0;
+`;
 
-  background-color: ${(props) =>
-    props.active ? props.theme[props.color].color : ''};
+const UserIconWrapper = styled.div`
+  display: inline;
+  padding: 10px 5px;
+
+  ${(props) =>
+    props.active &&
+    props.color &&
+    css`
+      background-color: ${(props) => props.theme[props.color].color};
+    `}
 
   transition: background-color 0.1s ease-in-out;
 `;
@@ -94,7 +103,9 @@ export default function UserMenu() {
 
   const toggleMenuOpen = () => setIsMenuOpen(!isMenuOpen);
 
-  const logout = useCallback(() => dispatch(userLogout()), [dispatch]);
+  const logoutPrompt = useCallback(() => dispatch(openLogoutPrompt()), [
+    dispatch,
+  ]);
 
   const goToRoute = (route) => () => history.push(route);
 
@@ -133,20 +144,17 @@ export default function UserMenu() {
           <FontAwesomeIcon icon={faSignOutAlt} size="sm" />
         </Icon>
       ),
-      onclick: logout,
+      onclick: logoutPrompt,
     },
   ];
 
   return isLoggedIn ? (
     <>
       <UserMenuWrapper>
-        <UserInfoWrapper
-          ref={menuRef}
-          onClick={toggleMenuOpen}
-          color="primary"
-          active={isMenuOpen}
-        >
-          <FontAwesomeIcon icon={faUserCircle} size="lg" />
+        <UserInfoWrapper ref={menuRef} onClick={toggleMenuOpen}>
+          <UserIconWrapper active={isMenuOpen} color="primary">
+            <FontAwesomeIcon icon={faUserCircle} size="lg" />
+          </UserIconWrapper>
           <UserName>{user.name}</UserName>
         </UserInfoWrapper>
         <DropdownMenu show={isMenuOpen}>
