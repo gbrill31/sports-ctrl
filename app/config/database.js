@@ -467,6 +467,28 @@ const DB_EXPORTS = {
       );
     });
   },
+  findUsersByAdminId: function (id) {
+    return new Promise((resolve, reject) => {
+      DB.schema.hasTable('users').then(
+        (exists) => {
+          if (exists) {
+            DB.select()
+              .table('users')
+              .where('admin', id)
+              .then(
+                (users) => {
+                  resolve(users);
+                },
+                (err) => reject(err)
+              );
+          } else {
+            resolve();
+          }
+        },
+        (err) => reject(err)
+      );
+    });
+  },
 
   connect: function () {
     return new Promise((resolve, reject) => {
@@ -619,8 +641,8 @@ const DB_EXPORTS = {
     });
   },
 
-  createVenue: function (name, country, city, seats) {
-    return DB.insert({ name, country, city, seats }, [
+  createVenue: function (name, country, city, seats, userId) {
+    return DB.insert({ name, country, city, seats, ownerId: userId }, [
       'id',
       'name',
       'country',
@@ -689,9 +711,9 @@ const DB_EXPORTS = {
     return DB.select().table('teams').where('id', id);
   },
 
-  createTeam: function (name, league, country, city) {
+  createTeam: function (name, league, country, city, userId) {
     return DB.returning(['id', 'name', 'league', 'country', 'city'])
-      .insert({ name, league, country, city })
+      .insert({ name, league, country, city, ownerId: userId })
       .into('teams');
   },
 
@@ -730,9 +752,12 @@ const DB_EXPORTS = {
 
   getPlayersByTeam: getPlayersByTeamId,
 
-  addPlayers: function (players) {
+  addPlayers: function (players, userId) {
     players.forEach((player) => {
-      Object.assign(player, { stats: JSON.stringify(getPlayerStatsData()) });
+      Object.assign(player, {
+        stats: JSON.stringify(getPlayerStatsData()),
+        ownerId: userId,
+      });
     });
     return DB.returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
       .insert(players)

@@ -11,6 +11,7 @@ import RegisterUser from './views/RegisterUser/RegisterUser';
 import UserLogin from './views/UserLogin/UserLogin';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
+import './ext_css/all.min.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import { setRouteName, verifyLogin } from './actions';
@@ -47,6 +48,10 @@ const theme = {
   disabled: {
     bgColor: '#555',
     color: '#888',
+  },
+  basic: {
+    color: '#E6EAEB',
+    odd: '#c9caca',
   },
   font: 'Roboto, sans-serif',
 };

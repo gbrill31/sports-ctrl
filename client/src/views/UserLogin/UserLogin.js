@@ -33,7 +33,8 @@ export default function UserLogin() {
     errors,
     // reset,
   } = useForm({
-    mode: 'onChange',
+    mode: 'onSubmit',
+    reValidateMode: 'onChange',
   });
   const dispatch = useDispatch();
   const history = useHistory();

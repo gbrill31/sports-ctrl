@@ -8,6 +8,7 @@ import IconButton from './IconButton';
 import Input from './Input';
 import Divider from './Divider';
 import Link from './Link';
+import FormError from './FormError';
 
 export {
   MainTitle,
@@ -20,4 +21,5 @@ export {
   IconButton,
   Divider,
   Link,
+  FormError,
 };

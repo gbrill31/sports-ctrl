@@ -27,8 +27,9 @@ playersRouter.get('/team', (req, res) => {
 
 playersRouter.post('/save', function (req, res) {
   const players = req.body;
+  const userId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
   if (Array.isArray(players)) {
-    psqlDB.addPlayers(players).then(
+    psqlDB.addPlayers(players, userId).then(
       (data) => {
         res.alertSuccess('Saved added players successfully');
         res.json(data).status(200);

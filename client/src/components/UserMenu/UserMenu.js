@@ -3,7 +3,8 @@ import {
   faUserCircle,
   faSignOutAlt,
   faUsers,
-  faMapMarkerAlt,
+  faMapMarkedAlt,
+  faTshirt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled, { css } from 'styled-components';
@@ -24,7 +25,7 @@ const UserMenuWrapper = styled.div`
 
 const UserInfoWrapper = styled.div`
   cursor: pointer;
-  padding: 10px 0;
+  padding: 8px 0;
 `;
 
 const UserIconWrapper = styled.div`
@@ -67,7 +68,6 @@ const DropdownMenu = styled.div`
 const MenuItem = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
   padding: 7px 0;
   width: 100%;
   cursor: pointer;
@@ -115,11 +115,7 @@ export default function UserMenu() {
       color: 'primary',
       fontSize: '0.9rem',
       spacer: true,
-      icon: () => (
-        <Icon spaceRight>
-          <FontAwesomeIcon icon={faUsers} size="sm" />
-        </Icon>
-      ),
+      icon: <FontAwesomeIcon icon={faTshirt} size="sm" />,
       onclick: goToRoute('/teams'),
     },
     {
@@ -127,23 +123,23 @@ export default function UserMenu() {
       color: 'primary',
       fontSize: '0.9rem',
       spacer: true,
-      icon: () => (
-        <Icon spaceRight>
-          <FontAwesomeIcon icon={faMapMarkerAlt} size="sm" />
-        </Icon>
-      ),
+      icon: <FontAwesomeIcon icon={faMapMarkedAlt} size="sm" />,
       onclick: goToRoute('/venues'),
+    },
+    {
+      title: 'Users',
+      color: 'primary',
+      fontSize: '0.9rem',
+      spacer: true,
+      icon: <FontAwesomeIcon icon={faUsers} size="sm" />,
+      onclick: goToRoute('/users'),
     },
     {
       title: 'Logout',
       color: 'error',
       fontSize: '0.9rem',
       spacer: false,
-      icon: () => (
-        <Icon spaceRight>
-          <FontAwesomeIcon icon={faSignOutAlt} size="sm" />
-        </Icon>
-      ),
+      icon: <FontAwesomeIcon icon={faSignOutAlt} size="sm" />,
       onclick: logoutPrompt,
     },
   ];
@@ -165,14 +161,16 @@ export default function UserMenu() {
               onClick={item.onclick}
               spacer={item.spacer}
             >
-              {item.icon()}
+              <Icon spaceRight spaceLeft>
+                {item.icon}
+              </Icon>
               <Link
                 padding="0"
                 margin="0"
                 color="inherit"
                 fontSize={item.fontSize}
               >
-                {item.title}
+                <span style={{ marginLeft: '5px' }}>{item.title}</span>
               </Link>
             </MenuItem>
           ))}

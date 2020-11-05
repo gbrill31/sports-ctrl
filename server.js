@@ -16,7 +16,7 @@ dotenv.config();
 
 const app = express();
 
-// Serve the static files from the React app
+// Serve the static files to the React app
 app.use(express.static(path.join(__dirname, 'client/build')));
 
 app.use(compression());
@@ -82,6 +82,7 @@ require('./app/config/middleware')(app, passport);
 app.use('/', require('./app/routes/authRoutes'));
 app.use('/connect', require('./app/routes/dbRoutes'));
 app.use('/api', require('./app/routes/apiRoutes')(passport));
+app.use('/api/users', require('./app/routes/usersRoutes'));
 app.use('/api/games', require('./app/routes/gamesRoutes'));
 app.use('/api/venues', require('./app/routes/venuesRoutes'));
 app.use('/api/teams', require('./app/routes/teamsRoutes'));

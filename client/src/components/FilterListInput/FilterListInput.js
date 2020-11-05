@@ -1,17 +1,17 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { faTimes, faFilter } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFormInput from "../../hooks/useFormInput";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { faTimes, faFilter } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useFormInput from '../../hooks/useFormInput';
 
-import { FlexContainer, Input, IconButton, Icon } from "../../styledElements";
+import { FlexContainer, Input, IconButton, Icon } from '../../styledElements';
 
 const FilterListInput = ({ onChange, placeholder, width }) => {
-  const filterInput = useFormInput("");
+  const filterInput = useFormInput('');
 
   const clearInput = () => {
-    filterInput.setValue("");
-    onChange("");
+    filterInput.setValue('');
+    onChange('');
   };
 
   const handleInputChange = (e) => {
@@ -31,7 +31,7 @@ const FilterListInput = ({ onChange, placeholder, width }) => {
       <FlexContainer padding="0" width="90%">
         <Input
           type="text"
-          placeholder={placeholder || "Type here to filter the list"}
+          placeholder={placeholder || 'Filter List'}
           value={filterInput.value}
           onChange={handleInputChange}
           color="#fff"

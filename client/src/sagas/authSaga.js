@@ -8,9 +8,9 @@ import {
 } from '../actions';
 import { loginUser, logoutUser, verifyLogin, registerUser } from '../api';
 
-function* handleUserSignup({ name, email, password }) {
+function* handleUserSignup({ name, email, password, type, admin }) {
   try {
-    yield call(registerUser, name, email, password);
+    yield call(registerUser, name, email, password, type, admin);
     yield put(userSignupSuccess());
   } catch (error) {
     // yield put(updatePlayerStatsError(error));

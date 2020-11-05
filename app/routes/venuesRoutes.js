@@ -22,8 +22,9 @@ venuesRouter.get('/all', (req, res) => {
 
 venuesRouter.post('/save', function (req, res) {
   const { id, name, country, city, seats } = req.body;
+  const userId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
   if (!id) {
-    psqlDB.createVenue(name, country, city, seats).then(
+    psqlDB.createVenue(name, country, city, seats, userId).then(
       (data) => {
         res.alertSuccess(`Saved "${data[0].name}" venue successfully`);
         res.json(data[0]).status(200);

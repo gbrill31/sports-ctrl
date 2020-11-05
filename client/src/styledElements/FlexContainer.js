@@ -15,7 +15,10 @@ export default styled.div`
   border-right: ${(props) => (props.borderRight ? '1px solid #777' : '')};
   border-bottom: ${(props) => (props.borderBottom ? '1px solid #777' : '')};
   border: ${(props) => (props.fullBorder ? '1px solid #777' : '')};
-  background: ${(props) => props.bgColor || ''};
+  background: ${(props) =>
+    props.theme[props.bgColor]
+      ? props.theme[props.bgColor].color
+      : props.bgColor || ''};
 
   ${(props) =>
     props.absolute &&

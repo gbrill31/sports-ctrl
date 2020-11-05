@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import styled, { css } from "styled-components";
-import { Button, Icon, FlexContainer } from "../../../styledElements";
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled, { css } from 'styled-components';
+import { Button, Icon, FlexContainer } from '../../../styledElements';
 import {
   faPlus,
   faMinus,
@@ -9,11 +9,11 @@ import {
   faArrowLeft,
   faEdit,
   faTimes,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import PromptDialog from "../../PromptDialog/PromptDialog";
-import ModalDialog from "../../ModalDialog/ModalDialog";
-import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PromptDialog from '../../PromptDialog/PromptDialog';
+import ModalDialog from '../../ModalDialog/ModalDialog';
+import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 
 import {
   setIsPlayerStatsDialog,
@@ -21,7 +21,7 @@ import {
   updatePlayerStats,
   updateGameScore,
   updateTeamFouls,
-} from "../../../actions";
+} from '../../../actions';
 
 const DialogStatsContainer = styled.div`
   background-color: #fff;
@@ -94,7 +94,7 @@ const CourtPositionMarker = styled.div`
   position: absolute;
   top: ${(props) => props.top};
   left: ${(props) => props.left};
-  display: ${(props) => (props.active ? "inherit" : "none")};
+  display: ${(props) => (props.active ? 'inherit' : 'none')};
   width: 20px;
   height: 20px;
   background-color: ${(props) => props.theme.success.color};
@@ -124,7 +124,7 @@ export default function SetPlayerStatsDialog() {
   const courtRegionRef = useRef(null);
   const markerRef = useRef(null);
 
-  const gameTime = localStorage.getItem("gameClock");
+  const gameTime = localStorage.getItem('gameClock');
 
   const {
     setPlayerStatsPending: isSaving,
@@ -194,8 +194,8 @@ export default function SetPlayerStatsDialog() {
         [status]: ptArray,
       },
       PT: playerLocalStats.PT - pointToDelete.pt,
-      "2FG": is2Points ? playerLocalStats["2FG"] - 2 : playerLocalStats["2FG"],
-      "3FG": !is2Points ? playerLocalStats["3FG"] - 3 : playerLocalStats["3FG"],
+      '2FG': is2Points ? playerLocalStats['2FG'] - 2 : playerLocalStats['2FG'],
+      '3FG': !is2Points ? playerLocalStats['3FG'] - 3 : playerLocalStats['3FG'],
     };
     pointsToAdd = -pointToDelete.pt;
     setPlayerLocalStats(statsData);
@@ -287,12 +287,12 @@ export default function SetPlayerStatsDialog() {
       setPlayerLocalStats({
         ...playerLocalStats,
         PT: playerLocalStats.PT + pointsRegion,
-        "2FG": is2Points
-          ? playerLocalStats["2FG"] + 2
-          : playerLocalStats["2FG"],
-        "3FG": !is2Points
-          ? playerLocalStats["3FG"] + 3
-          : playerLocalStats["3FG"],
+        '2FG': is2Points
+          ? playerLocalStats['2FG'] + 2
+          : playerLocalStats['2FG'],
+        '3FG': !is2Points
+          ? playerLocalStats['3FG'] + 3
+          : playerLocalStats['3FG'],
       });
       pointsToAdd += pointsRegion;
     }
@@ -306,8 +306,8 @@ export default function SetPlayerStatsDialog() {
     setPlayerLocalStats({
       ...playerLocalStats,
       PT: playerLocalStats.PT - pointsRegion,
-      "2FG": is2Points ? playerLocalStats["2FG"] - 2 : playerLocalStats["2FG"],
-      "3FG": !is2Points ? playerLocalStats["3FG"] - 3 : playerLocalStats["3FG"],
+      '2FG': is2Points ? playerLocalStats['2FG'] - 2 : playerLocalStats['2FG'],
+      '3FG': !is2Points ? playerLocalStats['3FG'] - 3 : playerLocalStats['3FG'],
     });
     pointsToAdd -= pointsRegion;
     setIsPointsSet(false);
@@ -315,7 +315,7 @@ export default function SetPlayerStatsDialog() {
 
   const checkCourtPosition = (e) => {
     if (!isPointsSet) {
-      setPointsRegion(e.target.id === "2pt-region" ? 2 : 3);
+      setPointsRegion(e.target.id === '2pt-region' ? 2 : 3);
     }
   };
 
@@ -339,7 +339,7 @@ export default function SetPlayerStatsDialog() {
               padding="0"
             >
               <h2>{selectedPlayer?.getNumber()}</h2>
-              <h2 style={{ marginLeft: "10px" }}>
+              <h2 style={{ marginLeft: '10px' }}>
                 {selectedPlayer?.getName()}
               </h2>
               {playerLocalStats && (
@@ -448,15 +448,15 @@ export default function SetPlayerStatsDialog() {
                         >
                           <span
                             style={{
-                              position: "absolute",
-                              left: "20px",
-                              bottom: "2px",
+                              position: 'absolute',
+                              left: '20px',
+                              bottom: '2px',
                             }}
                           >
                             <FontAwesomeIcon
                               icon={faArrowLeft}
                               size="sm"
-                              style={{ marginRight: "10px" }}
+                              style={{ marginRight: '10px' }}
                             />
                             ATACK
                           </span>
@@ -477,7 +477,7 @@ export default function SetPlayerStatsDialog() {
                         >
                           <img
                             alt="basketball court"
-                            src={require("../../../img/court.png")}
+                            src={require('../../../img/court.png')}
                           />
                           {isEditPoints ? (
                             playerLocalStats.PtLocations[status].map(

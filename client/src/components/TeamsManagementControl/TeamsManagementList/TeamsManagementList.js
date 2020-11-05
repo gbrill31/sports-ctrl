@@ -12,7 +12,7 @@ import {
 } from '../../../styledElements';
 
 import PromptDialog from '../../PromptDialog/PromptDialog';
-import NewTeamFormDialog from '../NewTeamFormDialog/NewTeamFormDialog';
+import NewTeamForm from '../NewTeamForm/NewTeamForm';
 import TeamManagementListItem from '../TeamManagementListItem/TeamManagementListItem';
 import ComponentLoader from '../../ComponentLoader/ComponentLoader';
 import FilterListInput from '../../FilterListInput/FilterListInput';
@@ -21,6 +21,7 @@ import useTeams from '../../../hooks/useTeams';
 import useDeleteTeam from '../../../hooks/useDeleteTeam';
 
 import { setSelectedTeam } from '../../../actions';
+import ModalDialog from '../../ModalDialog/ModalDialog';
 
 export default function ManagementTeamsList() {
   const dispatch = useDispatch();
@@ -50,6 +51,10 @@ export default function ManagementTeamsList() {
   const deleteTeam = useDeleteTeam(closeDeletePrompt);
 
   const deleteSelectedTeam = () => deleteTeam(selectedTeam.getId());
+
+  const cancelCreateTeamDialog = () => {
+    closeCreateTeamDialog();
+  };
 
   const getFilteredTeams = () => {
     const value = filterValue.toLowerCase();
@@ -131,9 +136,13 @@ export default function ManagementTeamsList() {
         handleClose={closeDeletePrompt}
         handleConfirm={deleteSelectedTeam}
       />
-      <NewTeamFormDialog
-        isOpenDialog={isNewTeamDialog}
-        closeDialog={closeCreateTeamDialog}
+      <ModalDialog
+        component={NewTeamForm}
+        componentProps={{ cb: cancelCreateTeamDialog }}
+        isOpen={isNewTeamDialog}
+        title="Create a New Team"
+        label="new team"
+        handleCancel={cancelCreateTeamDialog}
       />
     </Fragment>
   );

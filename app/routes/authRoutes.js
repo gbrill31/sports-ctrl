@@ -5,7 +5,7 @@ const psqlDB = require('../config/database');
 const jwtUtils = require('../utils/jwt');
 
 authRouter.post('/register', (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, type, admin } = req.body;
 
   psqlDB
     .findUser(email)
@@ -18,16 +18,18 @@ authRouter.post('/register', (req, res) => {
           email,
           salt,
           hash,
-          admin: null,
-          type: 'admin',
-          firstLogin: false,
+          admin,
+          type: type || 'admin',
+          firstLogin: type !== 'admin',
         };
 
         psqlDB
           .createUser(user)
           .then(() => {
             res.alertSuccess('User registered successfuly');
-            res.redirectTo('/login');
+            if (!type) {
+              res.redirectTo('/login');
+            }
             res.status(200).json({});
           })
           .catch((err) => {

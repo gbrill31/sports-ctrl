@@ -18,11 +18,11 @@ export default styled.input`
   width: ${(props) => props.width || ''};
   border-bottom: 1px solid
     ${(props) =>
-      props.error ? 'rgba(200, 0, 0, 0.9)' : props.color || '#444343'};
+      props.error ? 'rgba(200, 0, 0, 0.8)' : props.color || '#444343'};
   color: ${(props) => props.color || '#444343'};
   background: transparent;
   padding: 15px;
-  margin-bottom: 15px;
+  margin-bottom: ${(props) => props.marginBottom || '15px'};
   margin-right: ${(props) => (props.spaceRight ? '10px' : '')};
   margin-left: ${(props) => (props.spaceLeft ? '10px' : '')};
   z-index: 99;
@@ -35,10 +35,62 @@ export default styled.input`
   &::-webkit-outer-spin-button {
     appearance: ${(props) => (props.type === 'number' ? 'none' : '')};
   }
+  &:required {
+    border-bottom-color: rgba(200, 0, 0, 0.8);
+  }
   &::placeholder {
     color: ${(props) =>
-      props.error ? 'rgba(200, 0, 0, 0.9)' : 'rgba(150, 150, 150, 0.7)'};
+      props.error ? 'rgba(200, 0, 0, 0.8)' : 'rgba(150, 150, 150, 0.7)'};
   }
+  ${(props) =>
+    props.type === 'checkbox' &&
+    css`
+      appearance: none;
+      position: relative;
+      height: 5px;
+      width: 5px;
+      transition: all 0.15s ease-out 0s;
+      background: #cbd1d8;
+      border: ${(props) => `1px solid ${props.theme.primary.color}`};
+      color: #fff;
+      cursor: pointer;
+      padding: 7px;
+      position: relative;
+      z-index: 1000;
+
+      &:hover {
+        background: #9faab7;
+      }
+      &:indeterminate {
+        background: ${(props) => props.theme.generic.color};
+      }
+      &:indeterminate::before {
+        position: absolute;
+        left: 2px;
+        top: 5px;
+        font-size: 33px;
+        line-height: 0px;
+        content: '-';
+      }
+      &:checked {
+        background: ${(props) => props.theme.success.color};
+      }
+
+      &:checked::before {
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        font-family: 'Font Awesome\ 5 Free';
+        font-weight: 900;
+        content: '\f00c';
+        position: absolute;
+        /* content: '✓'; */
+        left: 2px;
+        font-size: 11px;
+        line-height: 2px;
+      }
+    `}
   ${(props) =>
     props.isLoading &&
     css`

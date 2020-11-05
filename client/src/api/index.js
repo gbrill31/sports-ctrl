@@ -24,6 +24,8 @@ import {
 
 import { registerUser, loginUser, logoutUser, verifyLogin } from './authApi';
 
+import { getUsersByAdmin } from './usersApi';
+
 export {
   connectDB,
   getAllGames,
@@ -49,4 +51,5 @@ export {
   loginUser,
   logoutUser,
   verifyLogin,
+  getUsersByAdmin,
 };

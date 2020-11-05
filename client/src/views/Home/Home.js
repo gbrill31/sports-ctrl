@@ -10,6 +10,7 @@ import HomeGamesList from '../../components/HomeGamesList/HomeGamesList';
 import PromptDialog from '../../components/PromptDialog/PromptDialog';
 import { closeLogoutPrompt, userLogout } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
+import UsersManagement from '../UsersManagement/UsersManagement';
 
 function Home() {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ function Home() {
     <>
       <Switch>
         <Route exact path="/" render={() => <HomeGamesList />} />
+        <Route exact path="/users" render={() => <UsersManagement />} />
         <Route exact path="/venues" render={() => <Venues />} />
         <Route exact path="/teams" render={() => <Teams />} />
         <Route exact path="/creategame" render={() => <CreateGameForm />} />

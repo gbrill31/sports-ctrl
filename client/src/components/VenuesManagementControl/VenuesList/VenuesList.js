@@ -7,7 +7,7 @@ import PromptDialog from '../../PromptDialog/PromptDialog';
 import FilterListInput from '../../FilterListInput/FilterListInput';
 import VenueListItem from '../VenueListItem/VenueListItem';
 import ComponentLoader from '../../ComponentLoader/ComponentLoader';
-import NewVenueFormDialog from '../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog';
+import NewVenueForm from '../../VenuesManagementControl/NewVenueForm/NewVenueForm';
 import {
   FlexContainer,
   ScrollableContainer,
@@ -19,6 +19,7 @@ import {
 import useVenues from '../../../hooks/useVenues';
 import useDeleteVenue from '../../../hooks/useDeleteVenue';
 import useDb from '../../../hooks/useDb';
+import ModalDialog from '../../ModalDialog/ModalDialog';
 
 function VenuesList() {
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
@@ -35,6 +36,10 @@ function VenuesList() {
   const closeDeleteVenuePrompt = () => setIsDeleteVenuePrompt(false);
 
   const deleteSelectedVenue = useDeleteVenue(closeDeleteVenuePrompt);
+
+  const cancelNewVenue = () => {
+    closeNewVenueDialog();
+  };
 
   const deleteVenue = () => {
     deleteSelectedVenue(selectedVenue.id);
@@ -66,7 +71,7 @@ function VenuesList() {
         <FlexContainer fullWidth align="center">
           <MainTitle>Venues</MainTitle>
           <FlexContainer>
-            <Button color="generic" onClick={openNewVenueDialog}>
+            <Button color="success" onClick={openNewVenueDialog}>
               New Venue
               <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
@@ -115,9 +120,13 @@ function VenuesList() {
         handleClose={closeDeleteVenuePrompt}
         handleConfirm={deleteVenue}
       />
-      <NewVenueFormDialog
-        closeDialog={closeNewVenueDialog}
-        isOpenDialog={isNewVenueDialog}
+      <ModalDialog
+        component={NewVenueForm}
+        componentProps={{ cb: cancelNewVenue }}
+        isOpen={isNewVenueDialog}
+        title="Create a New Venue"
+        label="new venue"
+        handleCancel={cancelNewVenue}
       />
     </>
   );

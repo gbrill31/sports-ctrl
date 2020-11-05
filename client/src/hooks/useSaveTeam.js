@@ -1,15 +1,18 @@
-import { useMutation, queryCache } from "react-query";
-import shortid from "shortid";
-import { saveNewTeam } from "../api";
+import { useState } from 'react';
+import { useMutation, queryCache } from 'react-query';
+import shortid from 'shortid';
+import { saveNewTeam } from '../api';
 
 export default function useSaveTeam(cb) {
+  const [status, setStatus] = useState();
   const [saveTeam] = useMutation((team) => saveNewTeam(team), {
     onMutate: (team) => {
-      queryCache.cancelQueries("teams");
+      setStatus('pending');
+      queryCache.cancelQueries('teams');
 
-      const previousValue = queryCache.getQueryData("teams");
+      const previousValue = queryCache.getQueryData('teams');
 
-      queryCache.setQueryData("teams", (oldTeams) => {
+      queryCache.setQueryData('teams', (oldTeams) => {
         const teams = team.id
           ? [...oldTeams.filter((t) => t.id !== team.id)]
           : [...oldTeams];
@@ -21,13 +24,16 @@ export default function useSaveTeam(cb) {
 
       return previousValue;
     },
-    onError: (err, variables, previousValue) =>
-      queryCache.setQueryData("teams", previousValue),
+    onError: (err, variables, previousValue) => {
+      setStatus('failed');
+      return queryCache.setQueryData('teams', previousValue);
+    },
     onSuccess: () => {
+      setStatus('success');
       if (cb) cb();
     },
-    onSettled: () => queryCache.refetchQueries("teams"),
+    onSettled: () => queryCache.refetchQueries('teams'),
   });
 
-  return saveTeam;
+  return { saveTeam, status };
 }
