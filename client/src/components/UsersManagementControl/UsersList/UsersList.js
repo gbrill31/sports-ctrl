@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { FlexContainer, Input } from '../../../styledElements';
+import {
+  faSortAlphaDown,
+  faSortAlphaUp,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FlexContainer, Icon, Input } from '../../../styledElements';
+
 import FilterListInput from '../../FilterListInput/FilterListInput';
 
 const Table = styled.table`
@@ -8,6 +14,10 @@ const Table = styled.table`
   width: 100%;
   text-align: center;
   border-collapse: collapse;
+
+  .sortable {
+    cursor: pointer;
+  }
 
   th {
     padding: 5px;
@@ -30,6 +40,7 @@ export default function UsersList({ users, permissions }) {
 
   const [selected, setSelected] = useState([]);
   const [filter, setFilter] = useState('');
+  const [nameSort, setNameSort] = useState('asc');
 
   useEffect(() => {
     globalCheckboxRef.current.indeterminate =
@@ -56,8 +67,18 @@ export default function UsersList({ users, permissions }) {
     }
   };
 
+  const toggleNameSort = () => setNameSort(nameSort === 'asc' ? 'desc' : 'asc');
+
   const getFilteredUsers = () => {
-    return users.filter((user) => user.name.includes(filter));
+    return users
+      .filter((user) => user.name.includes(filter))
+      .sort((userA, userB) => {
+        if (nameSort === 'asc') {
+          return userA > userB ? -1 : 1;
+        } else {
+          return userA > userB ? 1 : -1;
+        }
+      });
   };
 
   return (
@@ -79,7 +100,16 @@ export default function UsersList({ users, permissions }) {
                   onChange={toggleSelectAll}
                 />
               </th>
-              <th>Full Name</th>
+              <th className="sortable" onClick={toggleNameSort}>
+                Full Name
+                <Icon spaceLeft>
+                  {nameSort === 'asc' ? (
+                    <FontAwesomeIcon icon={faSortAlphaDown} size="sm" />
+                  ) : (
+                    <FontAwesomeIcon icon={faSortAlphaUp} size="sm" />
+                  )}
+                </Icon>
+              </th>
               <th>Email</th>
               <th>Type</th>
               <th>Permissions</th>
