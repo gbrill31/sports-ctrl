@@ -59,7 +59,7 @@ export default styled.input`
       z-index: 1000;
 
       &:hover {
-        background: #9faab7;
+        background: ${(props) => props.theme.primary.hover};
       }
       &:indeterminate {
         background: ${(props) => props.theme.generic.color};
@@ -85,10 +85,9 @@ export default styled.input`
         font-weight: 900;
         content: '\f00c';
         position: absolute;
-        /* content: '✓'; */
         left: 2px;
         font-size: 11px;
-        line-height: 2px;
+        line-height: 0px;
       }
     `}
   ${(props) =>

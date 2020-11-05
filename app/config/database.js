@@ -420,6 +420,9 @@ const DB_EXPORTS = {
       'hash',
     ]).into('users');
   },
+  deleteUsers: function (ids) {
+    return DB('users').whereIn('id', ids).del();
+  },
 
   findUser: function (email) {
     return new Promise((resolve, reject) => {

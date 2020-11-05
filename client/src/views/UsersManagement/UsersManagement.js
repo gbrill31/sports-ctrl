@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
@@ -29,7 +29,8 @@ const PERMISSIONS = {
 
 export default function UsersManagement() {
   const [isOpenAddUser, setIsOpenAddUser] = useState(false);
-  const { user, isSignupSuccess } = useSelector((state) => state.auth);
+
+  const { user } = useSelector((state) => state.auth);
 
   const { status: dbStatus } = useDb();
 
@@ -38,16 +39,12 @@ export default function UsersManagement() {
   const openAddUserDialog = () => setIsOpenAddUser(true);
   const closeAddUserDialog = () => setIsOpenAddUser(false);
 
-  useEffect(() => {
-    if (isSignupSuccess) closeAddUserDialog();
-  }, [isSignupSuccess]);
-
   return (
     <>
       <MainTitle>Users Management</MainTitle>
-      <FlexContainer>
+      <FlexContainer justify="center">
         <AdminCardWrapper>
-          <FlexContainer align="center">
+          <FlexContainer fullWidth align="center" justify="center">
             <h2>{user.name}</h2>
             <FlexContainer padding="0 0 0 15px">
               {PERMISSIONS[user.type] &&
@@ -64,7 +61,7 @@ export default function UsersManagement() {
             </FlexContainer>
           </FlexContainer>
         </AdminCardWrapper>
-        <FlexContainer fullWidth>
+        <FlexContainer fullWidth align="center" justify="center">
           <Button color="success" onClick={openAddUserDialog}>
             Add Operator
             <Icon spaceLeft>
@@ -76,9 +73,10 @@ export default function UsersManagement() {
       <FlexContainer>
         {users ? <UsersList users={users} permissions={PERMISSIONS} /> : null}
       </FlexContainer>
+
       <ModalDialog
         component={UserRegisterFrom}
-        componentProps={{ userType: 'operator' }}
+        componentProps={{ userType: 'operator', cb: closeAddUserDialog }}
         isOpen={isOpenAddUser}
         title="Add User"
         handleCancel={closeAddUserDialog}

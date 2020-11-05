@@ -13,11 +13,13 @@ import {
 } from '../../styledElements';
 
 import { userSignup } from '../../actions';
+import useSaveUser from '../../hooks/useSaveUser';
 
 export default function UserRegisterForm({
   isSignupLink = false,
   isTitle = false,
   userType,
+  cb,
 }) {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -37,12 +39,19 @@ export default function UserRegisterForm({
   });
   const [password, setPassword] = useState('');
 
+  const { saveUser, status } = useSaveUser(cb);
+
   const registerUser = useCallback((data) => dispatch(userSignup(data)), [
     dispatch,
   ]);
 
   const onSubmit = async (data) => {
-    registerUser({ ...data, type: userType, admin: user ? user.id : null });
+    const userData = { ...data, type: userType, admin: user ? user.id : null };
+    if (userType === 'admin') {
+      registerUser(userData);
+    } else {
+      saveUser(userData);
+    }
   };
 
   const goToRoute = (route) => () => history.push(route);
@@ -154,7 +163,7 @@ export default function UserRegisterForm({
             <Button
               type="submit"
               color="success"
-              saving={signupPending}
+              saving={signupPending || status === 'pending'}
               width="80%"
               margin="40px 0 5px 0"
             >

@@ -1,4 +1,4 @@
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes, css } from 'styled-components';
 
 const fadeIn = keyframes`
   from {
@@ -9,16 +9,22 @@ const fadeIn = keyframes`
   }
 `;
 export default styled.button`
-  position: ${(props) => (props.relative ? "relative" : "absolute")};
-  right: ${(props) => props.right || "0"};
-  top: ${(props) => props.top || "15px"};
+  position: ${(props) => (props.relative ? 'relative' : 'absolute')};
+
   background: transparent;
   cursor: pointer;
   border: none;
-  color: ${(props) => props.theme[props.color]?.color || props.color || "#fff"};
+  color: ${(props) => props.theme[props.color]?.color || props.color || '#fff'};
   padding: 5px;
-  display: ${(props) => (props.show ? "inherit" : "none")};
+  display: ${(props) => (props.show ? 'inherit' : 'none')};
   z-index: 99;
+
+  ${(props) =>
+    !props.relative &&
+    css`
+      right: ${(props) => props.right || '0'};
+      top: ${(props) => props.top || '15px'};
+    `}
 
   ${(props) =>
     props.animate &&
