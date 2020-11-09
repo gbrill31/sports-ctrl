@@ -20,13 +20,8 @@ const AdminCardWrapper = styled.div`
   }
 `;
 
-const PERMISSIONS = {
-  admin: ['Users', 'Teams', 'Venues', 'Game Control'],
-  operator: ['Game Control'],
-};
-
 export default function UsersManagement() {
-  const { user } = useSelector((state) => state.auth);
+  const { user, permissions } = useSelector((state) => state.auth);
 
   const { status: dbStatus } = useDb();
 
@@ -40,8 +35,8 @@ export default function UsersManagement() {
           <FlexContainer fullWidth align="center" justify="center">
             <h2>{user.name}</h2>
             <FlexContainer padding="0 0 0 15px">
-              {PERMISSIONS[user.type] &&
-                PERMISSIONS[user.type].map((per) => {
+              {permissions[user.type] &&
+                permissions[user.type].map((per) => {
                   return (
                     <FlexContainer key={per} align="baseline">
                       <Icon spaceRight color="success">
@@ -56,7 +51,7 @@ export default function UsersManagement() {
         </AdminCardWrapper>
       </FlexContainer>
       <FlexContainer>
-        {users ? <UsersList users={users} permissions={PERMISSIONS} /> : null}
+        {users ? <UsersList users={users} /> : null}
       </FlexContainer>
     </>
   );

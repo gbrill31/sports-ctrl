@@ -72,7 +72,7 @@ const RowControl = styled.div`
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
 `;
 
-export default function UsersList({ users, permissions }) {
+export default function UsersList({ users }) {
   const globalCheckboxRef = useRef();
 
   const [selected, setSelected] = useState([]);
@@ -82,6 +82,8 @@ export default function UsersList({ users, permissions }) {
   const [hoverId, setHoverId] = useState();
   const [isOpenDeleteUser, setIsOpenDeleteUser] = useState(false);
   const [isOpenAddUser, setIsOpenAddUser] = useState(false);
+
+  const { permissions } = useSelector((state) => state.auth);
 
   useEffect(() => {
     globalCheckboxRef.current.indeterminate =

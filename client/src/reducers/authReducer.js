@@ -11,6 +11,10 @@ const INITIAL_STATE = {
   loginError: null,
   logoutError: null,
   isLogoutPrompt: false,
+  permissions: {
+    admin: ['Users', 'Teams', 'Venues', 'Game Control'],
+    operator: ['Game Control'],
+  },
 };
 
 const routesReucer = (state = INITIAL_STATE, action = {}) => {
