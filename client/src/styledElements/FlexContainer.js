@@ -4,6 +4,7 @@ export default styled.div`
   display: flex;
   position: ${(props) => (props.absolute ? 'absolute' : 'relative')};
   min-width: ${(props) => (props.minWidth ? props.minWidth : '')};
+  min-height: ${(props) => (props.minHeight ? props.minHeight : '')};
   width: ${(props) => (props.fullWidth ? '100%' : props.width || '')};
   height: ${(props) => (props.fullHeight ? '100%' : props.height || '')};
   flex-flow: ${(props) => (props.column ? 'column' : 'row')};

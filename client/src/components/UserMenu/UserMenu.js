@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   faUserCircle,
   faSignOutAlt,
@@ -85,6 +85,15 @@ const MenuItem = styled.div`
         ? props.theme[props.color].color
         : props.color || '#fbfbfb'};
   }
+  ${(props) =>
+    props.current &&
+    css`
+      color: #fff;
+      background-color: ${(props) =>
+        props.theme[props.color]
+          ? props.theme[props.color].color
+          : props.color || '#fbfbfb'};
+    `}
 `;
 
 export default function UserMenu() {
@@ -107,42 +116,47 @@ export default function UserMenu() {
     dispatch,
   ]);
 
-  const goToRoute = (route) => () => history.push(route);
+  const goToRoute = useCallback((route) => () => history.push(route), [
+    history,
+  ]);
 
-  const MENU_ITEMS = [
-    {
-      title: 'Teams',
-      color: 'primary',
-      fontSize: '0.9rem',
-      spacer: true,
-      icon: <FontAwesomeIcon icon={faTshirt} size="sm" />,
-      onclick: goToRoute('/teams'),
-    },
-    {
-      title: 'Venues',
-      color: 'primary',
-      fontSize: '0.9rem',
-      spacer: true,
-      icon: <FontAwesomeIcon icon={faMapMarkedAlt} size="sm" />,
-      onclick: goToRoute('/venues'),
-    },
-    {
-      title: 'Users',
-      color: 'primary',
-      fontSize: '0.9rem',
-      spacer: true,
-      icon: <FontAwesomeIcon icon={faUsers} size="sm" />,
-      onclick: goToRoute('/users'),
-    },
-    {
-      title: 'Logout',
-      color: 'error',
-      fontSize: '0.9rem',
-      spacer: false,
-      icon: <FontAwesomeIcon icon={faSignOutAlt} size="sm" />,
-      onclick: logoutPrompt,
-    },
-  ];
+  const MENU_ITEMS = useMemo(
+    () => [
+      {
+        title: 'Teams',
+        route: '/teams',
+        color: 'primary',
+        fontSize: '0.9rem',
+        spacer: true,
+        icon: <FontAwesomeIcon icon={faTshirt} size="sm" />,
+      },
+      {
+        title: 'Venues',
+        route: '/venues',
+        color: 'primary',
+        fontSize: '0.9rem',
+        spacer: true,
+        icon: <FontAwesomeIcon icon={faMapMarkedAlt} size="sm" />,
+      },
+      {
+        title: 'Users',
+        route: '/users',
+        color: 'primary',
+        fontSize: '0.9rem',
+        spacer: true,
+        icon: <FontAwesomeIcon icon={faUsers} size="sm" />,
+      },
+      {
+        title: 'Logout',
+        color: 'error',
+        fontSize: '0.9rem',
+        spacer: false,
+        icon: <FontAwesomeIcon icon={faSignOutAlt} size="sm" />,
+        onclick: logoutPrompt,
+      },
+    ],
+    [logoutPrompt]
+  );
 
   return isLoggedIn ? (
     <>
@@ -158,8 +172,9 @@ export default function UserMenu() {
             <MenuItem
               key={item.title}
               color={item.color}
-              onClick={item.onclick}
+              onClick={item.onclick || goToRoute(item.route)}
               spacer={item.spacer}
+              current={item.route === history.location.pathname}
             >
               <Icon spaceRight spaceLeft>
                 {item.icon}

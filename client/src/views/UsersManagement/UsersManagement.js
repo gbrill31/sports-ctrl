@@ -1,14 +1,12 @@
-import React, { useState } from 'react';
-import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { FlexContainer, Icon, MainTitle, Button } from '../../styledElements';
-import UserRegisterFrom from '../../components/UserRegisterForm/UserRegisterForm';
+import { FlexContainer, Icon, MainTitle } from '../../styledElements';
 import useDb from '../../hooks/useDb';
 import useUsers from '../../hooks/useUsers';
 import UsersList from '../../components/UsersManagementControl/UsersList/UsersList';
-import ModalDialog from '../../components/ModalDialog/ModalDialog';
 
 const AdminCardWrapper = styled.div`
   background-color: ${(props) => props.theme.menu.hover};
@@ -28,16 +26,11 @@ const PERMISSIONS = {
 };
 
 export default function UsersManagement() {
-  const [isOpenAddUser, setIsOpenAddUser] = useState(false);
-
   const { user } = useSelector((state) => state.auth);
 
   const { status: dbStatus } = useDb();
 
   const { data: users } = useUsers(dbStatus === 'success');
-
-  const openAddUserDialog = () => setIsOpenAddUser(true);
-  const closeAddUserDialog = () => setIsOpenAddUser(false);
 
   return (
     <>
@@ -61,26 +54,10 @@ export default function UsersManagement() {
             </FlexContainer>
           </FlexContainer>
         </AdminCardWrapper>
-        <FlexContainer fullWidth align="center" justify="center">
-          <Button color="success" onClick={openAddUserDialog}>
-            Add Operator
-            <Icon spaceLeft>
-              <FontAwesomeIcon icon={faPlus} size="sm" />
-            </Icon>
-          </Button>
-        </FlexContainer>
       </FlexContainer>
       <FlexContainer>
         {users ? <UsersList users={users} permissions={PERMISSIONS} /> : null}
       </FlexContainer>
-
-      <ModalDialog
-        component={UserRegisterFrom}
-        componentProps={{ userType: 'operator', cb: closeAddUserDialog }}
-        isOpen={isOpenAddUser}
-        title="Add User"
-        handleCancel={closeAddUserDialog}
-      />
     </>
   );
 }

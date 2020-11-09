@@ -46,9 +46,12 @@ function* handleVerifyLogin() {
     const user = yield call(verifyLogin);
     yield put(setLoggedIn(user));
   } catch (error) {
-    yield localStorage.removeItem('token');
-    yield localStorage.removeItem('expires');
-    yield put(setLoggedIn(null));
+    if (error.response.status === 401) {
+      yield localStorage.removeItem('token');
+      yield localStorage.removeItem('expires');
+      yield put(setLoggedIn(null));
+    }
+
     // yield put(updatePlayerStatsError(error));
   }
 }

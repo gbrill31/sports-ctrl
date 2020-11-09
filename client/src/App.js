@@ -133,15 +133,16 @@ function App() {
     [dispatch]
   );
 
-  const checkUserLogin = useCallback(() => dispatch(verifyLogin()), [dispatch]);
+  const verifyUserLogin = useCallback(() => dispatch(verifyLogin()), [
+    dispatch,
+  ]);
 
   useEffect(() => {
     HttpInterceptors.initInterceptors(history);
     setCurrentRoute(history.location.pathname);
-    checkUserLogin();
+    verifyUserLogin();
     const unlisten = history.listen((location) => {
       setCurrentRoute(location.pathname);
-      checkUserLogin();
     });
     setIsSetInterceptors(true);
 
@@ -149,7 +150,7 @@ function App() {
       HttpInterceptors.clearInterceptors();
       unlisten();
     };
-  }, [history, setCurrentRoute, checkUserLogin]);
+  }, [history, setCurrentRoute, verifyUserLogin]);
 
   const isPrivateRoute = useCallback(
     () =>

@@ -42,21 +42,19 @@ const routesReucer = (state = INITIAL_STATE, action = {}) => {
         loginError: action.payload,
       };
     case AUTH.ON_USER_LOGOUT:
-      return { ...state, logoutPending: true, isLoggedInCheck: false };
+      return { ...state, logoutPending: true };
     case AUTH.ON_USER_LOGOUT_SUCCESS:
       return {
         ...state,
         logoutPending: false,
         user: null,
         isLoggedIn: false,
-        isLoggedInCheck: false,
         logoutError: null,
       };
     case AUTH.ON_USER_LOGOUT_FAILED:
       return {
         ...state,
         logoutPending: false,
-        isLoggedInCheck: false,
         logoutError: action.payload,
       };
     case AUTH.ON_USER_LOGOUT_PROMPT_OPEN:

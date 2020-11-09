@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components';
 import moment from 'moment';
 import {
   faEdit,
+  faPlus,
   faSortAlphaDown,
   faSortAlphaUp,
   faTrashAlt,
@@ -19,6 +20,8 @@ import {
 import FilterListInput from '../../FilterListInput/FilterListInput';
 import useDeleteUsers from '../../../hooks/useDeleteUsers';
 import PromptDialog from '../../PromptDialog/PromptDialog';
+import UserRegisterForm from '../../UserRegisterForm/UserRegisterForm';
+import ModalDialog from '../../ModalDialog/ModalDialog';
 
 const Table = styled.table`
   background-color: ${(props) => props.theme.basic.color};
@@ -67,13 +70,6 @@ const RowControl = styled.div`
   right: 0;
   display: ${(props) => (props.show ? '' : 'none')};
   box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
-  /* opacity: ${(props) => (props.show ? '1' : '0')}; */
-  /* 
-  ${(props) =>
-    props.show &&
-    css`
-      max-width: 200px;
-    `} */
 `;
 
 export default function UsersList({ users, permissions }) {
@@ -85,6 +81,7 @@ export default function UsersList({ users, permissions }) {
   const [nameSort, setNameSort] = useState('asc');
   const [hoverId, setHoverId] = useState();
   const [isOpenDeleteUser, setIsOpenDeleteUser] = useState(false);
+  const [isOpenAddUser, setIsOpenAddUser] = useState(false);
 
   useEffect(() => {
     globalCheckboxRef.current.indeterminate =
@@ -94,6 +91,9 @@ export default function UsersList({ users, permissions }) {
 
   const openDeleteUserPrompt = () => setIsOpenDeleteUser(true);
   const closeDeleteUserPrompt = () => setIsOpenDeleteUser(false);
+
+  const openAddUserDialog = () => setIsOpenAddUser(true);
+  const closeAddUserDialog = () => setIsOpenAddUser(false);
 
   const deleteUsers = useDeleteUsers();
 
@@ -156,17 +156,26 @@ export default function UsersList({ users, permissions }) {
           onChange={setFilter}
         />
       </FlexContainer>
-      <FlexContainer
-        style={{ display: selected.length > 0 ? '' : 'none' }}
-        fullWidth
-        align="center"
-      >
-        <Button color="error" onClick={openDeleteUserPrompt}>
-          Delete
+      <FlexContainer fullWidth minHeight="40px" align="center">
+        <Button color="success" onClick={openAddUserDialog}>
+          Add Operator
           <Icon spaceLeft>
-            <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+            <FontAwesomeIcon icon={faPlus} size="sm" />
           </Icon>
         </Button>
+        <FlexContainer
+          padding="0"
+          align="center"
+          style={{ display: selected.length > 0 ? '' : 'none' }}
+        >
+          <h5 style={{ color: '#fff', margin: '0 5px 0 25px' }}>Selected:</h5>
+          <Button color="error" onClick={openDeleteUserPrompt}>
+            Delete
+            <Icon spaceLeft>
+              <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+            </Icon>
+          </Button>
+        </FlexContainer>
       </FlexContainer>
       <FlexContainer fullWidth>
         <Table>
@@ -256,6 +265,13 @@ export default function UsersList({ users, permissions }) {
         confirmText="Delete"
         handleClose={closeDeleteUserPrompt}
         handleConfirm={deleteSelectedUsers}
+      />
+      <ModalDialog
+        component={UserRegisterForm}
+        componentProps={{ userType: 'operator', cb: closeAddUserDialog }}
+        isOpen={isOpenAddUser}
+        title="Add User"
+        handleCancel={closeAddUserDialog}
       />
     </>
   );

@@ -33,7 +33,7 @@ function HeaderNav() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const currentRoute = useSelector((state) => state.routes.currentRoute);
+  const { currentRoute } = useSelector((state) => state.routes);
 
   const { isLoggedIn } = useSelector((state) => state.auth);
 

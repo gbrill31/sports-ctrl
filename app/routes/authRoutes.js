@@ -26,7 +26,7 @@ authRouter.post('/register', (req, res) => {
         psqlDB
           .createUser(user)
           .then(() => {
-            res.alertSuccess('User registered successfuly');
+            res.alertSuccess('User registered successfully');
             if (!type) {
               res.redirectTo('/login');
             }
@@ -62,7 +62,7 @@ authRouter.post('/register', (req, res) => {
 //     if (err) {
 //       return next(err);
 //     }
-//     res.alertSuccess('You have logged in successfuly');
+//     res.alertSuccess('You have logged in successfully');
 //     res.status(200).json(user);
 //   });
 // })(req, res, next);
@@ -83,13 +83,13 @@ authRouter.post('/login', (req, res, next) => {
     delete user.hash;
     delete user.salt;
 
-    res.alertSuccess(`Welcome ${user.name}, You have logged in successfuly`);
+    res.alertSuccess(`Welcome ${user.name}, You have logged in successfully`);
     res.status(200).json({ user, token, expires });
   });
 });
 
 authRouter.get('/logout', (req, res) => {
-  res.redirectTo('/login');
+  res.redirectTo('/userlogin');
   res.sendStatus(200);
 });
 
@@ -100,6 +100,7 @@ authRouter.get(
     if (req.user) {
       return res.status(200).json(req.user);
     }
+    res.redirectTo('/userlogin');
     return res.status(401).json({});
   }
 );
