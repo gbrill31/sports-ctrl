@@ -423,6 +423,11 @@ const DB_EXPORTS = {
   deleteUsers: function (ids) {
     return DB('users').whereIn('id', ids).del();
   },
+  updatePassword: function (user, salt, hash) {
+    return DB('users')
+      .where('id', user.id)
+      .update({ salt, hash, firstLogin: user.firstLogin ? false : false });
+  },
 
   findUser: function (email) {
     return new Promise((resolve, reject) => {

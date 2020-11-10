@@ -11,10 +11,9 @@ export const userSignupSuccess = () => ({
   type: AUTH.ON_USER_SIGNUP_SUCCESS,
 });
 
-export const userLogin = (email, password) => ({
+export const userLogin = (data) => ({
   type: AUTH.ON_USER_LOGIN,
-  email,
-  password,
+  data,
 });
 
 export const setLoggedIn = (user) => ({
@@ -44,4 +43,13 @@ export const openLogoutPrompt = () => ({
 });
 export const closeLogoutPrompt = () => ({
   type: AUTH.ON_USER_LOGOUT_PROMPT_CLOSE,
+});
+
+export const updatePassword = (data) => ({
+  type: AUTH.ON_UPDATE_PASSWORD,
+  data,
+});
+
+export const setUpdatePassword = () => ({
+  type: AUTH.ON_UPDATE_PASSWORD_SUCCESS,
 });

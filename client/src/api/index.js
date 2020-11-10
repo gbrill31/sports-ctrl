@@ -22,7 +22,13 @@ import {
   updatePlayerStats,
 } from './playersApi';
 
-import { registerUser, loginUser, logoutUser, verifyLogin } from './authApi';
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  verifyLogin,
+  updatePassword,
+} from './authApi';
 
 import { getUsersByAdmin, deleteUsers } from './usersApi';
 
@@ -53,4 +59,5 @@ export {
   verifyLogin,
   getUsersByAdmin,
   deleteUsers,
+  updatePassword,
 };

@@ -15,6 +15,7 @@ import './ext_css/all.min.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import { setRouteName, verifyLogin } from './actions';
+import UpdatePassword from './views/UpdatePassword/UpdatePassword';
 
 const theme = {
   primary: {
@@ -126,7 +127,9 @@ function App() {
   const dispatch = useDispatch();
 
   const [isSetInterceptors, setIsSetInterceptors] = useState(false);
-  const { isLoggedIn, isLoggedInCheck } = useSelector((state) => state.auth);
+  const { user, isLoggedIn, isLoggedInCheck } = useSelector(
+    (state) => state.auth
+  );
 
   const setCurrentRoute = useCallback(
     (route) => dispatch(setRouteName(route)),
@@ -177,7 +180,10 @@ function App() {
               <Route exact path="/usersignup" render={() => <RegisterUser />} />
               <Route exact path="/userlogin" render={() => <UserLogin />} />
 
-              <PrivateRoute path="/" component={Home} />
+              <PrivateRoute
+                path="/"
+                component={user && user.firstLogin ? UpdatePassword : Home}
+              />
             </Switch>
           </AppMainContent>
         </AppContainer>

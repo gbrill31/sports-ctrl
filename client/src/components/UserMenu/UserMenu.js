@@ -4,8 +4,8 @@ import {
   faSignOutAlt,
   faUsers,
   faMapMarkedAlt,
-  faTshirt,
 } from '@fortawesome/free-solid-svg-icons';
+import { GiBasketballJersey } from 'react-icons/gi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
@@ -91,7 +91,7 @@ const MenuItem = styled.div`
       color: #fff;
       background-color: ${(props) =>
         props.theme[props.color]
-          ? props.theme[props.color].color
+          ? props.theme[props.color].hover
           : props.color || '#fbfbfb'};
     `}
 `;
@@ -128,7 +128,7 @@ export default function UserMenu() {
         color: 'primary',
         fontSize: '0.9rem',
         spacer: true,
-        icon: <FontAwesomeIcon icon={faTshirt} size="sm" />,
+        icon: <GiBasketballJersey />,
       },
       {
         title: 'Venues',
@@ -158,7 +158,7 @@ export default function UserMenu() {
     [logoutPrompt]
   );
 
-  return isLoggedIn ? (
+  return isLoggedIn && !user.firstLogin ? (
     <>
       <UserMenuWrapper>
         <UserInfoWrapper ref={menuRef} onClick={toggleMenuOpen}>

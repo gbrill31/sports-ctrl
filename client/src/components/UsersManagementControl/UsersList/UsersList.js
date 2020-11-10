@@ -22,6 +22,7 @@ import useDeleteUsers from '../../../hooks/useDeleteUsers';
 import PromptDialog from '../../PromptDialog/PromptDialog';
 import UserRegisterForm from '../../UserRegisterForm/UserRegisterForm';
 import ModalDialog from '../../ModalDialog/ModalDialog';
+import { useSelector } from 'react-redux';
 
 const Table = styled.table`
   background-color: ${(props) => props.theme.basic.color};
@@ -151,32 +152,39 @@ export default function UsersList({ users }) {
 
   return (
     <>
-      <FlexContainer fullWidth align="center" justify="center">
-        <FilterListInput
-          width="50%"
-          placeholder="Filter By Name"
-          onChange={setFilter}
-        />
-      </FlexContainer>
-      <FlexContainer fullWidth minHeight="40px" align="center">
-        <Button color="success" onClick={openAddUserDialog}>
-          Add Operator
-          <Icon spaceLeft>
-            <FontAwesomeIcon icon={faPlus} size="sm" />
-          </Icon>
-        </Button>
-        <FlexContainer
-          padding="0"
-          align="center"
-          style={{ display: selected.length > 0 ? '' : 'none' }}
-        >
-          <h5 style={{ color: '#fff', margin: '0 5px 0 25px' }}>Selected:</h5>
-          <Button color="error" onClick={openDeleteUserPrompt}>
-            Delete
+      <FlexContainer fullWidth noWrap padding="0">
+        <FlexContainer width="50%" minHeight="40px" align="center">
+          <Button color="success" onClick={openAddUserDialog}>
+            Add Operator
             <Icon spaceLeft>
-              <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+              <FontAwesomeIcon icon={faPlus} size="sm" />
             </Icon>
           </Button>
+          <FlexContainer
+            padding="0"
+            align="center"
+            style={{ display: selected.length > 0 ? '' : 'none' }}
+          >
+            <h5 style={{ color: '#fff', margin: '0 5px 0 25px' }}>Selected:</h5>
+            <Button color="error" onClick={openDeleteUserPrompt}>
+              Delete
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+              </Icon>
+            </Button>
+          </FlexContainer>
+        </FlexContainer>
+        <FlexContainer
+          width="50%"
+          padding="0 10px 0 0"
+          align="center"
+          justify="flex-end"
+        >
+          <FilterListInput
+            width="50%"
+            placeholder="Filter By Name"
+            onChange={setFilter}
+          />
         </FlexContainer>
       </FlexContainer>
       <FlexContainer fullWidth>

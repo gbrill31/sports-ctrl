@@ -10,6 +10,7 @@ import {
   Button,
   Link,
   FormError,
+  Notification,
 } from '../../styledElements';
 
 import { userSignup } from '../../actions';
@@ -26,15 +27,8 @@ export default function UserRegisterForm({
 
   const { user, signupPending } = useSelector((state) => state.auth);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    setError,
-    clearErrors,
-    // reset,
-  } = useForm({
-    mode: 'onSubmit',
+  const { register, handleSubmit, errors, setError, clearErrors } = useForm({
+    mode: 'onTouched',
     reValidateMode: 'onChange',
   });
   const [password, setPassword] = useState('');
@@ -118,53 +112,56 @@ export default function UserRegisterForm({
             {errors.email && errors.email.type === 'pattern' && (
               <FormError>{errors.email.message}</FormError>
             )}
-            <Input
-              autocomplete="new-password"
-              name="password"
-              type="password"
-              id="password"
-              placeholder="Password"
-              error={errors.password}
-              ref={register({
-                required: true,
-                minLength: 6,
-              })}
-              color="#fff"
-              onChange={handlePasswordChange}
-            />
-            {errors.password && errors.password.type === 'required' && (
-              <FormError>* This field is required</FormError>
-            )}
-            {errors.password && errors.password.type === 'minLength' && (
-              <FormError>Password must have a least 6 characters</FormError>
-            )}
-            <Input
-              autocomplete="verify-password"
-              name="verifyPassword"
-              type="password"
-              id="verifyPassword"
-              placeholder="Verify password"
-              error={errors.verifyPassword}
-              ref={register({
-                required: true,
-                // validate: validatePassword,
-              })}
-              onChange={validatePassword}
-              color="#fff"
-            />
-            {errors.verifyPassword &&
-              errors.verifyPassword.type === 'required' && (
-                <FormError>* This field is required</FormError>
-              )}
-            {errors.verifyPassword &&
-              errors.verifyPassword.type === 'verify' && (
-                <FormError>{errors.verifyPassword.message}</FormError>
-              )}
+            {!userType || (userType && userType === 'admin') ? (
+              <>
+                <Input
+                  autocomplete="new-password"
+                  name="password"
+                  type="password"
+                  id="password"
+                  placeholder="Password"
+                  error={errors.password}
+                  ref={register({
+                    required: true,
+                    minLength: 6,
+                  })}
+                  color="#fff"
+                  onChange={handlePasswordChange}
+                />
+                {errors.password && errors.password.type === 'required' && (
+                  <FormError>* This field is required</FormError>
+                )}
+                {errors.password && errors.password.type === 'minLength' && (
+                  <FormError>Password must have a least 6 characters</FormError>
+                )}
+                <Input
+                  autocomplete="verify-password"
+                  name="verifyPassword"
+                  type="password"
+                  id="verifyPassword"
+                  placeholder="Verify password"
+                  error={errors.verifyPassword}
+                  ref={register({
+                    required: true,
+                  })}
+                  onChange={validatePassword}
+                  color="#fff"
+                />
+                {errors.verifyPassword &&
+                  errors.verifyPassword.type === 'required' && (
+                    <FormError>* This field is required</FormError>
+                  )}
+                {errors.verifyPassword &&
+                  errors.verifyPassword.type === 'verify' && (
+                    <FormError>{errors.verifyPassword.message}</FormError>
+                  )}
+              </>
+            ) : null}
             <Button
               type="submit"
               color="success"
               saving={signupPending || status === 'pending'}
-              width="80%"
+              width="150px"
               margin="40px 0 5px 0"
             >
               Register
@@ -173,7 +170,14 @@ export default function UserRegisterForm({
               <Link onClick={goToRoute('/userlogin')} fontSize="0.8rem">
                 Sign In
               </Link>
-            ) : null}
+            ) : (
+              <>
+                <Notification
+                  type="success"
+                  message="A first login password will be generated and emailed to the user"
+                />
+              </>
+            )}
           </FlexContainer>
         </form>
       </FlexContainer>

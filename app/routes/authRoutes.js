@@ -3,6 +3,8 @@ const passport = require('passport');
 const passwordsUtils = require('../utils/passwords');
 const psqlDB = require('../config/database');
 const jwtUtils = require('../utils/jwt');
+const emailUser = require('../utils/email');
+const shortid = require('shortid');
 
 authRouter.post('/register', (req, res) => {
   const { name, email, password, type, admin } = req.body;
@@ -11,7 +13,10 @@ authRouter.post('/register', (req, res) => {
     .findUser(email)
     .then((user) => {
       if (!user) {
-        const { salt, hash } = passwordsUtils.generatePassword(password);
+        const tempPassword = shortid.generate();
+        const { salt, hash } = passwordsUtils.generatePassword(
+          password || tempPassword
+        );
 
         const user = {
           name,
@@ -28,8 +33,9 @@ authRouter.post('/register', (req, res) => {
           .then(() => {
             res.alertSuccess('User registered successfully');
             if (!type) {
-              res.redirectTo('/login');
+              res.redirectTo('/userlogin');
             }
+            emailUser.send('firstLogin', { ...user, tempPassword });
             res.status(200).json({});
           })
           .catch((err) => {
@@ -78,6 +84,10 @@ authRouter.post('/login', (req, res, next) => {
       res.alertError('Try again, Username or Password are incorrect');
       return res.sendStatus(401);
     }
+    if (user.firstLogin) {
+      res.redirectTo('firstlogin');
+      return res.status(200).json({ user });
+    }
     const { token, expires } = jwtUtils.issueJwt(user.id);
 
     delete user.hash;
@@ -85,6 +95,31 @@ authRouter.post('/login', (req, res, next) => {
 
     res.alertSuccess(`Welcome ${user.name}, You have logged in successfully`);
     res.status(200).json({ user, token, expires });
+  });
+});
+
+authRouter.post('/updatepass', (req, res, next) => {
+  const { id, password } = req.body;
+
+  psqlDB.findUserById(id).then((user) => {
+    if (!user) {
+      res.alertError('Try again, Username or Password are incorrect');
+      return res.sendStatus(401);
+    }
+    const { salt, hash } = passwordsUtils.generatePassword(password);
+
+    psqlDB
+      .updatePassword(user, salt, hash)
+      .then(() => {
+        res.redirectTo('/userlogin');
+        res.alertSuccess('Password updated successfully');
+        res.status(200).json({});
+      })
+      .catch((err) => {
+        res.redirectTo('/userlogin');
+        res.alertError('Password could not update');
+        res.status(200).json({});
+      });
   });
 });
 

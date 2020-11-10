@@ -27,3 +27,8 @@ export const verifyLogin = async () => {
   const { data } = await axios.get('/verifylogin');
   return data;
 };
+
+export const updatePassword = async ({ id, password }) => {
+  const { data } = await axios.post('/updatepass', { id, password });
+  return data;
+};

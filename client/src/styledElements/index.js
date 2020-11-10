@@ -9,6 +9,7 @@ import Input from './Input';
 import Divider from './Divider';
 import Link from './Link';
 import FormError from './FormError';
+import Notification from './Notification';
 
 export {
   MainTitle,
@@ -22,4 +23,5 @@ export {
   Divider,
   Link,
   FormError,
+  Notification,
 };

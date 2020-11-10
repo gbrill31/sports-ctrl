@@ -11,6 +11,8 @@ const INITIAL_STATE = {
   loginError: null,
   logoutError: null,
   isLogoutPrompt: false,
+  updatePasswordPending: false,
+  updatePasswordError: null,
   permissions: {
     admin: ['Users', 'Teams', 'Venues', 'Game Control'],
     operator: ['Game Control'],
@@ -70,6 +72,22 @@ const routesReucer = (state = INITIAL_STATE, action = {}) => {
       return {
         ...state,
         isLogoutPrompt: false,
+      };
+    case AUTH.ON_UPDATE_PASSWORD:
+      return {
+        ...state,
+        updatePasswordPending: true,
+      };
+    case AUTH.ON_UPDATE_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        updatePasswordPending: false,
+      };
+    case AUTH.ON_UPDATE_PASSWORD_FAILED:
+      return {
+        ...state,
+        updatePasswordPending: false,
+        updatePasswordError: action.payload,
       };
     default:
       return state;

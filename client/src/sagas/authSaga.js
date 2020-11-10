@@ -5,8 +5,15 @@ import {
   setLoggedOut,
   userSignupSuccess,
   setLoggedInError,
+  setUpdatePassword,
 } from '../actions';
-import { loginUser, logoutUser, verifyLogin, registerUser } from '../api';
+import {
+  loginUser,
+  logoutUser,
+  verifyLogin,
+  registerUser,
+  updatePassword,
+} from '../api';
 
 function* handleUserSignup({ name, email, password, type, admin }) {
   try {
@@ -17,18 +24,23 @@ function* handleUserSignup({ name, email, password, type, admin }) {
   }
 }
 
-function* handleUserLogin({ email, password }) {
+function* handleUserLogin({ data }) {
   try {
-    const { user: loggedInUser, token, expires } = yield call(
-      loginUser,
-      email,
-      password
-    );
+    const { user: loggedInUser, token, expires } = yield call(loginUser, data);
     yield localStorage.setItem('token', token);
     yield localStorage.setItem('expires', expires);
     yield put(setLoggedIn(loggedInUser));
   } catch (error) {
     yield put(setLoggedInError(error));
+  }
+}
+
+function* handleUpdatePassword({ data }) {
+  try {
+    yield call(updatePassword, data);
+    yield put(setUpdatePassword());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
   }
 }
 
@@ -61,4 +73,5 @@ export default function* watchAuth() {
   yield takeEvery(AUTH.ON_USER_LOGIN, handleUserLogin);
   yield takeEvery(AUTH.ON_USER_LOGOUT, handleUserLogout);
   yield takeEvery(AUTH.ON_USER_VERIFY_LOGIN, handleVerifyLogin);
+  yield takeEvery(AUTH.ON_UPDATE_PASSWORD, handleUpdatePassword);
 }

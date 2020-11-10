@@ -32,9 +32,14 @@ export default function UsersManagement() {
       <MainTitle>Users Management</MainTitle>
       <FlexContainer justify="center">
         <AdminCardWrapper>
-          <FlexContainer fullWidth align="center" justify="center">
-            <h2>{user.name}</h2>
-            <FlexContainer padding="0 0 0 15px">
+          <FlexContainer column align="center" justify="center">
+            <FlexContainer align="baseline" justify="center">
+              <MainTitle width="fit-content" color="success" padding="0 10px">
+                Admin
+              </MainTitle>
+              <h2>{user.name}</h2>
+            </FlexContainer>
+            <FlexContainer padding="0">
               {permissions[user.type] &&
                 permissions[user.type].map((per) => {
                   return (

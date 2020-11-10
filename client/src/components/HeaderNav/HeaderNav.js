@@ -35,7 +35,7 @@ function HeaderNav() {
 
   const { currentRoute } = useSelector((state) => state.routes);
 
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { user, isLoggedIn } = useSelector((state) => state.auth);
 
   const {
     status: dbStatus,
@@ -63,29 +63,74 @@ function HeaderNav() {
     [dispatch]
   );
 
-  // const getConnectBtnColor = () => {
-  //   return !dbError || isDbConnecting()
-  //     ? isDbConnected()
-  //       ? 'success'
-  //       : 'secondary'
-  //     : 'error';
-  // };
-  // const getConnectBtnText = () => {
-  //   return isDbConnecting()
-  //     ? `Connecting, Attempts ${failureCount}`
-  //     : isDbConnected()
-  //     ? 'DB Connected'
-  //     : !dbError
-  //     ? 'Connect to Database'
-  //     : 'Connection Failed, Click To try Again';
-  // };
-
   const goToRoute = (route) => () => history.push(route);
 
   return (
-    <NavRootWrapper>
-      <UserMenu />
-      {/* <Button
+    <>
+      {isLoggedIn && !user.firstLogin ? (
+        <NavRootWrapper>
+          <UserMenu />
+          {isDbConnected() &&
+            (currentRoute === '/' ? (
+              <>
+                {!activeGame && activeGameStatus === 'success' ? (
+                  <Button color="success" onClick={goToRoute('/creategame')}>
+                    Start A New Game
+                    <Icon spaceLeft>
+                      <FontAwesomeIcon icon={faPlus} size="sm" />
+                    </Icon>
+                  </Button>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <Button color="secondary" onClick={goToRoute('/')}>
+                  <Icon spaceRight>
+                    <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                  </Icon>
+                  Home
+                </Button>
+
+                {currentRoute === '/game' && activeGame && (
+                  <Button
+                    justifyRight
+                    color="error"
+                    onClick={openEndGamePrompt}
+                  >
+                    End Game
+                    <Icon spaceLeft>
+                      <FontAwesomeIcon icon={faCheck} size="sm" />
+                    </Icon>
+                  </Button>
+                )}
+              </>
+            ))}
+        </NavRootWrapper>
+      ) : null}
+    </>
+  );
+}
+
+export default HeaderNav;
+
+// const getConnectBtnColor = () => {
+//   return !dbError || isDbConnecting()
+//     ? isDbConnected()
+//       ? 'success'
+//       : 'secondary'
+//     : 'error';
+// };
+// const getConnectBtnText = () => {
+//   return isDbConnecting()
+//     ? `Connecting, Attempts ${failureCount}`
+//     : isDbConnected()
+//     ? 'DB Connected'
+//     : !dbError
+//     ? 'Connect to Database'
+//     : 'Connection Failed, Click To try Again';
+// };
+
+/* <Button
         color={getConnectBtnColor()}
         // disabled={isDbConnecting()}
         onClick={connectDb}
@@ -103,41 +148,4 @@ function HeaderNav() {
             )}
           </Icon>
         }
-      </Button> */}
-      {isDbConnected() &&
-        isLoggedIn &&
-        (currentRoute === '/' ? (
-          <>
-            {!activeGame && activeGameStatus === 'success' ? (
-              <Button color="success" onClick={goToRoute('/creategame')}>
-                Start A New Game
-                <Icon spaceLeft>
-                  <FontAwesomeIcon icon={faPlus} size="sm" />
-                </Icon>
-              </Button>
-            ) : null}
-          </>
-        ) : (
-          <>
-            <Button color="secondary" onClick={goToRoute('/')}>
-              <Icon spaceRight>
-                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              </Icon>
-              Home
-            </Button>
-
-            {currentRoute === '/game' && activeGame && (
-              <Button justifyRight color="error" onClick={openEndGamePrompt}>
-                End Game
-                <Icon spaceLeft>
-                  <FontAwesomeIcon icon={faCheck} size="sm" />
-                </Icon>
-              </Button>
-            )}
-          </>
-        ))}
-    </NavRootWrapper>
-  );
-}
-
-export default HeaderNav;
+      </Button> */
