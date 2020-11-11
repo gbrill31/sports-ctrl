@@ -57,7 +57,6 @@ function HeaderNav() {
   }, [currentRoute, fetchActiveGame]);
 
   const isDbConnected = () => dbStatus === 'success';
-  console.log('HeaderNav -> isDbConnected', isDbConnected());
   // const isDbConnecting = () => dbStatus === 'loading';
 
   const openEndGamePrompt = useCallback(
