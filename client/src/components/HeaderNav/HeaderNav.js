@@ -16,6 +16,7 @@ import useActiveGame from '../../hooks/useActiveGame';
 
 import { setEndGamePrompt } from '../../actions';
 import UserMenu from '../UserMenu/UserMenu';
+import HeaderLogo from '../HeaderLogo/HeaderLogo';
 
 const NavRootWrapper = styled.header`
   display: flex;
@@ -56,6 +57,7 @@ function HeaderNav() {
   }, [currentRoute, fetchActiveGame]);
 
   const isDbConnected = () => dbStatus === 'success';
+  console.log('HeaderNav -> isDbConnected', isDbConnected());
   // const isDbConnecting = () => dbStatus === 'loading';
 
   const openEndGamePrompt = useCallback(
@@ -67,11 +69,12 @@ function HeaderNav() {
 
   return (
     <>
-      {isLoggedIn && !user.firstLogin ? (
-        <NavRootWrapper>
-          <UserMenu />
-          {isDbConnected() &&
-            (currentRoute === '/' ? (
+      <NavRootWrapper>
+        <HeaderLogo />
+        {isLoggedIn && !user.firstLogin && isDbConnected() ? (
+          <>
+            <UserMenu />
+            {currentRoute === '/' ? (
               <>
                 {!activeGame && activeGameStatus === 'success' ? (
                   <Button color="success" onClick={goToRoute('/creategame')}>
@@ -104,9 +107,10 @@ function HeaderNav() {
                   </Button>
                 )}
               </>
-            ))}
-        </NavRootWrapper>
-      ) : null}
+            )}
+          </>
+        ) : null}
+      </NavRootWrapper>
     </>
   );
 }

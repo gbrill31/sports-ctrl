@@ -8,6 +8,8 @@ const Icon = ({ className, style, children }) => (
 );
 
 export default styled(Icon)`
+  font-size: ${(props) => props.size || ''};
+  height: ${(props) => props.height || ''};
   ${(props) =>
     props.spaceLeft &&
     css`
