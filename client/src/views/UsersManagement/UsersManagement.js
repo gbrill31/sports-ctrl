@@ -8,7 +8,7 @@ import useDb from '../../hooks/useDb';
 import useUsers from '../../hooks/useUsers';
 import UsersList from '../../components/UsersManagementControl/UsersList/UsersList';
 
-const AdminCardWrapper = styled.div`
+const AdminCardContainer = styled.div`
   background-color: ${(props) => props.theme.menu.hover};
   min-width: 350px;
   border-radius: 5px;
@@ -31,7 +31,7 @@ export default function UsersManagement() {
     <>
       <MainTitle>Users Management</MainTitle>
       <FlexContainer justify="center">
-        <AdminCardWrapper>
+        <AdminCardContainer>
           <FlexContainer column align="center" justify="center">
             <FlexContainer align="baseline" justify="center">
               <MainTitle width="fit-content" color="success" padding="0 10px">
@@ -53,7 +53,7 @@ export default function UsersManagement() {
                 })}
             </FlexContainer>
           </FlexContainer>
-        </AdminCardWrapper>
+        </AdminCardContainer>
       </FlexContainer>
       <FlexContainer>
         {users ? <UsersList users={users} /> : null}

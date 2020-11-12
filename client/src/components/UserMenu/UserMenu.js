@@ -16,19 +16,19 @@ import { useHistory } from 'react-router-dom';
 
 import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
 
-const UserMenuWrapper = styled.div`
+const UserMenuContainer = styled.div`
   color: #fff;
   padding: 5px;
   margin-right: 10px;
   position: relative;
 `;
 
-const UserInfoWrapper = styled.div`
+const UserInfoContainer = styled.div`
   cursor: pointer;
   padding: 8px 0;
 `;
 
-const UserIconWrapper = styled.div`
+const UserIconContainer = styled.div`
   display: inline;
   padding: 10px 5px;
 
@@ -160,13 +160,13 @@ export default function UserMenu() {
 
   return isLoggedIn && !user.firstLogin ? (
     <>
-      <UserMenuWrapper>
-        <UserInfoWrapper ref={menuRef} onClick={toggleMenuOpen}>
-          <UserIconWrapper active={isMenuOpen} color="primary">
+      <UserMenuContainer>
+        <UserInfoContainer ref={menuRef} onClick={toggleMenuOpen}>
+          <UserIconContainer active={isMenuOpen} color="primary">
             <FontAwesomeIcon icon={faUserCircle} size="lg" />
-          </UserIconWrapper>
+          </UserIconContainer>
           <UserName>{user.name}</UserName>
-        </UserInfoWrapper>
+        </UserInfoContainer>
         <DropdownMenu show={isMenuOpen}>
           {MENU_ITEMS.map((item) => (
             <MenuItem
@@ -190,7 +190,7 @@ export default function UserMenu() {
             </MenuItem>
           ))}
         </DropdownMenu>
-      </UserMenuWrapper>
+      </UserMenuContainer>
     </>
   ) : null;
 }

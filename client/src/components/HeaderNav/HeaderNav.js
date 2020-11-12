@@ -18,7 +18,7 @@ import { setEndGamePrompt } from '../../actions';
 import UserMenu from '../UserMenu/UserMenu';
 import HeaderLogo from '../HeaderLogo/HeaderLogo';
 
-const NavRootWrapper = styled.header`
+const NavRootContainer = styled.header`
   display: flex;
   align-items: center;
   position: fixed;
@@ -68,7 +68,7 @@ function HeaderNav() {
 
   return (
     <>
-      <NavRootWrapper>
+      <NavRootContainer>
         <HeaderLogo />
         {isLoggedIn && !user.firstLogin && isDbConnected() ? (
           <>
@@ -109,7 +109,7 @@ function HeaderNav() {
             )}
           </>
         ) : null}
-      </NavRootWrapper>
+      </NavRootContainer>
     </>
   );
 }

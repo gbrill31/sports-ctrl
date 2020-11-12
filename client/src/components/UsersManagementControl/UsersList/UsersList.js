@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import moment from 'moment';
 import {
+  faCheck,
   faEdit,
   faPlus,
   faSortAlphaDown,
   faSortAlphaUp,
+  faTimes,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -215,6 +217,7 @@ export default function UsersList({ users }) {
               <th>Type</th>
               <th>Permissions</th>
               <th>Created</th>
+              <th>Confirmed</th>
             </tr>
           </thead>
           <tbody>
@@ -262,6 +265,17 @@ export default function UsersList({ users }) {
                       </IconButton>
                     </FlexContainer>
                   </RowControl>
+                </td>
+                <td>
+                  {!user.firstLogin ? (
+                    <Icon color="success">
+                      <FontAwesomeIcon icon={faCheck} size="1x" />
+                    </Icon>
+                  ) : (
+                    <Icon color="error">
+                      <FontAwesomeIcon icon={faTimes} size="1x" />
+                    </Icon>
+                  )}
                 </td>
               </TableRow>
             ))}
