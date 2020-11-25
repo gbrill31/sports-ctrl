@@ -113,28 +113,32 @@ export default function UserRegisterForm({
               color="#fff"
             />
             {errors.name && <FormError>* This field is required</FormError>}
-            <Input
-              name="email"
-              type="email"
-              id="email"
-              placeholder="Email"
-              error={errors.email}
-              ref={register({
-                required: true,
-                pattern: {
-                  value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address',
-                },
-              })}
-              color="#fff"
-              onChange={handleEmailChange}
-            />
-            {errors.email && errors.email.type === 'required' && (
-              <FormError>* This field is required</FormError>
-            )}
-            {errors.email && errors.email.type === 'pattern' && (
-              <FormError>{errors.email.message}</FormError>
-            )}
+            {!user || user.firstLogin ? (
+              <>
+                <Input
+                  name="email"
+                  type="email"
+                  id="email"
+                  placeholder="Email"
+                  error={errors.email}
+                  ref={register({
+                    required: true,
+                    pattern: {
+                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                      message: 'Invalid email address',
+                    },
+                  })}
+                  color="#fff"
+                  onChange={handleEmailChange}
+                />
+                {errors.email && errors.email.type === 'required' && (
+                  <FormError>* This field is required</FormError>
+                )}
+                {errors.email && errors.email.type === 'pattern' && (
+                  <FormError>{errors.email.message}</FormError>
+                )}
+              </>
+            ) : null}
             {!userType || (userType && userType === 'admin') ? (
               <>
                 <Input
