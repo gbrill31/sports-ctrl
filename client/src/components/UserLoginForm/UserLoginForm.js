@@ -33,6 +33,7 @@ export default function UserLoginForm() {
   });
   const dispatch = useDispatch();
   const history = useHistory();
+
   const { loginPending } = useSelector((state) => state.auth);
 
   const loginUser = useCallback((data) => dispatch(userLogin(data)), [
@@ -44,6 +45,7 @@ export default function UserLoginForm() {
   };
 
   const goToRoute = (route) => () => history.push(route);
+
   return (
     <>
       <FlexContainer

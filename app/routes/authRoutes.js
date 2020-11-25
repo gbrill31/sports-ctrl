@@ -4,7 +4,6 @@ const passwordsUtils = require('../utils/passwords');
 const psqlDB = require('../config/database');
 const jwtUtils = require('../utils/jwt');
 const emailUser = require('../utils/email');
-const shortid = require('shortid');
 
 authRouter.post('/register', (req, res) => {
   const { name, email, password, type, admin } = req.body;
@@ -13,7 +12,7 @@ authRouter.post('/register', (req, res) => {
     .findUser(email)
     .then((user) => {
       if (!user) {
-        const tempPassword = shortid.generate();
+        const tempPassword = passwordsUtils.generateTempPassword();
         const { salt, hash } = passwordsUtils.generatePassword(
           password || tempPassword
         );

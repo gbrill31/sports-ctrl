@@ -5,6 +5,11 @@ export const getUsersByAdmin = async () => {
   return data;
 };
 
+export const updateUser = async (user) => {
+  const { data } = await axios.post('/api/users/update', user);
+  return data;
+};
+
 export const deleteUsers = async (ids) => {
   const { data } = await axios.post('/api/users/delete', {
     ids: Array.isArray(ids) ? ids : [ids],

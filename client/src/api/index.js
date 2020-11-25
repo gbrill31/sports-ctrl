@@ -30,7 +30,7 @@ import {
   updatePassword,
 } from './authApi';
 
-import { getUsersByAdmin, deleteUsers } from './usersApi';
+import { getUsersByAdmin, deleteUsers, updateUser } from './usersApi';
 
 export {
   connectDB,
@@ -60,4 +60,5 @@ export {
   getUsersByAdmin,
   deleteUsers,
   updatePassword,
+  updateUser,
 };

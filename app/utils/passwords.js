@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const shortid = require('shortid');
 
 module.exports = {
   generatePassword: (password) => {
@@ -12,6 +13,7 @@ module.exports = {
       hash,
     };
   },
+  generateTempPassword: () => shortid.generate(),
   validatePassword: (password, hash, salt) => {
     const hashToVerify = crypto
       .pbkdf2Sync(password, salt, 10000, 64, 'sha512')

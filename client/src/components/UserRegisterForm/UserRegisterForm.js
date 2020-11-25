@@ -14,43 +14,65 @@ import {
 } from '../../styledElements';
 
 import { userSignup } from '../../actions';
-import useSaveUser from '../../hooks/useSaveUser';
+import useRegisterSubUser from '../../hooks/useRegisterSubUser';
+import useUpdateSubUser from '../../hooks/useUpdateSubUser';
 
 export default function UserRegisterForm({
   isSignupLink = false,
   isTitle = false,
+  user,
   userType,
   cb,
 }) {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const { user, signupPending } = useSelector((state) => state.auth);
+  const { user: loggedInUser, signupPending } = useSelector(
+    (state) => state.auth
+  );
 
   const { register, handleSubmit, errors, setError, clearErrors } = useForm({
     mode: 'onTouched',
     reValidateMode: 'onChange',
+    defaultValues: {
+      name: user?.name || '',
+      email: user?.email || '',
+    },
   });
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(user?.email || '');
 
-  const { saveUser, status } = useSaveUser(cb);
+  const { registerSubUser, status: registerStatus } = useRegisterSubUser(cb);
+  const { updateSubUser, status: updateStatus } = useUpdateSubUser(cb);
+
+  const isRequestPending = () =>
+    signupPending || registerStatus === 'pending' || updateStatus === 'pending';
 
   const registerUser = useCallback((data) => dispatch(userSignup(data)), [
     dispatch,
   ]);
 
   const onSubmit = async (data) => {
-    const userData = { ...data, type: userType, admin: user ? user.id : null };
+    const userData = {
+      ...data,
+      type: userType,
+      admin: loggedInUser ? loggedInUser.id : null,
+    };
     if (userType === 'admin') {
       registerUser(userData);
     } else {
-      saveUser(userData);
+      if (!user) {
+        registerSubUser(userData);
+      } else {
+        updateSubUser(userData);
+      }
     }
   };
 
   const goToRoute = (route) => () => history.push(route);
 
   const handlePasswordChange = (e) => setPassword(e.target.value);
+  const handleEmailChange = (e) => setEmail(e.target.value);
 
   const validatePassword = (e) => {
     const { value } = e.target;
@@ -105,6 +127,7 @@ export default function UserRegisterForm({
                 },
               })}
               color="#fff"
+              onChange={handleEmailChange}
             />
             {errors.email && errors.email.type === 'required' && (
               <FormError>* This field is required</FormError>
@@ -160,11 +183,11 @@ export default function UserRegisterForm({
             <Button
               type="submit"
               color="success"
-              saving={signupPending || status === 'pending'}
+              saving={isRequestPending()}
               width="150px"
               margin="40px 0 5px 0"
             >
-              Register
+              {user ? 'Save' : 'Register'}
             </Button>
             {isSignupLink ? (
               <Link onClick={goToRoute('/userlogin')} fontSize="0.8rem">
@@ -172,10 +195,12 @@ export default function UserRegisterForm({
               </Link>
             ) : (
               <>
-                <Notification
-                  type="success"
-                  message="A first login password will be generated and emailed to the user"
-                />
+                {!user || (user && user.email !== email) ? (
+                  <Notification
+                    type="success"
+                    message="A first login password will be generated and emailed to the user"
+                  />
+                ) : null}
               </>
             )}
           </FlexContainer>

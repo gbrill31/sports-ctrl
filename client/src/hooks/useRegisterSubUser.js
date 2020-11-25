@@ -3,9 +3,9 @@ import { useMutation, queryCache } from 'react-query';
 import shortid from 'shortid';
 import { registerUser } from '../api';
 
-export default function useSaveUser(cb) {
+export default function useRegisterSubUser(cb) {
   const [status, setStatus] = useState();
-  const [saveUser] = useMutation((user) => registerUser(user), {
+  const [registerSubUser] = useMutation((user) => registerUser(user), {
     onMutate: (user) => {
       setStatus('pending');
       queryCache.cancelQueries('users');
@@ -35,5 +35,5 @@ export default function useSaveUser(cb) {
     onSettled: () => queryCache.refetchQueries('users'),
   });
 
-  return { saveUser, status };
+  return { registerSubUser, status };
 }

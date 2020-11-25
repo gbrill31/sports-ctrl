@@ -1,5 +1,7 @@
 const usersRouter = require('express').Router();
 const psqlDB = require('../config/database');
+const passwordsUtils = require('../utils/passwords');
+const emailUser = require('../utils/email');
 
 usersRouter.get('/', (req, res) => {
   psqlDB
@@ -9,6 +11,39 @@ usersRouter.get('/', (req, res) => {
     })
     .catch((err) => {
       res.alertError('Cannot get users from DB');
+      res.sendStatus(503);
+    });
+});
+
+usersRouter.post('/update', (req, res) => {
+  const { name, email } = req.body;
+  let tempPassword, salt, hash;
+  psqlDB
+    .findUser(email)
+    .then((user) => {
+      if (email !== user.email) {
+        tempPassword = passwordsUtils.generateTempPassword();
+        const {
+          salt: newSalt,
+          hash: newHash,
+        } = passwordsUtils.generatePassword(tempPassword);
+        salt = newSalt;
+        hash = newHash;
+        emailUser.send('firstLogin', { ...user, tempPassword });
+      }
+      psqlDB
+        .updateUser({ ...user, name, email, salt, hash })
+        .then(() => {
+          res.alertSuccess('Updated user successfully, New Temp Password Sent');
+          res.status(200).json({});
+        })
+        .catch((err) => {
+          res.alertError('Cannot update user');
+          res.sendStatus(503);
+        });
+    })
+    .catch((err) => {
+      res.alertError('Cannot find user');
       res.sendStatus(503);
     });
 });

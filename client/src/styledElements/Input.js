@@ -68,7 +68,7 @@ export default styled.input`
         position: absolute;
         left: 2px;
         top: 5px;
-        font-size: 33px;
+        font-size: 30px;
         line-height: 0px;
         content: '-';
       }
@@ -85,9 +85,9 @@ export default styled.input`
         font-weight: 900;
         content: '\f00c';
         position: absolute;
-        left: 2px;
-        font-size: 11px;
-        line-height: 0px;
+        left: 1px;
+        font-size: 12px;
+        line-height: 1px;
       }
     `}
   ${(props) =>

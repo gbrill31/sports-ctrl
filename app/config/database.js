@@ -420,6 +420,16 @@ const DB_EXPORTS = {
       'hash',
     ]).into('users');
   },
+  updateUser: function (user) {
+    return DB('users')
+      .where('id', user.id)
+      .update({
+        name: user.name,
+        email: user.email,
+        salt: user.salt,
+        hash: user.hash,
+      });
+  },
   deleteUsers: function (ids) {
     return DB('users').whereIn('id', ids).del();
   },

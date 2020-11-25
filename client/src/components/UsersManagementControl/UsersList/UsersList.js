@@ -100,9 +100,14 @@ export default function UsersList({ users }) {
   const openAddUserDialog = () => setIsOpenAddUser(true);
   const closeAddUserDialog = () => setIsOpenAddUser(false);
 
+  const editUser = (user) => () => {
+    setSingleUser(user);
+    openAddUserDialog();
+  };
+
   const deleteUsers = useDeleteUsers();
 
-  const deleteSingledUser = (user) => () => {
+  const deleteSingleUser = (user) => () => {
     setSingleUser(user);
     openDeleteUserPrompt();
   };
@@ -216,8 +221,8 @@ export default function UsersList({ users }) {
               <th>Email</th>
               <th>Type</th>
               <th>Permissions</th>
+              <th>Activated</th>
               <th>Created</th>
-              <th>Confirmed</th>
             </tr>
           </thead>
           <tbody>
@@ -241,30 +246,23 @@ export default function UsersList({ users }) {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.type}</td>
-                <td>{permissions[user.type]}</td>
                 <td>
-                  {moment(user.created_at).format('MMMM Do, YYYY')}
-                  <RowControl
-                    show={!isUserSelected(user.id) && hoverId === user.id}
+                  <FlexContainer
+                    justify="center"
+                    align="center"
+                    padding="0"
+                    fullWidth
                   >
-                    <FlexContainer align="center" justify="space-evenly">
-                      <IconButton relative show>
-                        <Icon>
-                          <FontAwesomeIcon icon={faEdit} size="1x" />
-                        </Icon>
-                      </IconButton>
-                      <IconButton
-                        relative
-                        show
-                        color="error"
-                        onClick={deleteSingledUser(user)}
-                      >
-                        <Icon>
-                          <FontAwesomeIcon icon={faTrashAlt} size="1x" />
-                        </Icon>
-                      </IconButton>
-                    </FlexContainer>
-                  </RowControl>
+                    {permissions[user.type] &&
+                      permissions[user.type].map((per) => (
+                        <FlexContainer key={per} align="baseline" padding="0">
+                          <Icon spaceRight color="success">
+                            <FontAwesomeIcon icon={faCheck} size="sm" />
+                          </Icon>
+                          <h5 style={{ margin: 0 }}>{per}</h5>
+                        </FlexContainer>
+                      ))}
+                  </FlexContainer>
                 </td>
                 <td>
                   {!user.firstLogin ? (
@@ -276,6 +274,30 @@ export default function UsersList({ users }) {
                       <FontAwesomeIcon icon={faTimes} size="1x" />
                     </Icon>
                   )}
+                </td>
+                <td>
+                  {moment(user.created_at).format('MMMM Do, YYYY')}
+                  <RowControl
+                    show={!isUserSelected(user.id) && hoverId === user.id}
+                  >
+                    <FlexContainer align="center" justify="space-evenly">
+                      <IconButton relative show onClick={editUser(user)}>
+                        <Icon>
+                          <FontAwesomeIcon icon={faEdit} size="1x" />
+                        </Icon>
+                      </IconButton>
+                      <IconButton
+                        relative
+                        show
+                        color="error"
+                        onClick={deleteSingleUser(user)}
+                      >
+                        <Icon>
+                          <FontAwesomeIcon icon={faTrashAlt} size="1x" />
+                        </Icon>
+                      </IconButton>
+                    </FlexContainer>
+                  </RowControl>
                 </td>
               </TableRow>
             ))}
@@ -292,9 +314,13 @@ export default function UsersList({ users }) {
       />
       <ModalDialog
         component={UserRegisterForm}
-        componentProps={{ userType: 'operator', cb: closeAddUserDialog }}
+        componentProps={{
+          userType: 'operator',
+          user: singleUser,
+          cb: closeAddUserDialog,
+        }}
         isOpen={isOpenAddUser}
-        title="Add User"
+        title={`${singleUser ? 'Edit User' : 'Add User'}`}
         handleCancel={closeAddUserDialog}
       />
     </>
