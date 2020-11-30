@@ -56,6 +56,7 @@ export default function UserRegisterForm({
     const userData = {
       ...data,
       type: userType,
+      oldEmail: user?.email,
       admin: loggedInUser ? loggedInUser.id : null,
     };
     if (userType === 'admin') {

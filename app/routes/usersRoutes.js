@@ -16,12 +16,12 @@ usersRouter.get('/', (req, res) => {
 });
 
 usersRouter.post('/update', (req, res) => {
-  const { name, email } = req.body;
+  const { name, email, oldEmail } = req.body;
   let tempPassword, salt, hash;
   psqlDB
-    .findUser(email)
+    .findUser(oldEmail)
     .then((user) => {
-      if (email !== user.email) {
+      if (email !== oldEmail) {
         tempPassword = passwordsUtils.generateTempPassword();
         const {
           salt: newSalt,
@@ -29,10 +29,16 @@ usersRouter.post('/update', (req, res) => {
         } = passwordsUtils.generatePassword(tempPassword);
         salt = newSalt;
         hash = newHash;
-        emailUser.send('firstLogin', { ...user, tempPassword });
+        emailUser.send('firstLogin', { ...user, tempPassword, email });
       }
       psqlDB
-        .updateUser({ ...user, name, email, salt, hash })
+        .updateUser({
+          ...user,
+          name,
+          email,
+          salt: salt || user.salt,
+          hash: hash || user.hash,
+        })
         .then(() => {
           res.alertSuccess('Updated user successfully, New Temp Password Sent');
           res.status(200).json({});

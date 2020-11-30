@@ -144,16 +144,17 @@ function App() {
     HttpInterceptors.initInterceptors(history);
     setCurrentRoute(history.location.pathname);
     verifyUserLogin();
-    const unlisten = history.listen((location) => {
+    const unListen = history.listen((location) => {
       setCurrentRoute(location.pathname);
     });
     setIsSetInterceptors(true);
 
     return () => {
       HttpInterceptors.clearInterceptors();
-      unlisten();
+      unListen();
     };
-  }, [history, setCurrentRoute, verifyUserLogin]);
+    // eslint-disable-next-line
+  }, []);
 
   const isPrivateRoute = useCallback(
     () =>

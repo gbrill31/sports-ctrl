@@ -18,7 +18,7 @@ module.exports = {
         to: user.email,
         subject: 'First Login',
         text: 'Click on the link below to start your initial login',
-        html: `<p>Your temp password: <b>${
+        html: `<p>Your first login password: <b>${
           user.tempPassword
         }</b></p><a href=${url.siteURL()}/userlogin>Click here for first login</a>`,
       },
