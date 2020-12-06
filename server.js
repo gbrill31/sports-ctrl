@@ -7,7 +7,12 @@ const logger = require('morgan');
 const dotenv = require('dotenv');
 const passport = require('passport');
 const cors = require('cors');
+const fs = require('fs');
+const genKeyPair = require('./generteKeyPair').genKeyPair;
 
+if (!fs.existsSync(path.join(__dirname, 'rsa_priv.pem'), 'utf8')) {
+  genKeyPair();
+}
 const DB = require('./app/config/database');
 
 require('./app/config/passport')(passport);

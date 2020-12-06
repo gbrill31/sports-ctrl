@@ -16,6 +16,7 @@ function genKeyPair() {
 
   fs.writeFileSync(`${__dirname}/rsa_pub.pem`, keyPair.publicKey);
   fs.writeFileSync(`${__dirname}/rsa_priv.pem`, keyPair.privateKey);
+  console.log('generated key pair');
 }
 
-genKeyPair();
+module.exports = { genKeyPair };
