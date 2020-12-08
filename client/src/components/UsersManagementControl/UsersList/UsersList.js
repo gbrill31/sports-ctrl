@@ -83,7 +83,6 @@ export default function UsersList({ users }) {
   const [singleUser, setSingleUser] = useState();
   const [filter, setFilter] = useState('');
   const [nameSort, setNameSort] = useState('asc');
-  const [hoverId, setHoverId] = useState();
   const [isOpenDeleteUser, setIsOpenDeleteUser] = useState(false);
   const [isOpenAddUser, setIsOpenAddUser] = useState(false);
 
@@ -138,10 +137,6 @@ export default function UsersList({ users }) {
     if (e.target.checked) {
       setSelected(users);
     }
-  };
-
-  const setRowHoverId = (id) => () => {
-    setHoverId(id);
   };
 
   const toggleNameSort = () => setNameSort(nameSort === 'asc' ? 'desc' : 'asc');
@@ -229,12 +224,7 @@ export default function UsersList({ users }) {
           </thead>
           <tbody>
             {getFilteredUsers().map((user) => (
-              <TableRow
-                onMouseEnter={setRowHoverId(user.id)}
-                onMouseLeave={setRowHoverId(null)}
-                selected={isUserSelected(user.id)}
-                key={user.id}
-              >
+              <TableRow selected={isUserSelected(user.id)} key={user.id}>
                 <td>
                   <Input
                     marginBottom="0"
