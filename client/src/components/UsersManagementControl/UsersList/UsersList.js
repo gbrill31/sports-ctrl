@@ -49,6 +49,8 @@ const Table = styled.table`
 `;
 
 const TableRow = styled.tr`
+  position: relative;
+
   &:nth-child(2n) {
     background-color: ${(props) =>
       !props.selected ? props.theme.basic.odd : ''};
@@ -62,17 +64,16 @@ const TableRow = styled.tr`
     `}
 `;
 
-const RowControl = styled.div`
+const RowControl = styled.td`
   position: absolute;
   overflow: hidden;
-  background-color: ${(props) => props.theme.secondary.hover};
+  background-color: ${(props) => props.theme.secondary.color};
   height: 43px;
   width: fit-content;
   min-width: 100px;
   top: 0;
   right: 0;
-  display: ${(props) => (props.show ? '' : 'none')};
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 1px #000 inset;
 `;
 
 export default function UsersList({ users }) {
@@ -223,6 +224,7 @@ export default function UsersList({ users }) {
               <th>Permissions</th>
               <th>Activated</th>
               <th>Created</th>
+              <th>Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -243,6 +245,7 @@ export default function UsersList({ users }) {
                     onChange={userSelection}
                   />
                 </td>
+
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{user.type}</td>
@@ -275,30 +278,26 @@ export default function UsersList({ users }) {
                     </Icon>
                   )}
                 </td>
-                <td>
-                  {moment(user.created_at).format('MMMM Do, YYYY')}
-                  <RowControl
-                    show={!isUserSelected(user.id) && hoverId === user.id}
-                  >
-                    <FlexContainer align="center" justify="space-evenly">
-                      <IconButton relative show onClick={editUser(user)}>
-                        <Icon>
-                          <FontAwesomeIcon icon={faEdit} size="1x" />
-                        </Icon>
-                      </IconButton>
-                      <IconButton
-                        relative
-                        show
-                        color="error"
-                        onClick={deleteSingleUser(user)}
-                      >
-                        <Icon>
-                          <FontAwesomeIcon icon={faTrashAlt} size="1x" />
-                        </Icon>
-                      </IconButton>
-                    </FlexContainer>
-                  </RowControl>
-                </td>
+                <td>{moment(user.created_at).format('MMMM Do, YYYY')}</td>
+                <RowControl>
+                  <FlexContainer align="center" justify="space-evenly">
+                    <IconButton relative show onClick={editUser(user)}>
+                      <Icon>
+                        <FontAwesomeIcon icon={faEdit} size="1x" />
+                      </Icon>
+                    </IconButton>
+                    <IconButton
+                      relative
+                      show
+                      color="error"
+                      onClick={deleteSingleUser(user)}
+                    >
+                      <Icon>
+                        <FontAwesomeIcon icon={faTrashAlt} size="1x" />
+                      </Icon>
+                    </IconButton>
+                  </FlexContainer>
+                </RowControl>
               </TableRow>
             ))}
           </tbody>
