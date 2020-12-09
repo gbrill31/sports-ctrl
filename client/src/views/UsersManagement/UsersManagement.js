@@ -7,6 +7,7 @@ import { FlexContainer, Icon, MainTitle } from '../../styledElements';
 import useDb from '../../hooks/useDb';
 import useUsers from '../../hooks/useUsers';
 import UsersList from '../../components/UsersManagementControl/UsersList/UsersList';
+import { permissions } from '../../services/userPermissions';
 
 const AdminCardContainer = styled.div`
   background-color: ${(props) => props.theme.menu.hover};
@@ -21,7 +22,7 @@ const AdminCardContainer = styled.div`
 `;
 
 export default function UsersManagement() {
-  const { user, permissions } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const { status: dbStatus } = useDb();
 
