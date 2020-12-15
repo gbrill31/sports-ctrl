@@ -31,4 +31,12 @@ export default styled.button`
     css`
       animation: ${fadeIn} 0.15s ease-in;
     `}
+     ${(props) =>
+    props.disabled &&
+    css`
+      color: ${(props) => props.theme.disabled.color};
+      &:hover {
+        cursor: not-allowed;
+      }
+    `}
 `;

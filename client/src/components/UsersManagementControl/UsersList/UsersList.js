@@ -22,6 +22,8 @@ import PromptDialog from '../../PromptDialog/PromptDialog';
 import UserRegisterForm from '../../UserRegisterForm/UserRegisterForm';
 import ModalDialog from '../../ModalDialog/ModalDialog';
 import Table from '../../TableDisplay/TableDisplay';
+import useDb from '../../../hooks/useDb';
+import useUsers from '../../../hooks/useUsers';
 
 const RowControl = styled.div`
   overflow: hidden;
@@ -62,12 +64,16 @@ const tableHeaders = [
   },
 ];
 
-export default function UsersList({ users }) {
+export default function UsersList() {
   const [singleUser, setSingleUser] = useState();
   const [filter, setFilter] = useState('');
   const [isOpenDeleteUser, setIsOpenDeleteUser] = useState(false);
   const [isOpenAddUser, setIsOpenAddUser] = useState(false);
   const [selected, setSelected] = useState([]);
+
+  const { status: dbStatus } = useDb();
+
+  const { data: users } = useUsers(dbStatus === 'success');
 
   const openDeleteUserPrompt = () => setIsOpenDeleteUser(true);
   const closeDeleteUserPrompt = () => setIsOpenDeleteUser(false);
@@ -182,51 +188,57 @@ export default function UsersList({ users }) {
 
   return (
     <>
-      <FlexContainer fullWidth noWrap padding="0">
-        <FlexContainer width="50%" minHeight="40px" align="center">
-          <Button color="success" onClick={openAddUserDialog}>
-            Add Operator
-            <Icon spaceLeft>
-              <FontAwesomeIcon icon={faPlus} size="sm" />
-            </Icon>
-          </Button>
-          <FlexContainer
-            padding="0"
-            align="center"
-            style={{ display: selected.length > 0 ? '' : 'none' }}
-          >
-            <h5 style={{ color: '#fff', margin: '0 5px 0 25px' }}>Selected:</h5>
-            <Button color="error" onClick={openDeleteUserPrompt}>
-              Delete
-              <Icon spaceLeft>
-                <FontAwesomeIcon icon={faTrashAlt} size="sm" />
-              </Icon>
-            </Button>
+      {users?.length > 0 ? (
+        <>
+          <FlexContainer fullWidth noWrap padding="0">
+            <FlexContainer width="50%" minHeight="40px" align="center">
+              <Button color="success" onClick={openAddUserDialog}>
+                Add Operator
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faPlus} size="sm" />
+                </Icon>
+              </Button>
+              <FlexContainer
+                padding="0"
+                align="center"
+                style={{ display: selected.length > 0 ? '' : 'none' }}
+              >
+                <h5 style={{ color: '#fff', margin: '0 5px 0 25px' }}>
+                  Selected:
+                </h5>
+                <Button color="error" onClick={openDeleteUserPrompt}>
+                  Delete
+                  <Icon spaceLeft>
+                    <FontAwesomeIcon icon={faTrashAlt} size="sm" />
+                  </Icon>
+                </Button>
+              </FlexContainer>
+            </FlexContainer>
+            <FlexContainer
+              width="50%"
+              padding="0 10px 0 0"
+              align="center"
+              justify="flex-end"
+            >
+              <FilterListInput
+                width="50%"
+                placeholder="Filter By Name"
+                onChange={setFilter}
+              />
+            </FlexContainer>
           </FlexContainer>
-        </FlexContainer>
-        <FlexContainer
-          width="50%"
-          padding="0 10px 0 0"
-          align="center"
-          justify="flex-end"
-        >
-          <FilterListInput
-            width="50%"
-            placeholder="Filter By Name"
-            onChange={setFilter}
-          />
-        </FlexContainer>
-      </FlexContainer>
-      <FlexContainer fullWidth>
-        <Table
-          items={getFilteredUsers()}
-          headers={tableHeaders}
-          cells={cells}
-          selectable
-          selected={selected}
-          setSelected={setSelected}
-        />
-      </FlexContainer>
+          <FlexContainer fullWidth>
+            <Table
+              items={getFilteredUsers()}
+              headers={tableHeaders}
+              cells={cells}
+              selectable
+              selected={selected}
+              setSelected={setSelected}
+            />
+          </FlexContainer>
+        </>
+      ) : null}
       <PromptDialog
         isOpen={isOpenDeleteUser}
         title="Delete Users"

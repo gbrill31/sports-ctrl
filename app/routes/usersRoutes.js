@@ -7,10 +7,6 @@ usersRouter.get('/', (req, res) => {
   psqlDB
     .findUsersByAdminId(req.user.id)
     .then((users) => {
-      users.forEach((user) => {
-        delete user.salt;
-        delete user.hash;
-      });
       res.status(200).json(users);
     })
     .catch((err) => {

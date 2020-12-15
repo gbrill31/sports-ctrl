@@ -32,13 +32,13 @@ const ItemContainer = styled.div`
     `};
 `;
 
-const TeamName = styled.h1`
+const TeamName = styled.h2`
   margin: 0;
   text-transform: capitalize;
   color: ${(props) => props.theme.primary.color};
 `;
 
-const TeamScore = styled.h1`
+const TeamScore = styled.h2`
   margin: 0;
   font-size: 4rem;
   text-transform: capitalize;

@@ -52,26 +52,6 @@ authRouter.post('/register', (req, res) => {
     });
 });
 
-// passport.authenticate('local', (err, user, info) => {
-//   if (err) {
-//     return next(err);
-//   }
-//   if (!user) {
-//     res.alertError('Try again, Username or Pawwsord are incorrect');
-//     return res.sendStatus(401);
-//   }
-//   delete user.hash;
-//   delete user.salt;
-
-//   req.logIn(user, function (err) {
-//     if (err) {
-//       return next(err);
-//     }
-//     res.alertSuccess('You have logged in successfully');
-//     res.status(200).json(user);
-//   });
-// })(req, res, next);
-
 authRouter.post('/login', (req, res, next) => {
   const { email, password } = req.body;
 
@@ -138,5 +118,25 @@ authRouter.get(
     return res.status(401).json({});
   }
 );
+
+// passport.authenticate('local', (err, user, info) => {
+//   if (err) {
+//     return next(err);
+//   }
+//   if (!user) {
+//     res.alertError('Try again, Username or Pawwsord are incorrect');
+//     return res.sendStatus(401);
+//   }
+//   delete user.hash;
+//   delete user.salt;
+
+//   req.logIn(user, function (err) {
+//     if (err) {
+//       return next(err);
+//     }
+//     res.alertSuccess('You have logged in successfully');
+//     res.status(200).json(user);
+//   });
+// })(req, res, next);
 
 module.exports = authRouter;

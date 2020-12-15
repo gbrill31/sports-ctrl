@@ -421,14 +421,12 @@ const DB_EXPORTS = {
     ]).into('users');
   },
   updateUser: function (user) {
-    return DB('users')
-      .where('id', user.id)
-      .update({
-        name: user.name,
-        email: user.email,
-        salt: user.salt,
-        hash: user.hash,
-      });
+    return DB('users').where('id', user.id).update({
+      name: user.name,
+      email: user.email,
+      salt: user.salt,
+      hash: user.hash,
+    });
   },
   deleteUsers: function (ids) {
     return DB('users').whereIn('id', ids).del();
@@ -490,7 +488,15 @@ const DB_EXPORTS = {
       DB.schema.hasTable('users').then(
         (exists) => {
           if (exists) {
-            DB.select()
+            DB.select(
+              'id',
+              'name',
+              'email',
+              'type',
+              'admin',
+              'firstLogin',
+              'created_at'
+            )
               .table('users')
               .where('admin', id)
               .then(

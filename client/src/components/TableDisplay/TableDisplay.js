@@ -1,11 +1,13 @@
 import {
   faSortAlphaDown,
   faSortAlphaUp,
+  faChevronLeft,
+  faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
-import { Input, Icon } from '../../styledElements';
+import { Input, Icon, IconButton } from '../../styledElements';
 
 const Table = styled.table`
   background-color: ${(props) => props.theme.basic.color};
@@ -21,9 +23,10 @@ const Table = styled.table`
     padding: 5px;
     border-right: 1px solid #000;
     border-bottom: 1px solid #000;
+    font-size: 1.5rem;
+    text-transform: uppercase;
   }
   td {
-    /* padding: 10px; */
     border-right: 1px solid #000;
     position: relative;
   }
@@ -45,6 +48,15 @@ const TableRow = styled.tr`
     `}
 `;
 
+const TablePageControl = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: baseline;
+  justify-content: center;
+  color: #fff;
+  padding: 10px;
+`;
+
 export default function TableDisplay({
   items,
   headers,
@@ -52,11 +64,15 @@ export default function TableDisplay({
   selectable,
   selected,
   setSelected,
+  cellsStyle = {},
+  maxRows = 10,
 }) {
   const globalCheckboxRef = useRef();
 
-  const [sortOrder, setSortOrder] = useState('asc');
+  const [sortOrder, setSortOrder] = useState('desc');
   const [orderBy, setOrderBy] = useState('');
+  const [rowsIndex, setRowsIndex] = useState(0);
+  const [rowsPage, setRowsPage] = useState(1);
 
   useEffect(() => {
     if (globalCheckboxRef.current) {
@@ -83,7 +99,7 @@ export default function TableDisplay({
   };
 
   const isItemSelected = (id) =>
-    selected.find((user) => user.id === id) !== undefined;
+    selected.find((item) => item.id === id) !== undefined;
 
   const toggleSelectAll = (e) => {
     setSelected([]);
@@ -92,12 +108,16 @@ export default function TableDisplay({
     }
   };
 
+  const getRowsByIndex = () => {
+    return items.slice(rowsIndex, rowsIndex + maxRows);
+  };
+
   const getSortedItems = () => {
-    return items.sort((userA, userB) => {
+    return getRowsByIndex().sort((itemA, itemB) => {
       if (sortOrder === 'asc') {
-        return userA[orderBy] > userB[orderBy] ? -1 : 1;
+        return itemA[orderBy] > itemB[orderBy] ? -1 : 1;
       } else {
-        return userA[orderBy] > userB[orderBy] ? 1 : -1;
+        return itemA[orderBy] > itemB[orderBy] ? 1 : -1;
       }
     });
   };
@@ -107,7 +127,20 @@ export default function TableDisplay({
     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
-  return (
+  const getRowsMaxIndex = () =>
+    rowsIndex + maxRows < items.length ? maxRows : items.length;
+
+  const prevPage = () => {
+    setRowsIndex(rowsIndex - maxRows);
+    setRowsPage(rowsPage - 1);
+  };
+
+  const nextPage = () => {
+    setRowsIndex(rowsIndex + getRowsMaxIndex());
+    setRowsPage(rowsPage + 1);
+  };
+
+  return items?.length > 0 ? (
     <>
       <Table cellPadding="0" cellSpacing="0">
         <thead>
@@ -133,7 +166,7 @@ export default function TableDisplay({
                 {header.title}
                 {header.sortable && orderBy === header.title.toLowerCase() ? (
                   <Icon spaceLeft className="sortIcon">
-                    {sortOrder === 'asc' ? (
+                    {sortOrder !== 'asc' ? (
                       <FontAwesomeIcon icon={faSortAlphaDown} size="sm" />
                     ) : (
                       <FontAwesomeIcon icon={faSortAlphaUp} size="sm" />
@@ -145,8 +178,11 @@ export default function TableDisplay({
           </tr>
         </thead>
         <tbody>
-          {getSortedItems().map((item) => (
-            <TableRow selected={isItemSelected(item.id)} key={item.id}>
+          {getSortedItems().map((item, idx) => (
+            <TableRow
+              selected={selectable ? isItemSelected(item.id) : false}
+              key={item.id}
+            >
               {selectable ? (
                 <td>
                   <Input
@@ -159,17 +195,54 @@ export default function TableDisplay({
                   />
                 </td>
               ) : null}
-              {cells.map((cell, idx) => (
-                <td key={idx} style={cell.style || {}}>
-                  {cell.component
-                    ? cell.component(item[cell.key] ? item[cell.key] : item)
-                    : item[cell.key]}
-                </td>
-              ))}
+              {cells.map((cell, idx) => {
+                return (
+                  <td
+                    key={idx}
+                    style={
+                      cellsStyle
+                        ? Object.assign({}, cellsStyle, cell.style)
+                        : cellsStyle
+                    }
+                  >
+                    {cell.component
+                      ? cell.component(item[cell.key], item)
+                      : item[cell.key]}
+                  </td>
+                );
+              })}
             </TableRow>
           ))}
         </tbody>
       </Table>
+      {items.length > maxRows ? (
+        <TablePageControl>
+          <span style={{ marginRight: '10px' }}>Page: {rowsPage}</span>
+          <IconButton
+            onClick={prevPage}
+            disabled={rowsIndex <= 0}
+            relative
+            show
+          >
+            <Icon>
+              <FontAwesomeIcon icon={faChevronLeft} size="1x" />
+            </Icon>
+          </IconButton>
+          <span style={{ margin: '0 10px' }}>
+            {rowsIndex + 1} - {getRowsMaxIndex()} of {items.length}
+          </span>
+          <IconButton
+            onClick={nextPage}
+            disabled={getRowsMaxIndex() >= items.length}
+            relative
+            show
+          >
+            <Icon>
+              <FontAwesomeIcon icon={faChevronRight} size="1x" />
+            </Icon>
+          </IconButton>
+        </TablePageControl>
+      ) : null}
     </>
-  );
+  ) : null;
 }
