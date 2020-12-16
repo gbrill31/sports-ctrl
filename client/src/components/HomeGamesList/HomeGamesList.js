@@ -41,6 +41,7 @@ const tableHeaders = [
   {
     id: 6,
     title: 'Played',
+    sortKey: 'created_at',
     sortable: true,
   },
 ];

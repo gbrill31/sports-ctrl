@@ -56,6 +56,7 @@ const tableHeaders = [
   {
     id: 7,
     title: 'Created',
+    sortKey: 'created_at',
     sortable: true,
   },
   {

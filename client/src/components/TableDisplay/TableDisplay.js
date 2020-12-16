@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import styled, { css } from 'styled-components';
 import { Input, Icon, IconButton } from '../../styledElements';
+import moment from 'moment';
 
 const Table = styled.table`
   background-color: ${(props) => props.theme.basic.color};
@@ -71,7 +72,7 @@ export default function TableDisplay({
 
   const [sortOrder, setSortOrder] = useState('desc');
   const [orderBy, setOrderBy] = useState('');
-  const [rowsIndex, setRowsIndex] = useState(0);
+  const [itemsIndex, setItemsIndex] = useState(0);
   const [rowsPage, setRowsPage] = useState(1);
 
   useEffect(() => {
@@ -109,34 +110,46 @@ export default function TableDisplay({
   };
 
   const getRowsByIndex = () => {
-    return items.slice(rowsIndex, rowsIndex + maxRows);
+    return items.slice(itemsIndex, itemsIndex + maxRows);
   };
+
+  function isValidDate(d) {
+    const test = new Date(d);
+    return test instanceof Date && !isNaN(test);
+  }
 
   const getSortedItems = () => {
     return getRowsByIndex().sort((itemA, itemB) => {
       if (sortOrder === 'asc') {
-        return itemA[orderBy] > itemB[orderBy] ? -1 : 1;
+        if (!isValidDate(itemA[orderBy]))
+          return itemA[orderBy] > itemB[orderBy] ? -1 : 1;
+        if (isValidDate(itemA[orderBy]))
+          return moment(itemA[orderBy]).isAfter(itemB[orderBy]) ? -1 : 1;
       } else {
-        return itemA[orderBy] > itemB[orderBy] ? 1 : -1;
+        if (!isValidDate(itemA[orderBy]))
+          return itemA[orderBy] > itemB[orderBy] ? 1 : -1;
+        if (isValidDate(itemA[orderBy]))
+          return moment(itemA[orderBy]).isBefore(itemB[orderBy]) ? -1 : 1;
       }
     });
   };
 
-  const toggleSort = (orderBy) => () => {
-    setOrderBy(orderBy.toLowerCase());
-    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  const toggleSort = (newOrderBy) => () => {
+    setOrderBy(newOrderBy.toLowerCase());
+    if (newOrderBy.toLowerCase() === orderBy)
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
   };
 
   const getRowsMaxIndex = () =>
-    rowsIndex + maxRows < items.length ? maxRows : items.length;
+    itemsIndex + maxRows < items.length ? maxRows : items.length;
 
   const prevPage = () => {
-    setRowsIndex(rowsIndex - maxRows);
+    setItemsIndex(itemsIndex - maxRows);
     setRowsPage(rowsPage - 1);
   };
 
   const nextPage = () => {
-    setRowsIndex(rowsIndex + getRowsMaxIndex());
+    setItemsIndex(itemsIndex + getRowsMaxIndex());
     setRowsPage(rowsPage + 1);
   };
 
@@ -161,10 +174,16 @@ export default function TableDisplay({
               <th
                 key={header.id}
                 className={header.sortable ? 'sortable' : ''}
-                onClick={header.sortable ? toggleSort(header.title) : () => {}}
+                onClick={
+                  header.sortable
+                    ? toggleSort(header.sortKey || header.title)
+                    : () => {}
+                }
               >
                 {header.title}
-                {header.sortable && orderBy === header.title.toLowerCase() ? (
+                {(header.sortable &&
+                  orderBy === header.sortKey?.toLowerCase()) ||
+                orderBy === header.title.toLowerCase() ? (
                   <Icon spaceLeft className="sortIcon">
                     {sortOrder !== 'asc' ? (
                       <FontAwesomeIcon icon={faSortAlphaDown} size="sm" />
@@ -217,10 +236,12 @@ export default function TableDisplay({
       </Table>
       {items.length > maxRows ? (
         <TablePageControl>
-          <span style={{ marginRight: '10px' }}>Page: {rowsPage}</span>
+          <span style={{ marginRight: '10px' }}>
+            Page: {rowsPage} of {Math.ceil(items.length / maxRows)}
+          </span>
           <IconButton
             onClick={prevPage}
-            disabled={rowsIndex <= 0}
+            disabled={itemsIndex <= 0}
             relative
             show
           >
@@ -229,7 +250,7 @@ export default function TableDisplay({
             </Icon>
           </IconButton>
           <span style={{ margin: '0 10px' }}>
-            {rowsIndex + 1} - {getRowsMaxIndex()} of {items.length}
+            {itemsIndex + 1} - {getRowsMaxIndex()} of {items.length}
           </span>
           <IconButton
             onClick={nextPage}
