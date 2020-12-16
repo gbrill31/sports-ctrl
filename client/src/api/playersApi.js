@@ -5,7 +5,7 @@ export const getAllPlayers = async () => {
   return data;
 };
 
-export const getPlayersByTeamId = async (key, id) => {
+export const getPlayersByTeamId = async (id) => {
   const { data } = await axios.get(`/api/players/team?id=${id}`);
   return data;
 };

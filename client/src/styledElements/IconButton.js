@@ -10,12 +10,11 @@ const fadeIn = keyframes`
 `;
 export default styled.button`
   position: ${(props) => (props.relative ? 'relative' : 'absolute')};
-
   background: transparent;
   cursor: pointer;
   border: none;
   color: ${(props) => props.theme[props.color]?.color || props.color || '#fff'};
-  padding: 5px;
+  padding: ${(props) => props.padding || '5px'};
   display: ${(props) => (props.show ? 'inherit' : 'none')};
   z-index: 99;
 

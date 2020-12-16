@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query';
-import { connectDB } from '../api';
+import { connectDB } from '../../api';
 
 export default function useDb() {
   return useQuery('dbConnection', connectDB, {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import useSaveTeam from '../../../hooks/useSaveTeam';
+import useSaveTeam from '../../../hooks/reactQuery/useSaveTeam';
 import {
   Input,
   FlexContainer,

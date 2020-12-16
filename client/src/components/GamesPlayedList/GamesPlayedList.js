@@ -1,16 +1,14 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import moment from 'moment';
-import { useHistory } from 'react-router-dom';
 
-import { MainTitle } from '../../styledElements';
+import { SubTitle } from '../../styledElements';
 
 import ComponentLoader from '../ComponentLoader/ComponentLoader';
-import HomeGameListItem from '../HomeGameListItem/HomeGameListItem';
-import useGames from '../../hooks/useGames';
-import useDb from '../../hooks/useDb';
+import useGames from '../../hooks/reactQuery/useGames';
 import { useSelector } from 'react-redux';
 import TableDisplay from '../TableDisplay/TableDisplay';
 import styled from 'styled-components';
+import { useQueryClient } from 'react-query';
 
 const tableHeaders = [
   {
@@ -50,31 +48,25 @@ const WinnerField = styled.div`
   font-weight: ${(props) => (props.winner ? 'bold' : '')};
 `;
 
-export default function HomeGamesList() {
-  const history = useHistory();
-
-  const [activeGame, setActiveGame] = useState(null);
+export default function GamesPlayedList() {
+  // const [activeGame, setActiveGame] = useState(null);
 
   const { user } = useSelector((state) => state.auth);
+  const queryClient = useQueryClient();
 
-  const { status: dbStatus } = useDb();
   const { status, data: games, isFetching } = useGames(
-    dbStatus === 'success',
+    queryClient.getQueryData('dbConnection') !== undefined,
     user.id
   );
 
-  useEffect(() => {
-    if (games?.length) {
-      const active = games.find((game) => game.active);
-      setActiveGame(active);
-    }
-  }, [games]);
+  // useEffect(() => {
+  //   if (games?.length) {
+  //     const active = games.find((game) => game.active);
+  //     setActiveGame(active);
+  //   }
+  // }, [games]);
 
   const isGamesLoading = () => status === 'loading' || isFetching;
-
-  const goToActiveGame = () => {
-    history.push('/game');
-  };
 
   const getGamesWithWinners = () => {
     if (games) {
@@ -132,13 +124,7 @@ export default function HomeGamesList() {
   return (
     <>
       <ComponentLoader loading={isGamesLoading()}>
-        {activeGame && activeGame.id && (
-          <>
-            <MainTitle>Active Game</MainTitle>
-            <HomeGameListItem goToActive={goToActiveGame} game={activeGame} />
-          </>
-        )}
-        <MainTitle>Games Played</MainTitle>
+        <SubTitle>Games Played</SubTitle>
         <TableDisplay
           headers={tableHeaders}
           cells={cells}

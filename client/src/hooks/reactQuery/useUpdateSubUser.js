@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { useMutation, queryCache } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import shortid from 'shortid';
-import { updateUser } from '../api';
+import { updateUser } from '../../api';
 
 export default function useUpdateSubUser(cb) {
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState();
-  const [updateSubUser] = useMutation((user) => updateUser(user), {
-    onMutate: (user) => {
+  const updateSubUser = useMutation((user) => updateUser(user), {
+    onMutate: async (user) => {
       setStatus('pending');
-      queryCache.cancelQueries('users');
+      await queryClient.cancelQueries('users');
 
-      const previousValue = queryCache.getQueryData('users');
+      const previousValue = queryClient.getQueryData('users');
 
-      queryCache.setQueryData('users', (oldUsers) => {
+      queryClient.setQueryData('users', (oldUsers) => {
         const users = user.id
           ? [...oldUsers.filter((u) => u.id !== user.id)]
           : [...oldUsers];
@@ -26,14 +27,15 @@ export default function useUpdateSubUser(cb) {
     },
     onError: (err, variables, previousValue) => {
       setStatus('failed');
-      return queryCache.setQueryData('users', previousValue);
+      return queryClient.setQueryData('users', previousValue);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries('users');
       setStatus('success');
       if (cb) cb();
     },
-    onSettled: () => queryCache.refetchQueries('users'),
+    onSettled: () => queryClient.refetchQueries('users'),
   });
 
-  return { updateSubUser, status };
+  return { updateSubUser: updateSubUser.mutate, status };
 }

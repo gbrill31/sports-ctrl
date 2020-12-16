@@ -1,41 +1,50 @@
 import React, { useState } from 'react';
-import { faBasketballBall } from '@fortawesome/free-solid-svg-icons';
+import { faBasketballBall, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AutoCompleteInput from '../AutoCompleteInput/AutoCompleteInput';
-import { FlexContainer, MainTitle, Button, Icon } from '../../styledElements';
-import useVenues from '../../hooks/useVenues';
-import useTeams from '../../hooks/useTeams';
-import useDb from '../../hooks/useDb';
-import useActiveGame from '../../hooks/useActiveGame';
-import useCreateGame from '../../hooks/useCreateGame';
+import {
+  FlexContainer,
+  Button,
+  Icon,
+  SubTitle,
+  GridContainer,
+} from '../../styledElements';
+import useVenues from '../../hooks/reactQuery/useVenues';
+import useTeams from '../../hooks/reactQuery/useTeams';
+import useActiveGame from '../../hooks/reactQuery/useActiveGame';
+import useCreateGame from '../../hooks/reactQuery/useCreateGame';
+import { useQueryClient } from 'react-query';
 
-export default function CreateGameForm() {
+export default function CreateGameForm({ cancelNewGame }) {
   const [homeTeam, setHomeTeam] = useState(null);
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
 
-  const { status: dbStatus } = useDb();
+  const queryClient = useQueryClient();
 
   const {
-    status: activeGameStatus,
+    isLoading: isActiveGameLoading,
     // data: activeGame,
     isFetching: isActiveGameFetching,
-  } = useActiveGame(dbStatus === 'success');
+  } = useActiveGame(queryClient.getQueryData('dbConnection') !== undefined);
 
-  const isGameLoading = () =>
-    activeGameStatus === 'loading' || isActiveGameFetching;
+  const isGameLoading = () => isActiveGameLoading || isActiveGameFetching;
 
   const {
-    status: venuesStatus,
+    isLoading: isVenuesLoading,
     data: venues,
     isFetching: isVenuesFetching,
-  } = useVenues(dbStatus === 'success');
+  } = useVenues(queryClient.getQueryData('dbConnection') !== undefined);
+
+  const venuesLoading = () => isVenuesLoading || isVenuesFetching;
 
   const {
-    status: teamsStatus,
+    isLoading: isTeamsLoading,
     data: teams,
     isFetching: isTeamsFetching,
-  } = useTeams(dbStatus === 'success');
+  } = useTeams(queryClient.getQueryData('dbConnection') !== undefined);
+
+  const teamsLoading = () => isTeamsLoading || isTeamsFetching;
 
   const createGame = useCreateGame();
 
@@ -75,52 +84,79 @@ export default function CreateGameForm() {
         align="center"
         justify="center"
       >
-        <MainTitle align="center">Select Teams and Venue</MainTitle>
-        <FlexContainer align="center" justify="center" noWrap>
-          <AutoCompleteInput
-            id="home"
-            color="#fff"
-            spaceLeft
-            selectedValue={homeTeam ? homeTeam.getName() : ''}
-            options={getTeamsSelectionList(awayTeam)}
-            getOptionLabel={(option) => option.name}
-            placeholder="Select Home Team"
-            onSelection={selectHomeTeam}
-            loading={teamsStatus === 'loading' || isTeamsFetching}
-          />
-          <MainTitle>VS</MainTitle>
-          <AutoCompleteInput
-            id="away"
-            color="#fff"
-            spaceLeft
-            selectedValue={awayTeam ? awayTeam.getName() : ''}
-            options={getTeamsSelectionList(homeTeam)}
-            getOptionLabel={(option) => option.name}
-            placeholder="Select Away Team"
-            onSelection={selectAwayTeam}
-            loading={teamsStatus === 'loading' || isTeamsFetching}
-          />
-        </FlexContainer>
-        <MainTitle align="center" uppercase>
-          Played At
-        </MainTitle>
-        <AutoCompleteInput
-          id="vanues"
-          color="#fff"
-          spaceLeft
-          selectedValue={venue ? venue.name : ''}
-          options={venues}
-          getOptionLabel={(option) => option.name}
-          placeholder="Select Vanue"
-          onSelection={selectVenue}
-          loading={venuesStatus === 'loading' || isVenuesFetching}
-        />
-        <Button color="success" onClick={startNewGame} saving={isGameLoading()}>
-          {isGameLoading() ? 'Starting...' : 'Start Game'}
-          <Icon spaceLeft>
-            <FontAwesomeIcon icon={faBasketballBall} size="sm" />
-          </Icon>
-        </Button>
+        <GridContainer columnsSpread="50% 50%" width="100%">
+          <div>
+            <SubTitle align="center">Select Teams and Venue</SubTitle>
+            <FlexContainer align="center" justify="center" noWrap>
+              <AutoCompleteInput
+                id="home"
+                color="#fff"
+                spaceLeft
+                selectedValue={homeTeam ? homeTeam.getName() : ''}
+                options={getTeamsSelectionList(awayTeam)}
+                getOptionLabel={(option) => option.name}
+                placeholder="Select Home Team"
+                onSelection={selectHomeTeam}
+                loading={teamsLoading()}
+              />
+              <SubTitle>VS</SubTitle>
+              <AutoCompleteInput
+                id="away"
+                color="#fff"
+                spaceLeft
+                selectedValue={awayTeam ? awayTeam.getName() : ''}
+                options={getTeamsSelectionList(homeTeam)}
+                getOptionLabel={(option) => option.name}
+                placeholder="Select Away Team"
+                onSelection={selectAwayTeam}
+                loading={teamsLoading()}
+              />
+            </FlexContainer>
+          </div>
+          <div>
+            <SubTitle align="center" uppercase>
+              Played At
+            </SubTitle>
+            <FlexContainer align="center" justify="center" noWrap>
+              <AutoCompleteInput
+                id="vanues"
+                color="#fff"
+                spaceLeft
+                selectedValue={venue ? venue.name : ''}
+                options={venues}
+                getOptionLabel={(option) => option.name}
+                placeholder="Select Vanue"
+                onSelection={selectVenue}
+                loading={venuesLoading()}
+              />
+            </FlexContainer>
+          </div>
+          <div
+            style={{
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+            }}
+          >
+            <FlexContainer align="center" justify="center" noWrap fullWidth>
+              <Button
+                color="success"
+                onClick={startNewGame}
+                saving={isGameLoading()}
+              >
+                {isGameLoading() ? 'Starting...' : 'Start Game'}
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faBasketballBall} size="sm" />
+                </Icon>
+              </Button>
+              <Button color="error" onClick={cancelNewGame}>
+                Cancel
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faTimes} size="sm" />
+                </Icon>
+              </Button>
+            </FlexContainer>
+          </div>
+        </GridContainer>
       </FlexContainer>
     </>
   );

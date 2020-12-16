@@ -1,8 +1,11 @@
 import { useQuery } from 'react-query';
-import { getActiveGame } from '../api';
+import { getActiveGame } from '../../api';
 
 export default function useActiveGame(isAllowed) {
-  return useQuery(isAllowed && 'active-game', getActiveGame, {
+  return useQuery({
+    queryKey: 'active-game',
+    queryFn: getActiveGame,
+    enabled: isAllowed,
     refetchOnWindowFocus: false,
     retry: false,
   });

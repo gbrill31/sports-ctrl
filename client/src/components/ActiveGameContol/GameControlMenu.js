@@ -26,6 +26,7 @@ import {
   setGameClockStart,
   setAttackClockStart,
   resetTeamFouls,
+  setEndGamePrompt,
 } from '../../actions';
 
 import {
@@ -47,7 +48,7 @@ const MenuContainer = styled.div`
   ${(props) =>
     props.show &&
     css`
-      max-height: 500px;
+      max-height: 900px;
       max-width: 500px;
     `}
 `;
@@ -129,6 +130,11 @@ export default function GameControlMenu() {
   );
   const { isAttackClockRunning, startTime: attackClockStartTime } = useSelector(
     (state) => state.attackClock
+  );
+
+  const openEndGamePrompt = useCallback(
+    () => dispatch(setEndGamePrompt(true)),
+    [dispatch]
   );
 
   useEffect(() => {
@@ -450,6 +456,21 @@ export default function GameControlMenu() {
               Reset Teams Fouls
               <Icon spaceLeft>
                 <FontAwesomeIcon icon={faHistory} size="sm" />
+              </Icon>
+            </Button>
+          </MenuSection>
+          <MenuSection show={isShowMenu}>
+            <h3>Game</h3>
+            <Button
+              noRaduis
+              margin="0"
+              fullWidth
+              color="error"
+              onClick={openEndGamePrompt}
+            >
+              End Game
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faHandPaper} size="sm" />
               </Icon>
             </Button>
           </MenuSection>

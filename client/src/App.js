@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { HttpInterceptors } from './utils';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import Home from './views/Home/Home';
 
 import HeaderNav from './components/HeaderNav/HeaderNav';
@@ -16,6 +17,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 
 import { setRouteName, verifyLogin } from './actions';
 import UpdatePassword from './views/UpdatePassword/UpdatePassword';
+
+const queryClient = new QueryClient();
 
 const theme = {
   primary: {
@@ -174,20 +177,26 @@ function App() {
     <ThemeProvider theme={theme}>
       <AppGlobalStyle />
       {isSetInterceptors && isLoggedInCheck && (
-        <AppContainer>
-          <HeaderNav />
-          <AppMainContent>
-            <Switch>
-              <Route exact path="/usersignup" render={() => <RegisterUser />} />
-              <Route exact path="/userlogin" render={() => <UserLogin />} />
+        <QueryClientProvider client={queryClient}>
+          <AppContainer>
+            <HeaderNav />
+            <AppMainContent>
+              <Switch>
+                <Route
+                  exact
+                  path="/usersignup"
+                  render={() => <RegisterUser />}
+                />
+                <Route exact path="/userlogin" render={() => <UserLogin />} />
 
-              <PrivateRoute
-                path="/"
-                component={user && user.firstLogin ? UpdatePassword : Home}
-              />
-            </Switch>
-          </AppMainContent>
-        </AppContainer>
+                <PrivateRoute
+                  path="/"
+                  component={user && user.firstLogin ? UpdatePassword : Home}
+                />
+              </Switch>
+            </AppMainContent>
+          </AppContainer>
+        </QueryClientProvider>
       )}
     </ThemeProvider>
   );

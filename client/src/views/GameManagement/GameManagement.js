@@ -8,8 +8,7 @@ import GameControlMenu from '../../components/ActiveGameContol/GameControlMenu';
 import GameStateControl from '../../components/ActiveGameContol/GameStateControl';
 import SetPlayerStats from '../../components/ActiveGameContol/SetPlayerStats/SetPlayerStats';
 import PromptDialog from '../../components/PromptDialog/PromptDialog';
-import useDb from '../../hooks/useDb';
-import useActiveGame from '../../hooks/useActiveGame';
+import useActiveGame from '../../hooks/reactQuery/useActiveGame';
 
 import { GridContainer } from '../../styledElements';
 
@@ -21,9 +20,11 @@ import {
   setIsPlayerStatsDialog,
 } from '../../actions';
 import ModalDialog from '../../components/ModalDialog/ModalDialog';
+import { useQueryClient } from 'react-query';
 
 export default function GameManagement() {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const {
     homeTeam,
@@ -39,13 +40,11 @@ export default function GameManagement() {
     selectedPlayer,
   } = useSelector((state) => state.game);
 
-  const { status: dbStatus } = useDb();
-
   const {
     status: activeGameStatus,
     data: activeGame,
     isFetching: isActiveGameFetching,
-  } = useActiveGame(dbStatus === 'success');
+  } = useActiveGame(queryClient.getQueryData('dbConnection') !== undefined);
 
   const isGameLoading = () => {
     return activeGameStatus === 'loading' || isActiveGameFetching;

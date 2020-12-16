@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
-import useFormInput from "../../../hooks/useFormInput";
-import useSaveTeam from "../../../hooks/useSaveTeam";
-import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
+import React, { useState, useEffect, useCallback } from 'react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FlexContainer, Button, Icon, Input } from '../../../styledElements';
+import useFormInput from '../../../hooks/useFormInput';
+import useSaveTeam from '../../../hooks/reactQuery/useSaveTeam';
+import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -24,7 +24,7 @@ const ItemContainer = styled.div`
     box-shadow: ${(props) =>
       !props.selected
         ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
-        : ""};
+        : ''};
   }
 
   ${(props) =>
@@ -132,7 +132,7 @@ function TeamManagementListItem({
           {isEditTeam ? (
             <FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Name:</label>
+                <label style={{ width: '10px' }}>Name:</label>
                 <Input
                   autoFocus
                   required
@@ -141,7 +141,7 @@ function TeamManagementListItem({
                   id="name"
                   type="text"
                   placeholder={`Enter Team Name${
-                    !teamName.isValid ? " *" : ""
+                    !teamName.isValid ? ' *' : ''
                   }`}
                   value={teamName.value}
                   onChange={teamName.onChange}
@@ -149,7 +149,7 @@ function TeamManagementListItem({
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>League:</label>
+                <label style={{ width: '10px' }}>League:</label>
                 <Input
                   required
                   ref={teamLeague.ref}
@@ -157,7 +157,7 @@ function TeamManagementListItem({
                   id="league"
                   type="text"
                   placeholder={`Enter League Name${
-                    !teamLeague.isValid ? " *" : ""
+                    !teamLeague.isValid ? ' *' : ''
                   }`}
                   value={teamLeague.value}
                   onChange={teamLeague.onChange}
@@ -165,7 +165,7 @@ function TeamManagementListItem({
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>City:</label>
+                <label style={{ width: '10px' }}>City:</label>
                 <Input
                   required
                   spaceLeft
@@ -174,14 +174,14 @@ function TeamManagementListItem({
                   id="city"
                   type="text"
                   placeholder={`Enter Team City${
-                    !teamCity.isValid ? " *" : ""
+                    !teamCity.isValid ? ' *' : ''
                   }`}
                   value={teamCity.value}
                   onChange={teamCity.onChange}
                 />
               </FlexContainer>
               <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: "10px" }}>Country:</label>
+                <label style={{ width: '10px' }}>Country:</label>
                 <Input
                   required
                   ref={teamCountry.ref}
@@ -189,7 +189,7 @@ function TeamManagementListItem({
                   id="country"
                   type="text"
                   placeholder={`Enter Team Country${
-                    !teamCountry.isValid ? " *" : ""
+                    !teamCountry.isValid ? ' *' : ''
                   }`}
                   value={teamCountry.value}
                   onChange={teamCountry.onChange}
@@ -205,7 +205,7 @@ function TeamManagementListItem({
           )}
         </FlexContainer>
         <ItemEditActions active={isEditTeam}>
-          <FlexContainer justify={isEditTeam ? "flex-end" : false}>
+          <FlexContainer justify={isEditTeam ? 'flex-end' : false}>
             {isEditTeam && (
               <>
                 <Button

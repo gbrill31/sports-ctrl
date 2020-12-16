@@ -16,17 +16,19 @@ import PromptDialog from '../../PromptDialog/PromptDialog';
 import NewPlayerForm from '../NewPlayerForm/NewPlayerForm';
 import ComponentLoader from '../../ComponentLoader/ComponentLoader';
 import FilterListInput from '../../FilterListInput/FilterListInput';
-import usePlayers from '../../../hooks/usePlayers';
-import useDeletePlayer from '../../../hooks/useDeletePlayer';
+import usePlayers from '../../../hooks/reactQuery/usePlayers';
+import useDeletePlayer from '../../../hooks/reactQuery/useDeletePlayer';
 import ModalDialog from '../../ModalDialog/ModalDialog';
 
 export default function PlayersManagementList() {
   const selectedTeam = useSelector((state) => state.teams.selected);
 
-  const { status, data: players, isFetching } = usePlayers(
-    selectedTeam,
+  const { isLoading, data: players, isFetching } = usePlayers(
+    selectedTeam !== null,
     selectedTeam?.getId()
   );
+
+  const isPlayersLoading = () => isLoading || isFetching;
 
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isAddPlayersDialog, setIsAddPlayersDialog] = useState(false);
@@ -61,10 +63,8 @@ export default function PlayersManagementList() {
 
   return (
     <>
-      <FlexContainer
-        minWidth={status === 'loading' || !players ? '50vw' : false}
-      >
-        <ComponentLoader loading={status === 'loading'} size={100}>
+      <FlexContainer minWidth={isPlayersLoading() || !players ? '50vw' : false}>
+        <ComponentLoader loading={isPlayersLoading()} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0" capitalize>
               {selectedTeam ? `${selectedTeam.getName()} Players` : ''}

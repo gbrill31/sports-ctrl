@@ -14,8 +14,8 @@ import {
 } from '../../styledElements';
 
 import { userSignup } from '../../actions';
-import useRegisterSubUser from '../../hooks/useRegisterSubUser';
-import useUpdateSubUser from '../../hooks/useUpdateSubUser';
+import useRegisterSubUser from '../../hooks/reactQuery/useRegisterSubUser';
+import useUpdateSubUser from '../../hooks/reactQuery/useUpdateSubUser';
 
 export default function UserRegisterForm({
   isSignupLink = false,

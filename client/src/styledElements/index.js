@@ -10,6 +10,7 @@ import Divider from './Divider';
 import Link from './Link';
 import FormError from './FormError';
 import Notification from './Notification';
+import SubTitle from './SubTitle';
 
 export {
   MainTitle,
@@ -24,4 +25,5 @@ export {
   Link,
   FormError,
   Notification,
+  SubTitle,
 };

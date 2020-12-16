@@ -10,7 +10,7 @@ import {
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
-import useSavePlayers from '../../../hooks/useSavePlayers';
+import useSavePlayers from '../../../hooks/reactQuery/useSavePlayers';
 
 export default function NewPlayerForm({ cb }) {
   const [players, setPlayers] = useState([]);

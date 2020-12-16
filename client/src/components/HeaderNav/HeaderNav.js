@@ -1,20 +1,12 @@
-import React, { useCallback, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-// import { CircularProgress } from '@material-ui/core';
-import {
-  faCheck,
-  // faDatabase,
-  faPlus,
-  faChevronLeft,
-} from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
 import { Button, Icon } from '../../styledElements';
-import useDb from '../../hooks/useDb';
-import useActiveGame from '../../hooks/useActiveGame';
+import useDb from '../../hooks/reactQuery/useDb';
 
-import { setEndGamePrompt } from '../../actions';
 import UserMenu from '../UserMenu/UserMenu';
 import HeaderLogo from '../HeaderLogo/HeaderLogo';
 
@@ -32,37 +24,14 @@ const NavRootContainer = styled.header`
 
 function HeaderNav() {
   const history = useHistory();
-  const dispatch = useDispatch();
 
   const { currentRoute } = useSelector((state) => state.routes);
 
   const { user, isLoggedIn } = useSelector((state) => state.auth);
 
-  const {
-    status: dbStatus,
-    // failureCount,
-    // refetch: connectDb,
-    // error: dbError,
-  } = useDb();
-  const {
-    status: activeGameStatus,
-    data: activeGame,
-    refetch: fetchActiveGame,
-  } = useActiveGame(dbStatus === 'success' && isLoggedIn);
-
-  useEffect(() => {
-    if (currentRoute === '/') {
-      fetchActiveGame();
-    }
-  }, [currentRoute, fetchActiveGame]);
+  const { status: dbStatus } = useDb();
 
   const isDbConnected = () => dbStatus === 'success';
-  // const isDbConnecting = () => dbStatus === 'loading';
-
-  const openEndGamePrompt = useCallback(
-    () => dispatch(setEndGamePrompt(true)),
-    [dispatch]
-  );
 
   const goToRoute = (route) => () => history.push(route);
 
@@ -73,18 +42,7 @@ function HeaderNav() {
         {isLoggedIn && !user.firstLogin && isDbConnected() ? (
           <>
             <UserMenu />
-            {currentRoute === '/' ? (
-              <>
-                {!activeGame && activeGameStatus === 'success' ? (
-                  <Button color="success" onClick={goToRoute('/creategame')}>
-                    Start A New Game
-                    <Icon spaceLeft>
-                      <FontAwesomeIcon icon={faPlus} size="sm" />
-                    </Icon>
-                  </Button>
-                ) : null}
-              </>
-            ) : (
+            {currentRoute !== '/' && (
               <>
                 <Button color="secondary" onClick={goToRoute('/')}>
                   <Icon spaceRight>
@@ -92,19 +50,6 @@ function HeaderNav() {
                   </Icon>
                   Home
                 </Button>
-
-                {currentRoute === '/game' && activeGame && (
-                  <Button
-                    justifyRight
-                    color="error"
-                    onClick={openEndGamePrompt}
-                  >
-                    End Game
-                    <Icon spaceLeft>
-                      <FontAwesomeIcon icon={faCheck} size="sm" />
-                    </Icon>
-                  </Button>
-                )}
               </>
             )}
           </>
@@ -115,40 +60,3 @@ function HeaderNav() {
 }
 
 export default HeaderNav;
-
-// const getConnectBtnColor = () => {
-//   return !dbError || isDbConnecting()
-//     ? isDbConnected()
-//       ? 'success'
-//       : 'secondary'
-//     : 'error';
-// };
-// const getConnectBtnText = () => {
-//   return isDbConnecting()
-//     ? `Connecting, Attempts ${failureCount}`
-//     : isDbConnected()
-//     ? 'DB Connected'
-//     : !dbError
-//     ? 'Connect to Database'
-//     : 'Connection Failed, Click To try Again';
-// };
-
-/* <Button
-        color={getConnectBtnColor()}
-        // disabled={isDbConnecting()}
-        onClick={connectDb}
-        // isSaving={isDbConnecting()}
-      >
-        {getConnectBtnText()}
-        {
-          <Icon spaceLeft>
-            {isDbConnected() ? (
-              <FontAwesomeIcon icon={faCheck} size="sm" />
-            ) : isDbConnecting() ? (
-              <CircularProgress size={12} color="inherit" />
-            ) : (
-              <FontAwesomeIcon icon={faDatabase} size="sm" />
-            )}
-          </Icon>
-        }
-      </Button> */

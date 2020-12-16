@@ -12,23 +12,21 @@ import {
   FlexContainer,
   ScrollableContainer,
   Button,
-  MainTitle,
   Icon,
 } from '../../../styledElements';
 
-import useVenues from '../../../hooks/useVenues';
-import useDeleteVenue from '../../../hooks/useDeleteVenue';
-import useDb from '../../../hooks/useDb';
+import useVenues from '../../../hooks/reactQuery/useVenues';
+import useDeleteVenue from '../../../hooks/reactQuery/useDeleteVenue';
 import ModalDialog from '../../ModalDialog/ModalDialog';
+import { useQueryClient } from 'react-query';
 
 function VenuesList() {
+  const queryClient = useQueryClient();
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
   const [isNewVenueDialog, setIsNewVenueDialog] = useState(false);
   const [filterValue, setFilterValue] = useState('');
 
   const [selectedVenue, setSelectedVenue] = useState(null);
-
-  const { status: dbStatus } = useDb();
 
   const openNewVenueDialog = () => setIsNewVenueDialog(true);
   const closeNewVenueDialog = () => setIsNewVenueDialog(false);
@@ -45,8 +43,8 @@ function VenuesList() {
     deleteSelectedVenue(selectedVenue.id);
   };
 
-  const { status, data: venues, isFetching } = useVenues(
-    dbStatus === 'success'
+  const { isLoading, data: venues, isFetching } = useVenues(
+    queryClient.getQueryData('dbConnection') !== undefined
   );
 
   const openDeleteVenuePrompt = () => {
@@ -67,9 +65,8 @@ function VenuesList() {
 
   return (
     <>
-      <ComponentLoader loading={status === 'loading'}>
+      <ComponentLoader loading={isLoading}>
         <FlexContainer fullWidth align="center">
-          <MainTitle>Venues</MainTitle>
           <FlexContainer>
             <Button color="success" onClick={openNewVenueDialog}>
               New Venue

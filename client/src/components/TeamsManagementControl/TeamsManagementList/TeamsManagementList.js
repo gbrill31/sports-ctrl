@@ -16,19 +16,20 @@ import NewTeamForm from '../NewTeamForm/NewTeamForm';
 import TeamManagementListItem from '../TeamManagementListItem/TeamManagementListItem';
 import ComponentLoader from '../../ComponentLoader/ComponentLoader';
 import FilterListInput from '../../FilterListInput/FilterListInput';
-import useDb from '../../../hooks/useDb';
-import useTeams from '../../../hooks/useTeams';
-import useDeleteTeam from '../../../hooks/useDeleteTeam';
+import useTeams from '../../../hooks/reactQuery/useTeams';
+import useDeleteTeam from '../../../hooks/reactQuery/useDeleteTeam';
 
 import { setSelectedTeam } from '../../../actions';
 import ModalDialog from '../../ModalDialog/ModalDialog';
+import { useQueryClient } from 'react-query';
 
 export default function ManagementTeamsList() {
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
-  const { status: dbStatus } = useDb();
-
-  const { status, data: teams, isFetching } = useTeams(dbStatus === 'success');
+  const { status, data: teams, isFetching } = useTeams(
+    queryClient.getQueryData('dbConnection') !== undefined
+  );
 
   const { selected: selectedTeam } = useSelector((state) => state.teams);
 

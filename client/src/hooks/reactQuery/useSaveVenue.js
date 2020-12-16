@@ -1,18 +1,19 @@
 import { useState } from 'react';
-import { useMutation, queryCache } from 'react-query';
+import { useMutation, useQueryClient } from 'react-query';
 import shortid from 'shortid';
-import { saveNewVenue } from '../api';
+import { saveNewVenue } from '../../api';
 
 export default function useSaveVenue(cb) {
+  const queryClient = useQueryClient();
   const [status, setStatus] = useState();
-  const [saveVenue] = useMutation((venue) => saveNewVenue(venue), {
-    onMutate: (venue) => {
+  const saveVenue = useMutation((venue) => saveNewVenue(venue), {
+    onMutate: async (venue) => {
       setStatus('pending');
-      queryCache.cancelQueries('venues');
+      await queryClient.cancelQueries('venues');
 
-      const previousValue = queryCache.getQueryData('venues');
+      const previousValue = queryClient.getQueryData('venues');
 
-      queryCache.setQueryData('venues', (oldVenues) => {
+      queryClient.setQueryData('venues', (oldVenues) => {
         const venues = venue.id
           ? [...oldVenues.filter((v) => v.id !== venue.id)]
           : [...oldVenues];
@@ -26,14 +27,15 @@ export default function useSaveVenue(cb) {
     },
     onError: (err, variables, previousValue) => {
       setStatus('failed');
-      return queryCache.setQueryData('venues', previousValue);
+      return queryClient.setQueryData('venues', previousValue);
     },
     onSuccess: () => {
+      queryClient.invalidateQueries('venues');
       setStatus('success');
       if (cb) cb();
     },
-    onSettled: () => queryCache.refetchQueries('venues'),
+    onSettled: () => queryClient.refetchQueries('venues'),
   });
 
-  return { saveVenue, status };
+  return { saveVenue: saveVenue.mutate, status };
 }

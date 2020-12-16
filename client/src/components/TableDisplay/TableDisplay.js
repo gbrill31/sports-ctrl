@@ -52,7 +52,7 @@ const TableRow = styled.tr`
 const TablePageControl = styled.div`
   display: flex;
   width: 100%;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   color: #fff;
   padding: 10px;
@@ -243,7 +243,7 @@ export default function TableDisplay({
             relative
             show
           >
-            <Icon>
+            <Icon height="13px">
               <FontAwesomeIcon icon={faChevronLeft} size="1x" />
             </Icon>
           </IconButton>
@@ -256,7 +256,7 @@ export default function TableDisplay({
             relative
             show
           >
-            <Icon>
+            <Icon height="13px">
               <FontAwesomeIcon icon={faChevronRight} size="1x" />
             </Icon>
           </IconButton>

@@ -4,14 +4,13 @@ import React, { useCallback, useEffect } from 'react';
 import Venues from '../VenuesManagement/VenuesManagement';
 import Teams from '../TeamsManagement/TeamsManagement';
 import GameManagement from '../GameManagement/GameManagement';
-import CreateGameForm from '../../components/CreateGameForm/CreateGameForm';
 
-import HomeGamesList from '../../components/HomeGamesList/HomeGamesList';
 import PromptDialog from '../../components/PromptDialog/PromptDialog';
 import { closeLogoutPrompt, userLogout } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import UsersManagement from '../UsersManagement/UsersManagement';
 import { verifyLogin } from '../../actions';
+import GamesControl from '../../components/GamesControl/GamesControl';
 
 function Home() {
   const dispatch = useDispatch();
@@ -39,11 +38,10 @@ function Home() {
   return (
     <>
       <Switch>
-        <Route exact path="/" render={() => <HomeGamesList />} />
+        <Route exact path="/" render={() => <GamesControl />} />
         <Route exact path="/users" render={() => <UsersManagement />} />
         <Route exact path="/venues" render={() => <Venues />} />
         <Route exact path="/teams" render={() => <Teams />} />
-        <Route exact path="/creategame" render={() => <CreateGameForm />} />
         <Route exact path="/game" render={() => <GameManagement />} />
       </Switch>
       <PromptDialog

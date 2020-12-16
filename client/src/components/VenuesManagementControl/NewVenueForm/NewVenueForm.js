@@ -1,6 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
-import useSaveVenue from '../../../hooks/useSaveVenue';
+import useSaveVenue from '../../../hooks/reactQuery/useSaveVenue';
 import { Button, FlexContainer, FormError } from '../../../styledElements';
 import { Input } from '../../../styledElements';
 
