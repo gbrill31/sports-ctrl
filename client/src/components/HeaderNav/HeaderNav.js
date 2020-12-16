@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory } from 'react-router-dom';
 import { Button, Icon } from '../../styledElements';
@@ -44,11 +44,11 @@ function HeaderNav() {
             <UserMenu />
             {currentRoute !== '/' && (
               <>
-                <Button color="secondary" onClick={goToRoute('/')}>
-                  <Icon spaceRight>
-                    <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                <Button color="secondary" onClick={goToRoute('/')} justifyRight>
+                  Back Home
+                  <Icon spaceLeft>
+                    <FontAwesomeIcon icon={faChevronRight} size="sm" />
                   </Icon>
-                  Home
                 </Button>
               </>
             )}
