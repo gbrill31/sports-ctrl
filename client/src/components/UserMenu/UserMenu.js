@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
-  faUserCircle,
   faSignOutAlt,
   faUsers,
   faMapMarkedAlt,
+  faBars,
 } from '@fortawesome/free-solid-svg-icons';
 import { GiBasketballJersey } from 'react-icons/gi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -45,6 +45,23 @@ const UserIconContainer = styled.div`
 const UserName = styled.h5`
   display: inline;
   margin-left: 5px;
+`;
+const UserLogout = styled.h5`
+  display: inline;
+  margin-left: 15px;
+  color: ${(props) => props.theme.secondary.color};
+  cursor: pointer;
+  border: 1px solid ${(props) => props.theme.secondary.color};
+  border-radius: 5px;
+  padding: 5px;
+  transition: background 0.1s ease-in-out, color 0.1s ease-in-out,
+    border 0.1s ease-in-out;
+
+  &:hover {
+    color: #fff;
+    border-color: ${(props) => props.theme.error.color};
+    background-color: ${(props) => props.theme.error.color};
+  }
 `;
 
 const DropdownMenu = styled.div`
@@ -112,9 +129,13 @@ export default function UserMenu() {
 
   const toggleMenuOpen = () => setIsMenuOpen(!isMenuOpen);
 
-  const logoutPrompt = useCallback(() => dispatch(openLogoutPrompt()), [
-    dispatch,
-  ]);
+  const logoutPrompt = useCallback(
+    (e) => {
+      e.stopPropagation();
+      dispatch(openLogoutPrompt());
+    },
+    [dispatch]
+  );
 
   const goToRoute = useCallback((route) => () => history.push(route), [
     history,
@@ -146,16 +167,8 @@ export default function UserMenu() {
         spacer: true,
         icon: <FontAwesomeIcon icon={faUsers} size="sm" />,
       },
-      {
-        title: 'Logout',
-        color: 'error',
-        fontSize: '0.9rem',
-        spacer: false,
-        icon: <FontAwesomeIcon icon={faSignOutAlt} size="sm" />,
-        onclick: logoutPrompt,
-      },
     ],
-    [logoutPrompt]
+    []
   );
 
   return isLoggedIn && !user.firstLogin ? (
@@ -163,9 +176,15 @@ export default function UserMenu() {
       <UserMenuContainer>
         <UserInfoContainer ref={menuRef} onClick={toggleMenuOpen}>
           <UserIconContainer active={isMenuOpen} color="primary">
-            <FontAwesomeIcon icon={faUserCircle} size="lg" />
+            <FontAwesomeIcon icon={faBars} size="lg" />
           </UserIconContainer>
           <UserName>{user.name}</UserName>
+          <UserLogout onClick={logoutPrompt}>
+            Logout
+            <Icon spaceLeft>
+              <FontAwesomeIcon icon={faSignOutAlt} size="sm" />
+            </Icon>
+          </UserLogout>
         </UserInfoContainer>
         <DropdownMenu show={isMenuOpen}>
           {MENU_ITEMS.map((item) => (
