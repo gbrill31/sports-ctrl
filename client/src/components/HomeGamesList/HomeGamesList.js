@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import moment from 'moment';
 import { useHistory } from 'react-router-dom';
 
-import { Icon, MainTitle } from '../../styledElements';
+import { MainTitle } from '../../styledElements';
 
 import ComponentLoader from '../ComponentLoader/ComponentLoader';
 import HomeGameListItem from '../HomeGameListItem/HomeGameListItem';
@@ -11,8 +11,6 @@ import useDb from '../../hooks/useDb';
 import { useSelector } from 'react-redux';
 import TableDisplay from '../TableDisplay/TableDisplay';
 import styled from 'styled-components';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 const tableHeaders = [
   {

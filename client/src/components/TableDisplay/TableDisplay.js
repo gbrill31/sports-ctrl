@@ -113,23 +113,21 @@ export default function TableDisplay({
     return items.slice(itemsIndex, itemsIndex + maxRows);
   };
 
-  function isValidDate(d) {
+  const isValidDate = (d) => {
     const test = new Date(d);
     return test instanceof Date && !isNaN(test);
-  }
+  };
 
   const getSortedItems = () => {
     return getRowsByIndex().sort((itemA, itemB) => {
       if (sortOrder === 'asc') {
-        if (!isValidDate(itemA[orderBy]))
-          return itemA[orderBy] > itemB[orderBy] ? -1 : 1;
         if (isValidDate(itemA[orderBy]))
           return moment(itemA[orderBy]).isAfter(itemB[orderBy]) ? -1 : 1;
+        return itemA[orderBy] > itemB[orderBy] ? -1 : 1;
       } else {
-        if (!isValidDate(itemA[orderBy]))
-          return itemA[orderBy] > itemB[orderBy] ? 1 : -1;
         if (isValidDate(itemA[orderBy]))
           return moment(itemA[orderBy]).isBefore(itemB[orderBy]) ? -1 : 1;
+        return itemA[orderBy] > itemB[orderBy] ? 1 : -1;
       }
     });
   };
