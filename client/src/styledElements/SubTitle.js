@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 export default styled.h2`
-  font-size: 2rem;
+  font-size: ${(props) => props.size || '2rem'};
   width: ${(props) => props.width || '100%'};
   text-align: ${(props) => props.align || 'left'};
   color: ${(props) =>

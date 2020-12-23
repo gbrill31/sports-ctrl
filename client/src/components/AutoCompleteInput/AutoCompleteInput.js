@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { FlexContainer, Input, Icon, IconButton } from '../../styledElements';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import shortid from 'shortid';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,11 +10,20 @@ import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
 
 const OptionsContainer = styled.div`
   position: absolute;
-  top: 0;
-  display: flex;
+  top: -15px;
+  visibility: hidden;
   flex-flow: column;
   width: inherit;
   z-index: 999;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+
+  ${(props) =>
+    props.show &&
+    css`
+      visibility: visible;
+      opacity: 1;
+    `};
 `;
 
 const OptionItem = styled.div`
@@ -128,21 +137,19 @@ function AutoCompleteInput({
         }
       </FlexContainer>
 
-      {isOptionsExpanded && (
-        <FlexContainer width={`${ref.current.clientWidth - 10}px`}>
-          <OptionsContainer>
-            {options &&
-              getFilteredOptions().map((option) => (
-                <OptionItem
-                  key={option.id || getOptionLabel(option)}
-                  onClick={handleSelection(option)}
-                >
-                  {getOptionLabel(option)}
-                </OptionItem>
-              ))}
-          </OptionsContainer>
-        </FlexContainer>
-      )}
+      <FlexContainer width={`${ref?.current?.clientWidth - 10}px`} padding="0">
+        <OptionsContainer show={isOptionsExpanded}>
+          {options &&
+            getFilteredOptions().map((option) => (
+              <OptionItem
+                key={option.id || getOptionLabel(option)}
+                onClick={handleSelection(option)}
+              >
+                {getOptionLabel(option)}
+              </OptionItem>
+            ))}
+        </OptionsContainer>
+      </FlexContainer>
     </FlexContainer>
   );
 }

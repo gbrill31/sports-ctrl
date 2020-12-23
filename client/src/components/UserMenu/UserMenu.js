@@ -176,7 +176,7 @@ export default function UserMenu() {
       <UserMenuContainer>
         <UserInfoContainer ref={menuRef} onClick={toggleMenuOpen}>
           <UserIconContainer active={isMenuOpen} color="primary">
-            <FontAwesomeIcon icon={faBars} size="lg" />
+            <FontAwesomeIcon icon={faBars} size="1x" />
           </UserIconContainer>
           <UserName>{user.name}</UserName>
           <UserLogout onClick={logoutPrompt}>

@@ -21,8 +21,8 @@ export default styled.button`
   ${(props) =>
     !props.relative &&
     css`
-      right: ${(props) => props.right || '0'};
-      top: ${(props) => props.top || '15px'};
+      right: ${props.right || '0'};
+      top: ${props.top || '15px'};
     `}
 
   ${(props) =>
@@ -33,7 +33,7 @@ export default styled.button`
      ${(props) =>
     props.disabled &&
     css`
-      color: ${(props) => props.theme.disabled.color};
+      color: ${props.theme.disabled.color};
       &:hover {
         cursor: not-allowed;
       }

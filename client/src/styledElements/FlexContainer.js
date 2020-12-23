@@ -24,7 +24,20 @@ export default styled.div`
   ${(props) =>
     props.absolute &&
     css`
-      left: ${(props) => props.left || '0'};
-      top: ${(props) => props.top || '0'};
+      left: ${props.left || '0'};
+      top: ${props.top || '0'};
+    `};
+  ${(props) =>
+    props.bgImage &&
+    css`
+      background-image: linear-gradient(
+          to right,
+          ${props.theme.primary.color} 0%,
+          ${props.theme.generic.color} 100%
+        ),
+        url(${props.bgImage});
+      background-repeat: no-repeat;
+      background-blend-mode: overlay;
+      background-size: cover;
     `};
 `;

@@ -17,6 +17,7 @@ export default styled.button`
     props.color ? props.theme[props.color].color : props.theme.primary.color};
   color: #fff;
   width: ${(props) => (props.fullWidth ? '100%' : props.width || '')};
+  height: ${(props) => props.height || ''};
   font-family: ${(props) => props.theme.font};
   font-size: 0.8rem;
   font-weight: bold;
@@ -27,11 +28,12 @@ export default styled.button`
   transition: background 0.2s ease-in-out, color 0.2s ease-in-out;
   position: relative;
   z-index: 99;
+  text-transform: ${(props) => (props.uppercase ? 'uppercase' : '')};
 
   ${(props) =>
     props.saving &&
     css`
-      animation: ${(props) => saving(props)} 1s alternate infinite;
+      animation: ${saving(props)} 1s alternate infinite;
     `}
   &:hover {
     background: ${(props) =>
@@ -43,12 +45,10 @@ export default styled.button`
   ${(props) =>
     props.active &&
     css`
-      background: ${(props) =>
-        props.color
-          ? props.theme[props.color].hover
-          : props.theme.primary.hover};
-      color: ${(props) =>
-        props.color === 'menu' ? props.theme[props.color].color : ''};
+      background: ${props.color
+        ? props.theme[props.color].hover
+        : props.theme.primary.hover};
+      color: ${props.color === 'menu' ? props.theme[props.color].color : ''};
     `};
   ${(props) =>
     props.justifyRight &&
@@ -71,8 +71,8 @@ export default styled.button`
   ${(props) =>
     props.disabled &&
     css`
-      background: ${(props) => props.theme.disabled.bgColor};
-      color: ${(props) => props.theme.disabled.color};
+      background: ${props.theme.disabled.bgColor};
+      color: ${props.theme.disabled.color};
       &:hover {
         background: #666;
         cursor: not-allowed;

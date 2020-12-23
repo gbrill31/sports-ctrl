@@ -19,7 +19,7 @@ export default function GamesControl() {
   const [isStartNewGame, setIsStartNewGame] = useState(false);
 
   const {
-    status: activeGameStatus,
+    isSuccess: activeGameSuccess,
     data: activeGame,
     // refetch: fetchActiveGame,
   } = useActiveGame(queryClient.getQueryData('dbConnection') !== undefined);
@@ -41,7 +41,7 @@ export default function GamesControl() {
   };
 
   return (
-    activeGameStatus === 'success' && (
+    activeGameSuccess && (
       <>
         <FlexContainer
           fullWidth
@@ -53,7 +53,14 @@ export default function GamesControl() {
           {!activeGame && (
             <>
               {!isStartNewGame ? (
-                <Button color="success" onClick={showNewGameForm} width="50%">
+                <Button
+                  color="success"
+                  onClick={showNewGameForm}
+                  width="200px"
+                  height="60px"
+                  uppercase
+                  saving
+                >
                   Start A New Game
                   <Icon spaceLeft>
                     <FontAwesomeIcon icon={faPlus} size="sm" />

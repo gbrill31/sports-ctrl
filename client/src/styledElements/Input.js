@@ -51,7 +51,7 @@ export default styled.input`
       width: 5px;
       transition: all 0.15s ease-out 0s;
       background: #cbd1d8;
-      border: ${(props) => `1px solid ${props.theme.primary.color}`};
+      border: ${`1px solid ${props.theme.primary.color}`};
       color: #fff;
       cursor: pointer;
       padding: 7px;
@@ -59,10 +59,10 @@ export default styled.input`
       z-index: 1000;
 
       &:hover {
-        background: ${(props) => props.theme.primary.hover};
+        background: ${props.theme.primary.hover};
       }
       &:indeterminate {
-        background: ${(props) => props.theme.generic.color};
+        background: ${props.theme.generic.color};
       }
       &:indeterminate::before {
         position: absolute;
@@ -73,7 +73,7 @@ export default styled.input`
         content: '-';
       }
       &:checked {
-        background: ${(props) => props.theme.success.color};
+        background: ${props.theme.success.color};
       }
 
       &:checked::before {
@@ -93,13 +93,13 @@ export default styled.input`
   ${(props) =>
     props.isLoading &&
     css`
-      animation: ${(props) => loadingAnimation(props)} 0.4s alternate infinite;
+      animation: ${loadingAnimation(props)} 0.4s alternate infinite;
     `}
   ${(props) =>
     props.disabled &&
     css`
-      color: ${(props) => props.theme.disabled.color};
-      border-color: ${(props) => props.theme.disabled.color};
+      color: ${props.theme.disabled.color};
+      border-color: ${props.theme.disabled.color};
       &:hover {
         user-select: none;
         cursor: not-allowed;

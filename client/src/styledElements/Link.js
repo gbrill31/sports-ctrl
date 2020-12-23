@@ -16,10 +16,9 @@ export default styled.a`
     css`
       &:hover {
         color: #fff;
-        background-color: ${(props) =>
-          props.theme[props.color]
-            ? props.theme[props.color].color
-            : props.color || '#fbfbfb'};
+        background-color: ${props.theme[props.color]
+          ? props.theme[props.color].color
+          : props.color || '#fbfbfb'};
       }
     `}
 `;

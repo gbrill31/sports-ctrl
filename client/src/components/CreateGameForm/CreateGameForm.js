@@ -84,78 +84,95 @@ export default function CreateGameForm({ cancelNewGame }) {
         align="center"
         justify="center"
       >
-        <GridContainer columnsSpread="50% 50%" width="100%">
-          <div>
-            <SubTitle align="center">Select Teams and Venue</SubTitle>
-            <FlexContainer align="center" justify="center" noWrap>
-              <AutoCompleteInput
-                id="home"
-                color="#fff"
-                spaceLeft
-                selectedValue={homeTeam ? homeTeam.getName() : ''}
-                options={getTeamsSelectionList(awayTeam)}
-                getOptionLabel={(option) => option.name}
-                placeholder="Select Home Team"
-                onSelection={selectHomeTeam}
-                loading={teamsLoading()}
-              />
-              <SubTitle>VS</SubTitle>
-              <AutoCompleteInput
-                id="away"
-                color="#fff"
-                spaceLeft
-                selectedValue={awayTeam ? awayTeam.getName() : ''}
-                options={getTeamsSelectionList(homeTeam)}
-                getOptionLabel={(option) => option.name}
-                placeholder="Select Away Team"
-                onSelection={selectAwayTeam}
-                loading={teamsLoading()}
-              />
-            </FlexContainer>
+        <GridContainer columnsSpread="50% 50%" width="100%" noPadding>
+          <div style={{ gridRow: 1, padding: '10px' }}>
+            <Button color="error" onClick={cancelNewGame}>
+              Close
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faTimes} size="sm" />
+              </Icon>
+            </Button>
           </div>
-          <div>
-            <SubTitle align="center" uppercase>
-              Played At
-            </SubTitle>
-            <FlexContainer align="center" justify="center" noWrap>
-              <AutoCompleteInput
-                id="vanues"
-                color="#fff"
-                spaceLeft
-                selectedValue={venue ? venue.name : ''}
-                options={venues}
-                getOptionLabel={(option) => option.name}
-                placeholder="Select Vanue"
-                onSelection={selectVenue}
-                loading={venuesLoading()}
-              />
+          <FlexContainer
+            fullWidth
+            column
+            padding="0"
+            align="center"
+            justify="center"
+            style={{ gridRow: 2, gridColumn: '1 / 3' }}
+          >
+            <FlexContainer column padding="0" align="center" justify="center">
+              <SubTitle align="center" size="1.2rem">
+                Select Teams
+              </SubTitle>
+              <FlexContainer align="center" justify="center" noWrap padding="0">
+                <AutoCompleteInput
+                  id="home"
+                  color="#fff"
+                  selectedValue={homeTeam ? homeTeam.getName() : ''}
+                  options={getTeamsSelectionList(awayTeam)}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Home Team"
+                  onSelection={selectHomeTeam}
+                  loading={teamsLoading()}
+                />
+                <SubTitle align="center" size="1.2rem">
+                  VS
+                </SubTitle>
+                <AutoCompleteInput
+                  id="away"
+                  color="#fff"
+                  selectedValue={awayTeam ? awayTeam.getName() : ''}
+                  options={getTeamsSelectionList(homeTeam)}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Away Team"
+                  onSelection={selectAwayTeam}
+                  loading={teamsLoading()}
+                />
+              </FlexContainer>
             </FlexContainer>
-          </div>
-          <div
+            <FlexContainer column padding="0" align="center" justify="center">
+              <SubTitle align="center" size="1.2rem">
+                Select Venue
+              </SubTitle>
+              <FlexContainer align="center" justify="center" noWrap padding="0">
+                <AutoCompleteInput
+                  id="vanues"
+                  color="#fff"
+                  selectedValue={venue ? venue.name : ''}
+                  options={venues}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Vanue"
+                  onSelection={selectVenue}
+                  loading={venuesLoading()}
+                />
+              </FlexContainer>
+            </FlexContainer>
+          </FlexContainer>
+          <FlexContainer
             style={{
               gridColumnStart: 1,
               gridColumnEnd: 3,
             }}
+            align="center"
+            justify="center"
+            noWrap
+            fullWidth
           >
-            <FlexContainer align="center" justify="center" noWrap fullWidth>
-              <Button
-                color="success"
-                onClick={startNewGame}
-                saving={isGameLoading()}
-              >
-                {isGameLoading() ? 'Starting...' : 'Start Game'}
-                <Icon spaceLeft>
-                  <FontAwesomeIcon icon={faBasketballBall} size="sm" />
-                </Icon>
-              </Button>
-              <Button color="error" onClick={cancelNewGame}>
-                Cancel
-                <Icon spaceLeft>
-                  <FontAwesomeIcon icon={faTimes} size="sm" />
-                </Icon>
-              </Button>
-            </FlexContainer>
-          </div>
+            <Button
+              color="success"
+              onClick={startNewGame}
+              saving={isGameLoading()}
+              width="200px"
+              height="60px"
+              disabled={!homeTeam || !awayTeam || !venue}
+            >
+              {isGameLoading() ? 'Starting...' : 'Start Game'}
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faBasketballBall} size="sm" />
+              </Icon>
+            </Button>
+          </FlexContainer>
         </GridContainer>
       </FlexContainer>
     </>

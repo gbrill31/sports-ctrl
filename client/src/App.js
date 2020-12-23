@@ -18,6 +18,8 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import { setRouteName, verifyLogin } from './actions';
 import UpdatePassword from './views/UpdatePassword/UpdatePassword';
 
+import backgroundImage from './img/basketball_011.jpg';
+
 const queryClient = new QueryClient();
 
 const theme = {
@@ -111,7 +113,17 @@ const AppContainer = styled.div`
   background-color: #272932;
   position: relative;
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-image: linear-gradient(
+      to right,
+      ${(props) => props.theme.primary.color} 0%,
+      ${(props) => props.theme.generic.color} 100%
+    ),
+    url(${backgroundImage});
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  background-size: cover;
 `;
 
 const AppMainContent = styled.main`
