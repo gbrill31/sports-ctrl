@@ -8,7 +8,7 @@ export default styled.h2`
     props.theme[props.color]
       ? props.theme[props.color].color
       : props.color || '#dcdbdb'};
-  padding: ${(props) => props.padding || '15px'};
+  padding: ${(props) => props.padding || '10px'};
   margin: ${(props) => props.margin || 'initial'};
   opacity: ${(props) => (props.soft ? '0.4' : '')};
 
