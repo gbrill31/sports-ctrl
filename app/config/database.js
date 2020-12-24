@@ -60,6 +60,7 @@ function createGamesTable() {
             table.string('away');
             table.integer('awayPoints');
             table.integer('awayFouls');
+            table.string('league');
             table.string('venue');
             table.string('status');
             table.boolean('active');

@@ -30,6 +30,11 @@ const tableHeaders = [
     sortable: true,
   },
   {
+    id: 7,
+    title: 'League',
+    sortable: true,
+  },
+  {
     id: 5,
     title: 'Venue',
     sortable: true,
@@ -109,6 +114,9 @@ export default function GamesPlayedList() {
         component: (data, item) => (
           <WinnerField winner={item.winner === 'away'}>{data}</WinnerField>
         ),
+      },
+      {
+        key: 'league',
       },
       {
         key: 'venue',
