@@ -49,10 +49,10 @@ export default class Player {
     return this.getStats(id).data.PT;
   }
   get2FG(id) {
-    return this.getStats(id).data["2FG"];
+    return this.getStats(id).data['2FG'];
   }
   get3FG(id) {
-    return this.getStats(id).data["3FG"];
+    return this.getStats(id).data['3FG'];
   }
   getFT(id) {
     return this.getStats(id).data.FT;

@@ -23,7 +23,7 @@ import ModalDialog from '../../ModalDialog/ModalDialog';
 export default function PlayersManagementList() {
   const selectedTeam = useSelector((state) => state.teams.selected);
 
-  const { isLoading, data: players, isFetching } = usePlayers(
+  const { isLoading, isSuccess, data: players, isFetching } = usePlayers(
     selectedTeam !== null,
     selectedTeam?.getId()
   );
@@ -91,7 +91,7 @@ export default function PlayersManagementList() {
           </FlexContainer>
           <ScrollableContainer padding="5px" heightDiff={350} fullWidth>
             <FlexContainer column fullWidth>
-              {players && players.length > 0 ? (
+              {isSuccess && players?.length > 0 ? (
                 getFilteredPlayers()
                   .sort((playerA, playerB) =>
                     playerA.name.toLowerCase() > playerB.name.toLowerCase()

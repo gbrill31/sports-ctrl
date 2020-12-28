@@ -8,7 +8,6 @@ export default function useDeletePlayer(cb) {
       const queryKey = `players-${player.getTeamId()}`;
       await queryClient.cancelQueries(queryKey);
       const previousValue = queryClient.getQueryData(queryKey);
-
       queryClient.setQueryData(queryKey, (oldPlayers) => {
         return oldPlayers
           ? [...oldPlayers.filter((p) => p.id !== player.getId())]

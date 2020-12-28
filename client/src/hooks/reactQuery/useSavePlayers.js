@@ -37,7 +37,6 @@ export default function useSavePlayers(cb) {
       );
     },
     onSuccess: (data, vars) => {
-      console.log(vars);
       queryClient.invalidateQueries(
         `players-${Array.isArray(vars) ? vars[0].teamId : vars.teamId}`
       );
@@ -45,7 +44,10 @@ export default function useSavePlayers(cb) {
       if (cb) cb();
     },
     onSettled: (data, err, variables) => {
-      queryClient.refetchQueries(`players-${variables.teamId}`);
+      const id = Array.isArray(variables)
+        ? variables[0].teamId
+        : variables.teamId;
+      queryClient.refetchQueries(`players-${id}`);
     },
   });
 
