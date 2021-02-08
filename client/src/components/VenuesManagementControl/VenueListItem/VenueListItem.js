@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
 
-import useFormInput from "../../../hooks/useFormInput";
-import useSaveVenue from "../../../hooks/useSaveVenue";
-import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
-import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
+import useFormInput from '../../../hooks/useFormInput';
+import useSaveVenue from '../../../hooks/reactQuery/useSaveVenue';
+import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FlexContainer, Button, Icon, Input } from '../../../styledElements';
+import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 
 const ItemContainer = styled.div`
   width: 25%;
@@ -28,7 +28,7 @@ const ItemContainer = styled.div`
     box-shadow: ${(props) =>
       !props.selected
         ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
-        : ""};
+        : ''};
   }
 
   ${(props) =>
@@ -58,7 +58,7 @@ const ItemContainer = styled.div`
 
 const VenueInfoSection = styled.div`
   position: absolute;
-  bottom: ${(props) => (props.selected ? "3px" : "-50px")};
+  bottom: ${(props) => (props.selected ? '3px' : '-50px')};
   left: 7px;
   transition: bottom 0.2s ease-in-out;
 `;
@@ -119,7 +119,7 @@ function VenueListItem({
         <>
           <FlexContainer fullWidth padding="0">
             <FlexContainer fullWidth justify="space-around" align="center">
-              <label style={{ width: "10px" }}>Name:</label>
+              <label style={{ width: '10px' }}>Name:</label>
               <Input
                 autoFocus
                 required
@@ -133,7 +133,7 @@ function VenueListItem({
               />
             </FlexContainer>
             <FlexContainer fullWidth justify="space-around" align="center">
-              <label style={{ width: "10px" }}>City:</label>
+              <label style={{ width: '10px' }}>City:</label>
               <Input
                 required
                 ref={venueCity.ref}
@@ -146,7 +146,7 @@ function VenueListItem({
               />
             </FlexContainer>
             <FlexContainer fullWidth justify="space-around" align="center">
-              <label style={{ width: "10px" }}>Country:</label>
+              <label style={{ width: '10px' }}>Country:</label>
               <Input
                 required
                 ref={venueCountry.ref}
@@ -159,7 +159,7 @@ function VenueListItem({
               />
             </FlexContainer>
             <FlexContainer fullWidth justify="space-around" align="center">
-              <label style={{ width: "10px" }}>Seats:</label>
+              <label style={{ width: '10px' }}>Seats:</label>
               <Input
                 id="seats"
                 label="Seats"
@@ -188,7 +188,7 @@ function VenueListItem({
       )}
 
       {isEditVenue && (
-        <FlexContainer justify={isEditVenue ? "flex-end" : false}>
+        <FlexContainer justify={isEditVenue ? 'flex-end' : false}>
           <Button
             aria-label="cancel update venue"
             color="error"

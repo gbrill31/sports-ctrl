@@ -1,35 +1,38 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CircularProgress } from "@material-ui/core";
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CircularProgress } from '@material-ui/core';
 import {
   FlexContainer,
   Button,
   Icon,
   MainTitle,
   ScrollableContainer,
-} from "../../../styledElements";
+} from '../../../styledElements';
 
-import PlayersManagementListItem from "../PlayersManagementListItem/PlayersManagementListItem";
-import PromptDialog from "../../PromptDialog/PromptDialog";
-import NewPlayerFormDialog from "../NewPlayerFormDialog/NewPlayerFormDialog";
-import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import FilterListInput from "../../FilterListInput/FilterListInput";
-import usePlayers from "../../../hooks/usePlayers";
-import useDeletePlayer from "../../../hooks/useDeletePlayer";
+import PlayersManagementListItem from '../PlayersManagementListItem/PlayersManagementListItem';
+import PromptDialog from '../../PromptDialog/PromptDialog';
+import NewPlayerForm from '../NewPlayerForm/NewPlayerForm';
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import FilterListInput from '../../FilterListInput/FilterListInput';
+import usePlayers from '../../../hooks/reactQuery/usePlayers';
+import useDeletePlayer from '../../../hooks/reactQuery/useDeletePlayer';
+import ModalDialog from '../../ModalDialog/ModalDialog';
 
 export default function PlayersManagementList() {
   const selectedTeam = useSelector((state) => state.teams.selected);
 
-  const { status, data: players, isFetching } = usePlayers(
-    selectedTeam,
+  const { isLoading, isSuccess, data: players, isFetching } = usePlayers(
+    selectedTeam !== null,
     selectedTeam?.getId()
   );
 
+  const isPlayersLoading = () => isLoading || isFetching;
+
   const [isDeletePlayer, setIsDeletePlayer] = useState(false);
   const [isAddPlayersDialog, setIsAddPlayersDialog] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
   const [selectedPlayer, setSelectedPlayer] = useState(null);
 
   const handleCancelPrompt = () => setIsDeletePlayer(false);
@@ -45,7 +48,7 @@ export default function PlayersManagementList() {
 
   const getFilteredPlayers = () => {
     const value = filterValue.toLowerCase();
-    return value !== ""
+    return value !== ''
       ? players.filter(
           (player) =>
             player.getName().includes(value) ||
@@ -54,19 +57,17 @@ export default function PlayersManagementList() {
       : players;
   };
 
-  const deletePlayerPrompt = () => {
+  const openDeletePlayerPrompt = () => {
     setIsDeletePlayer(true);
   };
 
   return (
     <>
-      <FlexContainer
-        minWidth={status === "loading" || !players ? "50vw" : false}
-      >
-        <ComponentLoader loading={status === "loading"} size={100}>
+      <FlexContainer minWidth={isPlayersLoading() || !players ? '50vw' : false}>
+        <ComponentLoader loading={isPlayersLoading()} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0" capitalize>
-              {selectedTeam ? `${selectedTeam.getName()} Players` : ""}
+              {selectedTeam ? `${selectedTeam.getName()} Players` : ''}
             </MainTitle>
             {selectedTeam && (
               <Button color="success" onClick={openAddPlayersDialog}>
@@ -77,7 +78,7 @@ export default function PlayersManagementList() {
               </Button>
             )}
             {isFetching && (
-              <CircularProgress size={25} style={{ color: "#fff" }} />
+              <CircularProgress size={25} style={{ color: '#fff' }} />
             )}
           </FlexContainer>
           <FlexContainer fullWidth padding="0">
@@ -90,7 +91,7 @@ export default function PlayersManagementList() {
           </FlexContainer>
           <ScrollableContainer padding="5px" heightDiff={350} fullWidth>
             <FlexContainer column fullWidth>
-              {players && players.length > 0 ? (
+              {isSuccess && players?.length > 0 ? (
                 getFilteredPlayers()
                   .sort((playerA, playerB) =>
                     playerA.name.toLowerCase() > playerB.name.toLowerCase()
@@ -103,7 +104,7 @@ export default function PlayersManagementList() {
                       player={player}
                       selectedPlayer={selectedPlayer}
                       setSelectedPlayer={setSelected}
-                      deletePlayerPrompt={deletePlayerPrompt}
+                      deletePlayerPrompt={openDeletePlayerPrompt}
                     />
                   ))
               ) : (
@@ -121,9 +122,15 @@ export default function PlayersManagementList() {
         handleClose={handleCancelPrompt}
         handleConfirm={deleteSelectedPlayer}
       />
-      <NewPlayerFormDialog
-        isOpenDialog={isAddPlayersDialog}
-        closeDialog={closeAddPlayersDialog}
+      <ModalDialog
+        component={NewPlayerForm}
+        componentProps={{
+          cb: closeAddPlayersDialog,
+        }}
+        isOpen={isAddPlayersDialog}
+        title="Add players to team"
+        handleCancel={closeAddPlayersDialog}
+        label="add players"
       />
     </>
   );

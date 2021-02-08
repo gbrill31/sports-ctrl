@@ -1,4 +1,4 @@
-import { connectDB } from "./dbApi";
+import { connectDB } from './dbApi';
 
 import {
   getAllGames,
@@ -8,11 +8,11 @@ import {
   updateGameStatus,
   updateTeamFouls,
   updateEndGame,
-} from "./gamesApi";
+} from './gamesApi';
 
-import { getAllVenues, saveNewVenue, deleteVenue } from "./venuesApi";
+import { getAllVenues, saveNewVenue, deleteVenue } from './venuesApi';
 
-import { getAllTeams, saveNewTeam, deleteTeam, getTeamById } from "./teamsApi";
+import { getAllTeams, saveNewTeam, deleteTeam, getTeamById } from './teamsApi';
 
 import {
   getAllPlayers,
@@ -20,7 +20,17 @@ import {
   savePlayersToTeam,
   deletePlayer,
   updatePlayerStats,
-} from "./playersApi";
+} from './playersApi';
+
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  verifyLogin,
+  updatePassword,
+} from './authApi';
+
+import { getUsersByAdmin, deleteUsers, updateUser } from './usersApi';
 
 export {
   connectDB,
@@ -43,4 +53,12 @@ export {
   updateGameStatus,
   updateTeamFouls,
   updateEndGame,
+  registerUser,
+  loginUser,
+  logoutUser,
+  verifyLogin,
+  getUsersByAdmin,
+  deleteUsers,
+  updatePassword,
+  updateUser,
 };

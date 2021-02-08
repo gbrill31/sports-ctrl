@@ -1,37 +1,69 @@
-const moment = require("moment");
+const moment = require('moment');
 
 let DB;
 
 const config = {
-  client: "pg",
+  client: 'pg',
   connection: {
-    host: "localhost",
-    user: "",
-    password: "",
-    database: "sportscontrol",
+    host: 'localhost',
+    user: '',
+    password: '',
+    database: 'sportscontrol',
   },
 };
 
-const knex = require("knex");
+const knex = require('knex');
+
+function createUsersTable() {
+  return new Promise((resolve, reject) => {
+    DB.schema.hasTable('users').then((exists) => {
+      if (!exists) {
+        DB.schema
+          .createTable('users', (table) => {
+            table.increments();
+            table.string('name');
+            table.string('email');
+            table.string('admin'); // The admin owner of operator
+            table.string('type'); //Admin or Operator
+            table.boolean('firstLogin'); //True only for operators
+            table.string('salt');
+            table.string('hash');
+            table.timestamps(false, true);
+          })
+          .then(
+            () => {
+              resolve();
+            },
+            (err) => reject(err)
+          );
+      } else {
+        resolve();
+      }
+    });
+  });
+}
 
 function createGamesTable() {
   return new Promise((resolve, reject) => {
-    DB.schema.hasTable("games").then((exists) => {
+    DB.schema.hasTable('games').then((exists) => {
       if (!exists) {
         DB.schema
-          .createTable("games", (table) => {
+          .createTable('games', (table) => {
             table.increments();
-            table.integer("homeId");
-            table.string("home");
-            table.integer("homePoints");
-            table.integer("homeFouls");
-            table.integer("awayId");
-            table.string("away");
-            table.integer("awayPoints");
-            table.integer("awayFouls");
-            table.string("venue");
-            table.string("status");
-            table.boolean("active");
+            table.integer('ownerId');
+            table.integer('operatorId');
+            table.integer('homeId');
+            table.string('home');
+            table.integer('homePoints');
+            table.integer('homeFouls');
+            table.integer('awayId');
+            table.string('away');
+            table.integer('awayPoints');
+            table.integer('awayFouls');
+            table.string('league');
+            table.string('venue');
+            table.string('status');
+            table.boolean('active');
             table.timestamps(false, true);
           })
           .then(
@@ -49,15 +81,16 @@ function createGamesTable() {
 
 function createVenuesTable() {
   return new Promise((resolve, reject) => {
-    DB.schema.hasTable("venues").then((exists) => {
+    DB.schema.hasTable('venues').then((exists) => {
       if (!exists) {
         DB.schema
-          .createTable("venues", (table) => {
+          .createTable('venues', (table) => {
             table.increments();
-            table.string("name");
-            table.string("country");
-            table.string("city");
-            table.integer("seats");
+            table.integer('ownerId');
+            table.string('name');
+            table.string('country');
+            table.string('city');
+            table.integer('seats');
             table.timestamps(false, true);
           })
           .then(
@@ -75,15 +108,16 @@ function createVenuesTable() {
 
 function createTeamsTable() {
   return new Promise((resolve, reject) => {
-    DB.schema.hasTable("teams").then((exists) => {
+    DB.schema.hasTable('teams').then((exists) => {
       if (!exists) {
         DB.schema
-          .createTable("teams", (table) => {
+          .createTable('teams', (table) => {
             table.increments();
-            table.string("name");
-            table.string("league");
-            table.string("country");
-            table.string("city");
+            table.integer('ownerId');
+            table.string('name');
+            table.string('league');
+            table.string('country');
+            table.string('city');
             table.timestamps(false, true);
           })
           .then(
@@ -101,16 +135,17 @@ function createTeamsTable() {
 
 function createPlayersTable() {
   return new Promise((resolve, reject) => {
-    DB.schema.hasTable("players").then((exists) => {
+    DB.schema.hasTable('players').then((exists) => {
       if (!exists) {
         DB.schema
-          .createTable("players", (table) => {
+          .createTable('players', (table) => {
             table.increments();
-            table.string("name");
-            table.integer("number");
-            table.string("team");
-            table.integer("teamId");
-            table.json("stats");
+            table.integer('ownerId');
+            table.string('name');
+            table.integer('number');
+            table.string('team');
+            table.integer('teamId');
+            table.json('stats');
             table.timestamps(false, true);
           })
           .then(
@@ -129,13 +164,13 @@ function createPlayersTable() {
 function getPlayerStatsData(game) {
   return [
     {
-      gameDate: moment().format("YYYY-MM-DD"),
+      gameDate: moment().format('YYYY-MM-DD'),
       gameId: game ? game.id : null,
-      playedAgainst: game ? game.name : "No Games Played",
+      playedAgainst: game ? game.name : 'No Games Played',
       data: {
         PT: 0,
-        "2FG": 0,
-        "3FG": 0,
+        '2FG': 0,
+        '3FG': 0,
         FT: 0,
         FOULS: 0,
         PtLocations: {
@@ -150,9 +185,9 @@ function getPlayerStatsData(game) {
 }
 
 function setNewGamePlayerStats(player, game) {
-  return DB("players")
-    .where("id", player.id)
-    .returning(["id", "name", "number", "team", "teamId", "stats"])
+  return DB('players')
+    .where('id', player.id)
+    .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
     .update({
       stats: JSON.stringify([...player.stats, ...getPlayerStatsData(game)]),
       updated_at: new Date(),
@@ -179,18 +214,18 @@ function addGameStatsToPlayers(players, game) {
 function getPlayersByTeamId(teamId, game) {
   return new Promise((resolve, reject) => {
     DB.schema
-      .hasTable("players")
+      .hasTable('players')
       .then((exists) => {
         if (exists) {
           DB.select()
-            .where("teamId", teamId)
-            .table("players")
+            .where('teamId', teamId)
+            .table('players')
             .then((players) => {
               if (game) {
                 Promise.all(addGameStatsToPlayers(players, game)).then(() => {
                   DB.select()
-                    .where("teamId", teamId)
-                    .table("players")
+                    .where('teamId', teamId)
+                    .table('players')
                     .then(
                       (updatedPlayers) => {
                         resolve(updatedPlayers);
@@ -229,7 +264,7 @@ function getGameObject(game, data) {
 
 function checkConnection() {
   return new Promise((resolve, reject) => {
-    DB.raw("SELECT 1")
+    DB.raw('SELECT 1')
       .then((message) => {
         resolve(message);
       })
@@ -243,9 +278,9 @@ function setHomeTeamScore(game, points) {
   const pointsUpdate =
     game.homePoints + points > 0 ? game.homePoints + points : 0;
   return new Promise((resolve, reject) => {
-    DB("games")
+    DB('games')
       .where({ id: game.id })
-      .returning(["id", "homePoints", "homeId"])
+      .returning(['id', 'homePoints', 'homeId'])
       .update({
         homePoints: pointsUpdate,
         updated_at: new Date(),
@@ -264,9 +299,9 @@ function setAwayTeamScore(game, points) {
   const pointsUpdate =
     game.awayPoints + points > 0 ? game.awayPoints + points : 0;
   return new Promise((resolve, reject) => {
-    DB("games")
+    DB('games')
       .where({ id: game.id })
-      .returning(["id", "awayPoints", "awayId"])
+      .returning(['id', 'awayPoints', 'awayId'])
       .update({
         awayPoints: pointsUpdate,
         updated_at: new Date(),
@@ -283,7 +318,7 @@ function setAwayTeamScore(game, points) {
 
 function updateGameScore(gameId, teamId, points) {
   return new Promise((resolve, reject) => {
-    DB("games")
+    DB('games')
       .where({ id: gameId })
       .asCallback((err, rows) => {
         if (err) return reject(err);
@@ -314,7 +349,7 @@ function getUpdatedPlayerStats(player, gameId, stats) {
 
 function resetTeamsFouls(game) {
   return new Promise((resolve, reject) => {
-    DB("games")
+    DB('games')
       .where({ id: game.id })
       .update({
         awayFouls: 0,
@@ -332,9 +367,9 @@ function setHomeTeamFouls(game, fouls) {
   return new Promise((resolve, reject) => {
     const foulsUpdate =
       game.homeFouls + fouls >= 0 ? game.homeFouls + fouls : 0;
-    DB("games")
+    DB('games')
       .where({ id: game.id })
-      .returning(["id", "homeFouls", "homeId"])
+      .returning(['id', 'homeFouls', 'homeId'])
       .update({
         homeFouls: foulsUpdate,
         updated_at: new Date(),
@@ -353,9 +388,9 @@ function setAwayTeamFouls(game, fouls) {
   return new Promise((resolve, reject) => {
     const foulsUpdate =
       game.awayFouls + fouls >= 0 ? game.awayFouls + fouls : 0;
-    DB("games")
+    DB('games')
       .where({ id: game.id })
-      .returning(["id", "awayFouls", "awayId"])
+      .returning(['id', 'awayFouls', 'awayId'])
       .update({
         awayFouls: foulsUpdate,
         updated_at: new Date(),
@@ -375,6 +410,111 @@ function setAwayTeamFouls(game, fouls) {
 const DB_EXPORTS = {
   checkConnection,
 
+  createUser: function (user) {
+    return DB.insert({ ...user }, [
+      'name',
+      'email',
+      'admin',
+      'type',
+      'firstLogin',
+      'salt',
+      'hash',
+    ]).into('users');
+  },
+  updateUser: function (user) {
+    return DB('users').where('id', user.id).update({
+      name: user.name,
+      email: user.email,
+      salt: user.salt,
+      hash: user.hash,
+    });
+  },
+  deleteUsers: function (ids) {
+    return DB('users').whereIn('id', ids).del();
+  },
+  updatePassword: function (user, salt, hash) {
+    return DB('users')
+      .where('id', user.id)
+      .update({ salt, hash, firstLogin: user.firstLogin ? false : false });
+  },
+
+  findUser: function (email) {
+    return new Promise((resolve, reject) => {
+      DB.schema.hasTable('users').then(
+        (exists) => {
+          if (exists) {
+            DB.select()
+              .table('users')
+              .where('email', email)
+              .then(
+                (user) => {
+                  resolve(user[0]);
+                },
+                (err) => {
+                  reject(err);
+                }
+              );
+          } else {
+            resolve();
+          }
+        },
+        (err) => reject(err)
+      );
+    });
+  },
+  findUserById: function (id) {
+    return new Promise((resolve, reject) => {
+      DB.schema.hasTable('users').then(
+        (exists) => {
+          if (exists) {
+            DB.select()
+              .table('users')
+              .where('id', id)
+              .then(
+                (user) => {
+                  resolve(user[0]);
+                },
+                (err) => reject(err)
+              );
+          } else {
+            resolve();
+          }
+        },
+        (err) => reject(err)
+      );
+    });
+  },
+  findUsersByAdminId: function (id) {
+    return new Promise((resolve, reject) => {
+      DB.schema.hasTable('users').then(
+        (exists) => {
+          if (exists) {
+            DB.select(
+              'id',
+              'name',
+              'email',
+              'type',
+              'admin',
+              'firstLogin',
+              'created_at'
+            )
+              .table('users')
+              .where('admin', id)
+              .then(
+                (users) => {
+                  resolve(users);
+                },
+                (err) => reject(err)
+              );
+          } else {
+            resolve();
+          }
+        },
+        (err) => reject(err)
+      );
+    });
+  },
+
   connect: function () {
     return new Promise((resolve, reject) => {
       DB = knex(config);
@@ -382,6 +522,7 @@ const DB_EXPORTS = {
       checkConnection()
         .then(() => {
           Promise.all([
+            createUsersTable(),
             createGamesTable(),
             createVenuesTable(),
             createTeamsTable(),
@@ -401,22 +542,33 @@ const DB_EXPORTS = {
     });
   },
 
-  createGame: function (home, homeId, away, awayId, venue, active) {
+  createGame: function (
+    ownerId,
+    operatorId,
+    home,
+    homeId,
+    away,
+    awayId,
+    venue,
+    active
+  ) {
     return new Promise((resolve, reject) => {
       DB.returning([
-        "id",
-        "home",
-        "homeId",
-        "homePoints",
-        "homeFouls",
-        "away",
-        "awayId",
-        "awayPoints",
-        "awayFouls",
-        "venue",
-        "status",
+        'id',
+        'home',
+        'homeId',
+        'homePoints',
+        'homeFouls',
+        'away',
+        'awayId',
+        'awayPoints',
+        'awayFouls',
+        'venue',
+        'status',
       ])
         .insert({
+          ownerId,
+          operatorId,
           home,
           homeId,
           homePoints: 0,
@@ -427,12 +579,12 @@ const DB_EXPORTS = {
           awayFouls: 0,
           venue,
           active,
-          status: "Q1",
+          status: 'Q1',
         })
-        .into("games")
+        .into('games')
         .asCallback(function (err, rows) {
           if (err) reject(err);
-          if (rows.length) {
+          if (rows && rows.length) {
             const game = rows[0];
             Promise.all([
               getPlayersByTeamId(game.homeId, {
@@ -456,11 +608,11 @@ const DB_EXPORTS = {
     });
   },
 
-  getActiveGame: function () {
+  getActiveGame: function (ownerId) {
     return new Promise((resolve, reject) => {
       DB.select()
-        .from("games")
-        .where("active", true)
+        .from('games')
+        .where({ active: true, ownerId })
         .asCallback(function (err, rows) {
           if (err) reject(err);
           if (rows && rows.length) {
@@ -489,18 +641,21 @@ const DB_EXPORTS = {
 
   updateGameScore,
 
-  getAllGames: function () {
+  getAllGames: function (ownerId) {
     return new Promise((resolve, reject) => {
-      DB.schema.hasTable("games").then(
+      DB.schema.hasTable('games').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table("games")
+              .from('games')
+              .where('ownerId', ownerId)
               .then(
                 (games) => {
                   resolve(games);
                 },
-                (err) => reject(err)
+                (err) => {
+                  reject(err);
+                }
               );
           } else {
             resolve();
@@ -511,34 +666,35 @@ const DB_EXPORTS = {
     });
   },
 
-  createVenue: function (name, country, city, seats) {
-    return DB.insert({ name, country, city, seats }, [
-      "id",
-      "name",
-      "country",
-      "city",
-      "seats",
-    ]).into("venues");
+  createVenue: function (name, country, city, seats, userId) {
+    return DB.insert({ name, country, city, seats, ownerId: userId }, [
+      'id',
+      'name',
+      'country',
+      'city',
+      'seats',
+    ]).into('venues');
   },
 
   updateVenue: function (id, name, country, city, seats) {
-    return DB("venues")
-      .where("id", id)
-      .returning(["id", "name", "country", "city", "seats"])
+    return DB('venues')
+      .where('id', id)
+      .returning(['id', 'name', 'country', 'city', 'seats'])
       .update({ name, country, city, seats, updated_at: new Date() });
   },
 
   deleteVenue: function (id) {
-    return DB("venues").where("id", id).del();
+    return DB('venues').where('id', id).del();
   },
 
-  getAllVenues: function () {
+  getAllVenues: function (ownerId) {
     return new Promise((resolve, reject) => {
-      DB.schema.hasTable("venues").then(
+      DB.schema.hasTable('venues').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table("venues")
+              .from('venues')
+              .where('ownerId', ownerId)
               .then(
                 (venues) => {
                   resolve(venues);
@@ -554,13 +710,14 @@ const DB_EXPORTS = {
     });
   },
 
-  getAllTeams: function () {
+  getAllTeams: function (ownerId) {
     return new Promise((resolve, reject) => {
-      DB.schema.hasTable("teams").then(
+      DB.schema.hasTable('teams').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table("teams")
+              .from('teams')
+              .where('ownerId', ownerId)
               .then(
                 (teams) => {
                   resolve(teams);
@@ -576,33 +733,33 @@ const DB_EXPORTS = {
     });
   },
   getTeamById: function (id) {
-    return DB.select().table("teams").where("id", id);
+    return DB.select().table('teams').where('id', id);
   },
 
-  createTeam: function (name, league, country, city) {
-    return DB.returning(["id", "name", "league", "country", "city"])
-      .insert({ name, league, country, city })
-      .into("teams");
+  createTeam: function (name, league, country, city, userId) {
+    return DB.returning(['id', 'name', 'league', 'country', 'city'])
+      .insert({ name, league, country, city, ownerId: userId })
+      .into('teams');
   },
 
   updateTeam: function (id, name, league, country, city) {
-    return DB("teams")
-      .where("id", id)
-      .returning(["id", "name", "league", "country", "city"])
+    return DB('teams')
+      .where('id', id)
+      .returning(['id', 'name', 'league', 'country', 'city'])
       .update({ name, league, country, city, updated_at: new Date() });
   },
 
   deleteTeam: function (id) {
-    return DB("teams").where("id", id).del();
+    return DB('teams').where('id', id).del();
   },
 
   getAllPlayers: function () {
     return new Promise((resolve, reject) => {
-      DB.schema.hasTable("players").then(
+      DB.schema.hasTable('players').then(
         (exists) => {
           if (exists) {
             DB.select()
-              .table("players")
+              .table('players')
               .then(
                 (players) => {
                   resolve(players);
@@ -620,35 +777,38 @@ const DB_EXPORTS = {
 
   getPlayersByTeam: getPlayersByTeamId,
 
-  addPlayers: function (players) {
+  addPlayers: function (players, userId) {
     players.forEach((player) => {
-      Object.assign(player, { stats: JSON.stringify(getPlayerStatsData()) });
+      Object.assign(player, {
+        stats: JSON.stringify(getPlayerStatsData()),
+        ownerId: userId,
+      });
     });
-    return DB.returning(["id", "name", "number", "team", "teamId", "stats"])
+    return DB.returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
       .insert(players)
-      .into("players");
+      .into('players');
   },
 
   updatePlayer: function ({ id, name, number, team, teamId }) {
-    return DB("players")
-      .where("id", id)
-      .returning(["id", "name", "number", "team", "teamId", "stats"])
+    return DB('players')
+      .where('id', id)
+      .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
       .update({ name, number, team, teamId, updated_at: new Date() });
   },
   deletePlayer: function (id) {
-    return DB("players").where("id", id).del();
+    return DB('players').where('id', id).del();
   },
   updatePlayerStats: function (gameId, playerId, stats) {
     return new Promise((resolve, reject) => {
-      DB("players")
-        .where("id", playerId)
+      DB('players')
+        .where('id', playerId)
         .select()
         .asCallback((err, rows) => {
           if (err) reject(err);
           const player = rows[0];
-          DB("players")
-            .where("id", playerId)
-            .returning(["id", "stats", "teamId"])
+          DB('players')
+            .where('id', playerId)
+            .returning(['id', 'stats', 'teamId'])
             .update({
               stats: JSON.stringify(
                 getUpdatedPlayerStats(player, gameId, stats)
@@ -663,14 +823,14 @@ const DB_EXPORTS = {
     });
   },
   updateGameStatus: function (gameId, status) {
-    return DB("games")
+    return DB('games')
       .where({ id: gameId })
-      .returning("status")
+      .returning('status')
       .update({ status, updated_at: new Date() });
   },
   updateTeamFouls: function (gameId, teamId, fouls) {
     return new Promise((resolve, reject) => {
-      DB("games")
+      DB('games')
         .where({ id: gameId })
         .asCallback((err, rows) => {
           if (err) reject(err);
@@ -696,7 +856,7 @@ const DB_EXPORTS = {
     });
   },
   endActiveGame: function (gameId) {
-    return DB("games")
+    return DB('games')
       .where({ id: gameId })
       .update({ active: false, updated_at: new Date() });
   },

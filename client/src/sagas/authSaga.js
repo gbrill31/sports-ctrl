@@ -1,0 +1,77 @@
+import { takeEvery, call, put } from 'redux-saga/effects';
+import { AUTH } from '../constants';
+import {
+  setLoggedIn,
+  setLoggedOut,
+  userSignupSuccess,
+  setLoggedInError,
+  setUpdatePassword,
+} from '../actions';
+import {
+  loginUser,
+  logoutUser,
+  verifyLogin,
+  registerUser,
+  updatePassword,
+} from '../api';
+
+function* handleUserSignup({ name, email, password, type, admin }) {
+  try {
+    yield call(registerUser, name, email, password, type, admin);
+    yield put(userSignupSuccess());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
+function* handleUserLogin({ data }) {
+  try {
+    const { user: loggedInUser, token, expires } = yield call(loginUser, data);
+    yield localStorage.setItem('token', token);
+    yield localStorage.setItem('expires', expires);
+    yield put(setLoggedIn(loggedInUser));
+  } catch (error) {
+    yield put(setLoggedInError(error));
+  }
+}
+
+function* handleUpdatePassword({ data }) {
+  try {
+    yield call(updatePassword, data);
+    yield put(setUpdatePassword());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
+function* handleUserLogout() {
+  try {
+    yield call(logoutUser);
+    yield put(setLoggedOut());
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
+function* handleVerifyLogin() {
+  try {
+    const user = yield call(verifyLogin);
+    yield put(setLoggedIn(user));
+  } catch (error) {
+    if (error.response.status === 401) {
+      yield localStorage.removeItem('token');
+      yield localStorage.removeItem('expires');
+      yield put(setLoggedIn(null));
+    }
+
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
+export default function* watchAuth() {
+  yield takeEvery(AUTH.ON_USER_SIGNUP, handleUserSignup);
+  yield takeEvery(AUTH.ON_USER_LOGIN, handleUserLogin);
+  yield takeEvery(AUTH.ON_USER_LOGOUT, handleUserLogout);
+  yield takeEvery(AUTH.ON_USER_VERIFY_LOGIN, handleVerifyLogin);
+  yield takeEvery(AUTH.ON_UPDATE_PASSWORD, handleUpdatePassword);
+}

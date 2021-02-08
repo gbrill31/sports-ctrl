@@ -1,33 +1,32 @@
-import React, { useState } from "react";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { CircularProgress } from "@material-ui/core";
+import React, { useState } from 'react';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CircularProgress } from '@material-ui/core';
 
-import PromptDialog from "../../PromptDialog/PromptDialog";
-import FilterListInput from "../../FilterListInput/FilterListInput";
-import VenueListItem from "../VenueListItem/VenueListItem";
-import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import NewVenueFormDialog from "../../VenuesManagementControl/NewVenueFormDIalog/NewVenueFormDialog";
+import PromptDialog from '../../PromptDialog/PromptDialog';
+import FilterListInput from '../../FilterListInput/FilterListInput';
+import VenueListItem from '../VenueListItem/VenueListItem';
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import NewVenueForm from '../../VenuesManagementControl/NewVenueForm/NewVenueForm';
 import {
   FlexContainer,
   ScrollableContainer,
   Button,
-  MainTitle,
   Icon,
-} from "../../../styledElements";
+} from '../../../styledElements';
 
-import useVenues from "../../../hooks/useVenues";
-import useDeleteVenue from "../../../hooks/useDeleteVenue";
-import useDb from "../../../hooks/useDb";
+import useVenues from '../../../hooks/reactQuery/useVenues';
+import useDeleteVenue from '../../../hooks/reactQuery/useDeleteVenue';
+import ModalDialog from '../../ModalDialog/ModalDialog';
+import { useQueryClient } from 'react-query';
 
 function VenuesList() {
+  const queryClient = useQueryClient();
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
   const [isNewVenueDialog, setIsNewVenueDialog] = useState(false);
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
 
   const [selectedVenue, setSelectedVenue] = useState(null);
-
-  const { status: dbStatus } = useDb();
 
   const openNewVenueDialog = () => setIsNewVenueDialog(true);
   const closeNewVenueDialog = () => setIsNewVenueDialog(false);
@@ -36,12 +35,16 @@ function VenuesList() {
 
   const deleteSelectedVenue = useDeleteVenue(closeDeleteVenuePrompt);
 
+  const cancelNewVenue = () => {
+    closeNewVenueDialog();
+  };
+
   const deleteVenue = () => {
     deleteSelectedVenue(selectedVenue.id);
   };
 
-  const { status, data: venues, isFetching } = useVenues(
-    dbStatus === "success"
+  const { isLoading, data: venues, isFetching } = useVenues(
+    queryClient.getQueryData('dbConnection') !== undefined
   );
 
   const openDeleteVenuePrompt = () => {
@@ -50,7 +53,7 @@ function VenuesList() {
 
   const getFilteredVenues = () => {
     const value = filterValue.toLowerCase();
-    return value !== ""
+    return value !== ''
       ? venues.filter(
           (venue) =>
             venue.name.toLowerCase().includes(value) ||
@@ -62,11 +65,10 @@ function VenuesList() {
 
   return (
     <>
-      <ComponentLoader loading={status === "loading"}>
+      <ComponentLoader loading={isLoading}>
         <FlexContainer fullWidth align="center">
-          <MainTitle>Venues</MainTitle>
           <FlexContainer>
-            <Button color="generic" onClick={openNewVenueDialog}>
+            <Button color="success" onClick={openNewVenueDialog}>
               New Venue
               <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
@@ -74,7 +76,7 @@ function VenuesList() {
             </Button>
           </FlexContainer>
           {isFetching && (
-            <CircularProgress size={25} style={{ color: "#fff" }} />
+            <CircularProgress size={25} style={{ color: '#fff' }} />
           )}
         </FlexContainer>
         <FlexContainer fullWidth padding="0">
@@ -115,9 +117,13 @@ function VenuesList() {
         handleClose={closeDeleteVenuePrompt}
         handleConfirm={deleteVenue}
       />
-      <NewVenueFormDialog
-        closeDialog={closeNewVenueDialog}
-        isOpenDialog={isNewVenueDialog}
+      <ModalDialog
+        component={NewVenueForm}
+        componentProps={{ cb: cancelNewVenue }}
+        isOpen={isNewVenueDialog}
+        title="Create a New Venue"
+        label="new venue"
+        handleCancel={cancelNewVenue}
       />
     </>
   );

@@ -1,18 +1,39 @@
+module.exports = function (app, passport) {
+  app.use((req, res, next) => {
+    res.header('Content-Type', 'application/json; charset=utf-8');
+    // console.log(req.isAuthenticated());
+    next();
+  });
+  app.use(function (req, res, next) {
+    res.redirectTo = function (route) {
+      res.header('redirectTo', route);
+    };
 
-// const request       = require('request');
-// const SpotifyConfig   = require('./spotify.js').config;
-// var jwt           = require('./jwt.js');
-
-module.exports = function(app){
-
-  app.use(function(req, res, next){
-
-    res.redirectTo = function(state){
-      res.header('redirectTo', state);
+    res.alertError = (message) => {
+      res.header(
+        'notification',
+        JSON.stringify({
+          type: 'error',
+          message,
+          options: {
+            autoClose: 5000,
+          },
+        })
+      );
+    };
+    res.alertSuccess = (message) => {
+      res.header(
+        'notification',
+        JSON.stringify({
+          type: 'success',
+          message,
+          options: {
+            autoClose: 5000,
+          },
+        })
+      );
     };
 
     next();
   });
-
-
 };

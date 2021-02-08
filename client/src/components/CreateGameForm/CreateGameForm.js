@@ -1,52 +1,61 @@
-import React, { useState } from "react";
-import { faBasketballBall } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import AutoCompleteInput from "../AutoCompleteInput/AutoCompleteInput";
-import { FlexContainer, MainTitle, Button, Icon } from "../../styledElements";
-import useVenues from "../../hooks/useVenues";
-import useTeams from "../../hooks/useTeams";
-import useDb from "../../hooks/useDb";
-import useActiveGame from "../../hooks/useActiveGame";
-import useCreateGame from "../../hooks/useCreateGame";
+import React, { useState } from 'react';
+import { faBasketballBall, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AutoCompleteInput from '../AutoCompleteInput/AutoCompleteInput';
+import {
+  FlexContainer,
+  Button,
+  Icon,
+  SubTitle,
+  GridContainer,
+} from '../../styledElements';
+import useVenues from '../../hooks/reactQuery/useVenues';
+import useTeams from '../../hooks/reactQuery/useTeams';
+import useActiveGame from '../../hooks/reactQuery/useActiveGame';
+import useCreateGame from '../../hooks/reactQuery/useCreateGame';
+import { useQueryClient } from 'react-query';
 
-export default function CreateGameForm() {
+export default function CreateGameForm({ cancelNewGame }) {
   const [homeTeam, setHomeTeam] = useState(null);
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
 
-  const { status: dbStatus } = useDb();
+  const queryClient = useQueryClient();
 
   const {
-    status: activeGameStatus,
+    isLoading: isActiveGameLoading,
     // data: activeGame,
     isFetching: isActiveGameFetching,
-  } = useActiveGame(dbStatus === "success");
+  } = useActiveGame(queryClient.getQueryData('dbConnection') !== undefined);
 
-  const isGameLoading = () =>
-    activeGameStatus === "loading" || isActiveGameFetching;
+  const isGameLoading = () => isActiveGameLoading || isActiveGameFetching;
 
   const {
-    status: venuesStatus,
+    isLoading: isVenuesLoading,
     data: venues,
     isFetching: isVenuesFetching,
-  } = useVenues(dbStatus === "success");
+  } = useVenues(queryClient.getQueryData('dbConnection') !== undefined);
+
+  const venuesLoading = () => isVenuesLoading || isVenuesFetching;
 
   const {
-    status: teamsStatus,
+    isLoading: isTeamsLoading,
     data: teams,
     isFetching: isTeamsFetching,
-  } = useTeams(dbStatus === "success");
+  } = useTeams(queryClient.getQueryData('dbConnection') !== undefined);
+
+  const teamsLoading = () => isTeamsLoading || isTeamsFetching;
 
   const createGame = useCreateGame();
 
-  const selectVanue = (venueId) => {
+  const selectVenue = (venueId) => {
     setVenue(venues.find((v) => v.id === venueId));
   };
 
-  const selecteHomeTeam = (teamId) => {
+  const selectHomeTeam = (teamId) => {
     setHomeTeam(teams.find((t) => t.getId() === teamId));
   };
-  const selecteAwayTeam = (teamId) => {
+  const selectAwayTeam = (teamId) => {
     setAwayTeam(teams.find((t) => t.getId() === teamId));
   };
 
@@ -68,49 +77,103 @@ export default function CreateGameForm() {
 
   return (
     <>
-      <MainTitle>Select Teams and Venue</MainTitle>
-      <FlexContainer align="baseline" justify="center">
-        <AutoCompleteInput
-          id="home"
-          color="#fff"
-          spaceLeft
-          selectedValue={homeTeam ? homeTeam.getName() : ""}
-          options={getTeamsSelectionList(awayTeam)}
-          getOptionLabel={(option) => option.name}
-          placeholder="Select Home Team"
-          onSelection={selecteHomeTeam}
-          loading={teamsStatus === "loading" || isTeamsFetching}
-        />
-        <MainTitle>VS</MainTitle>
-        <AutoCompleteInput
-          id="away"
-          color="#fff"
-          spaceLeft
-          selectedValue={awayTeam ? awayTeam.getName() : ""}
-          options={getTeamsSelectionList(homeTeam)}
-          getOptionLabel={(option) => option.name}
-          placeholder="Select Away Team"
-          onSelection={selecteAwayTeam}
-          loading={teamsStatus === "loading" || isTeamsFetching}
-        />
-        <MainTitle>AT</MainTitle>
-        <AutoCompleteInput
-          id="vanues"
-          color="#fff"
-          spaceLeft
-          selectedValue={venue ? venue.name : ""}
-          options={venues}
-          getOptionLabel={(option) => option.name}
-          placeholder="Select Vanue"
-          onSelection={selectVanue}
-          loading={venuesStatus === "loading" || isVenuesFetching}
-        />
-        <Button color="success" onClick={startNewGame} saving={isGameLoading()}>
-          {isGameLoading() ? "Starting..." : "Start Game"}
-          <Icon spaceLeft>
-            <FontAwesomeIcon icon={faBasketballBall} size="sm" />
-          </Icon>
-        </Button>
+      <FlexContainer
+        fullWidth
+        fullHeight
+        column
+        align="center"
+        justify="center"
+      >
+        <GridContainer columnsSpread="50% 50%" width="100%" noPadding>
+          <div style={{ gridRow: 1, padding: '10px' }}>
+            <Button color="error" onClick={cancelNewGame}>
+              Close
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faTimes} size="sm" />
+              </Icon>
+            </Button>
+          </div>
+          <FlexContainer
+            fullWidth
+            column
+            padding="0"
+            align="center"
+            justify="center"
+            style={{ gridRow: 2, gridColumn: '1 / 3' }}
+          >
+            <FlexContainer column padding="0" align="center" justify="center">
+              <SubTitle align="center" size="1.2rem">
+                Select Teams
+              </SubTitle>
+              <FlexContainer align="center" justify="center" noWrap padding="0">
+                <AutoCompleteInput
+                  id="home"
+                  color="#fff"
+                  selectedValue={homeTeam ? homeTeam.getName() : ''}
+                  options={getTeamsSelectionList(awayTeam)}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Home Team"
+                  onSelection={selectHomeTeam}
+                  loading={teamsLoading()}
+                />
+                <SubTitle align="center" size="1.2rem">
+                  VS
+                </SubTitle>
+                <AutoCompleteInput
+                  id="away"
+                  color="#fff"
+                  selectedValue={awayTeam ? awayTeam.getName() : ''}
+                  options={getTeamsSelectionList(homeTeam)}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Away Team"
+                  onSelection={selectAwayTeam}
+                  loading={teamsLoading()}
+                />
+              </FlexContainer>
+            </FlexContainer>
+            <FlexContainer column padding="0" align="center" justify="center">
+              <SubTitle align="center" size="1.2rem">
+                Select Venue
+              </SubTitle>
+              <FlexContainer align="center" justify="center" noWrap padding="0">
+                <AutoCompleteInput
+                  id="vanues"
+                  color="#fff"
+                  selectedValue={venue ? venue.name : ''}
+                  options={venues}
+                  getOptionLabel={(option) => option.name}
+                  placeholder="Select Vanue"
+                  onSelection={selectVenue}
+                  loading={venuesLoading()}
+                />
+              </FlexContainer>
+            </FlexContainer>
+          </FlexContainer>
+          <FlexContainer
+            style={{
+              gridColumnStart: 1,
+              gridColumnEnd: 3,
+            }}
+            align="center"
+            justify="center"
+            noWrap
+            fullWidth
+          >
+            <Button
+              color="success"
+              onClick={startNewGame}
+              saving={isGameLoading()}
+              width="200px"
+              height="60px"
+              disabled={!homeTeam || !awayTeam || !venue}
+            >
+              {isGameLoading() ? 'Starting...' : 'Start Game'}
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faBasketballBall} size="sm" />
+              </Icon>
+            </Button>
+          </FlexContainer>
+        </GridContainer>
       </FlexContainer>
     </>
   );

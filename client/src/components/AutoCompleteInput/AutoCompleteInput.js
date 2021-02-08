@@ -1,19 +1,29 @@
-import React, { useState, useEffect, useRef } from "react";
-import PropTypes from "prop-types";
-import { FlexContainer, Input, Icon, IconButton } from "../../styledElements";
-import styled from "styled-components";
-import shortid from "shortid";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import useFormInput from "../../hooks/useFormInput";
-import useOutsideMouseDown from "../../hooks/useOutsideMouseDown";
+import React, { useState, useEffect, useRef } from 'react';
+import PropTypes from 'prop-types';
+import { FlexContainer, Input, Icon, IconButton } from '../../styledElements';
+import styled, { css } from 'styled-components';
+import shortid from 'shortid';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useFormInput from '../../hooks/useFormInput';
+import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
 
 const OptionsContainer = styled.div`
   position: absolute;
-  top: 0;
-  display: flex;
+  top: -15px;
+  visibility: hidden;
   flex-flow: column;
   width: inherit;
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+
+  ${(props) =>
+    props.show &&
+    css`
+      visibility: visible;
+      opacity: 1;
+    `};
 `;
 
 const OptionItem = styled.div`
@@ -47,12 +57,12 @@ function AutoCompleteInput({
 }) {
   const [isOptionsExpanded, setIsOptionsExpanded] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const selection = useFormInput(selectedValue || "");
+  const selection = useFormInput(selectedValue || '');
   const ref = useRef(null);
   const elementRef = useRef(null);
 
   useEffect(() => {
-    if (selectedValue !== "") {
+    if (selectedValue !== '') {
       selection.setValue(selectedValue);
     }
   }, [selection, selectedValue]);
@@ -77,15 +87,15 @@ function AutoCompleteInput({
 
   const handleInputChange = (e) => {
     selection.onChange(e);
-    if (selection.value !== "" && !isOptionsExpanded) {
+    if (selection.value !== '' && !isOptionsExpanded) {
       setIsOptionsExpanded(true);
     }
   };
 
   const clearSelectionInput = () => {
     handleFocus();
-    onSelection("");
-    selection.setValue("");
+    onSelection('');
+    selection.setValue('');
   };
 
   const getFilteredOptions = () => {
@@ -127,21 +137,19 @@ function AutoCompleteInput({
         }
       </FlexContainer>
 
-      {isOptionsExpanded && (
-        <FlexContainer width={`${ref.current.clientWidth - 10}px`}>
-          <OptionsContainer>
-            {options &&
-              getFilteredOptions().map((option) => (
-                <OptionItem
-                  key={option.id || getOptionLabel(option)}
-                  onClick={handleSelection(option)}
-                >
-                  {getOptionLabel(option)}
-                </OptionItem>
-              ))}
-          </OptionsContainer>
-        </FlexContainer>
-      )}
+      <FlexContainer width={`${ref?.current?.clientWidth - 10}px`} padding="0">
+        <OptionsContainer show={isOptionsExpanded}>
+          {options &&
+            getFilteredOptions().map((option) => (
+              <OptionItem
+                key={option.id || getOptionLabel(option)}
+                onClick={handleSelection(option)}
+              >
+                {getOptionLabel(option)}
+              </OptionItem>
+            ))}
+        </OptionsContainer>
+      </FlexContainer>
     </FlexContainer>
   );
 }

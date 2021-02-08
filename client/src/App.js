@@ -1,54 +1,66 @@
-import React, { useEffect, useCallback } from "react";
-import { Route, Switch, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
-import styled, { ThemeProvider, createGlobalStyle } from "styled-components";
-import { HttpInterceptors } from "./utils";
-import Home from "./views/Home/Home";
-import Venues from "./views/VenuesManagement/VenuesManagement";
-import Teams from "./views/TeamsManagement/TeamsManagement";
-import GameManagement from "./views/GameManagement/GameManagement";
-import HeaderNav from "./components/HeaderNav/HeaderNav";
-import CreateGameForm from "./components/CreateGameForm/CreateGameForm";
+import React, { useState, useEffect, useCallback } from 'react';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import styled, { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { HttpInterceptors } from './utils';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import Home from './views/Home/Home';
 
-import "react-toastify/dist/ReactToastify.min.css";
+import HeaderNav from './components/HeaderNav/HeaderNav';
+import RegisterUser from './views/RegisterUser/RegisterUser';
+import UserLogin from './views/UserLogin/UserLogin';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 
-import { setRouteName } from "./actions";
+import './ext_css/all.min.css';
+import 'react-toastify/dist/ReactToastify.min.css';
+
+import { setRouteName, verifyLogin } from './actions';
+import UpdatePassword from './views/UpdatePassword/UpdatePassword';
+
+import bgPattern from './img/bgPattern.jpg';
+
+const queryClient = new QueryClient();
 
 const theme = {
   primary: {
-    color: "#272932",
-    hover: "#575C70",
+    color: '#272932',
+    hover: '#575C70',
   },
   secondary: {
-    color: "#173753",
-    hover: "#1F4A70",
+    color: '#173753',
+    hover: '#1F4A70',
   },
   error: {
-    color: "#DF2935",
-    hover: "#F92533",
+    color: '#DF2935',
+    hover: '#F92533',
   },
   success: {
-    color: "#0B9647",
-    hover: "#0DC45C",
+    color: '#0B9647',
+    hover: '#0DC45C',
   },
   generic: {
-    color: "#ED9B40",
-    hover: "#FFB056",
+    color: '#ED9B40',
+    hover: '#FFB056',
   },
   menu: {
-    color: "#7c7d7d",
-    hover: "#E6EAEB",
+    color: '#7c7d7d',
+    hover: '#E6EAEB',
   },
   scrollBar: {
-    bg: "#575C70",
-    thumb: "#E6EAEB",
+    bg: '#575C70',
+    thumb: '#E6EAEB',
   },
   disabled: {
-    bgColor: "#555",
-    color: "#888",
+    bgColor: '#555',
+    color: '#888',
   },
-  font: "Roboto, sans-serif",
+  basic: {
+    color: '#E6EAEB',
+    odd: '#c9caca',
+  },
+  bgColor: '#272932',
+  font: 'Roboto, sans-serif',
 };
 
 const AppGlobalStyle = createGlobalStyle`
@@ -79,7 +91,6 @@ const AppGlobalStyle = createGlobalStyle`
 
 &::-webkit-scrollbar-thumb
 {
-	/* border-radius: 10px; */
 	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: ${(props) => props.theme.scrollBar.thumb};
 }
@@ -99,10 +110,20 @@ const AppGlobalStyle = createGlobalStyle`
 `;
 
 const AppContainer = styled.div`
-  background-color: #272932;
+  background-color: ${(props) => props.theme.bgColor};
+  background-image: radial-gradient(
+      circle,
+      ${(props) => props.theme.primary.color} 50%,
+      ${(props) => props.theme.generic.color} 100%
+    ),
+    url(${bgPattern});
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  background-size: cover;
   position: relative;
   width: 100vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 `;
 
 const AppMainContent = styled.main`
@@ -120,39 +141,75 @@ function App() {
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const [isSetInterceptors, setIsSetInterceptors] = useState(false);
+  const { user, isLoggedIn, isLoggedInCheck } = useSelector(
+    (state) => state.auth
+  );
+
   const setCurrentRoute = useCallback(
     (route) => dispatch(setRouteName(route)),
     [dispatch]
   );
 
+  const verifyUserLogin = useCallback(() => dispatch(verifyLogin()), [
+    dispatch,
+  ]);
+
   useEffect(() => {
     HttpInterceptors.initInterceptors(history);
     setCurrentRoute(history.location.pathname);
-    const unlisten = history.listen((location) => {
+    verifyUserLogin();
+    const unListen = history.listen((location) => {
       setCurrentRoute(location.pathname);
     });
+    setIsSetInterceptors(true);
 
     return () => {
       HttpInterceptors.clearInterceptors();
-      unlisten();
+      unListen();
     };
-  }, [history, setCurrentRoute]);
+    // eslint-disable-next-line
+  }, []);
+
+  const isPrivateRoute = useCallback(
+    () =>
+      history.location.pathname !== '/userlogin' &&
+      history.location.pathname !== '/usersignup',
+    [history]
+  );
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const route = isPrivateRoute() ? history.location.pathname : '/';
+      history.push(route);
+    }
+  }, [isLoggedIn, history, isPrivateRoute]);
 
   return (
     <ThemeProvider theme={theme}>
       <AppGlobalStyle />
-      <AppContainer>
-        <HeaderNav />
-        <AppMainContent>
-          <Switch>
-            <Route exact path="/" render={() => <Home />} />
-            <Route exact path="/venues" render={() => <Venues />} />
-            <Route exact path="/teams" render={() => <Teams />} />
-            <Route exact path="/creategame" render={() => <CreateGameForm />} />
-            <Route exact path="/game" render={() => <GameManagement />} />
-          </Switch>
-        </AppMainContent>
-      </AppContainer>
+      {isSetInterceptors && isLoggedInCheck && (
+        <QueryClientProvider client={queryClient}>
+          <AppContainer>
+            <HeaderNav />
+            <AppMainContent>
+              <Switch>
+                <Route
+                  exact
+                  path="/usersignup"
+                  render={() => <RegisterUser />}
+                />
+                <Route exact path="/userlogin" render={() => <UserLogin />} />
+
+                <PrivateRoute
+                  path="/"
+                  component={user && user.firstLogin ? UpdatePassword : Home}
+                />
+              </Switch>
+            </AppMainContent>
+          </AppContainer>
+        </QueryClientProvider>
+      )}
     </ThemeProvider>
   );
 }

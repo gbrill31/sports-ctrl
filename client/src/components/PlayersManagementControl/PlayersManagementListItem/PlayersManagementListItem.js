@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import styled, { css } from "styled-components";
-import { faSave, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FlexContainer, Button, Icon, Input } from "../../../styledElements";
-import useFormInput from "../../../hooks/useFormInput";
-import useSavePlayers from "../../../hooks/useSavePlayers";
-import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
-import ItemActionsMenu from "../../ItemActionsMenu/ItemActionsMenu";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import styled, { css } from 'styled-components';
+import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FlexContainer, Button, Icon, Input } from '../../../styledElements';
+import useFormInput from '../../../hooks/useFormInput';
+import useSavePlayers from '../../../hooks/reactQuery/useSavePlayers';
+import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
+import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -25,7 +25,7 @@ const ItemContainer = styled.div`
     box-shadow: ${(props) =>
       !props.selected
         ? `0 2px 5px 1px ${props.theme.primary.hover} inset`
-        : ""};
+        : ''};
   }
 
   ${(props) =>
@@ -75,8 +75,8 @@ function PlayersManagementListItem({
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
 
-  const playerName = useFormInput("");
-  const playerNumber = useFormInput("");
+  const playerName = useFormInput('');
+  const playerNumber = useFormInput('');
 
   const isPlayerSelected = () => {
     return selectedPlayer && selectedPlayer.getId() === player.getId();
@@ -133,7 +133,7 @@ function PlayersManagementListItem({
         {isEditPlayer ? (
           <FlexContainer>
             <FlexContainer fullWidth justify="space-evenly" align="center">
-              <label style={{ width: "10px" }}>Name:</label>
+              <label style={{ width: '10px' }}>Name:</label>
               <Input
                 autoFocus
                 required
@@ -142,7 +142,7 @@ function PlayersManagementListItem({
                 id="name"
                 type="text"
                 placeholder={`Enter Player Name${
-                  !playerName.isValid ? " *" : ""
+                  !playerName.isValid ? ' *' : ''
                 }`}
                 value={playerName.value}
                 onChange={playerName.onChange}
@@ -151,7 +151,7 @@ function PlayersManagementListItem({
               />
             </FlexContainer>
             <FlexContainer fullWidth justify="space-evenly" align="center">
-              <label style={{ width: "10px" }}>Number:</label>
+              <label style={{ width: '10px' }}>Number:</label>
               <Input
                 required
                 ref={playerNumber.ref}
@@ -159,7 +159,7 @@ function PlayersManagementListItem({
                 id="number"
                 type="text"
                 placeholder={`Enter Player Number${
-                  !playerNumber.isValid ? " *" : ""
+                  !playerNumber.isValid ? ' *' : ''
                 }`}
                 value={playerNumber.value}
                 onChange={playerNumber.onChange}
@@ -175,7 +175,7 @@ function PlayersManagementListItem({
           </>
         )}
       </FlexContainer>
-      <FlexContainer justify={isEditPlayer ? "flex-end" : false}>
+      <FlexContainer justify={isEditPlayer ? 'flex-end' : false}>
         {isEditPlayer && (
           <>
             <Button
