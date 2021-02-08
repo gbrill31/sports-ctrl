@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import { setRouteName, verifyLogin } from './actions';
 import UpdatePassword from './views/UpdatePassword/UpdatePassword';
 
-import backgroundImage from './img/basketball_011.jpg';
+import bgPattern from './img/bgPattern.jpg';
 
 const queryClient = new QueryClient();
 
@@ -59,6 +59,7 @@ const theme = {
     color: '#E6EAEB',
     odd: '#c9caca',
   },
+  bgColor: '#272932',
   font: 'Roboto, sans-serif',
 };
 
@@ -90,7 +91,6 @@ const AppGlobalStyle = createGlobalStyle`
 
 &::-webkit-scrollbar-thumb
 {
-	/* border-radius: 10px; */
 	box-shadow: inset 0 0 6px rgba(0,0,0,.3);
 	background-color: ${(props) => props.theme.scrollBar.thumb};
 }
@@ -110,20 +110,20 @@ const AppGlobalStyle = createGlobalStyle`
 `;
 
 const AppContainer = styled.div`
-  background-color: #272932;
+  background-color: ${(props) => props.theme.bgColor};
+  background-image: radial-gradient(
+      circle,
+      ${(props) => props.theme.primary.color} 50%,
+      ${(props) => props.theme.generic.color} 100%
+    ),
+    url(${bgPattern});
+  background-repeat: no-repeat;
+  background-blend-mode: overlay;
+  background-size: cover;
   position: relative;
   width: 100vw;
   overflow-x: hidden;
   overflow-y: auto;
-  background-image: linear-gradient(
-      to right,
-      ${(props) => props.theme.primary.color} 0%,
-      ${(props) => props.theme.generic.color} 100%
-    ),
-    url(${backgroundImage});
-  background-repeat: no-repeat;
-  background-blend-mode: overlay;
-  background-size: cover;
 `;
 
 const AppMainContent = styled.main`

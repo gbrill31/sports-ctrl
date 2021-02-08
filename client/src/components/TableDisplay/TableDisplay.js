@@ -139,7 +139,7 @@ export default function TableDisplay({
   };
 
   const getRowsMaxIndex = () =>
-    itemsIndex + maxRows < items.length ? maxRows : items.length;
+    itemsIndex + maxRows < items.length ? itemsIndex + maxRows : items.length;
 
   const prevPage = () => {
     setItemsIndex(itemsIndex - maxRows);
@@ -147,7 +147,7 @@ export default function TableDisplay({
   };
 
   const nextPage = () => {
-    setItemsIndex(itemsIndex + getRowsMaxIndex());
+    setItemsIndex(itemsIndex + maxRows);
     setRowsPage(rowsPage + 1);
   };
 

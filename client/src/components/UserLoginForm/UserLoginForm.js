@@ -54,6 +54,7 @@ export default function UserLoginForm() {
         fullHeight
         padding="0"
         column
+        style={{ gridColumn: 2 }}
       >
         <MainTitle uppercase align="center">
           Sign In
