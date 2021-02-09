@@ -20,7 +20,7 @@ node_modules/
 .env.production.local
 /.idea/**
 .vscode/
-.env
+/.env
 *.pem
 
 npm-debug.log*
