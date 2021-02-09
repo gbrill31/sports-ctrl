@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import './import-fonts.css';
 import App from './App';
 
-import buildStore from './store';
+import buildStore from './redux/store';
 
 const store = buildStore();
 
@@ -16,4 +16,5 @@ ReactDOM.render(
       <App />
     </Provider>
   </BrowserRouter>,
-  document.getElementById('root'));
+  document.getElementById('root')
+);

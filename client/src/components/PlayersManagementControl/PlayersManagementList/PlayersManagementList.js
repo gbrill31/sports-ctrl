@@ -25,7 +25,7 @@ export default function PlayersManagementList() {
 
   const { isLoading, isSuccess, data: players, isFetching } = usePlayers(
     selectedTeam !== null,
-    selectedTeam?.getId()
+    selectedTeam?.id
   );
 
   const isPlayersLoading = () => isLoading || isFetching;
@@ -67,7 +67,7 @@ export default function PlayersManagementList() {
         <ComponentLoader loading={isPlayersLoading()} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0" capitalize>
-              {selectedTeam ? `${selectedTeam.getName()} Players` : ''}
+              {selectedTeam ? `${selectedTeam.name} Players` : ''}
             </MainTitle>
             {selectedTeam && (
               <Button color="success" onClick={openAddPlayersDialog}>

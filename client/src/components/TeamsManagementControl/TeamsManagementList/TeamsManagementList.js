@@ -19,7 +19,7 @@ import FilterListInput from '../../FilterListInput/FilterListInput';
 import useTeams from '../../../hooks/reactQuery/useTeams';
 import useDeleteTeam from '../../../hooks/reactQuery/useDeleteTeam';
 
-import { setSelectedTeam } from '../../../actions';
+import { setSelectedTeam } from '../../../redux';
 import ModalDialog from '../../ModalDialog/ModalDialog';
 import { useQueryClient } from 'react-query';
 
@@ -51,7 +51,7 @@ export default function ManagementTeamsList() {
 
   const deleteTeam = useDeleteTeam(closeDeletePrompt);
 
-  const deleteSelectedTeam = () => deleteTeam(selectedTeam.getId());
+  const deleteSelectedTeam = () => deleteTeam(selectedTeam.id);
 
   const cancelCreateTeamDialog = () => {
     closeCreateTeamDialog();
@@ -62,9 +62,9 @@ export default function ManagementTeamsList() {
     return value !== ''
       ? teams.filter(
           (team) =>
-            team.getName().includes(value) ||
-            team.getLeague().includes(value) ||
-            team.getCountry().includes(value)
+            team.name.includes(value) ||
+            team.league.includes(value) ||
+            team.country.includes(value)
         )
       : teams;
   };
@@ -116,7 +116,7 @@ export default function ManagementTeamsList() {
                   )
                   .map((team) => (
                     <TeamManagementListItem
-                      key={team.getId()}
+                      key={team.id}
                       team={team}
                       setSelectedTeam={setSelected}
                       selectedTeam={selectedTeam}
@@ -131,7 +131,7 @@ export default function ManagementTeamsList() {
         isOpen={isDeleteTeamPrompt}
         title="Delete Team"
         content={`Are you sure you want to delete "${
-          selectedTeam?.getName() || ''
+          selectedTeam?.name || ''
         }"?`}
         confirmText="Delete"
         handleClose={closeDeletePrompt}

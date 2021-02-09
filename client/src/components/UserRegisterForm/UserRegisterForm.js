@@ -13,7 +13,7 @@ import {
   Notification,
 } from '../../styledElements';
 
-import { userSignup } from '../../actions';
+import { userSignup } from '../../redux';
 import useRegisterSubUser from '../../hooks/reactQuery/useRegisterSubUser';
 import useUpdateSubUser from '../../hooks/reactQuery/useUpdateSubUser';
 
@@ -21,7 +21,7 @@ export default function UserRegisterForm({
   isSignupLink = false,
   isTitle = false,
   user,
-  userType,
+  userType = 'admin',
   cb,
 }) {
   const history = useHistory();

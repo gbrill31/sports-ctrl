@@ -10,7 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled, { css } from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { openLogoutPrompt } from '../../actions';
+import { openLogoutPrompt } from '../../redux';
 import { Icon, Link } from '../../styledElements';
 import { useHistory } from 'react-router-dom';
 

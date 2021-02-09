@@ -11,7 +11,7 @@ import {
   MainTitle,
 } from '../../styledElements';
 
-import { userLogin } from '../../actions';
+import { userLogin } from '../../redux';
 
 const FormContainer = styled.form`
   label {

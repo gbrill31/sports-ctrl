@@ -17,8 +17,6 @@ import {
   setGameEnd,
 } from './gamesControlActions';
 
-import { setSelectedTeam } from './teamsActions';
-
 import {
   startGameClock,
   stopGameClock,
@@ -33,29 +31,10 @@ import {
   setAttackClockTimeleft,
 } from './clocksActions';
 
-import { setRouteName } from './routeActions';
-
-import {
-  userSignup,
-  userSignupSuccess,
-  userLogin,
-  setLoggedIn,
-  setLoggedInError,
-  userLogout,
-  setLoggedOut,
-  verifyLogin,
-  openLogoutPrompt,
-  closeLogoutPrompt,
-  setUpdatePassword,
-  updatePassword,
-} from './authActions';
-
 export {
-  setRouteName,
   setGame,
   setGameScore,
   updateGameScore,
-  setSelectedTeam,
   startGameClock,
   stopGameClock,
   resetGameClock,
@@ -80,16 +59,4 @@ export {
   setEndGamePrompt,
   updateGameEnd,
   setGameEnd,
-  userSignup,
-  userSignupSuccess,
-  userLogin,
-  setLoggedIn,
-  setLoggedInError,
-  userLogout,
-  setLoggedOut,
-  verifyLogin,
-  openLogoutPrompt,
-  closeLogoutPrompt,
-  setUpdatePassword,
-  updatePassword,
 };

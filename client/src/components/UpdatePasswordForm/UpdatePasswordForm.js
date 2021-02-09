@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { Button, Input, FlexContainer, MainTitle } from '../../styledElements';
 
-import { updatePassword } from '../../actions';
+import { updatePassword } from '../../redux';
 
 const FormContainer = styled.form`
   label {

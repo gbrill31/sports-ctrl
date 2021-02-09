@@ -1,12 +1,12 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
-import { AUTH } from '../constants';
+
 import {
   setLoggedIn,
+  setLoggedInError,
   setLoggedOut,
   userSignupSuccess,
-  setLoggedInError,
-  setUpdatePassword,
-} from '../actions';
+  setUpdatePasswordSuccess,
+} from '../redux';
 import {
   loginUser,
   logoutUser,
@@ -15,8 +15,9 @@ import {
   updatePassword,
 } from '../api';
 
-function* handleUserSignup({ name, email, password, type, admin }) {
+function* handleUserSignup({ payload }) {
   try {
+    const { name, email, password, type, admin } = payload;
     yield call(registerUser, name, email, password, type, admin);
     yield put(userSignupSuccess());
   } catch (error) {
@@ -24,7 +25,7 @@ function* handleUserSignup({ name, email, password, type, admin }) {
   }
 }
 
-function* handleUserLogin({ data }) {
+function* handleUserLogin({ payload: data }) {
   try {
     const { user: loggedInUser, token, expires } = yield call(loginUser, data);
     yield localStorage.setItem('token', token);
@@ -35,10 +36,10 @@ function* handleUserLogin({ data }) {
   }
 }
 
-function* handleUpdatePassword({ data }) {
+function* handleUpdatePassword({ payload: data }) {
   try {
     yield call(updatePassword, data);
-    yield put(setUpdatePassword());
+    yield put(setUpdatePasswordSuccess());
   } catch (error) {
     // yield put(updatePlayerStatsError(error));
   }
@@ -69,9 +70,9 @@ function* handleVerifyLogin() {
 }
 
 export default function* watchAuth() {
-  yield takeEvery(AUTH.ON_USER_SIGNUP, handleUserSignup);
-  yield takeEvery(AUTH.ON_USER_LOGIN, handleUserLogin);
-  yield takeEvery(AUTH.ON_USER_LOGOUT, handleUserLogout);
-  yield takeEvery(AUTH.ON_USER_VERIFY_LOGIN, handleVerifyLogin);
-  yield takeEvery(AUTH.ON_UPDATE_PASSWORD, handleUpdatePassword);
+  yield takeEvery('auth/userSignup', handleUserSignup);
+  yield takeEvery('auth/userLogin', handleUserLogin);
+  yield takeEvery('auth/userLogout', handleUserLogout);
+  yield takeEvery('auth/verifyLogin', handleVerifyLogin);
+  yield takeEvery('auth/updatePassword', handleUpdatePassword);
 }

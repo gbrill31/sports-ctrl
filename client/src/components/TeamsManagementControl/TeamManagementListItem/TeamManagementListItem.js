@@ -72,17 +72,16 @@ function TeamManagementListItem({
   const [isEditTeam, setIsEditTeam] = useState(false);
 
   const selectTeam = () => {
-    if (!selectedTeam || selectedTeam.getId() !== team.getId())
-      setSelectedTeam(team);
+    if (!selectedTeam || selectedTeam.id !== team.id) setSelectedTeam(team);
   };
 
-  const teamName = useFormInput(team.getName());
-  const teamLeague = useFormInput(team.getLeague());
-  const teamCountry = useFormInput(team.getCountry());
-  const teamCity = useFormInput(team.getCity());
+  const teamName = useFormInput(team.name);
+  const teamLeague = useFormInput(team.league);
+  const teamCountry = useFormInput(team.country);
+  const teamCity = useFormInput(team.city);
 
   const isTeamSelected = useCallback(() => {
-    return selectedTeam && selectedTeam.getId() === team.getId();
+    return selectedTeam && selectedTeam.id === team.id;
   }, [selectedTeam, team]);
 
   useEffect(() => {
@@ -105,14 +104,14 @@ function TeamManagementListItem({
 
   const editTeam = (e) => {
     e.stopPropagation();
-    teamName.setValue(team.getName());
-    teamLeague.setValue(team.getLeague());
+    teamName.setValue(team.name);
+    teamLeague.setValue(team.league);
     setIsEditTeam(true);
   };
 
   const updateTeam = () => {
     saveTeam({
-      id: team.getId(),
+      id: team.id,
       name: teamName.value,
       league: teamLeague.value,
       country: teamCountry.value,
@@ -198,9 +197,9 @@ function TeamManagementListItem({
             </FlexContainer>
           ) : (
             <>
-              <h2>{team.getName()}</h2>
-              <h3>{team.getLeague()}</h3>
-              <h4>{`${team.getCity()}, ${team.getCountry()}`}</h4>
+              <h2>{team.name}</h2>
+              <h3>{team.league}</h3>
+              <h4>{`${team.city}, ${team.country}`}</h4>
             </>
           )}
         </FlexContainer>

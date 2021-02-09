@@ -15,7 +15,7 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import './ext_css/all.min.css';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import { setRouteName, verifyLogin } from './actions';
+import { setRouteName, verifyLogin } from './redux';
 import UpdatePassword from './views/UpdatePassword/UpdatePassword';
 
 import bgPattern from './img/bgPattern.jpg';

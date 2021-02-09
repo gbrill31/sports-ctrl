@@ -6,10 +6,9 @@ import Teams from '../TeamsManagement/TeamsManagement';
 import GameManagement from '../GameManagement/GameManagement';
 
 import PromptDialog from '../../components/PromptDialog/PromptDialog';
-import { closeLogoutPrompt, userLogout } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
 import UsersManagement from '../UsersManagement/UsersManagement';
-import { verifyLogin } from '../../actions';
+import { verifyLogin, userLogout, closeLogoutPrompt } from '../../redux';
 import GamesControl from '../../components/GamesControl/GamesControl';
 
 function Home() {
