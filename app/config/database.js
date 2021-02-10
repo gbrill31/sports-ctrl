@@ -322,20 +322,20 @@ function updateGameScore(gameId, teamId, points) {
       .where({ id: gameId })
       .asCallback((err, rows) => {
         if (err) return reject(err);
-        if(rows && rows.length){
-        const game = rows[0];
-        const isHomeTeam = game.homeId === teamId;
-        if (isHomeTeam) {
-          setHomeTeamScore(game, points)
-            .then((teamScore) => resolve(teamScore))
-            .catch((err) => reject(err));
+        if (rows && rows.length) {
+          const game = rows[0];
+          const isHomeTeam = game.homeId === teamId;
+          if (isHomeTeam) {
+            setHomeTeamScore(game, points)
+              .then((teamScore) => resolve(teamScore))
+              .catch((err) => reject(err));
+          } else {
+            setAwayTeamScore(game, points)
+              .then((teamScore) => resolve(teamScore))
+              .catch((err) => reject(err));
+          }
         } else {
-          setAwayTeamScore(game, points)
-            .then((teamScore) => resolve(teamScore))
-            .catch((err) => reject(err));
-        }
-        }else{
-          reject(err));
+          reject(err);
         }
       });
   });
