@@ -6,14 +6,14 @@ import {
   setLoggedOut,
   userSignupSuccess,
   setUpdatePasswordSuccess,
-} from '../redux';
+} from '../index';
 import {
   loginUser,
   logoutUser,
   verifyLogin,
   registerUser,
   updatePassword,
-} from '../api';
+} from '../../api';
 
 function* handleUserSignup({ payload }) {
   try {

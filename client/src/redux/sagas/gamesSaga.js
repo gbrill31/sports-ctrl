@@ -7,14 +7,14 @@ import {
   setGameStatus,
   setTeamFouls,
   setGameEnd,
-} from '../redux';
+} from '../index';
 import {
   updatePlayerStats,
   updateGameScore,
   updateGameStatus,
   updateTeamFouls,
   updateEndGame,
-} from '../api';
+} from '../../api';
 
 function* handleUpdatePlayerStats({ payload }) {
   try {

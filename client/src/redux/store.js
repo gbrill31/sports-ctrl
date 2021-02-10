@@ -9,7 +9,7 @@ import gameClockReducer from './slices/gameClockSlice';
 import attackClockReducer from './slices/attackClockSlice';
 import activeGamesRedcuer from './slices/gameControlSlice';
 
-import rootSaga from '../sagas';
+import rootSaga from './sagas';
 
 const rootReducer = combineReducers({
   game: activeGamesRedcuer,
