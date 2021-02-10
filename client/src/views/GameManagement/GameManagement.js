@@ -18,7 +18,7 @@ import {
   updateGameEnd,
   setGameSelectedPlayer,
   setIsPlayerStatsDialog,
-} from '../../actions';
+} from '../../redux';
 import ModalDialog from '../../components/ModalDialog/ModalDialog';
 import { useQueryClient } from 'react-query';
 
@@ -117,7 +117,7 @@ export default function GameManagement() {
         component={SetPlayerStats}
         isOpen={isSetPlayerStatsDialog}
         handleCancel={cancelSetPlayerStats}
-        title={`Set Player Game Stats - ${selectedPlayer?.getTeamName()}`}
+        title={`Set Player Game Stats - ${selectedPlayer?.team}`}
         label="set player stats"
         saving={isSaving}
       />

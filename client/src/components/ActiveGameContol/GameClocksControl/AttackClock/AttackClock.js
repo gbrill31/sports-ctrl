@@ -1,22 +1,22 @@
-import React, { useEffect, useCallback, useRef } from "react";
-import styled, { css } from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useCallback, useRef } from 'react';
+import styled, { css } from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { FlexContainer, Button, Icon } from "../../../../styledElements";
+import { FlexContainer, Button, Icon } from '../../../../styledElements';
 import {
   faHistory,
   faHandPaper,
   faStopwatch,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import clock from "../../../../workers/clock";
+import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
   convertMilliToSec,
   convertSecToMilli,
-} from "../../../../utils";
+} from '../../../../utils';
 
 import {
   startAttackClock,
@@ -25,7 +25,7 @@ import {
   resetAttackClock,
   setAttackClockTimeleft,
   setAttackClockStart,
-} from "../../../../actions";
+} from '../../../../redux';
 
 const Clock = styled.div`
   font-family: Led2;
@@ -101,7 +101,7 @@ export default function AttackClock() {
 
   const resetClock = useCallback(() => {
     resetMilliseconds();
-    localStorage.removeItem("attackClock");
+    localStorage.removeItem('attackClock');
     setTimeLeft(milliseconds.current);
     dispatch(resetAttackClock(getClockInitTime()));
   }, [dispatch, resetMilliseconds, getClockInitTime, setTimeLeft]);
@@ -114,7 +114,7 @@ export default function AttackClock() {
           ATTACK_CLOCK_OPTIONS
         )
       );
-      localStorage.setItem("attackClock", e.data.timeLeft);
+      localStorage.setItem('attackClock', e.data.timeLeft);
       milliseconds.current = e.data.timeLeft;
       setTimeLeft(e.data.timeLeft);
       if (e.data.timeLeft === 0) {
@@ -132,7 +132,7 @@ export default function AttackClock() {
 
   useEffect(() => {
     if (!attackClock && startTime) {
-      const savedStartTime = parseInt(localStorage.getItem("attackClock"));
+      const savedStartTime = parseInt(localStorage.getItem('attackClock'));
       milliseconds.current = !savedStartTime
         ? resetMilliseconds()
         : savedStartTime;
@@ -147,7 +147,7 @@ export default function AttackClock() {
       );
     }
     if (isReset) {
-      localStorage.removeItem("attackClock");
+      localStorage.removeItem('attackClock');
       resetMilliseconds();
       setTimeLeft(milliseconds.current);
       setClockValue(

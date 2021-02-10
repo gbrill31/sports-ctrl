@@ -1,13 +1,13 @@
-import React, { useState, useCallback } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import styled from "styled-components";
-import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import styled from 'styled-components';
+import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import ComponentLoader from "../../ComponentLoader/ComponentLoader";
-import { FlexContainer, Button, Icon } from "../../../styledElements";
+import ComponentLoader from '../../ComponentLoader/ComponentLoader';
+import { FlexContainer, Button, Icon } from '../../../styledElements';
 
-import { updateGameStatus } from "../../../actions";
+import { updateGameStatus } from '../../../redux';
 
 const QuarterContainer = styled.div`
   color: #fff;

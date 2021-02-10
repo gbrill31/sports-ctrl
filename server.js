@@ -32,40 +32,19 @@ app.use(cookieParser());
 
 app.use(cors());
 
-// const pg = require('pg');
-// const pgSession = require('connect-pg-simple')(session);
-
-// const pgPool = new pg.Pool({
-//   database: 'sportscontrol',
-// });
-// app.use(
-//   session({
-//     saveUninitialized: true,
-//     store: new pgSession({
-//       pool: pgPool,
-//     }),
-//     secret: process.env.COOKIE_SECRET,
-//     resave: false,
-//     cookie: { maxAge: 24 * 60 * 60 * 1000 }, // 1 day
-//   })
-// );
-
 app.use(logger('dev'));
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
   res.header('Access-Control-Allow-Origin', '*');
 
-  // Request methods you wish to allow
   res.header(
     'Access-Control-Allow-Methods',
     'GET, POST, OPTIONS, PUT, PATCH, DELETE'
   );
 
-  // Request headers you wish to allow
   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
 
-  // Pass to next layer of middleware
   next();
 });
 
@@ -92,7 +71,7 @@ app.use('/api/games', require('./app/routes/gamesRoutes'));
 app.use('/api/venues', require('./app/routes/venuesRoutes'));
 app.use('/api/teams', require('./app/routes/teamsRoutes'));
 app.use('/api/players', require('./app/routes/playersRoutes'));
-//The vue router should be last
+
 app.use('/', require('./app/routes/routes'));
 
 app.use(function (req, res, next) {

@@ -21,6 +21,7 @@ node_modules/
 /.idea/**
 .vscode/
 /.env
+/.codeinfo
 *.pem
 
 npm-debug.log*

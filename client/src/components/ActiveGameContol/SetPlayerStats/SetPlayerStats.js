@@ -18,7 +18,7 @@ import {
   updatePlayerStats,
   updateGameScore,
   updateTeamFouls,
-} from '../../../actions';
+} from '../../../redux';
 
 const StatsContainer = styled.div`
   background-color: #fff;
@@ -136,27 +136,36 @@ export default function SetPlayerStats() {
 
   const updateStats = useCallback(
     (playerId, data) =>
-      dispatch(updatePlayerStats(activeGameId, playerId, data)),
+      dispatch(updatePlayerStats({ gameId: activeGameId, playerId, data })),
     [dispatch, activeGameId]
   );
   const saveGameScore = useCallback(
-    (teamId, points) => dispatch(updateGameScore(activeGameId, teamId, points)),
+    (teamId, points) =>
+      dispatch(updateGameScore({ gameId: activeGameId, teamId, points })),
     [dispatch, activeGameId]
   );
   const saveTeamFouls = useCallback(
-    (teamId, fouls) => dispatch(updateTeamFouls(activeGameId, teamId, fouls)),
+    (teamId, fouls) =>
+      dispatch(updateTeamFouls({ gameId: activeGameId, teamId, fouls })),
     [dispatch, activeGameId]
   );
 
+  const getPlayerStatsData = useCallback(() => {
+    const foundStats = selectedPlayer.stats.find(
+      (game) => game.gameId === activeGameId
+    );
+    return foundStats ? foundStats.data : {};
+  }, [activeGameId, selectedPlayer]);
+
   useEffect(() => {
     if (selectedPlayer) {
-      setPlayerLocalStats(selectedPlayer.getStats(activeGameId).data);
+      setPlayerLocalStats(getPlayerStatsData());
       setIsEditPoints(false);
       pointsToAdd = 0;
       foulsToAdd = 0;
       pointToDelete = null;
     }
-  }, [selectedPlayer, setPlayerLocalStats, activeGameId]);
+  }, [selectedPlayer, setPlayerLocalStats, activeGameId, getPlayerStatsData]);
 
   const enableEditPoints = () => setIsEditPoints(true);
   const disableEditPoints = () => setIsEditPoints(false);
@@ -208,9 +217,9 @@ export default function SetPlayerStats() {
       };
     }
 
-    updateStats(selectedPlayer.getId(), statsData);
-    saveGameScore(selectedPlayer.getTeamId(), pointsToAdd);
-    saveTeamFouls(selectedPlayer.getTeamId(), foulsToAdd);
+    updateStats(selectedPlayer.id, statsData);
+    saveGameScore(selectedPlayer.teamId, pointsToAdd);
+    saveTeamFouls(selectedPlayer.teamId, foulsToAdd);
   };
 
   const initData = () => {
@@ -218,7 +227,7 @@ export default function SetPlayerStats() {
     setIsShowCourtMarker(false);
   };
 
-  const incremnetFouls = () => {
+  const incrementFouls = () => {
     if (playerLocalStats.FOULS < 5) {
       setPlayerLocalStats({
         ...playerLocalStats,
@@ -227,7 +236,7 @@ export default function SetPlayerStats() {
       foulsToAdd += 1;
     }
   };
-  const decremnetFouls = () => {
+  const decrementFouls = () => {
     if (playerLocalStats.FOULS > 0) {
       setPlayerLocalStats({
         ...playerLocalStats,
@@ -237,7 +246,7 @@ export default function SetPlayerStats() {
     }
   };
 
-  const incremnetFT = () => {
+  const incrementFT = () => {
     setPlayerLocalStats({
       ...playerLocalStats,
       FT: playerLocalStats.FT + 1,
@@ -245,7 +254,7 @@ export default function SetPlayerStats() {
     });
     pointsToAdd += 1;
   };
-  const decremnetFT = () => {
+  const decrementFT = () => {
     setPlayerLocalStats({
       ...playerLocalStats,
       FT: playerLocalStats.FT - 1,
@@ -308,8 +317,8 @@ export default function SetPlayerStats() {
       <FlexContainer column justify="center" align="center" padding="0">
         <StatsContainer>
           <FlexContainer fullWidth justify="center" align="center" padding="0">
-            <h2>{selectedPlayer?.getNumber()}</h2>
-            <h2 style={{ marginLeft: '10px' }}>{selectedPlayer?.getName()}</h2>
+            <h2>{selectedPlayer?.number}</h2>
+            <h2 style={{ marginLeft: '10px' }}>{selectedPlayer?.name}</h2>
             {playerLocalStats && (
               <>
                 <PlayerStatsDisplay stats={playerLocalStats} />
@@ -358,14 +367,14 @@ export default function SetPlayerStats() {
                       >
                         <h3>Free Throws</h3>
                         <FlexContainer>
-                          <Button onClick={incremnetFT} color="success">
+                          <Button onClick={incrementFT} color="success">
                             Add
                             <Icon spaceLeft>
                               <FontAwesomeIcon icon={faPlus} size="sm" />
                             </Icon>
                           </Button>
                           <Button
-                            onClick={decremnetFT}
+                            onClick={decrementFT}
                             color="primary"
                             disabled={playerLocalStats.FT === 0}
                           >
@@ -385,7 +394,7 @@ export default function SetPlayerStats() {
                         <h3>Fouls</h3>
                         <FlexContainer>
                           <Button
-                            onClick={incremnetFouls}
+                            onClick={incrementFouls}
                             color="success"
                             disabled={playerLocalStats.FOULS === 5}
                           >
@@ -395,7 +404,7 @@ export default function SetPlayerStats() {
                             </Icon>
                           </Button>
                           <Button
-                            onClick={decremnetFouls}
+                            onClick={decrementFouls}
                             color="primary"
                             disabled={playerLocalStats.FOULS === 0}
                           >

@@ -1,22 +1,20 @@
-import React, { useCallback, useEffect } from "react";
-import styled, { css } from "styled-components";
-import PropTypes from "prop-types";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useCallback, useEffect, useState } from 'react';
+import styled, { css } from 'styled-components';
+import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
-import PlayerStatsDisplay from "../../PlayerStatsDisplay/PlayerStatsDisplay";
+import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 
-import { FlexContainer } from "../../../styledElements";
+import { FlexContainer } from '../../../styledElements';
 
-import {
-  setIsPlayerStatsDialog,
-  setGameSelectedPlayer,
-} from "../../../actions";
+import { setIsPlayerStatsDialog, setGameSelectedPlayer } from '../../../redux';
+import moment from 'moment';
 
 const ItemContainer = styled.div`
   width: 100%;
   background-color: #fff;
   border-radius: ${(props) =>
-    props.roundLeft ? "15px 0 0 15px" : "0 15px 15px 0"};
+    props.roundLeft ? '15px 0 0 15px' : '0 15px 15px 0'};
   color: #333;
   text-transform: capitalize;
   margin-bottom: 15px;
@@ -67,6 +65,7 @@ const ShadowBox = styled.div`
 
 function PlayerGameControlItem({ player, gameId, roundLeft }) {
   const dispatch = useDispatch();
+  const [lastGameStats, setLastGameStats] = useState(null);
 
   const isSetStatsDialogOpen = useSelector(
     (state) => state.game.isSetPlayerStatsDialog
@@ -80,6 +79,28 @@ function PlayerGameControlItem({ player, gameId, roundLeft }) {
     () => dispatch(setIsPlayerStatsDialog(true)),
     [dispatch]
   );
+
+  const getPlayerStatsData = () => {
+    if (!gameId) {
+      return lastGameStats;
+    }
+    const foundStats = player.stats.find((game) => game.gameId === gameId);
+    return foundStats ? foundStats.data : {};
+  };
+
+  useEffect(() => {
+    if (player.stats.length) {
+      if (player.stats.length > 1) {
+        const stats = [...player.stats];
+        const recentGameStats = stats.sort((statA, statB) =>
+          moment(statB.gameDate).isBefore(statA.gameDate) ? -1 : 1
+        );
+        setLastGameStats(recentGameStats[0]);
+      } else {
+        setLastGameStats(player.stats[0]);
+      }
+    }
+  }, [player]);
 
   useEffect(() => {
     if (!isSetStatsDialogOpen) {
@@ -100,9 +121,11 @@ function PlayerGameControlItem({ player, gameId, roundLeft }) {
         roundLeft={roundLeft}
       >
         <FlexContainer justify="center" align="center" padding="0">
-          <h2>{player.getNumber()}</h2>
-          <h3>{player.getName()}</h3>
-          <PlayerStatsDisplay stats={player.getStatsData(gameId)} />
+          <h2>{player.number}</h2>
+          <h3>{player.name}</h3>
+          {lastGameStats ? (
+            <PlayerStatsDisplay stats={getPlayerStatsData()} />
+          ) : null}
         </FlexContainer>
         <ShadowBox />
       </ItemContainer>

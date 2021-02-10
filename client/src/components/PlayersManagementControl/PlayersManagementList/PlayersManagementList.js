@@ -51,8 +51,8 @@ export default function PlayersManagementList() {
     return value !== ''
       ? players.filter(
           (player) =>
-            player.getName().includes(value) ||
-            player.getNumber().toString().includes(value)
+            player.name.includes(value) ||
+            player.number.toString().includes(value)
         )
       : players;
   };
@@ -100,7 +100,7 @@ export default function PlayersManagementList() {
                   )
                   .map((player) => (
                     <PlayersManagementListItem
-                      key={player.getId()}
+                      key={player.id}
                       player={player}
                       selectedPlayer={selectedPlayer}
                       setSelectedPlayer={setSelected}
@@ -117,7 +117,7 @@ export default function PlayersManagementList() {
       <PromptDialog
         isOpen={isDeletePlayer}
         title="Delete Player"
-        content={`Are you sure you want to delete "${selectedPlayer?.getName()}"?`}
+        content={`Are you sure you want to delete "${selectedPlayer?.name}"?`}
         confirmText="Delete"
         handleClose={handleCancelPrompt}
         handleConfirm={deleteSelectedPlayer}

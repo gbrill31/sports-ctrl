@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
 import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,7 @@ import useFormInput from '../../../hooks/useFormInput';
 import useSavePlayers from '../../../hooks/reactQuery/useSavePlayers';
 import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
+import moment from 'moment';
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -74,12 +75,13 @@ function PlayersManagementListItem({
   deletePlayerPrompt,
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
+  const [lastGameStats, setLastGameStats] = useState(null);
 
   const playerName = useFormInput('');
   const playerNumber = useFormInput('');
 
   const isPlayerSelected = () => {
-    return selectedPlayer && selectedPlayer.getId() === player.getId();
+    return selectedPlayer && selectedPlayer.id === player.id;
   };
 
   const selectPlayer = () => {
@@ -107,20 +109,36 @@ function PlayersManagementListItem({
   const savePlayer = (e) => {
     e.stopPropagation();
     savePlayersToTeam({
-      id: player.getId(),
+      id: player.id,
       name: playerName.value,
       number: playerNumber.value,
-      team: player.getTeamName(),
-      teamId: player.getTeamId(),
+      team: player.team,
+      teamId: player.teamId,
     });
   };
 
   const editPlayer = (e) => {
     e.stopPropagation();
-    playerName.setValue(player.getName());
-    playerNumber.setValue(player.getNumber());
+    playerName.setValue(player.name);
+    playerNumber.setValue(player.number);
     setIsEditPlayer(true);
   };
+
+  useEffect(() => {
+    if (player.stats.length) {
+      if (player.stats.length > 1) {
+        const stats = [...player.stats];
+        const recentGameStats = stats.sort((statA, statB) =>
+          moment(statB.gameDate).isBefore(statA.gameDate) ? -1 : 1
+        );
+        setLastGameStats(recentGameStats[0]);
+      } else {
+        setLastGameStats(player.stats[0]);
+      }
+    } else {
+      setLastGameStats([]);
+    }
+  }, [player]);
 
   return (
     <ItemContainer selected={isPlayerSelected()} onClick={selectPlayer}>
@@ -170,8 +188,8 @@ function PlayersManagementListItem({
           </FlexContainer>
         ) : (
           <>
-            <h2>{player.getNumber()}</h2>
-            <h3>{player.getName()}</h3>
+            <h2>{player.number}</h2>
+            <h3>{player.name}</h3>
           </>
         )}
       </FlexContainer>
@@ -202,12 +220,12 @@ function PlayersManagementListItem({
         )}
       </FlexContainer>
       <ItemStats active={isPlayerSelected() && !isEditPlayer}>
-        {player.stats && (
+        {player.stats && lastGameStats && (
           <>
             <h4>Last Game</h4>
-            <h3>{player.getPlayedAgainst()}</h3>
+            <h3>{lastGameStats?.playedAgainst}</h3>
             <h4>Game Statistics</h4>
-            <PlayerStatsDisplay stats={player.getStatsData()} />
+            <PlayerStatsDisplay stats={lastGameStats.data} />
           </>
         )}
       </ItemStats>

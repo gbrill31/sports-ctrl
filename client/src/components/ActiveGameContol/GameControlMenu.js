@@ -20,14 +20,14 @@ import {
   startGameClock,
   stopGameClock,
   resetGameClock,
+  setGameClockStart,
   startAttackClock,
   stopAttackClock,
   resetAttackClock,
-  setGameClockStart,
   setAttackClockStart,
   resetTeamFouls,
   setEndGamePrompt,
-} from '../../actions';
+} from '../../redux';
 
 import {
   convertSecToDuration,

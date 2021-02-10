@@ -1,6 +1,6 @@
-import { setRouteName } from './slices/routes';
+import { setRouteName } from './slices/routesSlice';
 
-import { setSelectedTeam } from './slices/teams';
+import { setSelectedTeam } from './slices/teamsSlice';
 
 import {
   userSignup,
@@ -16,7 +16,43 @@ import {
   updatePassword,
   setUpdatePasswordSuccess,
   setUpdatePasswordFailed,
-} from './slices/auth';
+} from './slices/authSlice';
+
+import {
+  startGameClock,
+  stopGameClock,
+  resetGameClock,
+  setGameClock,
+  setGameClockStart,
+} from './slices/gameClockSlice';
+
+import {
+  startAttackClock,
+  stopAttackClock,
+  resetAttackClock,
+  setAttackClock,
+  setAttackClockStart,
+  setAttackClockTimeleft,
+} from './slices/attackClockSlice';
+
+import {
+  setGame,
+  setGameEnd,
+  setEndGamePrompt,
+  setGameScore,
+  setGameSelectedPlayer,
+  setGameStatus,
+  setIsPlayerStatsDialog,
+  setPlayerStats,
+  setTeamFouls,
+  updateGameEnd,
+  updateGameScore,
+  updateGameStatus,
+  updateTeamFouls,
+  updatePlayerStats,
+  updatePlayerStatsError,
+  resetTeamFouls,
+} from './slices/gameControlSlice';
 
 export {
   userSignup,
@@ -34,4 +70,31 @@ export {
   setUpdatePasswordFailed,
   setRouteName,
   setSelectedTeam,
+  startGameClock,
+  stopGameClock,
+  resetGameClock,
+  setGameClock,
+  setGameClockStart,
+  startAttackClock,
+  stopAttackClock,
+  resetAttackClock,
+  setAttackClock,
+  setAttackClockStart,
+  setAttackClockTimeleft,
+  setGame,
+  setGameEnd,
+  setEndGamePrompt,
+  setGameScore,
+  setGameSelectedPlayer,
+  setGameStatus,
+  setIsPlayerStatsDialog,
+  setPlayerStats,
+  setTeamFouls,
+  updateGameEnd,
+  updateGameScore,
+  updateGameStatus,
+  updateTeamFouls,
+  updatePlayerStats,
+  updatePlayerStatsError,
+  resetTeamFouls,
 };

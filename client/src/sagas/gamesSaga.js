@@ -1,6 +1,5 @@
-import { takeEvery, call, put } from "redux-saga/effects";
+import { takeEvery, call, put } from 'redux-saga/effects';
 
-import { GAMES } from "../constants";
 import {
   setPlayerStats,
   // updatePlayerStatsError,
@@ -8,41 +7,42 @@ import {
   setGameStatus,
   setTeamFouls,
   setGameEnd,
-} from "../actions";
+} from '../redux';
 import {
   updatePlayerStats,
   updateGameScore,
   updateGameStatus,
   updateTeamFouls,
   updateEndGame,
-} from "../api";
+} from '../api';
 
-function* handleUpdatePlayerStats({ gameId, playerId, data }) {
+function* handleUpdatePlayerStats({ payload }) {
   try {
+    const { gameId, playerId, data } = payload;
     const updatedPlayer = yield call(updatePlayerStats, gameId, playerId, data);
     yield put(
-      setPlayerStats(
-        updatedPlayer.id,
-        updatedPlayer.teamId,
-        updatedPlayer.stats
-      )
+      setPlayerStats({
+        ...updatedPlayer,
+      })
     );
   } catch (error) {
     // yield put(updatePlayerStatsError(error));
   }
 }
 
-function* handleSetGameScore({ gameId, teamId, points }) {
+function* handleSetGameScore({ payload }) {
   try {
+    const { gameId, teamId, points } = payload;
     const updatedScore = yield call(updateGameScore, gameId, teamId, points);
-    yield put(setGameScore(updatedScore.teamId, updatedScore.score));
+    yield put(setGameScore({ ...updatedScore }));
   } catch (error) {
     // yield put(updatePlayerStatsError(error));
   }
 }
 
-function* handleSetGameStatus({ gameId, status }) {
+function* handleSetGameStatus({ payload }) {
   try {
+    const { gameId, status } = payload;
     const newStatus = yield call(updateGameStatus, gameId, status);
     yield put(setGameStatus(newStatus));
   } catch (error) {
@@ -50,17 +50,19 @@ function* handleSetGameStatus({ gameId, status }) {
   }
 }
 
-function* handleSetTeamFouls({ gameId, teamId, fouls }) {
+function* handleSetTeamFouls({ payload }) {
   try {
+    const { gameId, teamId, fouls } = payload;
     const newFouls = yield call(updateTeamFouls, gameId, teamId, fouls);
-    yield put(setTeamFouls(newFouls.teamId, newFouls.fouls));
+    yield put(setTeamFouls({ ...newFouls }));
   } catch (error) {
     // yield put(updatePlayerStatsError(error));
   }
 }
 
-function* handleEndGame({ gameId }) {
+function* handleEndGame({ payload }) {
   try {
+    const { gameId } = payload;
     yield call(updateEndGame, gameId);
     yield put(setGameEnd());
   } catch (error) {
@@ -69,9 +71,10 @@ function* handleEndGame({ gameId }) {
 }
 
 export default function* watchDbConnection() {
-  yield takeEvery(GAMES.SET_PLAYER_STATS_PENDING, handleUpdatePlayerStats);
-  yield takeEvery(GAMES.SET_GAME_SCORE, handleSetGameScore);
-  yield takeEvery(GAMES.UPDATE_GAME_STATUS, handleSetGameStatus);
-  yield takeEvery(GAMES.UPDATE_TEAM_FOULS, handleSetTeamFouls);
-  yield takeEvery(GAMES.UPDATE_GAME_END, handleEndGame);
+  yield takeEvery('game/updatePlayerStats', handleUpdatePlayerStats);
+  yield takeEvery('game/updateGameScore', handleSetGameScore);
+  yield takeEvery('game/updateGameStatus', handleSetGameStatus);
+  yield takeEvery('game/updateTeamFouls', handleSetTeamFouls);
+  yield takeEvery('game/resetTeamFouls', handleSetTeamFouls);
+  yield takeEvery('game/updateGameEnd', handleEndGame);
 }

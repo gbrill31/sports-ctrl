@@ -1,15 +1,15 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-import PlayerControlItem from "../PlayerGameControlItem/PlayerGameControlItem";
-import FilterListInput from "../../FilterListInput/FilterListInput";
+import PlayerControlItem from '../PlayerGameControlItem/PlayerGameControlItem';
+import FilterListInput from '../../FilterListInput/FilterListInput';
 
 import {
   MainTitle,
   FlexContainer,
   ScrollableContainer,
-} from "../../../styledElements";
+} from '../../../styledElements';
 
 const TeamControlContainer = styled.div`
   /* padding: 0 15px 0 0; */
@@ -24,7 +24,7 @@ const ScoreContainer = styled.div`
 `;
 
 const FoulsContainer = styled.div`
-  color: ${(props) => (props.danger ? props.theme.error.color : "#fff")};
+  color: ${(props) => (props.danger ? props.theme.error.color : '#fff')};
   font-size: 2rem;
   font-weight: bold;
   margin: 0 5px;
@@ -39,7 +39,24 @@ function TeamGameControl({
   fouls,
   gameId,
 }) {
-  const [filterValue, setFilterValue] = useState("");
+  const [filterValue, setFilterValue] = useState('');
+
+  const getPlayers = (sortField, filterValue) => {
+    let players = [...team.players];
+    if (sortField) {
+      players = players.sort((playerA, playerB) =>
+        playerA[sortField] > playerB[sortField] ? 1 : -1
+      );
+    }
+    if (filterValue !== '') {
+      players = players.filter(
+        (player) =>
+          player.getName().includes(filterValue) ||
+          player.getNumber().includes(filterValue)
+      );
+    }
+    return players || [];
+  };
 
   return (
     team && (
@@ -51,7 +68,7 @@ function TeamGameControl({
           <ScoreContainer>{`${points}pt`}</ScoreContainer>
         </FlexContainer>
         <MainTitle align="center" capitalize>
-          {team.getName()}
+          {team.name}
         </MainTitle>
         <FoulsContainer danger={fouls > 3}>
           {`Team Fouls: ${fouls}`}
@@ -63,12 +80,12 @@ function TeamGameControl({
         />
         <ScrollableContainer heightDiff={370} fullWidth>
           <FlexContainer column align="center" borderRight={borderRight}>
-            {team.getPlayers("name", filterValue).map((player) => (
+            {getPlayers('name', filterValue).map((player) => (
               <PlayerControlItem
-                key={player.getId()}
+                key={player.id}
                 player={player}
                 gameId={gameId}
-                roundLeft={teamLocation === "home"}
+                roundLeft={teamLocation === 'home'}
               />
             ))}
           </FlexContainer>

@@ -1,24 +1,24 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
-import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { FlexContainer, Button, Icon } from "../../../../styledElements";
+import { FlexContainer, Button, Icon } from '../../../../styledElements';
 import {
   faHistory,
   faHandPaper,
   faStopwatch,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import PromptDialog from "../../../PromptDialog/PromptDialog";
+import PromptDialog from '../../../PromptDialog/PromptDialog';
 
-import clock from "../../../../workers/clock";
+import clock from '../../../../workers/clock';
 import {
   WebWorker,
   convertSecToDuration,
   convertMilliToSec,
   convertMinToMilli,
-} from "../../../../utils";
+} from '../../../../utils';
 
 import {
   startGameClock,
@@ -26,7 +26,7 @@ import {
   setGameClock,
   resetGameClock,
   setGameClockStart,
-} from "../../../../actions";
+} from '../../../../redux';
 
 const Clock = styled.div`
   font-family: Led2;
@@ -80,7 +80,7 @@ export default function GameClock() {
   const resetClock = useCallback(
     (value) => {
       resetMilliseconds();
-      localStorage.removeItem("gameClock");
+      localStorage.removeItem('gameClock');
       dispatch(resetGameClock(value));
     },
     [dispatch, resetMilliseconds]
@@ -94,7 +94,7 @@ export default function GameClock() {
     (e) => {
       milliseconds.current = e.data.timeLeft;
       setClockValue(convertSecToDuration(convertMilliToSec(e.data.timeLeft)));
-      localStorage.setItem("gameClock", e.data.timeLeft);
+      localStorage.setItem('gameClock', e.data.timeLeft);
       if (milliseconds.current === 0) {
         stopClock();
       }
@@ -110,7 +110,7 @@ export default function GameClock() {
 
   useEffect(() => {
     if (!gameClock && startTime) {
-      const savedStartTime = parseInt(localStorage.getItem("gameClock"));
+      const savedStartTime = parseInt(localStorage.getItem('gameClock'));
       milliseconds.current = !savedStartTime
         ? resetMilliseconds()
         : savedStartTime;
@@ -123,7 +123,7 @@ export default function GameClock() {
       );
     }
     if (isReset) {
-      localStorage.removeItem("gameClock");
+      localStorage.removeItem('gameClock');
       resetMilliseconds();
       setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
     }

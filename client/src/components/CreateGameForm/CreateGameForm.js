@@ -53,18 +53,18 @@ export default function CreateGameForm({ cancelNewGame }) {
   };
 
   const selectHomeTeam = (teamId) => {
-    setHomeTeam(teams.find((t) => t.getId() === teamId));
+    setHomeTeam(teams.find((t) => t.id === teamId));
   };
   const selectAwayTeam = (teamId) => {
-    setAwayTeam(teams.find((t) => t.getId() === teamId));
+    setAwayTeam(teams.find((t) => t.id === teamId));
   };
 
   const startNewGame = () => {
     const game = {
-      home: homeTeam.getName(),
-      homeId: homeTeam.getId(),
-      away: awayTeam.getName(),
-      awayId: awayTeam.getId(),
+      home: homeTeam.name,
+      homeId: homeTeam.id,
+      away: awayTeam.name,
+      awayId: awayTeam.id,
       venue: venue.name,
       active: true,
     };
@@ -72,7 +72,7 @@ export default function CreateGameForm({ cancelNewGame }) {
   };
 
   const getTeamsSelectionList = (team) => {
-    return team ? teams.filter((t) => t.getId() !== team.getId()) : teams;
+    return team ? teams.filter((t) => t.id !== team.id) : teams;
   };
 
   return (
@@ -109,7 +109,7 @@ export default function CreateGameForm({ cancelNewGame }) {
                 <AutoCompleteInput
                   id="home"
                   color="#fff"
-                  selectedValue={homeTeam ? homeTeam.getName() : ''}
+                  selectedValue={homeTeam ? homeTeam.name : ''}
                   options={getTeamsSelectionList(awayTeam)}
                   getOptionLabel={(option) => option.name}
                   placeholder="Select Home Team"
@@ -122,7 +122,7 @@ export default function CreateGameForm({ cancelNewGame }) {
                 <AutoCompleteInput
                   id="away"
                   color="#fff"
-                  selectedValue={awayTeam ? awayTeam.getName() : ''}
+                  selectedValue={awayTeam ? awayTeam.name : ''}
                   options={getTeamsSelectionList(homeTeam)}
                   getOptionLabel={(option) => option.name}
                   placeholder="Select Away Team"

@@ -322,7 +322,7 @@ function updateGameScore(gameId, teamId, points) {
       .where({ id: gameId })
       .asCallback((err, rows) => {
         if (err) return reject(err);
-
+        if(rows && rows.length){
         const game = rows[0];
         const isHomeTeam = game.homeId === teamId;
         if (isHomeTeam) {
@@ -333,6 +333,9 @@ function updateGameScore(gameId, teamId, points) {
           setAwayTeamScore(game, points)
             .then((teamScore) => resolve(teamScore))
             .catch((err) => reject(err));
+        }
+        }else{
+          reject(err));
         }
       });
   });
@@ -805,20 +808,24 @@ const DB_EXPORTS = {
         .select()
         .asCallback((err, rows) => {
           if (err) reject(err);
-          const player = rows[0];
-          DB('players')
-            .where('id', playerId)
-            .returning(['id', 'stats', 'teamId'])
-            .update({
-              stats: JSON.stringify(
-                getUpdatedPlayerStats(player, gameId, stats)
-              ),
-              updated_at: new Date(),
-            })
-            .then((player) => {
-              resolve(player[0]);
-            })
-            .catch((err) => reject(err));
+          if (rows && rows.length) {
+            const player = rows[0];
+            DB('players')
+              .where('id', playerId)
+              .returning(['id', 'stats', 'teamId'])
+              .update({
+                stats: JSON.stringify(
+                  getUpdatedPlayerStats(player, gameId, stats)
+                ),
+                updated_at: new Date(),
+              })
+              .then((player) => {
+                resolve(player[0]);
+              })
+              .catch((err) => reject(err));
+          } else {
+            reject(err);
+          }
         });
     });
   },
@@ -834,23 +841,26 @@ const DB_EXPORTS = {
         .where({ id: gameId })
         .asCallback((err, rows) => {
           if (err) reject(err);
-
-          const game = rows[0];
-          if (teamId) {
-            const isHomeTeam = game.homeId === teamId;
-            if (isHomeTeam) {
-              setHomeTeamFouls(game, fouls)
-                .then((teamFouls) => resolve(teamFouls))
-                .catch((err) => reject(err));
+          if (rows && rows.length) {
+            const game = rows[0];
+            if (teamId) {
+              const isHomeTeam = game.homeId === teamId;
+              if (isHomeTeam) {
+                setHomeTeamFouls(game, fouls)
+                  .then((teamFouls) => resolve(teamFouls))
+                  .catch((err) => reject(err));
+              } else {
+                setAwayTeamFouls(game, fouls)
+                  .then((teamFouls) => resolve(teamFouls))
+                  .catch((err) => reject(err));
+              }
             } else {
-              setAwayTeamFouls(game, fouls)
-                .then((teamFouls) => resolve(teamFouls))
+              resetTeamsFouls(game)
+                .then((id) => resolve(id))
                 .catch((err) => reject(err));
             }
           } else {
-            resetTeamsFouls(game)
-              .then((id) => resolve(id))
-              .catch((err) => reject(err));
+            reject(err);
           }
         });
     });

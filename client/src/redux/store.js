@@ -1,9 +1,24 @@
+import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import createSagaMiddleware from 'redux-saga';
 
-import rootReducer from '../reducers';
+import authReducer from './slices/authSlice';
+import routesReducer from './slices/routesSlice';
+import teamsReducer from './slices/teamsSlice';
+import gameClockReducer from './slices/gameClockSlice';
+import attackClockReducer from './slices/attackClockSlice';
+import activeGamesRedcuer from './slices/gameControlSlice';
 
 import rootSaga from '../sagas';
+
+const rootReducer = combineReducers({
+  game: activeGamesRedcuer,
+  routes: routesReducer,
+  teams: teamsReducer,
+  gameClock: gameClockReducer,
+  attackClock: attackClockReducer,
+  auth: authReducer,
+});
 
 const buildStore = () => {
   const sagaMiddleware = createSagaMiddleware();
