@@ -7,25 +7,23 @@ import routesReducer from './slices/routesSlice';
 import teamsReducer from './slices/teamsSlice';
 import gameClockReducer from './slices/gameClockSlice';
 import attackClockReducer from './slices/attackClockSlice';
-import activeGamesRedcuer from './slices/gameControlSlice';
+import activeGamesReducer from './slices/gameControlSlice';
 
 import rootSaga from './sagas';
-
-const rootReducer = combineReducers({
-  game: activeGamesRedcuer,
-  routes: routesReducer,
-  teams: teamsReducer,
-  gameClock: gameClockReducer,
-  attackClock: attackClockReducer,
-  auth: authReducer,
-});
 
 const buildStore = () => {
   const sagaMiddleware = createSagaMiddleware();
   const isDev = process.env.NODE_ENV === 'development';
 
   const store = configureStore({
-    reducer: rootReducer,
+    reducer: combineReducers({
+      game: activeGamesReducer,
+      routes: routesReducer,
+      teams: teamsReducer,
+      gameClock: gameClockReducer,
+      attackClock: attackClockReducer,
+      auth: authReducer,
+    }),
     middleware: () => [
       ...getDefaultMiddleware({ thunk: false }),
       sagaMiddleware,

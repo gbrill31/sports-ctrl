@@ -15,6 +15,7 @@ import { Icon, Link } from '../../styledElements';
 import { useHistory } from 'react-router-dom';
 
 import useOutsideMouseDown from '../../hooks/useOutsideMouseDown';
+import { isFullControl } from '../../services/userPermissions';
 
 const UserMenuContainer = styled.div`
   color: #fff;
@@ -149,6 +150,7 @@ export default function UserMenu() {
         color: 'primary',
         fontSize: '0.9rem',
         spacer: true,
+        enabled: true,
         icon: <GiBasketballJersey />,
       },
       {
@@ -157,6 +159,7 @@ export default function UserMenu() {
         color: 'primary',
         fontSize: '0.9rem',
         spacer: true,
+        enabled: true,
         icon: <FontAwesomeIcon icon={faMapMarkedAlt} size="sm" />,
       },
       {
@@ -165,10 +168,11 @@ export default function UserMenu() {
         color: 'primary',
         fontSize: '0.9rem',
         spacer: true,
+        enabled: isFullControl(user),
         icon: <FontAwesomeIcon icon={faUsers} size="sm" />,
       },
     ],
-    []
+    [user]
   );
 
   return isLoggedIn && !user.firstLogin ? (
@@ -187,27 +191,29 @@ export default function UserMenu() {
           </UserLogout>
         </UserInfoContainer>
         <DropdownMenu show={isMenuOpen}>
-          {MENU_ITEMS.map((item) => (
-            <MenuItem
-              key={item.title}
-              color={item.color}
-              onClick={item.onclick || goToRoute(item.route)}
-              spacer={item.spacer}
-              current={item.route === history.location.pathname}
-            >
-              <Icon spaceRight spaceLeft>
-                {item.icon}
-              </Icon>
-              <Link
-                padding="0"
-                margin="0"
-                color="inherit"
-                fontSize={item.fontSize}
+          {MENU_ITEMS.map((item) => {
+            return item.enabled ? (
+              <MenuItem
+                key={item.title}
+                color={item.color}
+                onClick={item.onclick || goToRoute(item.route)}
+                spacer={item.spacer}
+                current={item.route === history.location.pathname}
               >
-                <span style={{ marginLeft: '5px' }}>{item.title}</span>
-              </Link>
-            </MenuItem>
-          ))}
+                <Icon spaceRight spaceLeft>
+                  {item.icon}
+                </Icon>
+                <Link
+                  padding="0"
+                  margin="0"
+                  color="inherit"
+                  fontSize={item.fontSize}
+                >
+                  <span style={{ marginLeft: '5px' }}>{item.title}</span>
+                </Link>
+              </MenuItem>
+            ) : null;
+          })}
         </DropdownMenu>
       </UserMenuContainer>
     </>

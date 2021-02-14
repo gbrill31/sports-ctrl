@@ -8,6 +8,7 @@ import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FlexContainer, Button, Icon, Input } from '../../../styledElements';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
+import { isFullControl } from '../../../services/userPermissions';
 
 const ItemContainer = styled.div`
   width: 25%;
@@ -68,6 +69,7 @@ function VenueListItem({
   deleteVenuePrompt,
   selectedVenue,
   setSelectedVenue,
+  user,
 }) {
   const [isEditVenue, setIsEditVenue] = useState(false);
 
@@ -113,7 +115,7 @@ function VenueListItem({
       <ItemActionsMenu
         editItem={editVenue}
         deleteItem={deleteVenue}
-        isShow={isVenueSelected() && !isEditVenue}
+        isShow={isFullControl(user) && isVenueSelected() && !isEditVenue}
       />
       {isEditVenue ? (
         <>

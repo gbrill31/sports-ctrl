@@ -22,6 +22,7 @@ import useDeleteTeam from '../../../hooks/reactQuery/useDeleteTeam';
 import { setSelectedTeam } from '../../../redux';
 import ModalDialog from '../../ModalDialog/ModalDialog';
 import { useQueryClient } from 'react-query';
+import { isFullControl } from '../../../services/userPermissions';
 
 export default function ManagementTeamsList() {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ export default function ManagementTeamsList() {
   );
 
   const { selected: selectedTeam } = useSelector((state) => state.teams);
+  const { user } = useSelector((state) => state.auth);
 
   const [filterValue, setFilterValue] = useState('');
   const [isDeleteTeamPrompt, setIsDeleteTeamPrompt] = useState(false);
@@ -89,12 +91,14 @@ export default function ManagementTeamsList() {
         <ComponentLoader loading={status === 'loading'} size={100}>
           <FlexContainer fullWidth align="center">
             <MainTitle margin="0">Teams</MainTitle>
-            <Button color="success" onClick={openCreateTeamDialog}>
-              New Team
-              <Icon spaceLeft>
-                <FontAwesomeIcon icon={faPlus} size="sm" />
-              </Icon>
-            </Button>
+            {isFullControl(user) ? (
+              <Button color="success" onClick={openCreateTeamDialog}>
+                New Team
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faPlus} size="sm" />
+                </Icon>
+              </Button>
+            ) : null}
             {isFetching && (
               <CircularProgress size={25} style={{ color: '#fff' }} />
             )}
@@ -121,6 +125,7 @@ export default function ManagementTeamsList() {
                       setSelectedTeam={setSelected}
                       selectedTeam={selectedTeam}
                       deleteTeamPrompt={deleteTeamPrompt}
+                      user={user}
                     />
                   ))}
             </FlexContainer>

@@ -8,6 +8,8 @@ import useFormInput from '../../../hooks/useFormInput';
 import useSaveTeam from '../../../hooks/reactQuery/useSaveTeam';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 
+import { isFullControl } from '../../../services/userPermissions';
+
 const ItemContainer = styled.div`
   width: 90%;
   border-radius: 0 15px 15px 0;
@@ -68,6 +70,7 @@ function TeamManagementListItem({
   deleteTeamPrompt,
   selectedTeam,
   setSelectedTeam,
+  user,
 }) {
   const [isEditTeam, setIsEditTeam] = useState(false);
 
@@ -125,7 +128,7 @@ function TeamManagementListItem({
         <ItemActionsMenu
           editItem={editTeam}
           deleteItem={deleteTeam}
-          isShow={isTeamSelected() && !isEditTeam}
+          isShow={isFullControl(user) && isTeamSelected() && !isEditTeam}
         />
         <FlexContainer align="baseline">
           {isEditTeam ? (

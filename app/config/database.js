@@ -438,7 +438,7 @@ const DB_EXPORTS = {
   updatePassword: function (user, salt, hash) {
     return DB('users')
       .where('id', user.id)
-      .update({ salt, hash, firstLogin: user.firstLogin ? false : false });
+      .update({ salt, hash, firstLogin: false });
   },
 
   findUser: function (email) {

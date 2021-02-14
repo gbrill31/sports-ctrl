@@ -19,9 +19,11 @@ import FilterListInput from '../../FilterListInput/FilterListInput';
 import usePlayers from '../../../hooks/reactQuery/usePlayers';
 import useDeletePlayer from '../../../hooks/reactQuery/useDeletePlayer';
 import ModalDialog from '../../ModalDialog/ModalDialog';
+import { isFullControl } from '../../../services/userPermissions';
 
 export default function PlayersManagementList() {
-  const selectedTeam = useSelector((state) => state.teams.selected);
+  const { selected: selectedTeam } = useSelector((state) => state.teams);
+  const { user } = useSelector((state) => state.auth);
 
   const { isLoading, isSuccess, data: players, isFetching } = usePlayers(
     selectedTeam !== null,
@@ -69,7 +71,7 @@ export default function PlayersManagementList() {
             <MainTitle margin="0" capitalize>
               {selectedTeam ? `${selectedTeam.name} Players` : ''}
             </MainTitle>
-            {selectedTeam && (
+            {isFullControl(user) && selectedTeam && (
               <Button color="success" onClick={openAddPlayersDialog}>
                 Add Players
                 <Icon spaceLeft>
@@ -105,6 +107,7 @@ export default function PlayersManagementList() {
                       selectedPlayer={selectedPlayer}
                       setSelectedPlayer={setSelected}
                       deletePlayerPrompt={openDeletePlayerPrompt}
+                      user={user}
                     />
                   ))
               ) : (

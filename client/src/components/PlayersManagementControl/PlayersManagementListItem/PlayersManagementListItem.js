@@ -10,6 +10,8 @@ import PlayerStatsDisplay from '../../PlayerStatsDisplay/PlayerStatsDisplay';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 import moment from 'moment';
 
+import { isFullControl } from '../../../services/userPermissions';
+
 const ItemContainer = styled.div`
   width: 90%;
   background-color: #fff;
@@ -73,6 +75,7 @@ function PlayersManagementListItem({
   selectedPlayer,
   setSelectedPlayer,
   deletePlayerPrompt,
+  user,
 }) {
   const [isEditPlayer, setIsEditPlayer] = useState(false);
   const [lastGameStats, setLastGameStats] = useState(null);
@@ -145,7 +148,7 @@ function PlayersManagementListItem({
       <ItemActionsMenu
         editItem={editPlayer}
         deleteItem={deletePlayer}
-        isShow={isPlayerSelected() && !isEditPlayer}
+        isShow={isFullControl(user) && isPlayerSelected() && !isEditPlayer}
       />
       <FlexContainer align="baseline" padding="0">
         {isEditPlayer ? (

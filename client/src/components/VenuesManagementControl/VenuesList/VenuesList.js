@@ -19,12 +19,16 @@ import useVenues from '../../../hooks/reactQuery/useVenues';
 import useDeleteVenue from '../../../hooks/reactQuery/useDeleteVenue';
 import ModalDialog from '../../ModalDialog/ModalDialog';
 import { useQueryClient } from 'react-query';
+import { useSelector } from 'react-redux';
+import { isFullControl } from '../../../services/userPermissions';
 
 function VenuesList() {
   const queryClient = useQueryClient();
   const [isDeleteVenuePrompt, setIsDeleteVenuePrompt] = useState(false);
   const [isNewVenueDialog, setIsNewVenueDialog] = useState(false);
   const [filterValue, setFilterValue] = useState('');
+
+  const { user } = useSelector((state) => state.auth);
 
   const [selectedVenue, setSelectedVenue] = useState(null);
 
@@ -66,19 +70,21 @@ function VenuesList() {
   return (
     <>
       <ComponentLoader loading={isLoading}>
-        <FlexContainer fullWidth align="center">
-          <FlexContainer>
-            <Button color="success" onClick={openNewVenueDialog}>
-              New Venue
-              <Icon spaceLeft>
-                <FontAwesomeIcon icon={faPlus} size="sm" />
-              </Icon>
-            </Button>
+        {isFullControl(user) ? (
+          <FlexContainer fullWidth align="center">
+            <FlexContainer>
+              <Button color="success" onClick={openNewVenueDialog}>
+                New Venue
+                <Icon spaceLeft>
+                  <FontAwesomeIcon icon={faPlus} size="sm" />
+                </Icon>
+              </Button>
+            </FlexContainer>
+            {isFetching && (
+              <CircularProgress size={25} style={{ color: '#fff' }} />
+            )}
           </FlexContainer>
-          {isFetching && (
-            <CircularProgress size={25} style={{ color: '#fff' }} />
-          )}
-        </FlexContainer>
+        ) : null}
         <FlexContainer fullWidth padding="0">
           {venues?.length > 0 && (
             <FilterListInput
@@ -103,6 +109,7 @@ function VenuesList() {
                     isDeleteVenue={isDeleteVenuePrompt}
                     selectedVenue={selectedVenue}
                     setSelectedVenue={setSelectedVenue}
+                    user={user}
                   />
                 ))}
           </FlexContainer>
