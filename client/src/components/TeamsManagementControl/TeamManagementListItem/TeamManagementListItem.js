@@ -211,7 +211,7 @@ function TeamManagementListItem({
             {isEditTeam && (
               <>
                 <Button
-                  aria-label="cencel edit team"
+                  aria-label="cancel edit team"
                   color="error"
                   onClick={cancelEditTeam}
                 >
