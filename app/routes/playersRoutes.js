@@ -67,7 +67,7 @@ playersRouter.post('/delete', function (req, res) {
   );
 });
 
-playersRouter.post('/statsupdate', function (req, res) {
+playersRouter.post('/stats-update', function (req, res) {
   const { gameId, playerId, stats } = req.body;
   psqlDB.updatePlayerStats(gameId, playerId, stats).then(
     (newStats) => {

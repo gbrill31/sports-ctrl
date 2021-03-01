@@ -57,6 +57,7 @@ export default function ManagementTeamsList() {
 
   const cancelCreateTeamDialog = () => {
     closeCreateTeamDialog();
+    setSelectedTeam(null);
   };
 
   const getFilteredTeams = () => {
@@ -125,6 +126,7 @@ export default function ManagementTeamsList() {
                       setSelectedTeam={setSelected}
                       selectedTeam={selectedTeam}
                       deleteTeamPrompt={deleteTeamPrompt}
+                      openCreateTeamDialog={openCreateTeamDialog}
                       user={user}
                     />
                   ))}
@@ -144,7 +146,7 @@ export default function ManagementTeamsList() {
       />
       <ModalDialog
         component={NewTeamForm}
-        componentProps={{ cb: cancelCreateTeamDialog }}
+        componentProps={{ cb: cancelCreateTeamDialog, team: selectedTeam }}
         isOpen={isNewTeamDialog}
         title="Create a New Team"
         label="new team"

@@ -11,6 +11,7 @@ const routesSlice = createSlice({
     homeFouls: null,
     awayFouls: null,
     active: null,
+    leagueId: null,
     selectedPlayer: null,
     isSetPlayerStatsDialog: false,
     setPlayerStatsPending: false,
@@ -20,6 +21,7 @@ const routesSlice = createSlice({
     statusError: null,
     isEndGamePrompt: false,
     isEndGamePending: false,
+    endGameError: null,
   },
   reducers: {
     setGame(state, action) {
@@ -27,6 +29,7 @@ const routesSlice = createSlice({
         id: gameId,
         home,
         away,
+        leagueId,
         homePoints,
         homeFouls,
         awayPoints,
@@ -38,6 +41,7 @@ const routesSlice = createSlice({
         id: gameId,
         homeTeam: home,
         awayTeam: away,
+        leagueId,
         homePoints,
         awayPoints,
         homeFouls,
@@ -129,6 +133,10 @@ const routesSlice = createSlice({
       state.isEndGamePrompt = false;
       state.isEndGamePending = false;
     },
+    setEndGameError(state, action) {
+      state.isEndGamePending = false;
+      state.endGameError = action.payload.message;
+    },
 
     setEndGamePrompt(state, action) {
       state.isEndGamePrompt = action.payload;
@@ -139,6 +147,7 @@ const routesSlice = createSlice({
 export const {
   setGame,
   setGameEnd,
+  setEndGameError,
   setEndGamePrompt,
   setGameScore,
   setGameSelectedPlayer,

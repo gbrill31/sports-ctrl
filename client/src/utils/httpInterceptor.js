@@ -31,11 +31,11 @@ export default {
     );
     unregisterResponse = axios.interceptors.response.use(
       (response) => {
-        handleResponseHeaders(response.headers, history);
+        if (response.headers) handleResponseHeaders(response.headers, history);
         return response;
       },
       (err) => {
-        handleResponseHeaders(err.response.headers);
+        if (err.response.headers) handleResponseHeaders(err.response.headers);
         return Promise.reject(err);
       }
     );

@@ -4,6 +4,7 @@ import {
   faUsers,
   faMapMarkedAlt,
   faBars,
+  faSlidersH,
 } from '@fortawesome/free-solid-svg-icons';
 import { GiBasketballJersey } from 'react-icons/gi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -152,6 +153,15 @@ export default function UserMenu() {
         spacer: true,
         enabled: true,
         icon: <GiBasketballJersey />,
+      },
+      {
+        title: 'Leagues',
+        route: '/leagues',
+        color: 'primary',
+        fontSize: '0.9rem',
+        spacer: true,
+        enabled: true,
+        icon: <FontAwesomeIcon icon={faSlidersH} size="sm" />,
       },
       {
         title: 'Venues',

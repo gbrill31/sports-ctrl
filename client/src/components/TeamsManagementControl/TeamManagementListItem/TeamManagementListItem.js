@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
-import { faSave, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FlexContainer, Button, Icon, Input } from '../../../styledElements';
-import useFormInput from '../../../hooks/useFormInput';
-import useSaveTeam from '../../../hooks/reactQuery/useSaveTeam';
+import { FlexContainer } from '../../../styledElements';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 
 import { isFullControl } from '../../../services/userPermissions';
@@ -52,74 +48,31 @@ const ItemContainer = styled.div`
   }
 `;
 
-const ItemEditActions = styled.div`
-  height: auto;
-  max-height: 0;
-  transition: max-height 0.4s ease-in-out;
-  overflow: hidden;
-
-  ${(props) =>
-    (props.active || props.selected) &&
-    css`
-      max-height: 100px;
-    `}
-`;
-
 function TeamManagementListItem({
   team,
   deleteTeamPrompt,
   selectedTeam,
   setSelectedTeam,
+  openCreateTeamDialog,
   user,
 }) {
-  const [isEditTeam, setIsEditTeam] = useState(false);
-
   const selectTeam = () => {
     if (!selectedTeam || selectedTeam.id !== team.id) setSelectedTeam(team);
   };
-
-  const teamName = useFormInput(team.name);
-  const teamLeague = useFormInput(team.league);
-  const teamCountry = useFormInput(team.country);
-  const teamCity = useFormInput(team.city);
 
   const isTeamSelected = useCallback(() => {
     return selectedTeam && selectedTeam.id === team.id;
   }, [selectedTeam, team]);
 
-  useEffect(() => {
-    if (selectedTeam && !isTeamSelected()) {
-      setIsEditTeam(false);
-    }
-  }, [selectedTeam, team, isTeamSelected]);
-
-  const cancelEditTeam = () => {
-    setIsEditTeam(false);
-  };
-
   const deleteTeam = (e) => {
     if (e) e.stopPropagation();
-    if (isEditTeam) cancelEditTeam();
     deleteTeamPrompt();
   };
 
-  const saveTeam = useSaveTeam(cancelEditTeam);
-
   const editTeam = (e) => {
     e.stopPropagation();
-    teamName.setValue(team.name);
-    teamLeague.setValue(team.league);
-    setIsEditTeam(true);
-  };
-
-  const updateTeam = () => {
-    saveTeam({
-      id: team.id,
-      name: teamName.value,
-      league: teamLeague.value,
-      country: teamCountry.value,
-      city: teamCity.value,
-    });
+    setSelectedTeam(team);
+    openCreateTeamDialog();
   };
 
   return (
@@ -128,112 +81,13 @@ function TeamManagementListItem({
         <ItemActionsMenu
           editItem={editTeam}
           deleteItem={deleteTeam}
-          isShow={isFullControl(user) && isTeamSelected() && !isEditTeam}
+          isShow={isFullControl(user) && isTeamSelected()}
         />
         <FlexContainer align="baseline">
-          {isEditTeam ? (
-            <FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>Name:</label>
-                <Input
-                  autoFocus
-                  required
-                  ref={teamName.ref}
-                  error={!teamName.isValid}
-                  id="name"
-                  type="text"
-                  placeholder={`Enter Team Name${
-                    !teamName.isValid ? ' *' : ''
-                  }`}
-                  value={teamName.value}
-                  onChange={teamName.onChange}
-                  spaceLeft
-                />
-              </FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>League:</label>
-                <Input
-                  required
-                  ref={teamLeague.ref}
-                  error={!teamLeague.isValid}
-                  id="league"
-                  type="text"
-                  placeholder={`Enter League Name${
-                    !teamLeague.isValid ? ' *' : ''
-                  }`}
-                  value={teamLeague.value}
-                  onChange={teamLeague.onChange}
-                  spaceLeft
-                />
-              </FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>City:</label>
-                <Input
-                  required
-                  spaceLeft
-                  ref={teamCity.ref}
-                  error={!teamCity.isValid}
-                  id="city"
-                  type="text"
-                  placeholder={`Enter Team City${
-                    !teamCity.isValid ? ' *' : ''
-                  }`}
-                  value={teamCity.value}
-                  onChange={teamCity.onChange}
-                />
-              </FlexContainer>
-              <FlexContainer fullWidth justify="space-evenly" align="center">
-                <label style={{ width: '10px' }}>Country:</label>
-                <Input
-                  required
-                  ref={teamCountry.ref}
-                  error={!teamCountry.isValid}
-                  id="country"
-                  type="text"
-                  placeholder={`Enter Team Country${
-                    !teamCountry.isValid ? ' *' : ''
-                  }`}
-                  value={teamCountry.value}
-                  onChange={teamCountry.onChange}
-                />
-              </FlexContainer>
-            </FlexContainer>
-          ) : (
-            <>
-              <h2>{team.name}</h2>
-              <h3>{team.league}</h3>
-              <h4>{`${team.city}, ${team.country}`}</h4>
-            </>
-          )}
+          <h2>{team.name}</h2>
+          <h3>{team.league}</h3>
+          <h4>{`${team.city}, ${team.country}`}</h4>
         </FlexContainer>
-        <ItemEditActions active={isEditTeam}>
-          <FlexContainer justify={isEditTeam ? 'flex-end' : false}>
-            {isEditTeam && (
-              <>
-                <Button
-                  aria-label="cancel edit team"
-                  color="error"
-                  onClick={cancelEditTeam}
-                >
-                  Cancel
-                  <Icon spaceLeft>
-                    <FontAwesomeIcon icon={faTimesCircle} size="sm" />
-                  </Icon>
-                </Button>
-                <Button
-                  aria-label="update team"
-                  color="success"
-                  onClick={updateTeam}
-                >
-                  Save
-                  <Icon spaceLeft>
-                    <FontAwesomeIcon icon={faSave} size="sm" />
-                  </Icon>
-                </Button>
-              </>
-            )}
-          </FlexContainer>
-        </ItemEditActions>
       </ItemContainer>
     </>
   );
@@ -244,6 +98,7 @@ TeamManagementListItem.propTypes = {
   deleteTeamPrompt: PropTypes.func.isRequired,
   selectedTeam: PropTypes.object,
   setSelectedTeam: PropTypes.func,
+  openCreateTeamDialog: PropTypes.func,
 };
 
 export default React.memo(TeamManagementListItem);

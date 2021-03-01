@@ -30,7 +30,7 @@ export const updateGameStatus = async (gameId, status) => {
 };
 
 export const updateTeamFouls = async (gameId, teamId, fouls) => {
-  const { data } = await axios.post('/api/games/teamfouls', {
+  const { data } = await axios.post('/api/games/team-fouls', {
     gameId,
     teamId,
     fouls,

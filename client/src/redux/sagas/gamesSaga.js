@@ -7,6 +7,7 @@ import {
   setGameStatus,
   setTeamFouls,
   setGameEnd,
+  setEndGameError,
 } from '../index';
 import {
   updatePlayerStats,
@@ -60,13 +61,13 @@ function* handleSetTeamFouls({ payload }) {
   }
 }
 
-function* handleEndGame({ payload }) {
+function* handleEndGame({ payload: gameId }) {
   try {
-    const { gameId } = payload;
+    console.log('saga', gameId);
     yield call(updateEndGame, gameId);
     yield put(setGameEnd());
   } catch (error) {
-    // yield put(updatePlayerStatsError(error));
+    yield put(setEndGameError(error));
   }
 }
 

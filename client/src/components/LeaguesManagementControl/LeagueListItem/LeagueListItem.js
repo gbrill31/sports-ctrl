@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled, { css } from 'styled-components';
+
 import { FlexContainer } from '../../../styledElements';
 import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 import { isFullControl } from '../../../services/userPermissions';
@@ -52,19 +53,19 @@ const ItemContainer = styled.div`
   }
 `;
 
-const VenueInfoSection = styled.div`
+const LeagueInfoSection = styled.div`
   position: absolute;
-  bottom: ${(props) => (props.selected ? '0px' : '-50px')};
+  bottom: ${(props) => (props.selected ? '3px' : '-50px')};
   left: 7px;
   transition: bottom 0.2s ease-in-out;
 `;
 
-function VenueListItem({
-  venue,
-  deleteVenuePrompt,
-  selectedVenue,
-  setSelectedVenue,
-  openNewVenueDialog,
+function LeagueListItem({
+  league,
+  deleteLeaguePrompt,
+  selectedLeague,
+  setSelectedLeague,
+  openNewLeagueDialog,
   user,
 }) {
   const [isItemHover, setIsItemHover] = useState(false);
@@ -72,53 +73,53 @@ function VenueListItem({
   const setItemMouseEnter = () => setIsItemHover(true);
   const setItemMouseLeave = () => setIsItemHover(false);
 
-  const selectVenue = () => {
-    setSelectedVenue(venue);
+  const selectLeague = () => {
+    setSelectedLeague(league);
   };
 
-  const isVenueSelected = () => selectedVenue?.id === venue.id;
+  const isLeagueSelected = () => selectedLeague?.id === league.id;
 
-  const editVenue = () => {
-    selectVenue();
-    openNewVenueDialog();
+  const editLeague = () => {
+    setSelectedLeague(league);
+    openNewLeagueDialog();
   };
 
-  const deleteVenue = () => {
-    deleteVenuePrompt();
+  const deleteLeague = () => {
+    deleteLeaguePrompt();
   };
 
   return (
     <ItemContainer
-      onClick={selectVenue}
-      selected={isVenueSelected()}
+      onClick={selectLeague}
+      selected={isLeagueSelected()}
       onMouseEnter={setItemMouseEnter}
       onMouseLeave={setItemMouseLeave}
     >
       <ItemActionsMenu
-        editItem={editVenue}
-        deleteItem={deleteVenue}
-        isShow={isFullControl(user) && isVenueSelected()}
+        editItem={editLeague}
+        deleteItem={deleteLeague}
+        isShow={isFullControl(user) && isLeagueSelected()}
       />
-      <h2>{venue.name}</h2>
+      <h2>{league.name}</h2>
       <FlexContainer align="baseline" padding="0">
-        <h3>{venue.city}</h3>
-        <h4>{venue.country}</h4>
+        <h3>{league.city}</h3>
+        <h4>{league.country}</h4>
       </FlexContainer>
-      <VenueInfoSection selected={isItemHover || isVenueSelected()}>
-        <FlexContainer align="center" justify="center" padding="0">
-          <h4>{` host up to ${venue.seats} fans`}</h4>
-        </FlexContainer>
-      </VenueInfoSection>
+      <LeagueInfoSection selected={isItemHover || isLeagueSelected()}>
+        {/* <FlexContainer align="center" justify="center" padding="0">
+              <h4>{` host up to ${league.seats} fans`}</h4>
+            </FlexContainer> */}
+      </LeagueInfoSection>
     </ItemContainer>
   );
 }
 
-VenueListItem.propTypes = {
-  venue: PropTypes.object.isRequired,
-  deleteVenuePrompt: PropTypes.func,
-  selectedVenue: PropTypes.object,
-  setSelectedVenue: PropTypes.func,
-  openNewVenueDialog: PropTypes.func,
+LeagueListItem.propTypes = {
+  league: PropTypes.object.isRequired,
+  deleteLeaguePrompt: PropTypes.func,
+  selectedLeague: PropTypes.object,
+  setSelectedLeague: PropTypes.func,
+  openNewLeagueDialog: PropTypes.func,
 };
 
-export default React.memo(VenueListItem);
+export default React.memo(LeagueListItem);

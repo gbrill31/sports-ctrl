@@ -11,6 +11,12 @@ import {
 } from './gamesApi';
 
 import { getAllVenues, saveNewVenue, deleteVenue } from './venuesApi';
+import {
+  getAllLeagues,
+  saveNewLeague,
+  deleteLeague,
+  getLeagueById,
+} from './leaguesApi';
 
 import { getAllTeams, saveNewTeam, deleteTeam, getTeamById } from './teamsApi';
 
@@ -61,4 +67,8 @@ export {
   deleteUsers,
   updatePassword,
   updateUser,
+  getAllLeagues,
+  getLeagueById,
+  saveNewLeague,
+  deleteLeague,
 };

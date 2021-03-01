@@ -28,10 +28,10 @@ teamsRouter.get('/team', (req, res) => {
 });
 
 teamsRouter.post('/save', function (req, res) {
-  const { id, name, league, country, city } = req.body;
+  const { id, name, country, city } = req.body;
   const userId = req.user.type !== 'admin' ? req.user.admin : req.user.id;
   if (!id) {
-    psqlDB.createTeam(name, league, country, city, userId).then(
+    psqlDB.createTeam(name, country, city, userId).then(
       (data) => {
         res.alertSuccess(`Saved "${name}" successfully`);
         res.json(data[0]).status(200);
@@ -42,7 +42,7 @@ teamsRouter.post('/save', function (req, res) {
       }
     );
   } else {
-    psqlDB.updateTeam(id, name, league, country, city).then(
+    psqlDB.updateTeam(id, name, country, city).then(
       (data) => {
         res.alertSuccess('Updated team successfully');
         res.json(data[0]).status(200);

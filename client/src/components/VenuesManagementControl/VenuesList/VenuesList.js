@@ -33,7 +33,10 @@ function VenuesList() {
   const [selectedVenue, setSelectedVenue] = useState(null);
 
   const openNewVenueDialog = () => setIsNewVenueDialog(true);
-  const closeNewVenueDialog = () => setIsNewVenueDialog(false);
+  const closeNewVenueDialog = () => {
+    setSelectedVenue(null);
+    setIsNewVenueDialog(false);
+  };
 
   const closeDeleteVenuePrompt = () => setIsDeleteVenuePrompt(false);
 
@@ -109,6 +112,7 @@ function VenuesList() {
                     isDeleteVenue={isDeleteVenuePrompt}
                     selectedVenue={selectedVenue}
                     setSelectedVenue={setSelectedVenue}
+                    openNewVenueDialog={openNewVenueDialog}
                     user={user}
                   />
                 ))}
@@ -118,7 +122,7 @@ function VenuesList() {
 
       <PromptDialog
         isOpen={isDeleteVenuePrompt}
-        title="Delete Vanue"
+        title="Delete Venue"
         content={`Are you sure you want to delete ${selectedVenue?.name}`}
         confirmText="Delete"
         handleClose={closeDeleteVenuePrompt}
@@ -126,7 +130,7 @@ function VenuesList() {
       />
       <ModalDialog
         component={NewVenueForm}
-        componentProps={{ cb: cancelNewVenue }}
+        componentProps={{ cb: cancelNewVenue, venue: selectedVenue }}
         isOpen={isNewVenueDialog}
         title="Create a New Venue"
         label="new venue"

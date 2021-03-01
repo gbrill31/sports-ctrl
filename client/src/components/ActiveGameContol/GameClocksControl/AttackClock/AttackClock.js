@@ -15,7 +15,6 @@ import {
   WebWorker,
   convertSecToDuration,
   convertMilliToSec,
-  convertSecToMilli,
 } from '../../../../utils';
 
 import {
@@ -54,14 +53,13 @@ const Clock = styled.div`
   }
 `;
 
-const ATTACK_TIME = 24;
 const ATTACK_CLOCK_OPTIONS = {
   showMin: false,
   showSec: true,
   showMil: false,
 };
 
-export default function AttackClock() {
+export default function AttackClock({ league }) {
   const dispatch = useDispatch();
   const milliseconds = useRef();
   const webWorker = useRef(new WebWorker());
@@ -95,16 +93,29 @@ export default function AttackClock() {
     () => (milliseconds.current = startTime),
     [startTime]
   );
-  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [
-    startTime,
-  ]);
+  const getClockInitTime = useCallback(() => league.attackStartTime, [league]);
 
-  const resetClock = useCallback(() => {
-    resetMilliseconds();
-    localStorage.removeItem('attackClock');
-    setTimeLeft(milliseconds.current);
-    dispatch(resetAttackClock(getClockInitTime()));
-  }, [dispatch, resetMilliseconds, getClockInitTime, setTimeLeft]);
+  const resetClock = useCallback(
+    (value) => {
+      resetMilliseconds();
+      localStorage.removeItem('attackClock');
+      setTimeLeft(milliseconds.current);
+      setAttackStartClock(value);
+      dispatch(resetAttackClock(value));
+      setClockValue(
+        convertSecToDuration(convertMilliToSec(value), ATTACK_CLOCK_OPTIONS)
+      );
+    },
+    [
+      dispatch,
+      resetMilliseconds,
+      setTimeLeft,
+      setClockValue,
+      setAttackStartClock,
+    ]
+  );
+
+  const handleResetClock = () => resetClock(league.attackStartTime);
 
   const setClock = useCallback(
     (e) => {
@@ -125,10 +136,10 @@ export default function AttackClock() {
   );
 
   useEffect(() => {
-    if (!startTime) {
-      setAttackStartClock(convertSecToMilli(ATTACK_TIME));
+    if (league && league.id) {
+      setAttackStartClock(league.attackStartTime);
     }
-  }, [startTime, setAttackStartClock]);
+  }, [league, setAttackStartClock]);
 
   useEffect(() => {
     if (!attackClock && startTime) {
@@ -139,20 +150,13 @@ export default function AttackClock() {
       setTimeLeft(milliseconds.current);
       setClockValue(
         convertSecToDuration(
-          savedStartTime
-            ? convertMilliToSec(savedStartTime)
-            : getClockInitTime(),
+          convertMilliToSec(savedStartTime || getClockInitTime()),
           ATTACK_CLOCK_OPTIONS
         )
       );
     }
     if (isReset) {
-      localStorage.removeItem('attackClock');
-      resetMilliseconds();
-      setTimeLeft(milliseconds.current);
-      setClockValue(
-        convertSecToDuration(convertMilliToSec(startTime), ATTACK_CLOCK_OPTIONS)
-      );
+      resetClock(startTime);
     }
   }, [
     attackClock,
@@ -160,24 +164,25 @@ export default function AttackClock() {
     getClockInitTime,
     resetMilliseconds,
     setTimeLeft,
+    resetClock,
     isReset,
     startTime,
   ]);
 
   useEffect(() => {
-    const webWrokerInstance = webWorker.current;
+    const webWorkerInstance = webWorker.current;
     if (isClockRunning) {
       if (milliseconds.current === 0) resetMilliseconds();
       const worker = {
         file: clock,
         initialData: milliseconds.current,
       };
-      webWrokerInstance.start(worker, setClock);
+      webWorkerInstance.start(worker, setClock);
     }
     return () => {
-      webWrokerInstance.stop();
+      webWorkerInstance.stop();
     };
-  }, [isClockRunning, resetClock, setClock, resetMilliseconds]);
+  }, [isClockRunning, setClock, resetMilliseconds]);
 
   return (
     <FlexContainer column>
@@ -197,7 +202,7 @@ export default function AttackClock() {
             </Icon>
           </Button>
         )}
-        <Button onClick={resetClock} color="secondary">
+        <Button onClick={handleResetClock} color="secondary">
           Reset Clock
           <Icon spaceLeft>
             <FontAwesomeIcon icon={faHistory} size="sm" />

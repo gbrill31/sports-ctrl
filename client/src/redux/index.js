@@ -38,6 +38,7 @@ import {
 import {
   setGame,
   setGameEnd,
+  setEndGameError,
   setEndGamePrompt,
   setGameScore,
   setGameSelectedPlayer,
@@ -83,6 +84,7 @@ export {
   setAttackClockTimeleft,
   setGame,
   setGameEnd,
+  setEndGameError,
   setEndGamePrompt,
   setGameScore,
   setGameSelectedPlayer,

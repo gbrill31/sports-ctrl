@@ -21,7 +21,7 @@ export const deletePlayer = async (id) => {
 };
 
 export const updatePlayerStats = async (gameId, playerId, stats) => {
-  const { data } = await axios.post('/api/players/statsupdate', {
+  const { data } = await axios.post('/api/players/stats-update', {
     gameId,
     playerId,
     stats,

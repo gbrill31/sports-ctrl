@@ -2,6 +2,7 @@ import { Switch, Route } from 'react-router-dom';
 import React, { useCallback, useEffect } from 'react';
 
 import Venues from '../VenuesManagement/VenuesManagement';
+import Leagues from '../LeaguesManagement/LeaguesManagement';
 import Teams from '../TeamsManagement/TeamsManagement';
 import GameManagement from '../GameManagement/GameManagement';
 
@@ -40,6 +41,7 @@ function Home() {
         <Route exact path="/" render={() => <GamesControl />} />
         <Route exact path="/users" render={() => <UsersManagement />} />
         <Route exact path="/venues" render={() => <Venues />} />
+        <Route exact path="/leagues" render={() => <Leagues />} />
         <Route exact path="/teams" render={() => <Teams />} />
         <Route exact path="/game" render={() => <GameManagement />} />
       </Switch>
@@ -48,7 +50,7 @@ function Home() {
         title="User Logout"
         content="Are you sure you want to logout?"
         confirmText="Logout"
-        pendingTitle="Loging out..."
+        pendingTitle="Logging out..."
         handleClose={logoutPromptClose}
         handleConfirm={handleConfirmLogout}
         isPending={logoutPending}

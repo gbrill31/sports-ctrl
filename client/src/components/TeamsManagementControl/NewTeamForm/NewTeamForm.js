@@ -8,16 +8,21 @@ import {
   FormError,
 } from '../../../styledElements';
 
-export default function NewTeamForm({ cb }) {
+export default function NewTeamForm({ cb, team }) {
   const { register, handleSubmit, errors } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
+    defaultValues: {
+      name: team?.name || '',
+      country: team?.country || '',
+      city: team?.city || '',
+    },
   });
 
   const { saveTeam, status } = useSaveTeam(cb);
 
   const onSubmit = async (data) => {
-    saveTeam({ ...data });
+    saveTeam({ ...data, id: team?.id });
   };
 
   return (
@@ -33,20 +38,9 @@ export default function NewTeamForm({ cb }) {
             id="name"
             name="name"
             type="text"
-            placeholder="Team Name"
+            placeholder="Name"
           />
           {errors.name && <FormError>* This field is required</FormError>}
-          <Input
-            required
-            color="#fff"
-            error={errors.league}
-            ref={register({ required: true })}
-            id="league"
-            name="league"
-            type="text"
-            placeholder="League"
-          />
-          {errors.league && <FormError>* This field is required</FormError>}
           <Input
             required
             color="#fff"
@@ -76,7 +70,7 @@ export default function NewTeamForm({ cb }) {
             width="40%"
             margin="40px 0 5px 0"
           >
-            Create
+            Save
           </Button>
         </FlexContainer>
       </form>

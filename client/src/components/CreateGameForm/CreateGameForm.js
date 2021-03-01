@@ -14,17 +14,18 @@ import useTeams from '../../hooks/reactQuery/useTeams';
 import useActiveGame from '../../hooks/reactQuery/useActiveGame';
 import useCreateGame from '../../hooks/reactQuery/useCreateGame';
 import { useQueryClient } from 'react-query';
+import useLeagues from '../../hooks/reactQuery/useLeagues';
 
 export default function CreateGameForm({ cancelNewGame }) {
   const [homeTeam, setHomeTeam] = useState(null);
   const [awayTeam, setAwayTeam] = useState(null);
   const [venue, setVenue] = useState(null);
+  const [league, setLeague] = useState(null);
 
   const queryClient = useQueryClient();
 
   const {
     isLoading: isActiveGameLoading,
-    // data: activeGame,
     isFetching: isActiveGameFetching,
   } = useActiveGame(queryClient.getQueryData('dbConnection') !== undefined);
 
@@ -39,6 +40,14 @@ export default function CreateGameForm({ cancelNewGame }) {
   const venuesLoading = () => isVenuesLoading || isVenuesFetching;
 
   const {
+    isLoading: isLeaguesLoading,
+    data: leagues,
+    isFetching: isLeaguesFetching,
+  } = useLeagues(queryClient.getQueryData('dbConnection') !== undefined);
+
+  const leaguesLoading = () => isLeaguesLoading || isLeaguesFetching;
+
+  const {
     isLoading: isTeamsLoading,
     data: teams,
     isFetching: isTeamsFetching,
@@ -50,6 +59,9 @@ export default function CreateGameForm({ cancelNewGame }) {
 
   const selectVenue = (venueId) => {
     setVenue(venues.find((v) => v.id === venueId));
+  };
+  const selectLeague = (leagueId) => {
+    setLeague(leagues.find((v) => v.id === leagueId));
   };
 
   const selectHomeTeam = (teamId) => {
@@ -66,6 +78,7 @@ export default function CreateGameForm({ cancelNewGame }) {
       away: awayTeam.name,
       awayId: awayTeam.id,
       venue: venue.name,
+      leagueId: league.id,
       active: true,
     };
     createGame(game);
@@ -74,6 +87,8 @@ export default function CreateGameForm({ cancelNewGame }) {
   const getTeamsSelectionList = (team) => {
     return team ? teams.filter((t) => t.id !== team.id) : teams;
   };
+
+  const isCreateGame = () => homeTeam && awayTeam && venue && league;
 
   return (
     <>
@@ -131,21 +146,50 @@ export default function CreateGameForm({ cancelNewGame }) {
                 />
               </FlexContainer>
             </FlexContainer>
-            <FlexContainer column padding="0" align="center" justify="center">
-              <SubTitle align="center" size="1.2rem">
-                Select Venue
-              </SubTitle>
-              <FlexContainer align="center" justify="center" noWrap padding="0">
-                <AutoCompleteInput
-                  id="vanues"
-                  color="#fff"
-                  selectedValue={venue ? venue.name : ''}
-                  options={venues}
-                  getOptionLabel={(option) => option.name}
-                  placeholder="Select Vanue"
-                  onSelection={selectVenue}
-                  loading={venuesLoading()}
-                />
+            <FlexContainer align="center" justify="center" noWrap padding="0">
+              <FlexContainer column padding="0" align="center" justify="center">
+                <SubTitle align="center" size="1.2rem">
+                  Select League
+                </SubTitle>
+                <FlexContainer
+                  align="center"
+                  justify="center"
+                  noWrap
+                  padding="0"
+                >
+                  <AutoCompleteInput
+                    id="leagues"
+                    color="#fff"
+                    selectedValue={league ? league.name : ''}
+                    options={leagues}
+                    getOptionLabel={(option) => option.name}
+                    placeholder="Select League"
+                    onSelection={selectLeague}
+                    loading={leaguesLoading()}
+                  />
+                </FlexContainer>
+              </FlexContainer>
+              <FlexContainer column padding="0" align="center" justify="center">
+                <SubTitle align="center" size="1.2rem">
+                  Select Venue
+                </SubTitle>
+                <FlexContainer
+                  align="center"
+                  justify="center"
+                  noWrap
+                  padding="0"
+                >
+                  <AutoCompleteInput
+                    id="venues"
+                    color="#fff"
+                    selectedValue={venue ? venue.name : ''}
+                    options={venues}
+                    getOptionLabel={(option) => option.name}
+                    placeholder="Select Venue"
+                    onSelection={selectVenue}
+                    loading={venuesLoading()}
+                  />
+                </FlexContainer>
               </FlexContainer>
             </FlexContainer>
           </FlexContainer>
@@ -165,7 +209,7 @@ export default function CreateGameForm({ cancelNewGame }) {
               saving={isGameLoading()}
               width="200px"
               height="60px"
-              disabled={!homeTeam || !awayTeam || !venue}
+              disabled={!isCreateGame()}
             >
               {isGameLoading() ? 'Starting...' : 'Start Game'}
               <Icon spaceLeft>

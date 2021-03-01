@@ -12,12 +12,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useForm } from 'react-hook-form';
 import useSavePlayers from '../../../hooks/reactQuery/useSavePlayers';
 
-export default function NewPlayerForm({ cb }) {
+export default function NewPlayerForm({ cb, player }) {
   const [players, setPlayers] = useState([]);
 
   const { register, handleSubmit, errors, reset } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
+    defaultValues: {
+      name: player?.name || '',
+      number: player?.number || '',
+    },
   });
 
   const selectedTeam = useSelector((state) => state.teams.selected);
@@ -42,7 +46,16 @@ export default function NewPlayerForm({ cb }) {
   const saveNewPlayers = () => savePlayers(players);
 
   const onSubmit = (data) => {
-    addPlayer(data);
+    if (!player) {
+      addPlayer(data);
+    } else {
+      savePlayers({
+        ...data,
+        id: player?.id,
+        team: selectedTeam.name,
+        teamId: selectedTeam.id,
+      });
+    }
   };
 
   const removePlayer = (player) => () => {
@@ -82,19 +95,21 @@ export default function NewPlayerForm({ cb }) {
           {errors.number && <FormError>* This field is required</FormError>}
         </FlexContainer>
         <FlexContainer column justify="center" align="center">
-          <Button type="submit" color="secondary">
-            Add To List
-            <Icon spaceLeft>
-              <FontAwesomeIcon icon={faPlus} size="sm" />
-            </Icon>
-          </Button>
+          {!player ? (
+            <Button type="submit" color="secondary">
+              Add To List
+              <Icon spaceLeft>
+                <FontAwesomeIcon icon={faPlus} size="sm" />
+              </Icon>
+            </Button>
+          ) : null}
           <Button
             color="success"
-            onClick={saveNewPlayers}
+            onClick={!player ? saveNewPlayers : null}
             saving={status === 'pending'}
             width="40%"
             margin="40px 0 5px 0"
-            disabled={players.length === 0}
+            disabled={!player && players.length === 0}
           >
             Save Players
           </Button>

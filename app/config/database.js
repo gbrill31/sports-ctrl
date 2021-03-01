@@ -60,10 +60,44 @@ function createGamesTable() {
             table.string('away');
             table.integer('awayPoints');
             table.integer('awayFouls');
-            table.string('league');
+            table.integer('leagueId');
             table.string('venue');
             table.string('status');
             table.boolean('active');
+            table.timestamps(false, true);
+          })
+          .then(
+            () => {
+              resolve();
+            },
+            (err) => reject(err)
+          );
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+function createLeaguesTable() {
+  return new Promise((resolve, reject) => {
+    DB.schema.hasTable('leagues').then((exists) => {
+      if (!exists) {
+        DB.schema
+          .createTable('leagues', (table) => {
+            table.increments();
+            table.integer('ownerId');
+            table.string('name');
+            table.string('country');
+            table.boolean('isHalves');
+            table.integer('quarterStartTime'); //milliseconds
+            table.integer('attackStartTime'); //milliseconds
+            table.integer('timeoutStartTime'); //milliseconds
+            table.integer('maxTimeoutCount');
+            table.integer('maxOvertimeTimeoutCount');
+            table.integer('maxTeamFoulsCount');
+            table.integer('maxPlayerFoulsCount');
+            table.integer('maxTechFoulsCount');
             table.timestamps(false, true);
           })
           .then(
@@ -115,7 +149,6 @@ function createTeamsTable() {
             table.increments();
             table.integer('ownerId');
             table.string('name');
-            table.string('league');
             table.string('country');
             table.string('city');
             table.timestamps(false, true);
@@ -528,6 +561,7 @@ const DB_EXPORTS = {
             createUsersTable(),
             createGamesTable(),
             createVenuesTable(),
+            createLeaguesTable(),
             createTeamsTable(),
             createPlayersTable(),
           ]).then(
@@ -553,6 +587,7 @@ const DB_EXPORTS = {
     away,
     awayId,
     venue,
+    leagueId,
     active
   ) {
     return new Promise((resolve, reject) => {
@@ -567,6 +602,7 @@ const DB_EXPORTS = {
         'awayPoints',
         'awayFouls',
         'venue',
+        'leagueId',
         'status',
       ])
         .insert({
@@ -581,6 +617,7 @@ const DB_EXPORTS = {
           awayPoints: 0,
           awayFouls: 0,
           venue,
+          leagueId,
           active,
           status: 'Q1',
         })
@@ -669,6 +706,128 @@ const DB_EXPORTS = {
     });
   },
 
+  createLeague: function (
+    userId,
+    name,
+    country,
+    isHalves,
+    quarterStartTime,
+    attackStartTime,
+    timeoutStartTime,
+    maxTimeoutCount,
+    maxOvertimeTimeoutCount,
+    maxTeamFoulsCount,
+    maxPlayerFoulsCount,
+    maxTechFoulsCount
+  ) {
+    return DB.insert(
+      {
+        name,
+        country,
+        isHalves,
+        quarterStartTime,
+        attackStartTime,
+        timeoutStartTime,
+        maxTimeoutCount,
+        maxOvertimeTimeoutCount,
+        maxTeamFoulsCount,
+        maxPlayerFoulsCount,
+        maxTechFoulsCount,
+        ownerId: userId,
+      },
+      [
+        'id',
+        'name',
+        'country',
+        'isHalves',
+        'quarterStartTime',
+        'attackStartTime',
+        'timeoutStartTime',
+        'maxTimeoutCount',
+        'maxOvertimeTimeoutCount',
+        'maxTeamFoulsCount',
+        'maxPlayerFoulsCount',
+        'maxTechFoulsCount',
+      ]
+    ).into('leagues');
+  },
+
+  updateLeague: function (
+    id,
+    name,
+    country,
+    isHalves,
+    quarterStartTime,
+    attackStartTime,
+    timeoutStartTime,
+    maxTimeoutCount,
+    maxOvertimeTimeoutCount,
+    maxTeamFoulsCount,
+    maxPlayerFoulsCount,
+    maxTechFoulsCount
+  ) {
+    return DB('leagues')
+      .where('id', id)
+      .returning([
+        'id',
+        'name',
+        'country',
+        'isHalves',
+        'quarterStartTime',
+        'timeoutStartTime',
+        'attackStartTime',
+        'maxTimeoutCount',
+        'maxOvertimeTimeoutCount',
+        'maxTeamFoulsCount',
+        'maxPlayerFoulsCount',
+        'maxTechFoulsCount',
+      ])
+      .update({
+        name,
+        country,
+        isHalves,
+        quarterStartTime,
+        attackStartTime,
+        timeoutStartTime,
+        maxTimeoutCount,
+        maxOvertimeTimeoutCount,
+        maxTeamFoulsCount,
+        maxPlayerFoulsCount,
+        maxTechFoulsCount,
+        updated_at: new Date(),
+      });
+  },
+
+  deleteLeague: function (id) {
+    return DB('leagues').where('id', id).del();
+  },
+
+  getAllLeagues: function (ownerId) {
+    return new Promise((resolve, reject) => {
+      DB.schema.hasTable('leagues').then(
+        (exists) => {
+          if (exists) {
+            DB.select()
+              .from('leagues')
+              .where('ownerId', ownerId)
+              .then(
+                (leagues) => {
+                  resolve(leagues);
+                },
+                (err) => reject(err)
+              );
+          } else {
+            resolve();
+          }
+        },
+        (err) => reject(err)
+      );
+    });
+  },
+  getLeagueById: function (id) {
+    return DB.select().table('leagues').where('id', id);
+  },
+
   createVenue: function (name, country, city, seats, userId) {
     return DB.insert({ name, country, city, seats, ownerId: userId }, [
       'id',
@@ -739,17 +898,17 @@ const DB_EXPORTS = {
     return DB.select().table('teams').where('id', id);
   },
 
-  createTeam: function (name, league, country, city, userId) {
-    return DB.returning(['id', 'name', 'league', 'country', 'city'])
-      .insert({ name, league, country, city, ownerId: userId })
+  createTeam: function (name, country, city, userId) {
+    return DB.returning(['id', 'name', 'country', 'city'])
+      .insert({ name, country, city, ownerId: userId })
       .into('teams');
   },
 
-  updateTeam: function (id, name, league, country, city) {
+  updateTeam: function (id, name, country, city) {
     return DB('teams')
       .where('id', id)
-      .returning(['id', 'name', 'league', 'country', 'city'])
-      .update({ name, league, country, city, updated_at: new Date() });
+      .returning(['id', 'name', 'country', 'city'])
+      .update({ name, country, city, updated_at: new Date() });
   },
 
   deleteTeam: function (id) {

@@ -35,6 +35,7 @@ import {
   convertMilliToMin,
   convertSecToMilli,
   convertMilliToSec,
+  getClockFormat,
 } from '../../utils';
 
 const MenuContainer = styled.div`
@@ -222,11 +223,6 @@ export default function GameControlMenu() {
     setIsShowMenu(!isShowMenu);
   };
 
-  const getFormattedSeconds = (value) => {
-    const numValue = parseInt(value);
-    return numValue < 10 ? `0${numValue}` : `${numValue}`;
-  };
-
   const toggleSetGameClock = () => {
     if (!isShowSetGameClock) {
       const gameMinutes = convertMilliToMin(gameClockStartTime);
@@ -234,7 +230,7 @@ export default function GameControlMenu() {
         convertMilliToSec(gameClockStartTime) - gameMinutes * 60
       );
       gameClockMinutes.setValue(gameMinutes);
-      gameClockSeconds.setValue(getFormattedSeconds(gameSeconds));
+      gameClockSeconds.setValue(getClockFormat(gameSeconds));
     }
     if (isShowSetAttackClock) setIsShowSetAttackClock(false);
     setIsShowSetGameClock(!isShowSetGameClock);
@@ -242,7 +238,7 @@ export default function GameControlMenu() {
   const toggleSetAttackClock = () => {
     if (!isShowSetAttackClock) {
       attackClockSeconds.setValue(
-        getFormattedSeconds(convertMilliToSec(attackClockStartTime))
+        getClockFormat(convertMilliToSec(attackClockStartTime))
       );
     }
     if (isShowSetGameClock) setIsShowSetGameClock(false);
@@ -255,22 +251,27 @@ export default function GameControlMenu() {
       convertMinToMilli(parseInt(gameClockMinutes.value));
     setGameClockStartTime(startTime);
     localStorage.removeItem('gameClock');
+    dispatch(resetGameClock(startTime));
   };
 
-  const handleGameClockSecondsChange = (e) => {
-    const { value } = e.target;
-    gameClockSeconds.setValue(getFormattedSeconds(value));
+  const handleGameClockChange = (e) => {
+    const { id, value } = e.target;
+    if (id === 'gameClockSeconds')
+      gameClockSeconds.setValue(getClockFormat(value));
+    if (id === 'gameClockMinutes')
+      gameClockMinutes.setValue(getClockFormat(value));
   };
 
   const handleAttackClockChange = (e) => {
     const { value } = e.target;
-    attackClockSeconds.setValue(getFormattedSeconds(value));
+    attackClockSeconds.setValue(getClockFormat(value));
   };
 
   const setNewAttackClockStart = () => {
     const startTime = convertSecToMilli(parseInt(attackClockSeconds.value));
     setAttackClockStartTime(startTime);
     localStorage.removeItem('attackClock');
+    dispatch(resetAttackClock(startTime));
   };
 
   const handleInputKeyDown = (e) => {
@@ -299,7 +300,7 @@ export default function GameControlMenu() {
       <GlobalHotKeys keyMap={keyMap} handlers={hotKeysHandlers} />
       <FlexContainer padding="0" absolute top="90px" ref={menuRef}>
         <Button
-          noRaduis
+          noRadius
           margin="0"
           width="50px"
           color="menu"
@@ -316,7 +317,7 @@ export default function GameControlMenu() {
             <FlexContainer column align="center" padding="0">
               <h4>Control</h4>
               <Button
-                noRaduis
+                noRadius
                 margin="0"
                 fullWidth
                 color="success"
@@ -328,7 +329,7 @@ export default function GameControlMenu() {
                 </Icon>
               </Button>
               <Button
-                noRaduis
+                noRadius
                 margin="0"
                 fullWidth
                 color="error"
@@ -340,7 +341,7 @@ export default function GameControlMenu() {
                 </Icon>
               </Button>
               <Button
-                noRaduis
+                noRadius
                 margin="0"
                 fullWidth
                 color="secondary"
@@ -353,7 +354,7 @@ export default function GameControlMenu() {
               </Button>
               <h4>Setup</h4>
               <Button
-                noRaduis
+                noRadius
                 margin="0"
                 fullWidth
                 color="menu"
@@ -370,7 +371,7 @@ export default function GameControlMenu() {
                     spaceRight
                     color="#fff"
                     value={gameClockMinutes.value}
-                    onChange={gameClockMinutes.onChange}
+                    onChange={handleGameClockChange}
                     type="number"
                     min="0"
                     width="15%"
@@ -383,7 +384,7 @@ export default function GameControlMenu() {
                     spaceLeft
                     color="#fff"
                     value={gameClockSeconds.value}
-                    onChange={handleGameClockSecondsChange}
+                    onChange={handleGameClockChange}
                     type="number"
                     min="0"
                     max="59"
@@ -394,7 +395,7 @@ export default function GameControlMenu() {
                 </FlexContainer>
                 <FlexContainer align="center" justify="center">
                   <Button
-                    noRaduis
+                    noRadius
                     margin="0"
                     fullWidth
                     color="success"
@@ -406,7 +407,7 @@ export default function GameControlMenu() {
               </ClocksSetMenu>
             </FlexContainer>
             <Button
-              noRaduis
+              noRadius
               margin="0"
               fullWidth
               color="menu"
@@ -433,7 +434,7 @@ export default function GameControlMenu() {
               </FlexContainer>
               <FlexContainer align="center" justify="center">
                 <Button
-                  noRaduis
+                  noRadius
                   margin="0"
                   fullWidth
                   color="success"
@@ -447,7 +448,7 @@ export default function GameControlMenu() {
           <MenuSection show={isShowMenu}>
             <h3>Teams</h3>
             <Button
-              noRaduis
+              noRadius
               margin="0"
               fullWidth
               color="secondary"
@@ -462,7 +463,7 @@ export default function GameControlMenu() {
           <MenuSection show={isShowMenu}>
             <h3>Game</h3>
             <Button
-              noRaduis
+              noRadius
               margin="0"
               fullWidth
               color="error"

@@ -42,7 +42,10 @@ export default function PlayersManagementList() {
   const setSelected = (player) => setSelectedPlayer(player);
 
   const openAddPlayersDialog = () => setIsAddPlayersDialog(true);
-  const closeAddPlayersDialog = () => setIsAddPlayersDialog(false);
+  const closeAddPlayersDialog = () => {
+    setSelectedPlayer(null);
+    setIsAddPlayersDialog(false);
+  };
 
   const deleteSelected = useDeletePlayer(handleCancelPrompt);
 
@@ -107,6 +110,7 @@ export default function PlayersManagementList() {
                       selectedPlayer={selectedPlayer}
                       setSelectedPlayer={setSelected}
                       deletePlayerPrompt={openDeletePlayerPrompt}
+                      openAddPlayersDialog={openAddPlayersDialog}
                       user={user}
                     />
                   ))
@@ -129,6 +133,7 @@ export default function PlayersManagementList() {
         component={NewPlayerForm}
         componentProps={{
           cb: closeAddPlayersDialog,
+          player: selectedPlayer,
         }}
         isOpen={isAddPlayersDialog}
         title="Add players to team"

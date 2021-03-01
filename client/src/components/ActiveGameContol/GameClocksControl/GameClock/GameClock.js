@@ -17,7 +17,6 @@ import {
   WebWorker,
   convertSecToDuration,
   convertMilliToSec,
-  convertMinToMilli,
 } from '../../../../utils';
 
 import {
@@ -47,9 +46,7 @@ const Clock = styled.div`
   }
 `;
 
-const Q_TIME = 12;
-
-export default function GameClock() {
+export default function GameClock({ league }) {
   const dispatch = useDispatch();
   const milliseconds = useRef();
   const webWorker = useRef(new WebWorker());
@@ -67,7 +64,7 @@ export default function GameClock() {
   ]);
   const startClock = useCallback(() => dispatch(startGameClock()), [dispatch]);
   const stopClock = useCallback(() => dispatch(stopGameClock()), [dispatch]);
-  const setGameStartClock = useCallback(
+  const setClockStartTime = useCallback(
     (value) => dispatch(setGameClockStart(value)),
     [dispatch]
   );
@@ -81,14 +78,18 @@ export default function GameClock() {
     (value) => {
       resetMilliseconds();
       localStorage.removeItem('gameClock');
-      dispatch(resetGameClock(value));
+      setClockStartTime(value || league.quarterStartTime);
+      dispatch(resetGameClock(value || league.quarterStartTime));
+      setClockValue(
+        convertSecToDuration(
+          convertMilliToSec(value || league.quarterStartTime)
+        )
+      );
     },
-    [dispatch, resetMilliseconds]
+    [dispatch, resetMilliseconds, setClockStartTime, setClockValue, league]
   );
 
-  const getClockInitTime = useCallback(() => convertMilliToSec(startTime), [
-    startTime,
-  ]);
+  const getClockInitTime = useCallback(() => league.quarterStartTime, [league]);
 
   const setClock = useCallback(
     (e) => {
@@ -103,10 +104,10 @@ export default function GameClock() {
   );
 
   useEffect(() => {
-    if (!startTime) {
-      setGameStartClock(convertMinToMilli(Q_TIME));
+    if (league && league.id) {
+      setClockStartTime(league.quarterStartTime);
     }
-  }, [startTime, setGameStartClock]);
+  }, [setClockStartTime, league]);
 
   useEffect(() => {
     if (!gameClock && startTime) {
@@ -116,16 +117,12 @@ export default function GameClock() {
         : savedStartTime;
       setClockValue(
         convertSecToDuration(
-          savedStartTime
-            ? convertMilliToSec(savedStartTime)
-            : getClockInitTime()
+          convertMilliToSec(savedStartTime || getClockInitTime())
         )
       );
     }
     if (isReset) {
-      localStorage.removeItem('gameClock');
-      resetMilliseconds();
-      setClockValue(convertSecToDuration(convertMilliToSec(startTime)));
+      resetClock(startTime);
     }
   }, [
     gameClock,
@@ -134,10 +131,11 @@ export default function GameClock() {
     startTime,
     resetMilliseconds,
     isReset,
+    resetClock,
   ]);
 
   useEffect(() => {
-    const webWrokerInstance = webWorker.current;
+    const webWorkerInstance = webWorker.current;
     if (isClockRunning) {
       if (milliseconds.current === 0) resetMilliseconds();
       const worker = {
@@ -145,14 +143,14 @@ export default function GameClock() {
         initialData: milliseconds.current,
       };
 
-      webWrokerInstance.start(worker, setClock);
+      webWorkerInstance.start(worker, setClock);
     }
     return () => {
-      webWrokerInstance.stop();
+      webWorkerInstance.stop();
     };
   }, [isClockRunning, resetClock, setClock, resetMilliseconds]);
 
-  const openResetPrompot = () => {
+  const openResetPrompt = () => {
     if (milliseconds.current === 0 && !isClockRunning) {
       resetClock();
     } else {
@@ -185,7 +183,7 @@ export default function GameClock() {
             </Icon>
           </Button>
         )}
-        <Button onClick={openResetPrompot} color="secondary">
+        <Button onClick={openResetPrompt} color="secondary">
           Reset Clock
           <Icon spaceLeft>
             <FontAwesomeIcon icon={faHistory} size="sm" />

@@ -8,7 +8,7 @@ const dotenv = require('dotenv');
 const passport = require('passport');
 const cors = require('cors');
 const fs = require('fs');
-const genKeyPair = require('./generteKeyPair').genKeyPair;
+const genKeyPair = require('./generateKeyPair').genKeyPair;
 
 if (!fs.existsSync(path.join(__dirname, 'rsa_priv.pem'), 'utf8')) {
   genKeyPair();
@@ -69,6 +69,7 @@ app.use('/api', require('./app/routes/apiRoutes')(passport));
 app.use('/api/users', require('./app/routes/usersRoutes'));
 app.use('/api/games', require('./app/routes/gamesRoutes'));
 app.use('/api/venues', require('./app/routes/venuesRoutes'));
+app.use('/api/leagues', require('./app/routes/leaguesRoutes'));
 app.use('/api/teams', require('./app/routes/teamsRoutes'));
 app.use('/api/players', require('./app/routes/playersRoutes'));
 

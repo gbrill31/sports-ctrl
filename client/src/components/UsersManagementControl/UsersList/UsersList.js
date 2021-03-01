@@ -82,7 +82,10 @@ export default function UsersList() {
   const closeDeleteUserPrompt = () => setIsOpenDeleteUser(false);
 
   const openAddUserDialog = () => setIsOpenAddUser(true);
-  const closeAddUserDialog = () => setIsOpenAddUser(false);
+  const closeAddUserDialog = () => {
+    setSingleUser(null);
+    setIsOpenAddUser(false);
+  };
 
   const editUser = useCallback(
     (user) => () => {
@@ -261,7 +264,7 @@ export default function UsersList() {
           cb: closeAddUserDialog,
         }}
         isOpen={isOpenAddUser}
-        title={`${singleUser ? 'Edit User' : 'Add User'}`}
+        title={`${singleUser ? 'Edit User' : 'Create User'}`}
         handleCancel={closeAddUserDialog}
       />
     </>

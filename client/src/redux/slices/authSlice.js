@@ -27,7 +27,7 @@ const authSlice = createSlice({
       state.loginPending = true;
     },
     verifyLogin(state, action) {
-      console.log('verify');
+      // console.log('verify');
     },
     setLoggedIn(state, action) {
       state.loginPending = false;
@@ -44,7 +44,7 @@ const authSlice = createSlice({
       state.loginError = action.payload;
     },
     userLogout(state, action) {
-      console.log('logout');
+      // console.log('logout');
     },
     closeLogoutPrompt(state, action) {
       state.isLogoutPrompt = false;

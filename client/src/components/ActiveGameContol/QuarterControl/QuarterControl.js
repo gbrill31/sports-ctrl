@@ -16,7 +16,7 @@ const QuarterContainer = styled.div`
   padding: 10px;
 `;
 
-export default function QuarterControl() {
+export default function QuarterControl({ league }) {
   const dispatch = useDispatch();
 
   const [isSetStatus, setIsSetStatus] = useState(false);
@@ -25,8 +25,11 @@ export default function QuarterControl() {
     (state) => state.game
   );
 
+  const getLeagueSegmentsLimit = () => (league.isHalves ? 2 : 4);
+  const getLeagueSegment = () => (league.isHalves ? 'H' : 'Q');
+
   const saveGameStatus = useCallback(
-    (status) => dispatch(updateGameStatus(activeGameId, status)),
+    (status) => dispatch(updateGameStatus({ gameId: activeGameId, status })),
     [dispatch, activeGameId]
   );
 
@@ -36,11 +39,12 @@ export default function QuarterControl() {
   };
   const closeSetStatus = () => setIsSetStatus(false);
 
-  const nextQ = () => setQNumber(qNumber < 4 ? qNumber + 1 : qNumber);
+  const nextQ = () =>
+    setQNumber(qNumber < getLeagueSegmentsLimit() ? qNumber + 1 : qNumber);
   const previousQ = () => setQNumber(qNumber > 1 ? qNumber - 1 : qNumber);
 
   const setStatus = () => {
-    saveGameStatus(`Q${qNumber}`);
+    saveGameStatus(`${getLeagueSegment()}${qNumber}`);
     closeSetStatus();
   };
 
@@ -54,13 +58,17 @@ export default function QuarterControl() {
         ) : (
           <FlexContainer>
             <Button color="error" onClick={previousQ} disabled={qNumber === 1}>
-              Q
+              {getLeagueSegment()}
               <Icon spaceLeft>
                 <FontAwesomeIcon icon={faMinus} size="sm" />
               </Icon>
             </Button>
-            <Button color="secondary" onClick={nextQ} disabled={qNumber === 4}>
-              Q
+            <Button
+              color="secondary"
+              onClick={nextQ}
+              disabled={qNumber === getLeagueSegmentsLimit()}
+            >
+              {getLeagueSegment()}
               <Icon spaceLeft>
                 <FontAwesomeIcon icon={faPlus} size="sm" />
               </Icon>
@@ -74,7 +82,7 @@ export default function QuarterControl() {
           clearHeight
         >
           <QuarterContainer>
-            {isSetStatus ? `Q${qNumber}` : status}
+            {isSetStatus ? `${getLeagueSegment()}${qNumber}` : status}
           </QuarterContainer>
         </ComponentLoader>
         {isSetStatus && (

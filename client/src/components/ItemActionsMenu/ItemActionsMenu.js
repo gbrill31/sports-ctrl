@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
-import styled from "styled-components";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import {
   faTrashAlt,
   faEdit,
   faTimes,
   faBars,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FlexContainer, Icon, IconButton } from "../../styledElements";
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FlexContainer, Icon, IconButton } from '../../styledElements';
 
 const MenuContainer = styled.div`
   width: 65px;
   height: 300px;
   right: -15px;
-  top: -15px;
+  top: 0;
   position: absolute;
   overflow: hidden;
 `;
@@ -25,8 +25,8 @@ const MenuItems = styled.div`
   height: 100%;
   width: 50%;
   top: 0;
-  opacity: ${(props) => (props.active ? "1" : "1")};
-  right: ${(props) => (props.active ? "-1px" : "-70px")};
+  opacity: ${(props) => (props.active ? '1' : '1')};
+  right: ${(props) => (props.active ? '-1px' : '-70px')};
   border-radius: 0 10px;
   z-index: 99;
   transition: right 0.2s ease-in-out, opacity 0.2s linear;
@@ -45,13 +45,13 @@ function ItemActionsMenu({ editItem, deleteItem, isShow, overrideClick }) {
   };
 
   const openEditItem = (e) => {
-    closeActions(e);
     editItem(e);
+    // closeActions(e);
   };
 
   const openDeleteItem = (e) => {
-    // closeActions(e);
     deleteItem(e);
+    // closeActions(e);
   };
 
   useEffect(() => {
@@ -85,7 +85,7 @@ function ItemActionsMenu({ editItem, deleteItem, isShow, overrideClick }) {
           <MenuItems active={isOpen}>
             <FlexContainer column padding="0" justify="center" align="center">
               <IconButton
-                style={{ display: !overrideClick ? "" : "none" }}
+                style={{ display: !overrideClick ? '' : 'none' }}
                 relative
                 aria-label="close team actions"
                 color="#999"
@@ -101,7 +101,7 @@ function ItemActionsMenu({ editItem, deleteItem, isShow, overrideClick }) {
                 aria-label="edit team"
                 color="#fff"
                 show
-                style={{ transform: "translateX(1px)" }}
+                style={{ transform: 'translateX(1px)' }}
                 onClick={openEditItem}
               >
                 <Icon>

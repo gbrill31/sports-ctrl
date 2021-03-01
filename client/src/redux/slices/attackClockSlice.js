@@ -15,25 +15,20 @@ const routesSlice = createSlice({
       state.isReset = false;
     },
     stopAttackClock(state, action) {
-      // type: CLOCKS.STOP_ATTACK_CLOCK,
       state.isAttackClockRunning = false;
     },
     resetAttackClock(state, action) {
-      // type: CLOCKS.RESET_ATTACK_CLOCK,
       state.attackClockValue = action.payload;
       state.isAttackClockRunning = false;
       state.isReset = true;
     },
     setAttackClock(state, action) {
-      // type: CLOCKS.SET_ATTACK_CLOCK,
       state.attackClockValue = action.payload;
     },
     setAttackClockStart(state, action) {
-      // type: CLOCKS.SET_ATTACK_CLOCK_START,
       state.startTime = action.payload;
     },
     setAttackClockTimeleft(state, action) {
-      // type: CLOCKS.SET_ATTACK_CLOCK_TIMELEFT,
       state.timeLeft = action.payload;
     },
   },

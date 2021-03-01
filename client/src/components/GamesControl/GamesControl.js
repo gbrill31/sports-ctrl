@@ -59,7 +59,6 @@ export default function GamesControl() {
                   width="200px"
                   height="60px"
                   uppercase
-                  saving
                 >
                   Start A New Game
                   <Icon spaceLeft>

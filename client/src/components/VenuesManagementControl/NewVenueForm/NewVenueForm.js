@@ -4,19 +4,22 @@ import useSaveVenue from '../../../hooks/reactQuery/useSaveVenue';
 import { Button, FlexContainer, FormError } from '../../../styledElements';
 import { Input } from '../../../styledElements';
 
-export default function NewVenueForm({ cb }) {
+export default function NewVenueForm({ cb, venue }) {
   const { register, handleSubmit, errors } = useForm({
     mode: 'onSubmit',
     reValidateMode: 'onChange',
     defaultValues: {
-      seats: 0,
+      name: venue?.name || '',
+      country: venue?.country || '',
+      city: venue?.city || '',
+      seats: venue?.seats || 0,
     },
   });
 
   const { saveVenue, status } = useSaveVenue(cb);
 
   const onSubmit = async (data) => {
-    saveVenue({ ...data });
+    saveVenue({ ...data, id: venue?.id });
   };
 
   return (
@@ -73,7 +76,7 @@ export default function NewVenueForm({ cb }) {
             width="40%"
             margin="40px 0 5px 0"
           >
-            Create
+            Save
           </Button>
         </FlexContainer>
       </form>

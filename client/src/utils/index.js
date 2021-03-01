@@ -6,7 +6,9 @@ import {
   convertMilliToSec,
   convertMinToSec,
   convertSecToMilli,
-  convertMilliToMin
+  convertMilliToMin,
+  getClockFormat,
+  calcClockRemainingSeconds,
 } from './helpers';
 
 export {
@@ -17,5 +19,7 @@ export {
   convertMilliToSec,
   convertMinToSec,
   convertSecToMilli,
-  convertMilliToMin
-}
+  convertMilliToMin,
+  getClockFormat,
+  calcClockRemainingSeconds,
+};
