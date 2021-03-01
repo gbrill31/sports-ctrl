@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import PlayerControlItem from '../PlayerGameControlItem/PlayerGameControlItem';
+import PlayerGameControlItem from '../PlayerGameControlItem/PlayerGameControlItem';
 import FilterListInput from '../../FilterListInput/FilterListInput';
 
 import {
@@ -38,6 +38,7 @@ function TeamGameControl({
   points,
   fouls,
   gameId,
+  league,
 }) {
   const [filterValue, setFilterValue] = useState('');
 
@@ -58,6 +59,10 @@ function TeamGameControl({
     return players || [];
   };
 
+  const getTeamFoulsLimit = () => league.maxTeamFoulsCount;
+  const getPlayerFoulsLimit = () => league.maxPlayerFoulsCount;
+  const getTechFoulsLimit = () => league.maxTechFoulsCount;
+
   return (
     team && (
       <TeamControlContainer>
@@ -70,7 +75,7 @@ function TeamGameControl({
         <MainTitle align="center" capitalize>
           {team.name}
         </MainTitle>
-        <FoulsContainer danger={fouls > 3}>
+        <FoulsContainer danger={fouls > getTeamFoulsLimit() - 1}>
           {`Team Fouls: ${fouls}`}
         </FoulsContainer>
 
@@ -81,10 +86,12 @@ function TeamGameControl({
         <ScrollableContainer heightDiff={370} fullWidth>
           <FlexContainer column align="center" borderRight={borderRight}>
             {getPlayers('name', filterValue).map((player) => (
-              <PlayerControlItem
+              <PlayerGameControlItem
                 key={player.id}
                 player={player}
                 gameId={gameId}
+                maxFouls={getPlayerFoulsLimit()}
+                maxTechFouls={getTechFoulsLimit()}
                 roundLeft={teamLocation === 'home'}
               />
             ))}
@@ -96,11 +103,12 @@ function TeamGameControl({
 }
 
 TeamGameControl.propTypes = {
-  teamLocation: PropTypes.string,
-  team: PropTypes.object,
+  teamLocation: PropTypes.string.isRequired,
+  team: PropTypes.object.isRequired,
+  league: PropTypes.object.isRequired,
   borderRight: PropTypes.bool,
-  points: PropTypes.number,
-  fouls: PropTypes.number,
+  points: PropTypes.number.isRequired,
+  fouls: PropTypes.number.isRequired,
   gameId: PropTypes.number.isRequired,
 };
 

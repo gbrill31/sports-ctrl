@@ -172,6 +172,7 @@ export default function TableDisplay({
               <th
                 key={header.id}
                 className={header.sortable ? 'sortable' : ''}
+                style={{ ...header.style }}
                 onClick={
                   header.sortable
                     ? toggleSort(header.sortKey || header.title)

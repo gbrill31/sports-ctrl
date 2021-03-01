@@ -115,7 +115,7 @@ let xPos,
   foulsToAdd = 0,
   pointToDelete;
 
-export default function SetPlayerStats() {
+export default function SetPlayerStats({ league }) {
   const dispatch = useDispatch();
 
   const courtRegionRef = useRef(null);
@@ -228,7 +228,7 @@ export default function SetPlayerStats() {
   };
 
   const incrementFouls = () => {
-    if (playerLocalStats.FOULS < 5) {
+    if (playerLocalStats.FOULS < league.maxPlayerFoulsCount) {
       setPlayerLocalStats({
         ...playerLocalStats,
         FOULS: playerLocalStats.FOULS + 1,
@@ -240,6 +240,29 @@ export default function SetPlayerStats() {
     if (playerLocalStats.FOULS > 0) {
       setPlayerLocalStats({
         ...playerLocalStats,
+        FOULS: playerLocalStats.FOULS - 1,
+      });
+      foulsToAdd -= 1;
+    }
+  };
+  const incrementTechFouls = () => {
+    if (
+      playerLocalStats.TECH_FOULS < league.maxTechFoulsCount &&
+      playerLocalStats.FOULS < league.maxPlayerFoulsCount
+    ) {
+      setPlayerLocalStats({
+        ...playerLocalStats,
+        TECH_FOULS: playerLocalStats.TECH_FOULS + 1,
+        FOULS: playerLocalStats.FOULS + 1,
+      });
+      foulsToAdd += 1;
+    }
+  };
+  const decrementTechFouls = () => {
+    if (playerLocalStats.TECH_FOULS > 0) {
+      setPlayerLocalStats({
+        ...playerLocalStats,
+        TECH_FOULS: playerLocalStats.TECH_FOULS - 1,
         FOULS: playerLocalStats.FOULS - 1,
       });
       foulsToAdd -= 1;
@@ -321,7 +344,11 @@ export default function SetPlayerStats() {
             <h2 style={{ marginLeft: '10px' }}>{selectedPlayer?.name}</h2>
             {playerLocalStats && (
               <>
-                <PlayerStatsDisplay stats={playerLocalStats} />
+                <PlayerStatsDisplay
+                  stats={playerLocalStats}
+                  maxFouls={league.maxPlayerFoulsCount}
+                  maxTechFouls={league.maxTechFouls}
+                />
                 <StatsControlContainer>
                   <FlexContainer
                     column
@@ -378,7 +405,7 @@ export default function SetPlayerStats() {
                             color="primary"
                             disabled={playerLocalStats.FT === 0}
                           >
-                            Subtruct
+                            Subtract
                             <Icon spaceLeft>
                               <FontAwesomeIcon icon={faMinus} size="sm" />
                             </Icon>
@@ -396,9 +423,12 @@ export default function SetPlayerStats() {
                           <Button
                             onClick={incrementFouls}
                             color="success"
-                            disabled={playerLocalStats.FOULS === 5}
+                            disabled={
+                              playerLocalStats.FOULS ===
+                              league.maxPlayerFoulsCount
+                            }
                           >
-                            Fouls
+                            Add
                             <Icon spaceLeft>
                               <FontAwesomeIcon icon={faPlus} size="sm" />
                             </Icon>
@@ -408,7 +438,35 @@ export default function SetPlayerStats() {
                             color="primary"
                             disabled={playerLocalStats.FOULS === 0}
                           >
-                            Fouls
+                            Subtract
+                            <Icon spaceLeft>
+                              <FontAwesomeIcon icon={faMinus} size="sm" />
+                            </Icon>
+                          </Button>
+                        </FlexContainer>
+                        <h3>Tech Fouls</h3>
+                        <FlexContainer>
+                          <Button
+                            onClick={incrementTechFouls}
+                            color="success"
+                            disabled={
+                              playerLocalStats.TECH_FOULS ===
+                                league.maxTechFoulsCount ||
+                              playerLocalStats.FOULS ===
+                                league.maxPlayerFoulsCount
+                            }
+                          >
+                            Add
+                            <Icon spaceLeft>
+                              <FontAwesomeIcon icon={faPlus} size="sm" />
+                            </Icon>
+                          </Button>
+                          <Button
+                            onClick={decrementTechFouls}
+                            color="primary"
+                            disabled={playerLocalStats.TECH_FOULS === 0}
+                          >
+                            Subtract
                             <Icon spaceLeft>
                               <FontAwesomeIcon icon={faMinus} size="sm" />
                             </Icon>
@@ -435,7 +493,7 @@ export default function SetPlayerStats() {
                             size="sm"
                             style={{ marginRight: '10px' }}
                           />
-                          ATACK
+                          ATTACK
                         </span>
                         <h2>{pointsRegion} Points</h2>
                         {isPointsSet && (

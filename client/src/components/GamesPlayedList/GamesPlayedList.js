@@ -9,6 +9,7 @@ import { useSelector } from 'react-redux';
 import TableDisplay from '../TableDisplay/TableDisplay';
 import styled from 'styled-components';
 import { useQueryClient } from 'react-query';
+import useLeague from '../../hooks/reactQuery/useLeague';
 
 const tableHeaders = [
   {
@@ -21,6 +22,10 @@ const tableHeaders = [
     title: 'Home Score',
   },
   {
+    id: 8,
+    title: '',
+  },
+  {
     id: 4,
     title: 'Away Score',
   },
@@ -28,6 +33,9 @@ const tableHeaders = [
     id: 3,
     title: 'Away',
     sortable: true,
+    style: {
+      borderRight: '3px solid black',
+    },
   },
   {
     id: 7,
@@ -52,6 +60,15 @@ const WinnerField = styled.div`
     props.winner ? props.theme.success.color : props.theme.secondary.color};
   font-weight: ${(props) => (props.winner ? 'bold' : '')};
 `;
+
+const VSField = styled.div`
+  font-weight: bold;
+`;
+
+const LeagueField = ({ id }) => {
+  const { data: league } = useLeague(id);
+  return league ? <>{league.name}</> : null;
+};
 
 export default function GamesPlayedList() {
   // const [activeGame, setActiveGame] = useState(null);
@@ -104,6 +121,10 @@ export default function GamesPlayedList() {
         ),
       },
       {
+        key: 'VS',
+        component: () => <VSField>VS</VSField>,
+      },
+      {
         key: 'awayPoints',
         component: (data, item) => (
           <WinnerField winner={item.winner === 'away'}>{data}</WinnerField>
@@ -114,9 +135,15 @@ export default function GamesPlayedList() {
         component: (data, item) => (
           <WinnerField winner={item.winner === 'away'}>{data}</WinnerField>
         ),
+        style: {
+          borderRight: '3px solid black',
+        },
       },
       {
         key: 'league',
+        component: (data, item) => {
+          return <LeagueField id={item.leagueId} />;
+        },
       },
       {
         key: 'venue',

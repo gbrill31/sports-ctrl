@@ -63,7 +63,13 @@ const ShadowBox = styled.div`
   }
 `;
 
-function PlayerGameControlItem({ player, gameId, roundLeft }) {
+function PlayerGameControlItem({
+  player,
+  gameId,
+  roundLeft,
+  maxFouls,
+  maxTechFouls,
+}) {
   const dispatch = useDispatch();
   const [lastGameStats, setLastGameStats] = useState(null);
 
@@ -124,7 +130,11 @@ function PlayerGameControlItem({ player, gameId, roundLeft }) {
           <h2>{player.number}</h2>
           <h3>{player.name}</h3>
           {lastGameStats ? (
-            <PlayerStatsDisplay stats={getPlayerStatsData()} />
+            <PlayerStatsDisplay
+              stats={getPlayerStatsData()}
+              maxFouls={maxFouls}
+              maxTechFouls={maxTechFouls}
+            />
           ) : null}
         </FlexContainer>
         <ShadowBox />
@@ -134,8 +144,9 @@ function PlayerGameControlItem({ player, gameId, roundLeft }) {
 }
 
 PlayerGameControlItem.propTypes = {
-  player: PropTypes.object,
-  gameId: PropTypes.number,
+  player: PropTypes.object.isRequired,
+  gameId: PropTypes.number.isRequired,
+  maxFouls: PropTypes.number.isRequired,
   roundLeft: PropTypes.bool,
 };
 

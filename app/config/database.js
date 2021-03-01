@@ -194,11 +194,12 @@ function createPlayersTable() {
   });
 }
 
-function getPlayerStatsData(game) {
+function getPlayerStatsData(game, playerTechFouls) {
   return [
     {
       gameDate: moment().format('YYYY-MM-DD'),
       gameId: game ? game.id : null,
+      leagueId: game.leagueId,
       playedAgainst: game ? game.name : 'No Games Played',
       data: {
         PT: 0,
@@ -206,6 +207,7 @@ function getPlayerStatsData(game) {
         '3FG': 0,
         FT: 0,
         FOULS: 0,
+        TECH_FOULS: playerTechFouls,
         PtLocations: {
           Q1: [],
           Q2: [],
@@ -218,13 +220,30 @@ function getPlayerStatsData(game) {
 }
 
 function setNewGamePlayerStats(player, game) {
-  return DB('players')
-    .where('id', player.id)
-    .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
-    .update({
-      stats: JSON.stringify([...player.stats, ...getPlayerStatsData(game)]),
-      updated_at: new Date(),
-    });
+  return new Promise((resolve, reject) => {
+    let playerTotalTechFouls = 0;
+    const gamesFromLeague = player.stats.find(
+      (stats) => stats.leagueId === game.leagueId
+    );
+    if (gamesFromLeague) {
+      gamesFromLeague.forEach((game) => {
+        playerTotalTechFouls += game.stats.TECH_FOULS;
+      });
+    }
+
+    DB('players')
+      .where('id', player.id)
+      .returning(['id', 'name', 'number', 'team', 'teamId', 'stats'])
+      .update({
+        stats: JSON.stringify([
+          ...player.stats,
+          ...getPlayerStatsData(game, playerTotalTechFouls),
+        ]),
+        updated_at: new Date(),
+      })
+      .then(resolve())
+      .catch((err) => reject(err));
+  });
 }
 
 function addGameStatsToPlayers(players, game) {
@@ -629,10 +648,12 @@ const DB_EXPORTS = {
             Promise.all([
               getPlayersByTeamId(game.homeId, {
                 id: game.id,
+                leagueId,
                 name: `Against ${away}`,
               }),
               getPlayersByTeamId(game.awayId, {
                 id: game.id,
+                leagueId,
                 name: `Against ${home}`,
               }),
             ]).then(

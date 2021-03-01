@@ -7,6 +7,7 @@ import ItemActionsMenu from '../../ItemActionsMenu/ItemActionsMenu';
 import moment from 'moment';
 
 import { isFullControl } from '../../../services/userPermissions';
+import useLeague from '../../../hooks/reactQuery/useLeague';
 
 const ItemContainer = styled.div`
   width: 90%;
@@ -76,6 +77,8 @@ function PlayersManagementListItem({
 }) {
   const [lastGameStats, setLastGameStats] = useState(null);
 
+  const { data: league } = useLeague(lastGameStats?.leagueId);
+
   const isPlayerSelected = () => {
     return selectedPlayer && selectedPlayer.id === player.id;
   };
@@ -129,10 +132,14 @@ function PlayersManagementListItem({
       <ItemStats active={isPlayerSelected()}>
         {player.stats && lastGameStats && (
           <>
-            <h4>Last Game</h4>
+            <h4>Last Game {league?.name || ''}</h4>
             <h3>{lastGameStats?.playedAgainst}</h3>
             <h4>Game Statistics</h4>
-            <PlayerStatsDisplay stats={lastGameStats.data} />
+            <PlayerStatsDisplay
+              stats={lastGameStats.data}
+              maxTechFouls={league?.maxTechFoulsCount}
+              maxFouls={league?.maxPlayerFoulsCount}
+            />
           </>
         )}
       </ItemStats>

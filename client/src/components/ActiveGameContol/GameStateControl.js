@@ -5,14 +5,8 @@ import AttackClock from './GameClocksControl/AttackClock/AttackClock';
 import QuarterControl from './QuarterControl/QuarterControl';
 
 import { FlexContainer, MainTitle, SubTitle } from '../../styledElements';
-import { useSelector } from 'react-redux';
-import useLeague from '../../hooks/reactQuery/useLeague';
 
-export default function GameStateControl() {
-  const { leagueId } = useSelector((state) => state.game);
-
-  const { data: league } = useLeague(leagueId);
-
+export default function GameStateControl({ league }) {
   return (
     <FlexContainer column justify="center" align="center" borderRight>
       <SubTitle align="center" padding="0">

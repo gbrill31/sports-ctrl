@@ -21,6 +21,7 @@ import {
 } from '../../redux';
 import ModalDialog from '../../components/ModalDialog/ModalDialog';
 import { useQueryClient } from 'react-query';
+import useLeague from '../../hooks/reactQuery/useLeague';
 
 export default function GameManagement() {
   const dispatch = useDispatch();
@@ -39,6 +40,10 @@ export default function GameManagement() {
     isSetPlayerStatsDialog,
     selectedPlayer,
   } = useSelector((state) => state.game);
+
+  const { leagueId } = useSelector((state) => state.game);
+
+  const { data: league } = useLeague(leagueId);
 
   const {
     status: activeGameStatus,
@@ -88,17 +93,18 @@ export default function GameManagement() {
     <>
       <ComponentLoader loading={isGameLoading()}>
         <>
-          {activeGame && (
+          {activeGame && league && (
             <>
               <GameControlMenu />
               <GridContainer columnsSpread="auto auto auto" noPadding>
-                <GameStateControl />
+                <GameStateControl league={league} />
                 <TeamGameControl
                   teamLocation="home"
                   team={homeTeam}
                   points={homePoints}
                   fouls={homeFouls}
                   gameId={activeGame?.id}
+                  league={league}
                   borderRight
                 />
                 <TeamGameControl
@@ -107,6 +113,7 @@ export default function GameManagement() {
                   points={awayPoints}
                   fouls={awayFouls}
                   gameId={activeGame?.id}
+                  league={league}
                 />
               </GridContainer>
             </>
@@ -115,6 +122,7 @@ export default function GameManagement() {
       </ComponentLoader>
       <ModalDialog
         component={SetPlayerStats}
+        componentProps={{ league }}
         isOpen={isSetPlayerStatsDialog}
         handleCancel={cancelSetPlayerStats}
         title={`Set Player Game Stats - ${selectedPlayer?.team}`}

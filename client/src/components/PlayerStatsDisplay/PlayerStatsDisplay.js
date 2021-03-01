@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
-import PropTypes from "prop-types";
-import styled, { keyframes, css } from "styled-components";
+import React, { useEffect, useState, useRef } from 'react';
+import PropTypes from 'prop-types';
+import styled, { keyframes, css } from 'styled-components';
 
-import { FlexContainer } from "../../styledElements";
+import { FlexContainer } from '../../styledElements';
 
 const statChangeAnimation = keyframes`
   from {
@@ -20,7 +20,6 @@ const StatDisplay = styled.div`
   font-size: 1rem;
   font-weight: bold;
   text-transform: uppercase;
-  /* margin-right: 20px; */
 
   h4 {
     margin: 0;
@@ -28,7 +27,6 @@ const StatDisplay = styled.div`
     font-size: 1rem;
     text-transform: uppercase;
     font-weight: 400;
-    /* margin-left: 15px; */
   }
 
   ${(props) =>
@@ -38,7 +36,7 @@ const StatDisplay = styled.div`
     `};
 `;
 
-function PlayerStatsDisplay({ stats }) {
+function PlayerStatsDisplay({ stats, maxFouls, maxTechFouls }) {
   const isFirstRun = useRef(true);
 
   const [isFoulsUpdate, setIsFoulsUpdate] = useState(false);
@@ -47,8 +45,8 @@ function PlayerStatsDisplay({ stats }) {
   const [is2fgUpdate, setIs2fgUpdate] = useState(false);
   const [is3fgUpdate, setIs3fgUpdate] = useState(false);
 
-  const twoPointsFG = stats["2FG"];
-  const threePointsFG = stats["3FG"];
+  const twoPointsFG = stats['2FG'];
+  const threePointsFG = stats['3FG'];
 
   useEffect(() => {
     if (!isFirstRun.current) {
@@ -103,10 +101,20 @@ function PlayerStatsDisplay({ stats }) {
       <FlexContainer justify="space-evenly" width="60%">
         <StatDisplay update={isPointsUpdate}>POINTS: {stats.PT}</StatDisplay>
         <StatDisplay
-          color={stats.FOULS > 3 ? "error" : "primary"}
+          color={maxFouls && stats.FOULS >= maxFouls ? 'error' : 'primary'}
           update={isFoulsUpdate}
         >
           FOULS: {stats.FOULS}
+        </StatDisplay>
+        <StatDisplay
+          color={
+            maxTechFouls && stats.TECH_FOULS >= maxTechFouls
+              ? 'error'
+              : 'primary'
+          }
+          update={isFoulsUpdate}
+        >
+          TECH FOULS: {stats.TECH_FOULS}
         </StatDisplay>
       </FlexContainer>
       <FlexContainer
@@ -116,10 +124,10 @@ function PlayerStatsDisplay({ stats }) {
         padding="0"
       >
         <StatDisplay update={is2fgUpdate}>
-          <h4>2FG: {stats["2FG"]}</h4>
+          <h4>2FG: {stats['2FG']}</h4>
         </StatDisplay>
         <StatDisplay update={is3fgUpdate}>
-          <h4>3FG: {stats["3FG"]}</h4>
+          <h4>3FG: {stats['3FG']}</h4>
         </StatDisplay>
         <StatDisplay update={isFtUpdate}>
           <h4>FT: {stats.FT}</h4>
