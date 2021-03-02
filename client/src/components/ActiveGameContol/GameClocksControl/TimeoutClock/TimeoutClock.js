@@ -91,9 +91,7 @@ export default function TimeoutClock({ league }) {
     (value) => dispatch(setTimeoutClock(value)),
     [dispatch]
   );
-  // const startClock = useCallback(() => dispatch(startTimeoutClock()), [
-  //   dispatch,
-  // ]);
+
   const stopClock = useCallback(() => dispatch(stopTimeoutClock()), [dispatch]);
   const setClockStartTime = useCallback(
     (value) => dispatch(setTimeoutClockStart(value)),

@@ -111,6 +111,7 @@ export default function GameManagement() {
                   gameId={activeGame?.id}
                   league={league}
                   isTimeout={isHomeTimeout}
+                  isTimeoutDisabled={isAwayTimeout}
                   borderRight
                 />
                 <TeamGameControl
@@ -121,6 +122,7 @@ export default function GameManagement() {
                   timeouts={awayTimeouts}
                   gameId={activeGame?.id}
                   isTimeout={isAwayTimeout}
+                  isTimeoutDisabled={isHomeTimeout}
                   league={league}
                 />
               </GridContainer>

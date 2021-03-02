@@ -63,6 +63,7 @@ function TeamGameControl({
   gameId,
   league,
   isTimeout,
+  isTimeoutDisabled,
 }) {
   const dispatch = useDispatch();
   const [filterValue, setFilterValue] = useState('');
@@ -182,7 +183,9 @@ function TeamGameControl({
                   <Button
                     onClick={handleTimeoutStart}
                     color="success"
-                    disabled={timeouts >= getTeamTimeoutsLimit()}
+                    disabled={
+                      isTimeoutDisabled || timeouts >= getTeamTimeoutsLimit()
+                    }
                   >
                     Timeout
                     <Icon spaceLeft>
