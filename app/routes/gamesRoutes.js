@@ -93,6 +93,19 @@ gameRouter.post('/team-fouls', function (req, res) {
   );
 });
 
+gameRouter.post('/team-timeouts', function (req, res) {
+  const { gameId, teamId, timeouts } = req.body;
+  psqlDB.updateTeamTimeouts(gameId, teamId, timeouts).then(
+    (data) => {
+      res.json(data).status(200);
+    },
+    (err) => {
+      res.alertError('Cannot Update Team Timeouts');
+      res.sendStatus(err.code || 500);
+    }
+  );
+});
+
 gameRouter.post('/endgame', function (req, res) {
   const { gameId } = req.body;
   psqlDB.endActiveGame(gameId).then(

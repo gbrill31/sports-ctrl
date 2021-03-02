@@ -95,6 +95,11 @@ export default styled.input`
     css`
       animation: ${loadingAnimation(props)} 0.4s alternate infinite;
     `}
+     ${(props) =>
+    props.noMargin &&
+    css`
+      margin: 0;
+    `}
   ${(props) =>
     props.disabled &&
     css`

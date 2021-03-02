@@ -38,6 +38,15 @@ export const updateTeamFouls = async (gameId, teamId, fouls) => {
   return data;
 };
 
+export const updateTeamTimeouts = async (gameId, teamId, timeouts) => {
+  const { data } = await axios.post('/api/games/team-timeouts', {
+    gameId,
+    teamId,
+    timeouts,
+  });
+  return data;
+};
+
 export const updateEndGame = async (gameId) => {
   const { data } = await axios.post('/api/games/endgame', {
     gameId,

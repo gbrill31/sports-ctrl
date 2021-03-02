@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const routesSlice = createSlice({
+const gameSlice = createSlice({
   name: 'game',
   initialState: {
     id: null,
@@ -10,6 +10,8 @@ const routesSlice = createSlice({
     awayPoints: null,
     homeFouls: null,
     awayFouls: null,
+    homeTimeouts: null,
+    awayTimeouts: null,
     active: null,
     leagueId: null,
     selectedPlayer: null,
@@ -22,6 +24,9 @@ const routesSlice = createSlice({
     isEndGamePrompt: false,
     isEndGamePending: false,
     endGameError: null,
+    isHomeTimeout: false,
+    isAwayTimeout: false,
+    isTimeoutPrompt: false,
   },
   reducers: {
     setGame(state, action) {
@@ -32,8 +37,10 @@ const routesSlice = createSlice({
         leagueId,
         homePoints,
         homeFouls,
+        homeTimeouts,
         awayPoints,
         awayFouls,
+        awayTimeouts,
         status,
       } = action.payload;
       Object.assign(state, {
@@ -46,11 +53,13 @@ const routesSlice = createSlice({
         awayPoints,
         homeFouls,
         awayFouls,
+        homeTimeouts,
+        awayTimeouts,
         status,
       });
     },
     updateGameScore(state, action) {
-      console.log('update game score');
+      // console.log('update game score');
     },
     setGameScore(state, action) {
       const { teamId, score } = action.payload;
@@ -99,7 +108,10 @@ const routesSlice = createSlice({
     },
 
     updateTeamFouls(state, action) {
-      console.log('update team fouls');
+      // console.log('update team fouls');
+    },
+    updateTeamTimeouts(state, action) {
+      // console.log('update team fouls');
     },
     setTeamFouls(state, action) {
       if (action.payload.teamId) {
@@ -120,9 +132,31 @@ const routesSlice = createSlice({
         });
       }
     },
+    setTeamTimeouts(state, action) {
+      if (action.payload.teamId) {
+        Object.assign(state, {
+          awayTimeouts:
+            state.awayTeam.id === action.payload.teamId
+              ? action.payload.timeouts
+              : state.awayTimeouts,
+          homeTimeouts:
+            state.homeTeam.id === action.payload.teamId
+              ? action.payload.timeouts
+              : state.homeTimeouts,
+        });
+      } else {
+        Object.assign(state, {
+          awayTimeouts: 0,
+          homeTimeouts: 0,
+        });
+      }
+    },
 
     resetTeamFouls(state, action) {
-      console.log('reset teams fouls');
+      // console.log('reset teams fouls');
+    },
+    resetTeamTimeouts(state, action) {
+      // console.log('reset teams fouls');
     },
 
     updateGameEnd(state, action) {
@@ -140,6 +174,21 @@ const routesSlice = createSlice({
 
     setEndGamePrompt(state, action) {
       state.isEndGamePrompt = action.payload;
+    },
+    setIsTimeout(state, action) {
+      const { isTimeout, teamLocation } = action.payload;
+      if (teamLocation === 'home' && isTimeout) {
+        state.isHomeTimeout = isTimeout;
+      } else {
+        state.isAwayTimeout = isTimeout;
+      }
+      if (!isTimeout) {
+        state.isHomeTimeout = isTimeout;
+        state.isAwayTimeout = isTimeout;
+      }
+    },
+    setIsTimeoutPrompt(state, action) {
+      state.isTimeoutPrompt = action.payload;
     },
   },
 });
@@ -161,7 +210,12 @@ export const {
   updateTeamFouls,
   updatePlayerStats,
   updatePlayerStatsError,
+  updateTeamTimeouts,
+  setTeamTimeouts,
+  resetTeamTimeouts,
   resetTeamFouls,
-} = routesSlice.actions;
+  setIsTimeout,
+  setIsTimeoutPrompt,
+} = gameSlice.actions;
 
-export default routesSlice.reducer;
+export default gameSlice.reducer;

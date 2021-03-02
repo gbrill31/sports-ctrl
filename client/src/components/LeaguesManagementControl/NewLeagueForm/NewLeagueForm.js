@@ -37,7 +37,7 @@ const FormContainer = styled.div`
 `;
 
 export default function NewLeagueForm({ cb, league }) {
-  const [isGameHalves, setIsGameHalves] = useState(league.isHalves);
+  const [isGameHalves, setIsGameHalves] = useState(league?.isHalves);
 
   const { register, setValue, handleSubmit, errors } = useForm({
     mode: 'onSubmit',
@@ -74,6 +74,8 @@ export default function NewLeagueForm({ cb, league }) {
     const { id, value } = e.target;
     setValue(id, getClockFormat(value));
   };
+
+  const handleHalvesChange = () => setIsGameHalves(!isGameHalves);
 
   const onSubmit = async (data) => {
     const {
@@ -166,7 +168,7 @@ export default function NewLeagueForm({ cb, league }) {
                   spaceLeft
                   value={isGameHalves}
                   checked={isGameHalves}
-                  onChange={() => setIsGameHalves(!isGameHalves)}
+                  onChange={handleHalvesChange}
                 />
                 Halves
               </span>

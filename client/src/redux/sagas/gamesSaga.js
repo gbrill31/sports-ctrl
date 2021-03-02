@@ -8,6 +8,7 @@ import {
   setTeamFouls,
   setGameEnd,
   setEndGameError,
+  setTeamTimeouts,
 } from '../index';
 import {
   updatePlayerStats,
@@ -15,6 +16,7 @@ import {
   updateGameStatus,
   updateTeamFouls,
   updateEndGame,
+  updateTeamTimeouts,
 } from '../../api';
 
 function* handleUpdatePlayerStats({ payload }) {
@@ -61,6 +63,21 @@ function* handleSetTeamFouls({ payload }) {
   }
 }
 
+function* handleSetTeamTimeouts({ payload }) {
+  try {
+    const { gameId, teamId, timeouts } = payload;
+    const newTimeouts = yield call(
+      updateTeamTimeouts,
+      gameId,
+      teamId,
+      timeouts
+    );
+    yield put(setTeamTimeouts({ ...newTimeouts }));
+  } catch (error) {
+    // yield put(updatePlayerStatsError(error));
+  }
+}
+
 function* handleEndGame({ payload: gameId }) {
   try {
     console.log('saga', gameId);
@@ -76,6 +93,7 @@ export default function* watchDbConnection() {
   yield takeEvery('game/updateGameScore', handleSetGameScore);
   yield takeEvery('game/updateGameStatus', handleSetGameStatus);
   yield takeEvery('game/updateTeamFouls', handleSetTeamFouls);
+  yield takeEvery('game/updateTeamTimeouts', handleSetTeamTimeouts);
   yield takeEvery('game/resetTeamFouls', handleSetTeamFouls);
   yield takeEvery('game/updateGameEnd', handleEndGame);
 }

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
 
-import { SubTitle } from '../../styledElements';
+import { FlexContainer, SubTitle } from '../../styledElements';
 
 import ComponentLoader from '../ComponentLoader/ComponentLoader';
 import useGames from '../../hooks/reactQuery/useGames';
@@ -71,8 +71,6 @@ const LeagueField = ({ id }) => {
 };
 
 export default function GamesPlayedList() {
-  // const [activeGame, setActiveGame] = useState(null);
-
   const { user } = useSelector((state) => state.auth);
   const queryClient = useQueryClient();
 
@@ -81,19 +79,12 @@ export default function GamesPlayedList() {
     user.id
   );
 
-  // useEffect(() => {
-  //   if (games?.length) {
-  //     const active = games.find((game) => game.active);
-  //     setActiveGame(active);
-  //   }
-  // }, [games]);
-
   const isGamesLoading = () => status === 'loading' || isFetching;
 
   const getGamesWithWinners = () => {
     if (games) {
-      const gamesToChange = [...games];
-      gamesToChange.forEach((g) => {
+      const gamesLocalCopy = [...games];
+      gamesLocalCopy.forEach((g) => {
         g.winner =
           g.homePoints > g.awayPoints
             ? 'home'
@@ -101,7 +92,7 @@ export default function GamesPlayedList() {
             ? 'away'
             : '';
       });
-      return gamesToChange;
+      return gamesLocalCopy.filter((game) => !game.active);
     }
     return [];
   };
@@ -159,13 +150,21 @@ export default function GamesPlayedList() {
   return (
     <>
       <ComponentLoader loading={isGamesLoading()}>
-        <SubTitle>Games Played</SubTitle>
-        <TableDisplay
-          headers={tableHeaders}
-          cells={cells}
-          cellsStyle={{ padding: '10px' }}
-          items={getGamesWithWinners().filter((game) => !game.active)}
-        />
+        {getGamesWithWinners().length > 0 ? (
+          <>
+            <SubTitle>Games Played</SubTitle>
+            <TableDisplay
+              headers={tableHeaders}
+              cells={cells}
+              cellsStyle={{ padding: '10px' }}
+              items={getGamesWithWinners()}
+            />
+          </>
+        ) : (
+          <FlexContainer fullWidth padding="0" align="center" justify="center">
+            <SubTitle align="center">No Games Played Found</SubTitle>
+          </FlexContainer>
+        )}
       </ComponentLoader>
     </>
   );

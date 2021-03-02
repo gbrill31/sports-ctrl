@@ -7,6 +7,7 @@ import {
   updateGameScore,
   updateGameStatus,
   updateTeamFouls,
+  updateTeamTimeouts,
   updateEndGame,
 } from './gamesApi';
 
@@ -58,6 +59,7 @@ export {
   updatePlayerStats,
   updateGameStatus,
   updateTeamFouls,
+  updateTeamTimeouts,
   updateEndGame,
   registerUser,
   loginUser,

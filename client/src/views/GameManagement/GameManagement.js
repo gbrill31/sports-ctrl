@@ -34,6 +34,8 @@ export default function GameManagement() {
     awayPoints,
     homeFouls,
     awayFouls,
+    homeTimeouts,
+    awayTimeouts,
     isEndGamePrompt,
     isEndGamePending,
     setPlayerStatsPending: isSaving,
@@ -41,7 +43,9 @@ export default function GameManagement() {
     selectedPlayer,
   } = useSelector((state) => state.game);
 
-  const { leagueId } = useSelector((state) => state.game);
+  const { leagueId, isHomeTimeout, isAwayTimeout } = useSelector(
+    (state) => state.game
+  );
 
   const { data: league } = useLeague(leagueId);
 
@@ -103,8 +107,10 @@ export default function GameManagement() {
                   team={homeTeam}
                   points={homePoints}
                   fouls={homeFouls}
+                  timeouts={homeTimeouts}
                   gameId={activeGame?.id}
                   league={league}
+                  isTimeout={isHomeTimeout}
                   borderRight
                 />
                 <TeamGameControl
@@ -112,7 +118,9 @@ export default function GameManagement() {
                   team={awayTeam}
                   points={awayPoints}
                   fouls={awayFouls}
+                  timeouts={awayTimeouts}
                   gameId={activeGame?.id}
+                  isTimeout={isAwayTimeout}
                   league={league}
                 />
               </GridContainer>

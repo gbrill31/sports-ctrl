@@ -56,10 +56,12 @@ function createGamesTable() {
             table.string('home');
             table.integer('homePoints');
             table.integer('homeFouls');
+            table.integer('homeTimeouts');
             table.integer('awayId');
             table.string('away');
             table.integer('awayPoints');
             table.integer('awayFouls');
+            table.integer('awayTimeouts');
             table.integer('leagueId');
             table.string('venue');
             table.string('status');
@@ -222,12 +224,13 @@ function getPlayerStatsData(game, playerTechFouls) {
 function setNewGamePlayerStats(player, game) {
   return new Promise((resolve, reject) => {
     let playerTotalTechFouls = 0;
-    const gamesFromLeague = player.stats.find(
+    const gamesFromLeague = player.stats.filter(
       (stats) => stats.leagueId === game.leagueId
     );
     if (gamesFromLeague) {
       gamesFromLeague.forEach((game) => {
-        playerTotalTechFouls += game.stats.TECH_FOULS;
+        if (game.stats && game.stats.TECH_FOULS)
+          playerTotalTechFouls += game.stats.TECH_FOULS;
       });
     }
 
@@ -298,17 +301,17 @@ function getPlayersByTeamId(teamId, game) {
   });
 }
 
-function getGameObject(game, data) {
+function getGameObject(game, players) {
   Object.assign(game, {
     home: {
       id: game.homeId,
       name: game.home,
-      players: data[0],
+      players: players[0],
     },
     away: {
       id: game.awayId,
       name: game.away,
-      players: data[1],
+      players: players[1],
     },
   });
   return game;
@@ -413,6 +416,59 @@ function resetTeamsFouls(game) {
       })
       .then(() => {
         resolve(game.id);
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+function resetTeamsTimeouts(game) {
+  return new Promise((resolve, reject) => {
+    DB('games')
+      .where({ id: game.id })
+      .update({
+        awayTimeouts: 0,
+        homeTimeouts: 0,
+        updated_at: new Date(),
+      })
+      .then(() => {
+        resolve(game.id);
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+function setHomeTeamTimeouts(game, timeouts) {
+  return new Promise((resolve, reject) => {
+    DB('games')
+      .where({ id: game.id })
+      .returning(['id', 'homeTimeouts', 'homeId'])
+      .update({
+        homeTimeouts: timeouts,
+        updated_at: new Date(),
+      })
+      .then((teamTimeouts) => {
+        resolve({
+          teamId: teamTimeouts[0].homeId,
+          timeouts: teamTimeouts[0].homeTimeouts,
+        });
+      })
+      .catch((err) => reject(err));
+  });
+}
+function setAwayTeamTimeouts(game, timeouts) {
+  return new Promise((resolve, reject) => {
+    DB('games')
+      .where({ id: game.id })
+      .returning(['id', 'awayTimeouts', 'awayId'])
+      .update({
+        awayTimeouts: timeouts,
+        updated_at: new Date(),
+      })
+      .then((teamTimeouts) => {
+        resolve({
+          teamId: teamTimeouts[0].awayId,
+          timeouts: teamTimeouts[0].awayTimeouts,
+        });
       })
       .catch((err) => reject(err));
   });
@@ -616,6 +672,8 @@ const DB_EXPORTS = {
         'homeId',
         'homePoints',
         'homeFouls',
+        'homeTimeouts',
+        'awayTimeouts',
         'away',
         'awayId',
         'awayPoints',
@@ -631,6 +689,8 @@ const DB_EXPORTS = {
           homeId,
           homePoints: 0,
           homeFouls: 0,
+          homeTimeouts: 0,
+          awayTimeouts: 0,
           away,
           awayId,
           awayPoints: 0,
@@ -657,8 +717,8 @@ const DB_EXPORTS = {
                 name: `Against ${home}`,
               }),
             ]).then(
-              (data) => {
-                resolve(getGameObject(game, data));
+              (players) => {
+                resolve(getGameObject(game, players));
               },
               (err) => reject(err)
             );
@@ -1036,6 +1096,36 @@ const DB_EXPORTS = {
               }
             } else {
               resetTeamsFouls(game)
+                .then((id) => resolve(id))
+                .catch((err) => reject(err));
+            }
+          } else {
+            reject(err);
+          }
+        });
+    });
+  },
+  updateTeamTimeouts: function (gameId, teamId, timeouts) {
+    return new Promise((resolve, reject) => {
+      DB('games')
+        .where({ id: gameId })
+        .asCallback((err, rows) => {
+          if (err) reject(err);
+          if (rows && rows.length) {
+            const game = rows[0];
+            if (teamId) {
+              const isHomeTeam = game.homeId === teamId;
+              if (isHomeTeam) {
+                setHomeTeamTimeouts(game, timeouts)
+                  .then((teamTimeouts) => resolve(teamTimeouts))
+                  .catch((err) => reject(err));
+              } else {
+                setAwayTeamTimeouts(game, timeouts)
+                  .then((teamTimeouts) => resolve(teamTimeouts))
+                  .catch((err) => reject(err));
+              }
+            } else {
+              resetTeamsTimeouts(game)
                 .then((id) => resolve(id))
                 .catch((err) => reject(err));
             }

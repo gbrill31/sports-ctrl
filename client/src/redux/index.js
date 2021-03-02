@@ -36,6 +36,14 @@ import {
 } from './slices/attackClockSlice';
 
 import {
+  startTimeoutClock,
+  stopTimeoutClock,
+  resetTimeoutClock,
+  setTimeoutClock,
+  setTimeoutClockStart,
+} from './slices/timeoutClockSlice';
+
+import {
   setGame,
   setGameEnd,
   setEndGameError,
@@ -50,9 +58,14 @@ import {
   updateGameScore,
   updateGameStatus,
   updateTeamFouls,
+  updateTeamTimeouts,
   updatePlayerStats,
   updatePlayerStatsError,
   resetTeamFouls,
+  setTeamTimeouts,
+  resetTeamTimeouts,
+  setIsTimeout,
+  setIsTimeoutPrompt,
 } from './slices/gameControlSlice';
 
 export {
@@ -96,7 +109,17 @@ export {
   updateGameScore,
   updateGameStatus,
   updateTeamFouls,
+  updateTeamTimeouts,
+  setTeamTimeouts,
+  resetTeamTimeouts,
   updatePlayerStats,
   updatePlayerStatsError,
   resetTeamFouls,
+  startTimeoutClock,
+  stopTimeoutClock,
+  resetTimeoutClock,
+  setTimeoutClock,
+  setTimeoutClockStart,
+  setIsTimeout,
+  setIsTimeoutPrompt,
 };

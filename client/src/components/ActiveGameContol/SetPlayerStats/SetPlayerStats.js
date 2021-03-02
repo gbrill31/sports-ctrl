@@ -355,6 +355,7 @@ export default function SetPlayerStats({ league }) {
                     align="center"
                     justify="flex-start"
                     fullWidth
+                    padding="0"
                   >
                     <FlexContainer align="center" justify="center">
                       <FlexContainer
@@ -412,65 +413,64 @@ export default function SetPlayerStats({ league }) {
                           </Button>
                         </FlexContainer>
                       </FlexContainer>
-                      <FlexContainer
-                        align="center"
-                        justify="center"
-                        column
-                        fullBorder
-                      >
-                        <h3>Fouls</h3>
-                        <FlexContainer>
-                          <Button
-                            onClick={incrementFouls}
-                            color="success"
-                            disabled={
-                              playerLocalStats.FOULS ===
-                              league.maxPlayerFoulsCount
-                            }
-                          >
-                            Add
-                            <Icon spaceLeft>
-                              <FontAwesomeIcon icon={faPlus} size="sm" />
-                            </Icon>
-                          </Button>
-                          <Button
-                            onClick={decrementFouls}
-                            color="primary"
-                            disabled={playerLocalStats.FOULS === 0}
-                          >
-                            Subtract
-                            <Icon spaceLeft>
-                              <FontAwesomeIcon icon={faMinus} size="sm" />
-                            </Icon>
-                          </Button>
-                        </FlexContainer>
-                        <h3>Tech Fouls</h3>
-                        <FlexContainer>
-                          <Button
-                            onClick={incrementTechFouls}
-                            color="success"
-                            disabled={
-                              playerLocalStats.TECH_FOULS ===
-                                league.maxTechFoulsCount ||
-                              playerLocalStats.FOULS ===
+                      <FlexContainer align="center" justify="center" fullBorder>
+                        <FlexContainer column align="center" justify="center">
+                          <h3>Fouls</h3>
+                          <FlexContainer>
+                            <Button
+                              onClick={incrementFouls}
+                              color="success"
+                              disabled={
+                                playerLocalStats.FOULS ===
                                 league.maxPlayerFoulsCount
-                            }
-                          >
-                            Add
-                            <Icon spaceLeft>
-                              <FontAwesomeIcon icon={faPlus} size="sm" />
-                            </Icon>
-                          </Button>
-                          <Button
-                            onClick={decrementTechFouls}
-                            color="primary"
-                            disabled={playerLocalStats.TECH_FOULS === 0}
-                          >
-                            Subtract
-                            <Icon spaceLeft>
-                              <FontAwesomeIcon icon={faMinus} size="sm" />
-                            </Icon>
-                          </Button>
+                              }
+                            >
+                              Add
+                              <Icon spaceLeft>
+                                <FontAwesomeIcon icon={faPlus} size="sm" />
+                              </Icon>
+                            </Button>
+                            <Button
+                              onClick={decrementFouls}
+                              color="primary"
+                              disabled={playerLocalStats.FOULS === 0}
+                            >
+                              Subtract
+                              <Icon spaceLeft>
+                                <FontAwesomeIcon icon={faMinus} size="sm" />
+                              </Icon>
+                            </Button>
+                          </FlexContainer>
+                        </FlexContainer>
+                        <FlexContainer column align="center" justify="center">
+                          <h3>Tech Fouls</h3>
+                          <FlexContainer>
+                            <Button
+                              onClick={incrementTechFouls}
+                              color="success"
+                              disabled={
+                                playerLocalStats.TECH_FOULS ===
+                                  league.maxTechFoulsCount ||
+                                playerLocalStats.FOULS ===
+                                  league.maxPlayerFoulsCount
+                              }
+                            >
+                              Add
+                              <Icon spaceLeft>
+                                <FontAwesomeIcon icon={faPlus} size="sm" />
+                              </Icon>
+                            </Button>
+                            <Button
+                              onClick={decrementTechFouls}
+                              color="primary"
+                              disabled={playerLocalStats.TECH_FOULS === 0}
+                            >
+                              Subtract
+                              <Icon spaceLeft>
+                                <FontAwesomeIcon icon={faMinus} size="sm" />
+                              </Icon>
+                            </Button>
+                          </FlexContainer>
                         </FlexContainer>
                       </FlexContainer>
                     </FlexContainer>

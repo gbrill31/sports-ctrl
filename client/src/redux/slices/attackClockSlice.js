@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const routesSlice = createSlice({
+const attackClockSlice = createSlice({
   name: 'attackClock',
   initialState: {
     attackClockValue: null,
@@ -41,6 +41,6 @@ export const {
   setAttackClock,
   setAttackClockStart,
   setAttackClockTimeleft,
-} = routesSlice.actions;
+} = attackClockSlice.actions;
 
-export default routesSlice.reducer;
+export default attackClockSlice.reducer;

@@ -8,6 +8,7 @@ import teamsReducer from './slices/teamsSlice';
 import gameClockReducer from './slices/gameClockSlice';
 import attackClockReducer from './slices/attackClockSlice';
 import activeGamesReducer from './slices/gameControlSlice';
+import timeoutClock from './slices/timeoutClockSlice';
 
 import rootSaga from './sagas';
 
@@ -22,6 +23,7 @@ const buildStore = () => {
       teams: teamsReducer,
       gameClock: gameClockReducer,
       attackClock: attackClockReducer,
+      timeoutClock,
       auth: authReducer,
     }),
     middleware: () => [
